@@ -36,7 +36,7 @@ public partial class EnemySpawner : Node
 
 	private void SpawnOne()
 	{
-		GD.Print("[Spawner] SpawnOne called");
+		//GD.Print("[Spawner] SpawnOne called");
 
 		var enemy = EnemyScene.Instantiate<Enemy>();
 		enemy.Target = _player;
@@ -49,7 +49,7 @@ public partial class EnemySpawner : Node
 
 		enemy.GlobalPosition = _player.GlobalPosition + offset;
 
-		GD.Print($"[Spawn] player={_player.GlobalPosition} enemySpawn={enemy.GlobalPosition} dist={(enemy.GlobalPosition - _player.GlobalPosition).Length()}");
+		//GD.Print($"[Spawn] player={_player.GlobalPosition} enemySpawn={enemy.GlobalPosition} dist={(enemy.GlobalPosition - _player.GlobalPosition).Length()}");
 
 		_enemiesContainer.AddChild(enemy);
 	}

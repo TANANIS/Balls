@@ -7,6 +7,8 @@
 radius = 22.0
 
 [node name="Bullet" type="Area2D"]
+collision_layer = 8
+collision_mask = 33
 script = ExtResource("1_lubkv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

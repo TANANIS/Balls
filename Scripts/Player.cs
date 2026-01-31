@@ -1,9 +1,4 @@
-// 把你當前的 Player 程式完整貼到這裡（包含 using、class、變數、_Ready/_Process/_PhysicsProcess、射擊/移動/受傷等）。
-//
-// 我會在同一份檔案裡直接改，並用註解標出：
-// 1) 需要新增的欄位（HP、無敵幀、Timer 等）
-// 2) 需要新增/調整的方法（TryTakeDamage、FlashHurt…）
-// 3) 你原本邏輯哪裡要接上（例如 UpdateShooting 的呼叫點）
+
 
 using Godot;
 using System;
@@ -61,8 +56,54 @@ public partial class Player : CharacterBody2D
 	/// </summary>
 	[Export] public float FireCooldown = 0.22f;
 
+
 	private float _fireTimer = 0f;
 	private Marker2D _muzzle;
+
+	/* =========================
+* Dash / 閃避（空白鍵）
+* ========================= */
+
+
+	/// <summary>
+	/// Dash 速度（px/s）
+	/// </summary>
+	[Export] public float DashSpeed = 900f;
+
+
+	/// <summary>
+	/// Dash 持續時間（秒）
+	/// </summary>
+	[Export] public float DashDuration = 0.12f;
+
+
+	/// <summary>
+	/// Dash 冷卻（秒）
+	/// </summary>
+	[Export] public float DashCooldown = 0.55f;
+
+
+	/// <summary>
+	/// Dash 是否給短暫無敵（秒），0=不給
+	/// </summary>
+	[Export] public float DashIFrame = 0.18f;
+
+
+	private bool _isDashing = false;
+	private float _dashTimer = 0f;
+	private float _dashCooldownTimer = 0f;
+	private Vector2 _dashDir = Vector2.Right;
+	private Vector2 _lastMoveDir = Vector2.Right;
+
+	private bool _isDead = false;
+
+	// Dash 期間穿越敵人：暫存玩家原本的碰撞設定
+	// Dash 穿越敵人：暫存玩家原本的碰撞 Mask（只改 Mask，不改 Layer）
+	private uint _maskBeforeDash = 0;
+	private bool _dashMaskOverridden = false;
+	private const int LAYER_ENEMY_BODY = 3;
+
+
 
 
 	/* =========================================================
@@ -96,10 +137,79 @@ public partial class Player : CharacterBody2D
 		if (_invTimer > 0f)
 			_invTimer -= dt;
 
+
+		// Dash 冷卻計時
+		if (_dashCooldownTimer > 0f)
+			_dashCooldownTimer -= dt;
+
+
+		if (_isDead)
+		{
+			CheckRestartInput();
+			return;
+		}
+
+
 		// =========================
 		// 移動
 		// =========================
 		Vector2 inputDir = Input.GetVector("left", "right", "up", "down");
+		if (inputDir != Vector2.Zero)
+			_lastMoveDir = inputDir.Normalized();
+
+		// =========================
+		// Dash（空白鍵）
+		// =========================
+		// 建議你在 InputMap 新增 action：dash，綁定 Space。
+		// 如果你懶得加，也可以先用 ui_select，但會跟 UI 行為混在一起。
+		if (!_isDashing && _dashCooldownTimer <= 0f && Input.IsActionJustPressed("dash"))
+		{
+			StartDash(inputDir);
+		}
+
+
+		if (_isDashing)
+		{
+			_dashTimer -= dt;
+			Velocity = _dashDir * DashSpeed;
+
+
+			// Dash 期間給短暫無敵（可選）
+			if (DashIFrame > 0f)
+				_invTimer = Mathf.Max(_invTimer, DashIFrame);
+
+
+			MoveAndSlide();
+			
+			if (GetSlideCollisionCount() > 0)
+			{
+				var col = GetSlideCollision(0);
+				var collider = col.GetCollider();
+
+				if (collider is Node n)
+					GD.Print($"[Dash Collide] hit node: {n.GetPath()}  type={n.GetType().Name}");
+				else
+					GD.Print($"[Dash Collide] hit object: {collider}  (not a Node)");
+			}
+
+
+			if (_dashTimer <= 0f)
+			{
+				_isDashing = false;
+				_dashCooldownTimer = DashCooldown;
+
+				ExitDashCollisionMode();
+			}
+
+
+			// Dash 時通常不允許射擊（比較乾淨），你想允許也行
+			return;
+		}
+
+
+		// =========================
+		// 一般移動
+		// =========================
 		Vector2 targetVel = inputDir * MaxSpeed;
 		float rate = (inputDir.LengthSquared() > 0f) ? Accel : Friction;
 
@@ -151,6 +261,57 @@ public partial class Player : CharacterBody2D
 	}
 
 
+
+
+
+	/* =========================================================
+	* Dash helpers
+	* ========================================================= */
+
+
+	private void StartDash(Vector2 inputDir)
+	{
+		_isDashing = true;
+		_dashTimer = DashDuration;
+
+
+		// 沒有移動輸入時，沿用最後移動方向，避免原地 Dash 不知道往哪衝
+		_dashDir = (inputDir != Vector2.Zero) ? inputDir.Normalized() : _lastMoveDir;
+		if (_dashDir == Vector2.Zero)
+			_dashDir = Vector2.Right;
+
+
+		// 立即清空一般速度，避免 dash 開始瞬間被 MoveToward 拉扯
+		Velocity = Vector2.Zero;
+
+		EnterDashCollisionMode();
+	}
+
+	private void EnterDashCollisionMode()
+	{
+		GD.Print($"[Dash] before mask={CollisionMask}");
+		SetCollisionMaskValue(3, false); // 你 EnemyBody 的層號
+		GD.Print($"[Dash] after  mask={CollisionMask}, mask_has_enemy={GetCollisionMaskValue(3)}");
+
+		if (_dashMaskOverridden) return;
+
+		_maskBeforeDash = CollisionMask;
+
+		// Dash 期間：不理 EnemyBody（穿過敵人本體），但仍理 World（牆）
+		SetCollisionMaskValue(LAYER_ENEMY_BODY, false);
+
+		_dashMaskOverridden = true;
+	}
+
+	private void ExitDashCollisionMode()
+	{
+		if (!_dashMaskOverridden) return;
+
+		CollisionMask = _maskBeforeDash;
+		_dashMaskOverridden = false;
+	}
+
+
 	/* =========================================================
 	 * 受傷處理（由 PlayerHurtbox 呼叫）
 	 * ========================================================= */
@@ -179,9 +340,39 @@ public partial class Player : CharacterBody2D
 		Modulate = old;
 	}
 
+	/// <summary>
+	/// 死亡(尚未做死亡UI)
+	/// </summary>
+
 	private void Die()
 	{
-		GD.Print("[Player] DEAD");
-		// TODO: 重生 / GameOver
+		if (_isDead) return;
+
+		_isDead = true;
+		ExitDashCollisionMode();
+
+		GD.Print("[Player] DEAD - Press Enter to Restart");
+
+		// 停止移動
+		Velocity = Vector2.Zero;
 	}
+
+
+
+	private void CheckRestartInput()
+	{
+		// 先用 Godot 內建的確認鍵（Enter / Space）
+		if (Input.IsActionJustPressed("ui_accept"))
+		{
+			Restart();
+		}
+	}
+
+	private void Restart()
+	{
+		GD.Print("[Game] Restart");
+
+		GetTree().ReloadCurrentScene();
+	}
+
 }

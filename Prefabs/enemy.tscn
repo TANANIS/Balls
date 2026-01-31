@@ -15,6 +15,8 @@ radius = 26.172504
 radius = 26.076809
 
 [node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_leowk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -25,12 +27,16 @@ position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_30yes")
 
 [node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 16
 script = ExtResource("3_30yes")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("CircleShape2D_80imi")
 
 [node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 8
 script = ExtResource("2_lgw76")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]

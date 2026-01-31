@@ -20,8 +20,11 @@ script = ExtResource("1_x4siq")
 EnemyScene = ExtResource("2_0d7xb")
 
 [node name="Player" type="CharacterBody2D" parent="."]
+collision_layer = 2
+collision_mask = 5
 script = ExtResource("1_om1ho")
 BulletScene = ExtResource("2_wyi7j")
+FireCooldown = 0.5
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 texture = ExtResource("1_ikhqc")
@@ -34,6 +37,8 @@ shape = SubResource("CircleShape2D_ikhqc")
 
 [node name="Hurtbox" type="Area2D" parent="Player"]
 position = Vector2(0, -1)
+collision_layer = 16
+collision_mask = 64
 script = ExtResource("6_2yb58")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Hurtbox"]

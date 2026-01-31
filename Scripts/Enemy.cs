@@ -9,7 +9,7 @@ public partial class Enemy : CharacterBody2D
 
 	public override void _Ready()
 	{
-		GD.Print($"[Enemy READY] Target null? {Target == null}");
+		//GD.Print($"[Enemy READY] Target null? {Target == null}");
 	}
 
 	public override void _PhysicsProcess(double delta)
