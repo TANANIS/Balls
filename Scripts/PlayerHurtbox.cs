@@ -12,6 +12,9 @@ public partial class PlayerHurtbox : Area2D
 
 	public override void _Ready()
 	{
+		AddToGroup("PlayerHurtbox");
+
+
 		_player = FindParentPlayer();
 		if (_player == null)
 		{
