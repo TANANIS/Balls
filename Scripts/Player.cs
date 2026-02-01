@@ -41,6 +41,11 @@ public partial class Player : CharacterBody2D
 	private int _hp;
 	private float _invTimer = 0f;
 
+	private Area2D _hurtbox;
+	private bool _hurtboxMonitoringBeforeDash;
+	private PlayerHurtbox _playerHurtbox;
+
+
 
 	/* =========================
 	 * 射擊參數
@@ -98,12 +103,8 @@ public partial class Player : CharacterBody2D
 	private bool _isDead = false;
 
 	// Dash 期間穿越敵人：暫存玩家原本的碰撞設定
-	// Dash 穿越敵人：暫存玩家原本的碰撞 Mask（只改 Mask，不改 Layer）
-	private uint _maskBeforeDash = 0;
-	private bool _dashMaskOverridden = false;
-	private const int LAYER_ENEMY_BODY = 3;
-
-
+	private uint _maskBeforeDash;
+	private uint _layerBeforeDash;
 
 
 	/* =========================================================
@@ -124,6 +125,16 @@ public partial class Player : CharacterBody2D
 			GD.PrintErr("BulletScene is NULL. Please assign Bullet.tscn in Inspector.");
 		if (_muzzle == null)
 			GD.PrintErr("Muzzle node not found. Please add Marker2D named 'Muzzle' under Player.");
+
+		_hurtbox = GetNodeOrNull<Area2D>("Hurtbox");
+		if (_hurtbox == null)
+			GD.PrintErr("Hurtbox node not found. Please add Area2D named 'Hurtbox' under Player.");
+
+		_playerHurtbox = GetNodeOrNull<PlayerHurtbox>("Hurtbox");
+		if (_playerHurtbox == null)
+			GD.PrintErr("PlayerHurtbox script not found on node 'Hurtbox'.");
+
+
 	}
 
 
@@ -160,8 +171,6 @@ public partial class Player : CharacterBody2D
 		// =========================
 		// Dash（空白鍵）
 		// =========================
-		// 建議你在 InputMap 新增 action：dash，綁定 Space。
-		// 如果你懶得加，也可以先用 ui_select，但會跟 UI 行為混在一起。
 		if (!_isDashing && _dashCooldownTimer <= 0f && Input.IsActionJustPressed("dash"))
 		{
 			StartDash(inputDir);
@@ -180,17 +189,6 @@ public partial class Player : CharacterBody2D
 
 
 			MoveAndSlide();
-			
-			if (GetSlideCollisionCount() > 0)
-			{
-				var col = GetSlideCollision(0);
-				var collider = col.GetCollider();
-
-				if (collider is Node n)
-					GD.Print($"[Dash Collide] hit node: {n.GetPath()}  type={n.GetType().Name}");
-				else
-					GD.Print($"[Dash Collide] hit object: {collider}  (not a Node)");
-			}
 
 
 			if (_dashTimer <= 0f)
@@ -289,27 +287,27 @@ public partial class Player : CharacterBody2D
 
 	private void EnterDashCollisionMode()
 	{
-		GD.Print($"[Dash] before mask={CollisionMask}");
-		SetCollisionMaskValue(3, false); // 你 EnemyBody 的層號
-		GD.Print($"[Dash] after  mask={CollisionMask}, mask_has_enemy={GetCollisionMaskValue(3)}");
-
-		if (_dashMaskOverridden) return;
-
+		// 1) 玩家移動時不把敵人當牆
 		_maskBeforeDash = CollisionMask;
+		SetCollisionMaskValue(3, false);
 
-		// Dash 期間：不理 EnemyBody（穿過敵人本體），但仍理 World（牆）
-		SetCollisionMaskValue(LAYER_ENEMY_BODY, false);
+		// 2) 讓敵人也「看不到玩家」
+		_layerBeforeDash = CollisionLayer;
+		SetCollisionLayerValue(2, false);
 
-		_dashMaskOverridden = true;
+		// 3) Dash 無敵（只針對 EnemyHitbox）
+		_playerHurtbox?.SetDamageEnabled(false);
 	}
 
 	private void ExitDashCollisionMode()
 	{
-		if (!_dashMaskOverridden) return;
-
 		CollisionMask = _maskBeforeDash;
-		_dashMaskOverridden = false;
+		CollisionLayer = _layerBeforeDash;
+
+		_playerHurtbox?.SetDamageEnabled(true);
 	}
+
+
 
 
 	/* =========================================================
@@ -349,12 +347,14 @@ public partial class Player : CharacterBody2D
 		if (_isDead) return;
 
 		_isDead = true;
-		ExitDashCollisionMode();
 
-		GD.Print("[Player] DEAD - Press Enter to Restart");
+		GD.Print("[Player] DEAD - Press ENTER to Restart");
 
 		// 停止移動
 		Velocity = Vector2.Zero;
+
+		// 可選：讓角色變暗一點，表示已死亡
+		Modulate = new Color(0.6f, 0.6f, 0.6f, 1f);
 	}
 
 

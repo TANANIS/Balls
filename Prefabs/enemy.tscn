@@ -16,7 +16,7 @@ radius = 26.076809
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 3
 script = ExtResource("1_leowk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

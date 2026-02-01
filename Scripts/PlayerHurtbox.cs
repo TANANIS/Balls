@@ -4,11 +4,14 @@ using System;
 
 public partial class PlayerHurtbox : Area2D
 {
+	[Export] public int EnemyHitboxLayerBit = 7; // 你的 EnemyHitbox 在 layer_7
 	private Player _player;
+
+	private bool _damageEnabled = true;
+	private uint _maskBeforeDisable;
 
 	public override void _Ready()
 	{
-		// 往父節點一路找 Player（比 NodePath 省心，少一堆設定錯誤）
 		_player = FindParentPlayer();
 		if (_player == null)
 		{
@@ -30,9 +33,31 @@ public partial class PlayerHurtbox : Area2D
 		return null;
 	}
 
+	/// <summary>
+	/// 允許/禁止受傷（例如 Dash i-frame）
+	/// </summary>
+	public void SetDamageEnabled(bool enabled)
+	{
+		if (_damageEnabled == enabled) return;
+		_damageEnabled = enabled;
+
+		if (!enabled)
+		{
+			_maskBeforeDisable = CollisionMask;
+			// 只關掉 EnemyHitbox 的 mask bit，其他偵測保留
+			SetCollisionMaskValue(EnemyHitboxLayerBit, false);
+		}
+		else
+		{
+			CollisionMask = _maskBeforeDisable;
+		}
+	}
+
 	private void OnAreaEntered(Area2D area)
 	{
-		// 只吃 EnemyHitbox（不要用名字字串判斷，會害你以後改名直接爆炸）
+		if (!_damageEnabled) return;
+
+		// 只吃 EnemyHitbox
 		if (area is EnemyHitbox hitbox)
 		{
 			_player.TryTakeDamage(hitbox.Damage, hitbox.GlobalPosition);
