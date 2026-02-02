@@ -14,80 +14,72 @@ using System;
 
 public partial class EnemyHitbox : Area2D
 {
-	[Export] public int ContactDamage = 1;
+    [Export] public int ContactDamage = 1;
+    [Export] public float TickInterval = 0.30f;
 
-	// 接觸傷害間隔（秒）：避免一貼就每幀扣血
-	[Export] public float TickInterval = 0.30f;
+    private float _tickTimer = 0f;
 
-	private float _tickTimer = 0f;
+    private Node _ownerEnemy;
+    private CombatSystem _combat;
 
-	private Node _ownerEnemy;
-	private CombatSystem _combat;
+    // 目前正在接觸的玩家目標（最小版：鎖定 Hurtbox Area2D）
+    private Area2D _currentTarget;
 
-	// 目前正在接觸的玩家目標（只做單一目標最小版）
-	private Node _currentTarget;
+    public override void _Ready()
+    {
+        _ownerEnemy = GetParent();
+        AddToGroup("EnemyHitbox");
 
-	public override void _Ready()
-	{
-		_ownerEnemy = GetParent(); // Hitbox 在 Enemy 底下即可
-		AddToGroup("EnemyHitbox");
+        var list = GetTree().GetNodesInGroup("CombatSystem");
+        if (list.Count > 0)
+            _combat = list[0] as CombatSystem;
 
-		// 找 CombatSystem（你先前用 group 的方式）
-		var list = GetTree().GetNodesInGroup("CombatSystem");
-		if (list.Count > 0)
-			_combat = list[0] as CombatSystem;
+        if (_combat == null)
+            GD.PrintErr("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
 
-		AreaEntered += OnAreaEntered;
-		AreaExited += OnAreaExited;
-	}
+        AreaEntered += OnAreaEntered;
+        AreaExited += OnAreaExited;
+    }
 
-	public override void _PhysicsProcess(double delta)
-	{
-		float dt = (float)delta;
+    public override void _PhysicsProcess(double delta)
+    {
+        float dt = (float)delta;
 
-		if (_currentTarget == null)
-			return;
+        if (_currentTarget == null) return;
+        if (_combat == null) return;
 
-		if (_combat == null)
-			return;
+        _tickTimer -= dt;
+        if (_tickTimer > 0f) return;
 
-		// 接觸計時：到點才送一次傷害請求
-		_tickTimer -= dt;
-		if (_tickTimer > 0f)
-			return;
+        _tickTimer = TickInterval;
 
-		// 重置間隔
-		_tickTimer = TickInterval;
+        // 只打可受傷目標
+        if (_currentTarget is not IDamageable)
+            return;
 
-		// 只打可受傷目標（PlayerHurtbox）
-		if (_currentTarget is not IDamageable)
-			return;
+        var req = new DamageRequest(
+            source: _ownerEnemy,
+            target: _currentTarget,
+            baseDamage: ContactDamage,
+            worldPos: GlobalPosition,
+            tag: "contact"
+        );
 
-		// 送傷害請求（裁決在 CombatSystem）
-		var req = new DamageRequest(
-			source: _ownerEnemy,
-			target: _currentTarget,
-			baseDamage: ContactDamage,
-			worldPos: GlobalPosition,
-			tag: "contact"
-		);
+        _combat.RequestDamage(req);
+    }
 
-		_combat.RequestDamage(req);
-	}
+    private void OnAreaEntered(Area2D other)
+    {
+        if (other is not IDamageable)
+            return;
 
-	private void OnAreaEntered(Area2D other)
-	{
-		// 只鎖定玩家 Hurtbox（需實作 IDamageable）
-		if (other is not IDamageable)
-			return;
+        _currentTarget = other;
+        _tickTimer = 0f;
+    }
 
-		_currentTarget = other;
-		_tickTimer = 0f; // 進入立刻可打一次（你想延遲就改成 TickInterval）
-	}
-
-	private void OnAreaExited(Area2D other)
-	{
-		if (other == _currentTarget)
-			_currentTarget = null;
-	}
+    private void OnAreaExited(Area2D other)
+    {
+        if (other == _currentTarget)
+            _currentTarget = null;
+    }
 }

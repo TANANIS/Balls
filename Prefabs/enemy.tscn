@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://lt2ee22cjppb"]
+[gd_scene load_steps=9 format=3 uid="uid://lt2ee22cjppb"]
 
 [ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_30yes"]
 [ext_resource type="Texture2D" uid="uid://6wy333w8qxrx" path="res://Assets/Sprites/Swarm.png" id="2_t4g6b"]
 [ext_resource type="Script" uid="uid://xsfiln41pkvm" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_30yes"]
 [ext_resource type="Script" uid="uid://cdemuwgfu8h68" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_n7q57"]
+[ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_n7q57"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_30yes"]
 radius = 28.284271
@@ -46,3 +47,4 @@ shape = SubResource("CircleShape2D_n7q57")
 debug_color = Color(0.7789724, 0.31464693, 0.7721506, 0.41960785)
 
 [node name="Health" type="Node" parent="."]
+script = ExtResource("5_n7q57")
