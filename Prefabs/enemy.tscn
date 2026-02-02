@@ -1,23 +1,23 @@
 [gd_scene load_steps=8 format=3 uid="uid://lt2ee22cjppb"]
 
-[ext_resource type="Script" uid="uid://dfy3qtns8qp41" path="res://Scripts/Enemy.cs" id="1_leowk"]
-[ext_resource type="Script" uid="uid://ciep2bqvqxnhk" path="res://Scripts/EnemyHurtbox.cs" id="2_lgw76"]
+[ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_30yes"]
 [ext_resource type="Texture2D" uid="uid://6wy333w8qxrx" path="res://Assets/Sprites/Swarm.png" id="2_t4g6b"]
-[ext_resource type="Script" uid="uid://1mt4v5fe2xaa" path="res://Scripts/EnemyHitbox.cs" id="3_30yes"]
+[ext_resource type="Script" uid="uid://xsfiln41pkvm" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_30yes"]
+[ext_resource type="Script" uid="uid://cdemuwgfu8h68" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_n7q57"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_30yes"]
 radius = 28.284271
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_80imi"]
-radius = 26.172504
+radius = 28.01785
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n7q57"]
-radius = 26.076809
+radius = 28.0
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 3
-script = ExtResource("1_leowk")
+script = ExtResource("1_30yes")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_t4g6b")
@@ -32,13 +32,17 @@ collision_mask = 16
 script = ExtResource("3_30yes")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_80imi")
 
 [node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, -1)
 collision_layer = 32
 collision_mask = 8
-script = ExtResource("2_lgw76")
+script = ExtResource("4_n7q57")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CircleShape2D_n7q57")
 debug_color = Color(0.7789724, 0.31464693, 0.7721506, 0.41960785)
+
+[node name="Health" type="Node" parent="."]
