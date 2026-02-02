@@ -1,11 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=13 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
-[ext_resource type="Script" uid="uid://gtor3qso3k3o" path="res://Scripts/Player.cs" id="1_om1ho"]
+[ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
 [ext_resource type="Script" uid="uid://57w8y6wkgstp" path="res://Scripts/EnemySpawner.cs" id="1_x4siq"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
-[ext_resource type="Script" uid="uid://dtf0ptm2r4uy5" path="res://Scripts/PlayerHurtbox.cs" id="6_2yb58"]
+[ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="4_embg1"]
+[ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
+[ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
+[ext_resource type="Script" path="res://Scripts/PlayerHurtbox.cs" id="6_2yb58"]
+[ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -13,18 +17,14 @@ radius = 32.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
 radius = 33.0
 
-[node name="MainScence" type="Node2D"]
+[node name="Game" type="Node2D"]
 
-[node name="EnemySpawner" type="Node" parent="."]
-script = ExtResource("1_x4siq")
-EnemyScene = ExtResource("2_0d7xb")
+[node name="World" type="Node2D" parent="."]
 
 [node name="Player" type="CharacterBody2D" parent="."]
 collision_layer = 2
 collision_mask = 5
-script = ExtResource("1_om1ho")
-BulletScene = ExtResource("2_wyi7j")
-FireCooldown = 0.5
+script = ExtResource("1_tyo64")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 texture = ExtResource("1_ikhqc")
@@ -40,7 +40,38 @@ position = Vector2(0, -1)
 collision_layer = 16
 collision_mask = 64
 script = ExtResource("6_2yb58")
+EnemyHitboxLayerBit = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Hurtbox"]
 shape = SubResource("CircleShape2D_i30mb")
 debug_color = Color(0.85284024, 0.35988984, 0.24184075, 0.41960785)
+
+[node name="Movement" type="Node" parent="Player"]
+script = ExtResource("4_embg1")
+
+[node name="Weapon" type="Node" parent="Player"]
+script = ExtResource("5_embg1")
+BulletScene = ExtResource("2_wyi7j")
+ProjectilesPath = NodePath("../../Projectiles")
+
+[node name="Dash" type="Node" parent="Player"]
+script = ExtResource("5_x4450")
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("1_x4siq")
+EnemyScene = ExtResource("2_0d7xb")
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="CombatSystem" type="Node" parent="Systems"]
+script = ExtResource("8_4xcne")
+
+[node name="SpawnSystem" type="Node" parent="Systems"]
+
+[node name="TimeSystem" type="Node" parent="Systems"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]

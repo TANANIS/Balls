@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cc80w0s3oudea"]
 
-[ext_resource type="Script" uid="uid://cn2aae7msnv27" path="res://Scripts/Bullet.cs" id="1_lubkv"]
+[ext_resource type="Script" uid="uid://bgep24n51trv" path="res://Scripts/Projectiles/Bullet.cs" id="1_pv5ng"]
 [ext_resource type="Texture2D" uid="uid://xjj2gyyhifof" path="res://Assets/Sprites/BaseShot.png" id="2_k2q68"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2chq0"]
@@ -9,7 +9,7 @@ radius = 22.0
 [node name="Bullet" type="Area2D"]
 collision_layer = 8
 collision_mask = 33
-script = ExtResource("1_lubkv")
+script = ExtResource("1_pv5ng")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_k2q68")
