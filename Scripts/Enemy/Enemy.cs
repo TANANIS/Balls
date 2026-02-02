@@ -13,24 +13,24 @@ using System;
 
 public partial class Enemy : CharacterBody2D
 {
-    private EnemyHealth _health;
+	private EnemyHealth _health;
 
-    public override void _Ready()
-    {
-        _health = GetNode<EnemyHealth>("Health");
-    }
+	public override void _Ready()
+	{
+		_health = GetNode<EnemyHealth>("Health");
+	}
 
-    public override void _PhysicsProcess(double delta)
-    {
-        // 1) 死亡 gating：死亡後停止行為，並收尾
-        if (_health != null && _health.IsDead)
-        {
-            // TODO: 播放死亡效果 / 掉落 / 計分
-            QueueFree();
-            return;
-        }
+	public override void _PhysicsProcess(double delta)
+	{
+		// 1) 死亡 gating：死亡後停止行為，並收尾
+		if (_health != null && _health.IsDead)
+		{
+			// TODO: 播放死亡效果 / 掉落 / 計分
+			QueueFree();
+			return;
+		}
 
-        // 2) TODO: 之後放 AI / 追蹤玩家 / 移動
-        // （目前先空）
-    }
+		// 2) TODO: 之後放 AI / 追蹤玩家 / 移動
+		// （目前先空）
+	}
 }

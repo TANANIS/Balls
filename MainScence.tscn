@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
-[ext_resource type="Script" uid="uid://57w8y6wkgstp" path="res://Scripts/EnemySpawner.cs" id="1_x4siq"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
 [ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
@@ -11,6 +10,7 @@
 [ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
+[ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -60,10 +60,6 @@ script = ExtResource("5_x4450")
 [node name="Health" type="Node" parent="Player"]
 script = ExtResource("8_vpcxr")
 
-[node name="EnemySpawner" type="Node" parent="."]
-script = ExtResource("1_x4siq")
-EnemyScene = ExtResource("2_0d7xb")
-
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Projectiles" type="Node2D" parent="."]
@@ -74,6 +70,10 @@ EnemyScene = ExtResource("2_0d7xb")
 script = ExtResource("8_4xcne")
 
 [node name="SpawnSystem" type="Node" parent="Systems"]
+script = ExtResource("12_vpcxr")
+EnemyScene = ExtResource("2_0d7xb")
+EnemiesPath = NodePath("../../Enemies")
+PlayerPath = NodePath("../../Player")
 
 [node name="TimeSystem" type="Node" parent="Systems"]
 

@@ -14,72 +14,72 @@ using System;
 
 public partial class EnemyHitbox : Area2D
 {
-    [Export] public int ContactDamage = 1;
-    [Export] public float TickInterval = 0.30f;
+	[Export] public int ContactDamage = 1;
+	[Export] public float TickInterval = 0.30f;
 
-    private float _tickTimer = 0f;
+	private float _tickTimer = 0f;
 
-    private Node _ownerEnemy;
-    private CombatSystem _combat;
+	private Node _ownerEnemy;
+	private CombatSystem _combat;
 
-    // 目前正在接觸的玩家目標（最小版：鎖定 Hurtbox Area2D）
-    private Area2D _currentTarget;
+	// 目前正在接觸的玩家目標（最小版：鎖定 Hurtbox Area2D）
+	private Area2D _currentTarget;
 
-    public override void _Ready()
-    {
-        _ownerEnemy = GetParent();
-        AddToGroup("EnemyHitbox");
+	public override void _Ready()
+	{
+		_ownerEnemy = GetParent();
+		AddToGroup("EnemyHitbox");
 
-        var list = GetTree().GetNodesInGroup("CombatSystem");
-        if (list.Count > 0)
-            _combat = list[0] as CombatSystem;
+		var list = GetTree().GetNodesInGroup("CombatSystem");
+		if (list.Count > 0)
+			_combat = list[0] as CombatSystem;
 
-        if (_combat == null)
-            GD.PrintErr("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
+		if (_combat == null)
+			GD.PrintErr("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
 
-        AreaEntered += OnAreaEntered;
-        AreaExited += OnAreaExited;
-    }
+		AreaEntered += OnAreaEntered;
+		AreaExited += OnAreaExited;
+	}
 
-    public override void _PhysicsProcess(double delta)
-    {
-        float dt = (float)delta;
+	public override void _PhysicsProcess(double delta)
+	{
+		float dt = (float)delta;
 
-        if (_currentTarget == null) return;
-        if (_combat == null) return;
+		if (_currentTarget == null) return;
+		if (_combat == null) return;
 
-        _tickTimer -= dt;
-        if (_tickTimer > 0f) return;
+		_tickTimer -= dt;
+		if (_tickTimer > 0f) return;
 
-        _tickTimer = TickInterval;
+		_tickTimer = TickInterval;
 
-        // 只打可受傷目標
-        if (_currentTarget is not IDamageable)
-            return;
+		// 只打可受傷目標
+		if (_currentTarget is not IDamageable)
+			return;
 
-        var req = new DamageRequest(
-            source: _ownerEnemy,
-            target: _currentTarget,
-            baseDamage: ContactDamage,
-            worldPos: GlobalPosition,
-            tag: "contact"
-        );
+		var req = new DamageRequest(
+			source: _ownerEnemy,
+			target: _currentTarget,
+			baseDamage: ContactDamage,
+			worldPos: GlobalPosition,
+			tag: "contact"
+		);
 
-        _combat.RequestDamage(req);
-    }
+		_combat.RequestDamage(req);
+	}
 
-    private void OnAreaEntered(Area2D other)
-    {
-        if (other is not IDamageable)
-            return;
+	private void OnAreaEntered(Area2D other)
+	{
+		if (other is not IDamageable)
+			return;
 
-        _currentTarget = other;
-        _tickTimer = 0f;
-    }
+		_currentTarget = other;
+		_tickTimer = 0f;
+	}
 
-    private void OnAreaExited(Area2D other)
-    {
-        if (other == _currentTarget)
-            _currentTarget = null;
-    }
+	private void OnAreaExited(Area2D other)
+	{
+		if (other == _currentTarget)
+			_currentTarget = null;
+	}
 }

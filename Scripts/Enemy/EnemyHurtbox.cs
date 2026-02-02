@@ -13,23 +13,23 @@ using System;
 
 public partial class EnemyHurtbox : Area2D, IDamageable
 {
-    private EnemyHealth _health;
+	private EnemyHealth _health;
 
-    public override void _Ready()
-    {
-        Node enemy = GetParent();
-        _health = enemy.GetNode<EnemyHealth>("Health");
+	public override void _Ready()
+	{
+		Node enemy = GetParent();
+		_health = enemy.GetNode<EnemyHealth>("Health");
 
-        if (_health == null)
-            GD.PrintErr("[EnemyHurtbox] Cannot find EnemyHealth node at ../Health");
-    }
+		if (_health == null)
+			GD.PrintErr("[EnemyHurtbox] Cannot find EnemyHealth node at ../Health");
+	}
 
-    public bool IsDead => _health != null && _health.IsDead;
-    public bool IsInvincible => _health != null && _health.IsInvincible;
+	public bool IsDead => _health != null && _health.IsDead;
+	public bool IsInvincible => _health != null && _health.IsInvincible;
 
-    public void TakeDamage(int amount, object source)
-    {
-        if (_health == null) return;
-        _health.TakeDamage(amount, source);
-    }
+	public void TakeDamage(int amount, object source)
+	{
+		if (_health == null) return;
+		_health.TakeDamage(amount, source);
+	}
 }
