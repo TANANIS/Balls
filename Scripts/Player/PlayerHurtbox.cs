@@ -1,13 +1,6 @@
 using Godot;
 using System;
 
-/*
- * PlayerHurtbox.cs
- * - 玩家受傷入口：實作 IDamageable
- * - 不持有狀態、不裁決
- * - 直接轉發到 PlayerHealth
- */
-
 public partial class PlayerHurtbox : Area2D, IDamageable
 {
 	private PlayerHealth _health;
@@ -15,8 +8,10 @@ public partial class PlayerHurtbox : Area2D, IDamageable
 	public override void _Ready()
 	{
 		Node player = GetParent();
-		_health = player.GetNode<PlayerHealth>("Health");
+		AddToGroup("PlayerHurtbox");
+		GD.Print("[PlayerHurtbox] Ready. Added to group PlayerHurtbox.");
 
+		_health = player.GetNode<PlayerHealth>("Health");
 		if (_health == null)
 			GD.PrintErr("[PlayerHurtbox] Cannot find PlayerHealth node at ../Health");
 	}

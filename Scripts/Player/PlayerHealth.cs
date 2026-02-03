@@ -1,19 +1,18 @@
 using Godot;
 using System;
 
-
 /*
  * PlayerHealth.cs
  *
- * 職責定位
- * ------------------------------------------------------------
- * - 唯一持有玩家生命狀態：HP / IsDead / IsInvincible
- * - 推進 invincibleTimer（倒數）
- * - TakeDamage 僅做狀態落地，不做規則裁決（裁決仍在 CombatSystem）
+ * Responsibilities:
+ * - Owns player health state: HP / IsDead / IsInvincible
+ * - Applies damage state only; rules are decided in CombatSystem
  */
 
 public partial class PlayerHealth : Node
 {
+	public event Action Died;
+
 	[Export] public int MaxHp = 3;
 	[Export] public float HurtIFrame = 0.5f;
 
@@ -46,19 +45,20 @@ public partial class PlayerHealth : Node
 
 	public void TakeDamage(int amount, object source)
 	{
-		// 最低限度保險（就算外部繞過 CombatSystem 也不至於炸狀態）
+		// Minimal safeguard in case someone bypasses CombatSystem
 		if (_isDead) return;
 		if (IsInvincible) return;
 
 		_hp -= amount;
+		GD.Print($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
 
 		if (HurtIFrame > 0f)
 			SetInvincible(HurtIFrame);
 
-		if (_hp <= 0)
+		if (_hp <= 0 && !_isDead)
 		{
 			_isDead = true;
-			// TODO: 可 EmitSignal 通知 UI / GameManager
+			Died?.Invoke();
 		}
 	}
 }
