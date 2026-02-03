@@ -7,17 +7,17 @@
 [ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_n7q57"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_30yes"]
-radius = 28.284271
+radius = 30.016663
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_80imi"]
-radius = 28.01785
+radius = 35.014282
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n7q57"]
 radius = 28.0
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 7
 script = ExtResource("1_30yes")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -33,8 +33,10 @@ collision_mask = 16
 script = ExtResource("3_30yes")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+visible = false
 position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_80imi")
+debug_color = Color(0.83190435, 0.30449724, 0.6336639, 0.41960785)
 
 [node name="Hurtbox" type="Area2D" parent="."]
 position = Vector2(0, -1)
@@ -43,8 +45,10 @@ collision_mask = 8
 script = ExtResource("4_n7q57")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+visible = false
 shape = SubResource("CircleShape2D_n7q57")
 debug_color = Color(0.7789724, 0.31464693, 0.7721506, 0.41960785)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_n7q57")
+MaxHp = 1

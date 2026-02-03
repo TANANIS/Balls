@@ -1,36 +1,79 @@
 using Godot;
 using System;
 
-/*
- * Enemy.cs
- *
- * 職責定位
- * ------------------------------------------------------------
- * - 敵人行為本體（移動/AI）
- * - 不持有 HP / 無敵 timer / 死亡旗標（交給 EnemyHealth）
- * - 每幀只需要關心：Health.IsDead 時做收尾（QueueFree / 特效）
- */
-
 public partial class Enemy : CharacterBody2D
 {
+	[Export] public float MaxSpeed = 160f;
+	[Export] public float Accel = 1200f;
+	[Export] public float Friction = 900f;
+
+	[Export] public NodePath PlayerPath = new NodePath("../../Player"); // 依你實際 Enemy 在樹的位置調整
+
 	private EnemyHealth _health;
+	private Node2D _player;
+
+	// 防黏：短暫外力推開
+	private Vector2 _separationVel = Vector2.Zero;
+	private float _separationTime = 0f;
 
 	public override void _Ready()
 	{
 		_health = GetNode<EnemyHealth>("Health");
+
+		_player = GetNodeOrNull<Node2D>(PlayerPath);
+		if (_player == null)
+		{
+			// 更穩的做法：Player 加 group，這裡用 group 抓
+			_player = GetTree().GetFirstNodeInGroup("Player") as Node2D;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		// 1) 死亡 gating：死亡後停止行為，並收尾
+		float dt = (float)delta;
+
 		if (_health != null && _health.IsDead)
 		{
-			// TODO: 播放死亡效果 / 掉落 / 計分
 			QueueFree();
 			return;
 		}
 
-		// 2) TODO: 之後放 AI / 追蹤玩家 / 移動
-		// （目前先空）
+		// 1) 追玩家
+		Vector2 desired = Vector2.Zero;
+		if (_player != null)
+		{
+			Vector2 dir = (_player.GlobalPosition - GlobalPosition);
+			if (dir.LengthSquared() > 0.0001f)
+				dir = dir.Normalized();
+
+			desired = dir * MaxSpeed;
+		}
+
+		Velocity = Velocity.MoveToward(desired, Accel * dt);
+
+		// 2) 防黏外力
+		if (_separationTime > 0f)
+		{
+			_separationTime -= dt;
+			Velocity += _separationVel;
+		}
+		else
+		{
+			_separationVel = Vector2.Zero;
+		}
+
+		MoveAndSlide();
+	}
+
+	/// <summary>
+	/// 給 EnemyHitbox 呼叫：每次成功 tick 後推開一下，避免磁吸。
+	/// </summary>
+	public void ApplySeparation(Vector2 pushDir, float strength, float duration)
+	{
+		if (pushDir.LengthSquared() < 0.0001f)
+			pushDir = Vector2.Right;
+
+		_separationVel = pushDir.Normalized() * strength;
+		_separationTime = Mathf.Max(duration, 0.01f);
 	}
 }

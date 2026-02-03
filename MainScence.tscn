@@ -53,6 +53,7 @@ script = ExtResource("4_embg1")
 script = ExtResource("5_embg1")
 BulletScene = ExtResource("2_wyi7j")
 ProjectilesPath = NodePath("../../Projectiles")
+FireCooldown = 0.45
 
 [node name="Dash" type="Node" parent="Player"]
 script = ExtResource("5_x4450")

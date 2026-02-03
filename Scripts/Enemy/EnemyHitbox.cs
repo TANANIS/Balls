@@ -1,33 +1,34 @@
 using Godot;
 using System;
 
-/*
- * EnemyHitbox.cs
- *
- * 職責定位
- * ------------------------------------------------------------
- * EnemyHitbox 是「攻擊感測器」：
- * - 偵測玩家 Hurtbox 進入/離開
- * - 在持續接觸期間，按固定頻率送 DamageRequest
- * - 不直接扣血、不判斷無敵/死亡（交給 CombatSystem）
- */
-
 public partial class EnemyHitbox : Area2D
 {
 	[Export] public int ContactDamage = 1;
 	[Export] public float TickInterval = 0.30f;
 
+	// 防黏參數（新增）
+	[Export] public float SeparationStrength = 140f;
+	[Export] public float SeparationDuration = 0.12f;
+
 	private float _tickTimer = 0f;
 
-	private Node _ownerEnemy;
+	// ✅ 型別改成 Enemy（這是你編譯錯的根因）
+	private Enemy _ownerEnemy;
+
 	private CombatSystem _combat;
 
-	// 目前正在接觸的玩家目標（最小版：鎖定 Hurtbox Area2D）
 	private Area2D _currentTarget;
 
 	public override void _Ready()
 	{
-		_ownerEnemy = GetParent();
+		// ✅ 保守寫法：避免掛錯節點直接崩
+		_ownerEnemy = GetParent() as Enemy;
+		if (_ownerEnemy == null)
+		{
+			GD.PrintErr("[EnemyHitbox] Parent is not Enemy. Make Hitbox a direct child of Enemy.");
+			return;
+		}
+
 		AddToGroup("EnemyHitbox");
 
 		var list = GetTree().GetNodesInGroup("CombatSystem");
@@ -53,12 +54,12 @@ public partial class EnemyHitbox : Area2D
 
 		_tickTimer = TickInterval;
 
-		// 只打可受傷目標
+		// 只打可受傷目標（保留你原本的安全檢查）
 		if (_currentTarget is not IDamageable)
 			return;
 
 		var req = new DamageRequest(
-			source: _ownerEnemy,
+			source: _ownerEnemy,         // ✅ 這裡現在是 Enemy
 			target: _currentTarget,
 			baseDamage: ContactDamage,
 			worldPos: GlobalPosition,
@@ -66,11 +67,18 @@ public partial class EnemyHitbox : Area2D
 		);
 
 		_combat.RequestDamage(req);
+
+		// ✅ 防黏：每次 tick 後推開一下
+		// Area2D 本身就是 Node2D，所以一定有 GlobalPosition
+		Vector2 pushDir = _ownerEnemy.GlobalPosition - _currentTarget.GlobalPosition;
+		_ownerEnemy.ApplySeparation(pushDir, SeparationStrength, SeparationDuration);
 	}
 
 	private void OnAreaEntered(Area2D other)
 	{
-		if (other is not IDamageable)
+		// ✅ 建議改：只鎖 PlayerHurtbox，避免亂鎖其他 IDamageable
+		// 如果你還沒加 group，就先暫時維持 IDamageable 也行，但我建議你改成 group
+		if (!other.IsInGroup("PlayerHurtbox"))
 			return;
 
 		_currentTarget = other;
