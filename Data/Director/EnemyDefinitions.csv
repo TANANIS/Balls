@@ -1,0 +1,7 @@
+# EnemyDefinitions.csv
+# id,scene_path,role,cost,min_tier,tags,hp,speed,contact_damage,notes
+swarm_circle,res://Enemies/SwarmCircle.tscn,Swarm,1,0,"melee|swarm",6,110,1,"Filler unit. High count, low threat. Main space pressure."
+charger_triangle,res://Enemies/ChargerTriangle.tscn,Charger,3,1,"melee|charger",10,140,1,"Telegraph then burst dash. Creates rhythm spikes."
+tank_square,res://Enemies/TankSquare.tscn,Tank,4,2,"melee|tank",22,70,2,"Slow body-blocker. Forces routing and reduces safe space."
+elite_swarm_circle,res://Enemies/EliteSwarmCircle.tscn,Elite,3,4,"melee|swarm|elite",16,130,2,"Elite placeholder. Use buffed swarm if you don’t want a new scene."
+miniboss_hex,res://Enemies/MiniBossHex.tscn,MiniBoss,12,4,"melee|miniboss|anchor",120,60,3,"MiniBoss placeholder. One per late phase as milestone."

@@ -1,0 +1,19 @@
+# TierEnemyWeights.csv
+# tier,enemy_id,weight
+0,swarm_circle,100
+
+1,swarm_circle,85
+1,charger_triangle,15
+
+2,swarm_circle,65
+2,charger_triangle,25
+2,tank_square,10
+
+3,swarm_circle,50
+3,charger_triangle,30
+3,tank_square,20
+
+4,swarm_circle,40
+4,charger_triangle,30
+4,tank_square,20
+4,elite_swarm_circle,10

@@ -1,0 +1,8 @@
+# PackTemplates.csv
+# template_id,min_tier,max_tier,weight,cooldown_packs,pattern,composition,notes
+pack_swarm_blob,0,4,50,0,ring,"swarm_circle:6","Baseline filler pack."
+pack_charger_spike,1,4,35,1,ring,"charger_triangle:1|swarm_circle:4","One spike + filler. Forces reaction."
+pack_tank_wall,2,4,25,2,arc,"tank_square:1|swarm_circle:4","Creates a slow wall that changes routes."
+pack_double_spike,3,4,18,3,ring,"charger_triangle:2|swarm_circle:3","Sharper rhythm. Avoid repeating via cooldown."
+pack_pincer,3,4,15,4,pincer,"charger_triangle:2|swarm_circle:4","Two-sided pressure. Use pattern=pincer."
+pack_elite_pressure,4,4,12,5,ring,"elite_swarm_circle:1|swarm_circle:3","Late-game elite injection."
