@@ -87,7 +87,7 @@ public partial class Player : CharacterBody2D
 	{
 		if (_deathLogged) return;
 		_deathLogged = true;
-		GD.Print("[Player] Died. Press Enter to restart.");
+		DebugSystem.Log("[Player] Died. Press Enter to restart.");
 	}
 
 	private void CheckRestartInput()

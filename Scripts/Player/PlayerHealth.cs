@@ -50,7 +50,7 @@ public partial class PlayerHealth : Node
 		if (IsInvincible) return;
 
 		_hp -= amount;
-		GD.Print($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
+		DebugSystem.Log($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
 
 		if (HurtIFrame > 0f)
 			SetInvincible(HurtIFrame);
