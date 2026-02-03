@@ -1,28 +1,28 @@
-# Project Genesis Architecture
+﻿# Project Genesis Architecture
 
 ## Core Rules
 - Only `CombatSystem` can finalize damage.
-- Sensors (`Hitbox`, `Hurtbox`, `Bullet`) detect and submit `DamageRequest`; they never deduct HP directly.
-- Data flow stays one-way: `Emitter -> Request -> Resolve -> Apply`.
+- Sensors (`Hitbox`, `Hurtbox`, `Bullet`) only submit `DamageRequest`; they never deduct HP directly.
+- Data flow is one-way: `Emitter -> Request -> Resolve -> Apply`.
 
 ## Runtime Layout
 ```text
 Game
-├─ World
-├─ Player
-├─ Enemies
-├─ Projectiles
-├─ Systems
-│  ├─ Core
-│  │  ├─ CombatSystem
-│  │  └─ DebugSystem
-│  ├─ Director
-│  │  ├─ SpawnSystem
-│  │  └─ PressureSystem
-│  └─ Progression
-│     └─ UpgradeSystem
-└─ UI
-   └─ UpgradeMenu
+|- World
+|- Player
+|- Enemies
+|- Projectiles
+|- Systems
+|  |- Core
+|  |  |- CombatSystem
+|  |  `- DebugSystem
+|  |- Director
+|  |  |- SpawnSystem
+|  |  `- PressureSystem
+|  `- Progression
+|     `- UpgradeSystem
+`- CanvasLayer/UI
+   `- UpgradeMenu
 ```
 
 ## System Boundaries
@@ -32,16 +32,32 @@ Game
 - `UI/*`: presentation and input only. UI may call systems; systems do not depend on UI.
 
 ## Pressure + Upgrade Model
-- `CurrentPressure`: up/down world tension signal (enemy count, low HP, time).
+- `CurrentPressure`: volatile world tension (enemy count, low HP, survival time).
 - `UpgradeProgress`: upgrade meter, primarily driven by kills.
-- Kills grant progress with pressure-based bonus:
-  - `gain = KillProgressBase * (1 + pressureNorm * KillPressureBonusFactor)`
-- Time adds a small passive drip (`TimeProgressPerSecond`) so pacing does not stall.
-- Upgrade trigger rule:
-  1. Meter reaches threshold -> `armed`.
-  2. Next player kill triggers upgrade menu.
-  3. Boss flow may force trigger directly (`ForceOpenForBoss`).
+- Kill gain formula: `gain = KillProgressBase * (1 + pressureNorm * KillPressureBonusFactor)`.
+- Time drip: `TimeProgressPerSecond` avoids progression stalls.
 
-## Data-Driven Tuning
-- Director balance tables are in `Data/Director/`.
-- Runtime code should read tuning data from tables, not hard-coded magic values.
+Trigger flow:
+1. Meter reaches threshold -> system is `armed`.
+2. Next player kill opens `UpgradeMenu`.
+3. Boss flow may bypass kill gate via `ForceOpenForBoss()`.
+
+## Director Data-Driven Tables
+Location: `Data/Director/`
+- `PressureTierRules.csv`
+- `EnemyDefinitions.csv`
+- `TierEnemyWeights.csv`
+- `PackTemplates.csv`
+- `BossSchedule.csv`
+
+Current runtime usage:
+- `PressureSystem` reads `PressureTierRules.csv` and applies progression parameters by pressure tier.
+- `SpawnSystem` reads:
+  - `PressureTierRules.csv` for spawn pace and limits,
+  - `EnemyDefinitions.csv` for enemy scene mapping,
+  - `TierEnemyWeights.csv` for weighted enemy selection per tier.
+
+## Contributor Guardrails
+- Do not read pressure directly in enemy scripts.
+- Do not hard-code tier logic outside director systems.
+- Tune balancing via data tables first, code second.
