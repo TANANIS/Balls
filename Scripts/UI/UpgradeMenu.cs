@@ -19,6 +19,7 @@ public partial class UpgradeMenu : Control
 	private bool _isOpen = false;
 	private UpgradeSystem.UpgradeOptionData _leftOption;
 	private UpgradeSystem.UpgradeOptionData _rightOption;
+	public bool IsOpen => _isOpen;
 
 	public override void _Ready()
 	{

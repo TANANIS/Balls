@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://xjj2gyyhifof" path="res://Assets/Sprites/BaseShot.png" id="2_k2q68"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2chq0"]
-radius = 22.0
+radius = 12.0
 
 [node name="Bullet" type="Area2D"]
 collision_layer = 8
