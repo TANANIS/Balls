@@ -12,7 +12,8 @@ public partial class Player : CharacterBody2D
 	private PlayerHealth _health;
 	private PlayerMovement _movement;
 	private PlayerDash _dash;
-	private PlayerWeapon _weapon;
+	private PlayerWeapon _primaryAttack;
+	private PlayerMelee _secondaryAttack;
 
 	private Vector2 _lastMoveDir = Vector2.Right;
 	public Vector2 LastMoveDir => _lastMoveDir;
@@ -27,14 +28,16 @@ public partial class Player : CharacterBody2D
 		_health = GetNode<PlayerHealth>("Health");
 		_movement = GetNode<PlayerMovement>("Movement");
 		_dash = GetNode<PlayerDash>("Dash");
-		_weapon = GetNode<PlayerWeapon>("Weapon");
+		_primaryAttack = GetNode<PlayerWeapon>("PrimaryAttack");
+		_secondaryAttack = GetNode<PlayerMelee>("SecondaryAttack");
 
 		if (_health != null)
 			_health.Died += OnDied;
 
 		_movement.Setup(this);
 		_dash.Setup(this);
-		_weapon.Setup(this);
+		_primaryAttack.Setup(this);
+		_secondaryAttack.Setup(this);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -55,7 +58,8 @@ public partial class Player : CharacterBody2D
 			return;
 
 		_movement.Tick(dt, inputDir);
-		_weapon.Tick(dt);
+		_primaryAttack.Tick(dt);
+		_secondaryAttack.Tick(dt);
 	}
 
 	public void SetInvincible(float duration)

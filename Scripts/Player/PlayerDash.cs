@@ -47,6 +47,10 @@ public partial class PlayerDash : Node
 	private float _cooldownTimer = 0f;
 	private Vector2 _dashDir = Vector2.Right;
 
+	public float CurrentCooldown => DashCooldown;
+	public float CurrentSpeed => DashSpeed;
+	public float CurrentDuration => DashDuration;
+
 	// =========================================================
 	// 四、初始化（Setup）
 	// =========================================================
@@ -127,5 +131,20 @@ public partial class PlayerDash : Node
 		_dashDir = (inputDir == Vector2.Zero) ? _player.LastMoveDir : inputDir.Normalized();
 
 		_player.EnterDashCollisionMode();
+	}
+
+	public void MultiplyCooldown(float factor)
+	{
+		DashCooldown = Mathf.Clamp(DashCooldown * factor, 0.02f, 10f);
+	}
+
+	public void AddSpeed(float amount)
+	{
+		DashSpeed = Mathf.Max(10f, DashSpeed + amount);
+	}
+
+	public void AddDuration(float amount)
+	{
+		DashDuration = Mathf.Clamp(DashDuration + amount, 0.02f, 3f);
 	}
 }

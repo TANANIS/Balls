@@ -1,139 +1,94 @@
 using Godot;
-using System;
-
-/*
- * PlayerWeapon.cs
- * 
- * 職責定位（Role & Responsibility）
- * ------------------------------------------------------------
- * Weapon 模組：負責射擊行為與生成子彈。
- * 
- * - 管理射擊冷卻（FireCooldown）
- * - 決定射擊方向（目前：Player.LastMoveDir）
- * - Instantiate Bullet 並加入 Projectiles 容器
- * 
- * 禁止事項：
- * - 不做傷害裁決（命中後由 Bullet 感測器送 DamageRequest 給 CombatSystem）
- * - 不直接扣血
- */
 
 public partial class PlayerWeapon : Node
 {
-	// =========================================================
-	// 一、可調參數（Weapon Tuning）
-	// =========================================================
+	[Export] public string AttackAction = InputActions.AttackPrimary;
 
-	[Export] public string FireAction = "fire";
+	[Export] public PackedScene ProjectileScene;
+	[Export] public NodePath ProjectileContainerPath;
 
-	[Export] public PackedScene BulletScene;     // Inspector 指定 Bullet.tscn
-	[Export] public NodePath ProjectilesPath;    // 指向 Game/Projectiles
-
-	[Export] public float FireCooldown = 0.12f;
-
-	// 子彈初速 / 傷害（先留著，之後由 Bullet.Init 接收）
-	[Export] public float BulletSpeed = 900f;
-	[Export] public int BulletDamage = 1;
-
-	// =========================================================
-	// 二、依賴引用（Dependency）
-	// =========================================================
+	[Export] public float Cooldown = 0.12f;
+	[Export] public float ProjectileSpeed = 900f;
+	[Export] public int Damage = 1;
 
 	private Player _player;
-	private Node _projectiles;
-
-	// =========================================================
-	// 三、內部狀態（Weapon Internal State）
-	// =========================================================
-
+	private Node _projectileContainer;
 	private float _cooldownTimer = 0f;
+	private string _resolvedAction = InputActions.AttackPrimary;
 
-	// =========================================================
-	// 四、初始化（Setup）
-	// =========================================================
+	public float CurrentCooldown => Cooldown;
+	public int CurrentDamage => Damage;
+	public float CurrentProjectileSpeed => ProjectileSpeed;
 
 	public void Setup(Player player)
 	{
 		_player = player;
 
-		// 快取 Projectiles 容器，避免每次射擊都 GetNode
-		if (ProjectilesPath != null && !ProjectilesPath.IsEmpty)
-			_projectiles = GetNode(ProjectilesPath);
-	}
+		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
+			_projectileContainer = GetNode(ProjectileContainerPath);
 
-	// =========================================================
-	// 五、每幀更新（Tick）
-	// =========================================================
+		if (InputMap.HasAction(AttackAction))
+		{
+			_resolvedAction = AttackAction;
+		}
+		else if (InputMap.HasAction(InputActions.LegacyAttackPrimary))
+		{
+			_resolvedAction = InputActions.LegacyAttackPrimary;
+			DebugSystem.Warn("[PlayerWeapon] attack_primary not found. Fallback to legacy action 'fire'.");
+		}
+		else
+		{
+			DebugSystem.Error("[PlayerWeapon] No valid primary attack action found.");
+		}
+	}
 
 	public void Tick(float dt)
 	{
-		// -------------------------
-		// 1) 冷卻倒數
-		// -------------------------
 		if (_cooldownTimer > 0f)
 			_cooldownTimer -= dt;
 
-		// -------------------------
-		// 2) 冷卻未結束：不可射擊
-		// -------------------------
 		if (_cooldownTimer > 0f)
 			return;
 
-		// -------------------------
-		// 3) 觸發射擊（你可以改成 JustPressed 或 Pressed）
-		// -------------------------
-		// - JustPressed：點一下射一下（半自動）
-		// - Pressed：按住連射（自動）
-		if (!Input.IsActionPressed(FireAction))
+		if (!Input.IsActionPressed(_resolvedAction))
 			return;
 
-		// -------------------------
-		// 4) 執行射擊 → 生成子彈
-		// -------------------------
-		Fire();
-
-		// -------------------------
-		// 5) 重置冷卻
-		// -------------------------
-		_cooldownTimer = FireCooldown;
+		ExecuteAttack();
+		_cooldownTimer = Cooldown;
 	}
 
-	// =========================================================
-	// 六、射擊：生成子彈（Spawn Bullet）
-	// =========================================================
-
-	private void Fire()
+	private void ExecuteAttack()
 	{
-		// 防呆：沒指定 BulletScene 就不要射
-		if (BulletScene == null)
+		if (ProjectileScene == null || _projectileContainer == null || _player == null)
 			return;
 
-		// 防呆：沒指定 Projectiles 容器就不要射
-		if (_projectiles == null)
-			return;
-
-		// --------------------------------------------------
-		// 射擊方向：滑鼠瞄準（世界座標）
-		// --------------------------------------------------
 		Vector2 mouseWorld = _player.GetGlobalMousePosition();
 		Vector2 dir = mouseWorld - _player.GlobalPosition;
-
-		// 避免滑鼠剛好在玩家中心造成 Zero 向量
 		if (dir.LengthSquared() < 0.0001f)
 			dir = Vector2.Right;
 		else
 			dir = dir.Normalized();
 
+		Node bullet = ProjectileScene.Instantiate();
+		if (bullet is Node2D bullet2D)
+			bullet2D.GlobalPosition = _player.GlobalPosition;
 
-		Node bullet = BulletScene.Instantiate();
+		bullet.Call("InitFromPlayer", _player, dir, ProjectileSpeed, Damage);
+		_projectileContainer.AddChild(bullet);
+	}
 
-		// 出生位置：暫用玩家中心（後續可加 muzzle offset）
-		if (bullet is Node2D b2d)
-			b2d.GlobalPosition = _player.GlobalPosition;
+	public void AddDamage(int amount)
+	{
+		Damage = Mathf.Max(1, Damage + amount);
+	}
 
-		// 與 Bullet 的初始化協議：
-		// - 你等下建立 Bullet.cs 時，只要提供這個方法即可
-		bullet.Call("InitFromPlayer", _player, dir, BulletSpeed, BulletDamage);
+	public void AddProjectileSpeed(float amount)
+	{
+		ProjectileSpeed = Mathf.Max(50f, ProjectileSpeed + amount);
+	}
 
-		_projectiles.AddChild(bullet);
+	public void MultiplyCooldown(float factor)
+	{
+		Cooldown = Mathf.Clamp(Cooldown * factor, 0.02f, 10f);
 	}
 }
