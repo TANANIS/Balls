@@ -1,59 +1,61 @@
-# Game Director & Pressure Design
+﻿# Game Director And Pressure Design
 
 This document defines pacing logic for spawn orchestration and upgrade timing.
 
 ## Intent
 - Keep early game readable.
-- Escalate pressure through composition and spawn tempo.
+- Escalate pressure via spawn tempo and enemy composition.
 - Guarantee upgrade cadence without punishing strong play.
 
 ## Dual-Meter Model
-- `CurrentPressure` (volatile, up/down):
-  - Reflects current danger from enemy density, low HP, and elapsed time.
-- `UpgradeProgress` (progress meter):
-  - Primarily increased by kills.
-  - Receives pressure-based bonus.
-  - Small time drip avoids dead pacing.
+- `CurrentPressure` (volatile): reflects immediate danger from enemy density, low HP, and elapsed time.
+- `UpgradeProgress` (progress meter): mainly increased by kills, with pressure bonus and small time drip.
 
-Why:
-- If upgrades depend only on pressure, skilled clearing can delay upgrades forever.
-- Kill-led progression keeps agency while pressure still matters.
+Why this model:
+- Pressure-only triggers can be delayed forever by highly efficient clearing.
+- Kill-led progression preserves player agency while pressure still influences speed.
 
-## Trigger Rule
-1. `UpgradeProgress` reaches threshold (`FirstTriggerThreshold` for first trigger, then `TriggerThreshold`).
+## Upgrade Trigger Rule
+1. `UpgradeProgress` reaches threshold (`FirstTriggerThreshold` for first time, then `TriggerThreshold`).
 2. System becomes `armed`.
 3. Next player kill opens `UpgradeMenu`.
-4. On trigger:
-   - apply cooldown,
-   - reduce pressure and progress meters.
+4. On trigger: apply cooldown and reduce pressure/progress by configured amounts.
 
 Boss exception:
-- `ForceOpenForBoss()` may open menu immediately.
+- `ForceOpenForBoss()` can open the menu immediately for event pacing.
+
+## Spawn Director Rule
+`SpawnSystem` is tier-driven and data-driven:
+1. Read pressure tier from `PressureSystem.CurrentPressure`.
+2. Apply tier runtime settings from `PressureTierRules.csv`.
+3. Pick enemy by weighted roll from `TierEnemyWeights.csv`.
+4. Resolve `enemy_id` to scene path via `EnemyDefinitions.csv`.
+5. Spawn around player using tier radius range.
+
+Fallback behavior:
+- If CSV or mapping is incomplete, fallback to `EnemyScene` export.
 
 ## Data Tables
-Director tables live in `Data/Director/`:
+All under `Data/Director/`:
 - `EnemyDefinitions.csv`
 - `PressureTierRules.csv`
 - `TierEnemyWeights.csv`
-- `PackTemplates.csv`
-- `BossSchedule.csv`
+- `PackTemplates.csv` (planned usage)
+- `BossSchedule.csv` (planned/partial usage)
 
-Current runtime behavior:
-- `PressureSystem` reads `PressureTierRules.csv` at startup.
-- Tier-dependent fields are applied live as pressure crosses ranges.
-
-### PressureTierRules Contract
-`PressureTierRules.csv` includes pacing plus progression tuning:
+## PressureTierRules Contract
+Used fields now include:
+- `pressure_min`, `pressure_max`
+- `spawn_interval_min`, `spawn_interval_max`
+- `max_alive`
+- `spawn_radius_min`, `spawn_radius_max`
 - `kill_progress_base`
 - `kill_pressure_bonus_factor`
 - `time_progress_per_sec`
 - `upgrade_threshold`
 - `first_upgrade_threshold`
 
-Booleans:
-- `templates_enabled / allow_elites / allow_pincer`: `1` true, `0` false.
-
 ## Contributor Guardrails
-- Do not read pressure directly in enemy scripts.
+- Do not access pressure directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.
-- Tune pacing in data tables first; code changes second.
+- Tune balance in CSV first, then patch code only when needed.
