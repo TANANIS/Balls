@@ -1,11 +1,10 @@
-[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=12 format=3]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=13 format=3 uid="uid://bm8r67lsfg5sw"]
 
-[ext_resource type="Script" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
-[ext_resource type="Script" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
+[ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
+[ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
 
 [sub_resource type="Resource" id="Upgrade_PrimaryDamage"]
 script = ExtResource("2_definition_script")
-Id = 0
 Title = "主武器傷害提升"
 Description = "遠距射擊傷害 +1"
 
@@ -65,4 +64,4 @@ Description = "衝刺持續時間 +0.03 秒"
 
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[Resource]([SubResource("Upgrade_PrimaryDamage"), SubResource("Upgrade_PrimaryFaster"), SubResource("Upgrade_PrimarySpeed"), SubResource("Upgrade_SecondaryDamage"), SubResource("Upgrade_SecondaryRange"), SubResource("Upgrade_SecondaryArc"), SubResource("Upgrade_SecondaryFaster"), SubResource("Upgrade_DashCooldown"), SubResource("Upgrade_DashSpeed"), SubResource("Upgrade_DashLonger")])
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_PrimaryDamage"), SubResource("Upgrade_PrimaryFaster"), SubResource("Upgrade_PrimarySpeed"), SubResource("Upgrade_SecondaryDamage"), SubResource("Upgrade_SecondaryRange"), SubResource("Upgrade_SecondaryArc"), SubResource("Upgrade_SecondaryFaster"), SubResource("Upgrade_DashCooldown"), SubResource("Upgrade_DashSpeed"), SubResource("Upgrade_DashLonger")])

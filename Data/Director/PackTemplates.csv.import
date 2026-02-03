@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dus0w8q0fanje"
+valid=false
+
+[deps]
+
+source_file="res://Data/Director/PackTemplates.csv"
+
+[params]
+
+compress=true
+delimiter=0

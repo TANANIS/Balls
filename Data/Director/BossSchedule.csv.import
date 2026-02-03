@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b077u6kneupux"
+valid=false
+
+[deps]
+
+source_file="res://Data/Director/BossSchedule.csv"
+
+[params]
+
+compress=true
+delimiter=0

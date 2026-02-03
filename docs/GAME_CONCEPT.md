@@ -2,125 +2,67 @@
 
 ## 1. What Game Is This?
 
-A 2D top-down, real-time survival action game.
-The player keeps moving, attacking, and dodging. The only goal: survive longer.
-No stages, no endings. Every run restarts.
+A 2D top-down real-time survival action game.
+Survive as long as possible. No stage clear; every run restarts.
 
----
-## 2. What You Do During Play
+## 2. Core Loop
 
-Core flow:
-1. Enemies keep spawning and closing in.
-2. The screen gets denser, pressure rises.
-3. You survive with movement, attacks, and dodges.
-4. When you are about to break,
-5. the game gives you one growth choice.
-6. You pick, then continue with a faster tempo.
-7. Too many hits -> death -> instant restart.
+1. Enemies continuously spawn and approach.
+2. Screen density and pressure rise.
+3. Player survives via movement, attack, and dodge.
+4. At high pressure, game pauses for one growth choice.
+5. Pick one, then continue at faster tempo.
+6. Death -> instant restart.
 
----
-## 3. What The Player Is
+## 3. Player
 
-The player is a circle.
-No character backstory or narrative.
-All states are expressed through color, brightness, and speed.
+- Visual: simple circle, no narrative setup.
+- HP: fixed 3.
+- Hit: lose 1 HP per hit.
+- No passive regen (only via run upgrades).
 
-HP:
-- Fixed at 3
-- Each hit removes 1
-- No auto-regen (only via in-run growth)
+## 4. Controls
 
----
-## 4. Controls (Dual Stick)
+- Move: WASD / left stick.
+- Aim direction: mouse / right stick.
+- Three action families:
+  - Primary attack (rhythm)
+  - Secondary action (high impact, longer cooldown)
+  - Mobility/dodge
 
-Movement:
-- WASD / left stick
-- 360-degree free movement
-- You can always move
+## 5. Combat Feel
 
-Attack direction:
-- Mouse direction / right stick
-- Only decides where to fire
-- Wide hit judgment; no precision required
+- Fast and clear feedback.
+- Kill feedback: slight zoom, brief pause, light burst.
+- No combo system, no score pop-up dependency.
 
-Action types (not bound yet):
-1. A common attack (for rhythm)
-2. A stronger action with longer cooldown
-3. Mobility or dodge
+## 6. Enemy Philosophy
 
-Actual bindings (LMB/RMB/Space) will be decided later.
+- Geometric enemies, readable behavior.
+- Pressure comes from count, proximity, and reduced movement space.
 
----
-## 5. Feel Of Hitting Things
+## 7. Pressure Upgrade Moment
 
-Only one goal: fast, satisfying, and clear.
-Hit enemy -> see immediate result.
-Kill feedback:
-- Slight zoom in
-- Brief pause
-- Light burst
+Hidden pressure rises from:
+- Enemy count
+- Low HP
+- Long no-kill windows
+- Space compression
 
-Mistakes hurt but never stall the flow.
-No combo, no score pop-ups.
+At threshold:
+1. Full pause
+2. Clean screen
+3. Two choices
+4. Pick one (or random fallback)
+5. Resume at faster tempo
 
----
-## 6. Enemies
+## 8. Growth Rules
 
-All enemies are geometric shapes.
-Behavior is simple and readable.
-No teleport, no cheap tricks.
+- In-run only; resets next run.
+- Must be immediately noticeable after choice.
 
-Pressure comes from:
-- More enemies
-- Closer distance
-- Less free space
+## 9. Visual Direction
 
----
-## 7. When You Level Up
-
-There is a hidden pressure value.
-Pressure rises when:
-- Enemies are many
-- HP is low
-- No kills for a long time
-- Space is tight
-
-When pressure hits a threshold:
-1. Game fully pauses
-2. Screen clears
-3. Two options appear
-4. You pick one (or it randoms)
-5. Game resumes at a faster tempo
-
-This is not a reward. It is a breath before continuing.
-
----
-## 8. What Growth Means
-
-Growth only lasts for the current run; resets next run.
-Growth can be:
-- New attack patterns
-- Changes to control feel
-- Status effects (freeze, slow, etc.)
-- Risk trades (stronger but more dangerous)
-
-Rule:
-> You should feel the change immediately after choosing.
-
-No "strong later" upgrades.
-
----
-## 9. Visual Style
-
-- Geometric shapes
-- High saturation
-- Very bright, intense glare
-- Heavy bloom
-
-Like Geometry Dash's bright contamination, but not a rhythm game.
-Rules:
-- Dark background
-- Bright enemies
-- Brightest attacks
-- No more than two primary colors at once
-
+- Geometric, high saturation, heavy bloom.
+- Dark background, bright enemies, brightest attacks.
+- Keep primary color count limited for readability.

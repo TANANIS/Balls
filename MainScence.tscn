@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=19 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
@@ -15,8 +15,7 @@
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/UpgradeSystem.cs" id="14_upgrade"]
-[ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
-[ext_resource type="Resource" path="res://Data/Upgrades/DefaultUpgradeCatalog.tres" id="16_upgrade_catalog"]
+[ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -98,7 +97,6 @@ script = ExtResource("13_debug")
 
 [node name="UpgradeSystem" type="Node" parent="Systems"]
 script = ExtResource("14_upgrade")
-Catalog = ExtResource("16_upgrade_catalog")
 
 [node name="TimeSystem" type="Node" parent="Systems"]
 

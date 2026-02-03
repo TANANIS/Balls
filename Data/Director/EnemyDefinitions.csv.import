@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cooc8ldn0yk5t"
+valid=false
+
+[deps]
+
+source_file="res://Data/Director/EnemyDefinitions.csv"
+
+[params]
+
+compress=true
+delimiter=0
