@@ -1,80 +1,47 @@
-# Project Genesis Rules & Architecture Guide
+# Project Genesis Architecture
 
-Godot 4.x + C# | 2D top-down geometric survival shooter
+## Core Rules
+- Only `CombatSystem` can finalize damage.
+- Sensors (`Hitbox`, `Hurtbox`, `Bullet`) detect and submit `DamageRequest`; they never deduct HP directly.
+- Data flow stays one-way: `Emitter -> Request -> Resolve -> Apply`.
 
-## 0. First Principles
-
-1. Centralized arbitration:
-   Only `CombatSystem` decides whether damage is valid. No other module may deduct HP.
-2. Sensors do not arbitrate:
-   `Hitbox/Hurtbox` only detect and send `DamageRequest`.
-3. Unidirectional data flow:
-   `Emitter -> Request -> System Resolve -> Apply`.
-
-## 1. Scene Tree Convention
-
+## Runtime Layout
 ```text
-Game (Node2D)
-├─ World (Node2D)
-├─ Player (CharacterBody2D)
-├─ Enemies (Node2D)
-├─ Projectiles (Node2D)
-├─ Systems (Node)
-│  ├─ CombatSystem (Node)
-│  ├─ SpawnSystem (Node)
-│  ├─ TimeSystem (Node, optional)
-│  └─ DebugSystem (Node, optional)
-└─ UI (CanvasLayer)
+Game
+├─ World
+├─ Player
+├─ Enemies
+├─ Projectiles
+├─ Systems
+│  ├─ Core
+│  │  ├─ CombatSystem
+│  │  └─ DebugSystem
+│  ├─ Director
+│  │  ├─ SpawnSystem
+│  │  └─ PressureSystem
+│  └─ Progression
+│     └─ UpgradeSystem
+└─ UI
+   └─ UpgradeMenu
 ```
 
-Rules:
-- `Systems/*` must not depend on `UI`.
-- `Enemies` / `Projectiles` are container roots.
-- `SpawnSystem` handles pacing only, not enemy AI.
+## System Boundaries
+- `Core/*`: universal runtime services.
+- `Director/*`: pacing and encounter orchestration.
+- `Progression/*`: upgrade application and progression effects.
+- `UI/*`: presentation and input only. UI may call systems; systems do not depend on UI.
 
-## 2. Combat Rules
+## Pressure + Upgrade Model
+- `CurrentPressure`: up/down world tension signal (enemy count, low HP, time).
+- `UpgradeProgress`: upgrade meter, primarily driven by kills.
+- Kills grant progress with pressure-based bonus:
+  - `gain = KillProgressBase * (1 + pressureNorm * KillPressureBonusFactor)`
+- Time adds a small passive drip (`TimeProgressPerSecond`) so pacing does not stall.
+- Upgrade trigger rule:
+  1. Meter reaches threshold -> `armed`.
+  2. Next player kill triggers upgrade menu.
+  3. Boss flow may force trigger directly (`ForceOpenForBoss`).
 
-- Damage path:
-  `DamageRequest -> CombatSystem.RequestDamage -> IDamageable.TakeDamage`
-- Forbidden:
-  - Directly modifying HP in sensors/bullets.
-  - Calling health damage APIs outside `CombatSystem`.
-
-## 3. Hitbox / Hurtbox Rules
-
-- `PlayerHurtbox` must join group `PlayerHurtbox` in `_Ready()`.
-- `EnemyHitbox` uses interval tick for contact damage.
-- `EnemyHurtbox` only forwards damage to `EnemyHealth`.
-
-## 4. Group Rules
-
-Groups are identity, not capability.
-
-Recommended constants:
-
-```csharp
-public static class Groups
-{
-    public const string Player = "Player";
-    public const string PlayerHurtbox = "PlayerHurtbox";
-    public const string CombatSystem = "CombatSystem";
-    public const string EnemyHitbox = "EnemyHitbox";
-    public const string EnemyHurtbox = "EnemyHurtbox";
-}
-```
-
-## 5. Debug Rules
-
-- Prefix logs, e.g. `[EnemyHitbox] ...`
-- Heavy logs only under debug switch.
-- Workarounds must explain why.
-
-## 6. Non-Negotiable Checklist
-
-Reject if any:
-- Direct HP edits inside sensor/bullet scripts.
-- Health damage called outside `CombatSystem`.
-- Using `IDamageable` for identity checks.
-- Using `AreaEntered` as continuous contact damage.
-- Scattered timer-node core logic.
-- Scene tree changes without path/name sync.
+## Data-Driven Tuning
+- Director balance tables are in `Data/Director/`.
+- Runtime code should read tuning data from tables, not hard-coded magic values.
