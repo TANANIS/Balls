@@ -1,17 +1,20 @@
-[gd_scene load_steps=15 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=18 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
+[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
 [ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
 [ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
 [ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="4_embg1"]
 [ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
 [ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
+[ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="6_melee"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
+[ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/UpgradeSystem.cs" id="14_upgrade"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -50,11 +53,17 @@ debug_color = Color(0.85284024, 0.35988984, 0.24184075, 0.41960785)
 [node name="Movement" type="Node" parent="Player"]
 script = ExtResource("4_embg1")
 
-[node name="Weapon" type="Node" parent="Player"]
+[node name="PrimaryAttack" type="Node" parent="Player"]
 script = ExtResource("5_embg1")
-BulletScene = ExtResource("2_wyi7j")
-ProjectilesPath = NodePath("../../Projectiles")
-FireCooldown = 0.45
+ProjectileScene = ExtResource("2_wyi7j")
+ProjectileContainerPath = NodePath("../../Projectiles")
+
+[node name="SecondaryAttack" type="Node" parent="Player"]
+script = ExtResource("6_melee")
+Range = 100.0
+ArcDegrees = 200.0
+MeleeVfxScene = ExtResource("2_meleevfx")
+VfxPath = NodePath("../../World")
 
 [node name="Dash" type="Node" parent="Player"]
 script = ExtResource("5_x4450")
@@ -83,6 +92,9 @@ MaxAliveEnemies = 10
 
 [node name="DebugSystem" type="Node" parent="Systems"]
 script = ExtResource("13_debug")
+
+[node name="UpgradeSystem" type="Node" parent="Systems"]
+script = ExtResource("14_upgrade")
 
 [node name="TimeSystem" type="Node" parent="Systems"]
 
