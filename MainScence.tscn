@@ -11,7 +11,7 @@
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
-[ext_resource type="Script" uid="uid://d3bug5y5t3m1" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
+[ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -61,6 +61,8 @@ script = ExtResource("5_x4450")
 
 [node name="Health" type="Node" parent="Player"]
 script = ExtResource("8_vpcxr")
+MaxHp = 999
+HurtIFrame = 0.1
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -76,6 +78,8 @@ script = ExtResource("12_vpcxr")
 EnemyScene = ExtResource("2_0d7xb")
 EnemiesPath = NodePath("../../Enemies")
 PlayerPath = NodePath("../../Player")
+SpawnInterval = 2.0
+MaxAliveEnemies = 10
 
 [node name="DebugSystem" type="Node" parent="Systems"]
 script = ExtResource("13_debug")
