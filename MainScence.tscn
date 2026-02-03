@@ -64,6 +64,7 @@ Range = 100.0
 ArcDegrees = 200.0
 MeleeVfxScene = ExtResource("2_meleevfx")
 VfxPath = NodePath("../../World")
+VfxColor = Color(0.024715064, 0.019556979, 0.00081818626, 0.7019608)
 
 [node name="Dash" type="Node" parent="Player"]
 script = ExtResource("5_x4450")
