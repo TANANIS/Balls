@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3 uid="uid://cc5l4n54jpjpi"]
+
+[ext_resource type="Script" uid="uid://dq3t2pkhxa0k0" path="res://Scripts/UI/UpgradeMenu.cs" id="1_upgrade_menu_script"]
+
+[node name="UpgradeMenu" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_upgrade_menu_script")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -130.0
+offset_right = 280.0
+offset_bottom = 130.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "選擇一項升級"
+horizontal_alignment = 1
+
+[node name="Options" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="LeftButton" type="Button" parent="Panel/VBox/Options"]
+custom_minimum_size = Vector2(250, 150)
+layout_mode = 2
+text = "左側選項"
+text_overrun_behavior = 1
+autowrap_mode = 2
+
+[node name="RightButton" type="Button" parent="Panel/VBox/Options"]
+custom_minimum_size = Vector2(250, 150)
+layout_mode = 2
+text = "右側選項"
+text_overrun_behavior = 1
+autowrap_mode = 2
