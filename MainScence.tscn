@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=15 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
+[ext_resource type="Script" uid="uid://d3bug5y5t3m1" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -75,6 +76,9 @@ script = ExtResource("12_vpcxr")
 EnemyScene = ExtResource("2_0d7xb")
 EnemiesPath = NodePath("../../Enemies")
 PlayerPath = NodePath("../../Player")
+
+[node name="DebugSystem" type="Node" parent="Systems"]
+script = ExtResource("13_debug")
 
 [node name="TimeSystem" type="Node" parent="Systems"]
 

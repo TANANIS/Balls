@@ -19,7 +19,7 @@ public partial class EnemyHitbox : Area2D
 		_ownerEnemy = GetParent() as Enemy;
 		if (_ownerEnemy == null)
 		{
-			GD.PrintErr("[EnemyHitbox] Parent is not Enemy. Make Hitbox a direct child of Enemy.");
+			DebugSystem.Error("[EnemyHitbox] Parent is not Enemy. Make Hitbox a direct child of Enemy.");
 			return;
 		}
 
@@ -30,7 +30,7 @@ public partial class EnemyHitbox : Area2D
 			_combat = list[0] as CombatSystem;
 
 		if (_combat == null)
-			GD.PrintErr("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
+			DebugSystem.Error("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
 
 		AreaEntered += OnAreaEntered;
 		AreaExited += OnAreaExited;
@@ -47,7 +47,7 @@ public partial class EnemyHitbox : Area2D
 		if (_tickTimer > 0f) return;
 
 		_tickTimer = TickInterval;
-		GD.Print("[EnemyHitbox] Tick damage -> target=" + _currentTarget.Name);
+		DebugSystem.Log("[EnemyHitbox] Tick damage -> target=" + _currentTarget.Name);
 
 		if (_currentTarget is not IDamageable)
 			return;
@@ -68,7 +68,7 @@ public partial class EnemyHitbox : Area2D
 
 	private void OnAreaEntered(Area2D other)
 	{
-		GD.Print("[EnemyHitbox] AreaEntered: " + other.Name + " PlayerHurtbox=" + other.IsInGroup("PlayerHurtbox"));
+		DebugSystem.Log("[EnemyHitbox] AreaEntered: " + other.Name + " PlayerHurtbox=" + other.IsInGroup("PlayerHurtbox"));
 		if (!other.IsInGroup("PlayerHurtbox"))
 			return;
 
