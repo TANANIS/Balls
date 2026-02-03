@@ -22,16 +22,16 @@ Base skeleton for all scenes (Main/Game):
 
 ```
 Game (Node2D)
-¢u¢w World (Node2D)            # Map, obstacles, boundaries
-¢u¢w Player (CharacterBody2D)  # Player entity
-¢u¢w Enemies (Node2D)          # Enemy container
-¢u¢w Projectiles (Node2D)      # Bullet container
-¢u¢w Systems (Node)            # Global systems
-¢x  ¢u¢w CombatSystem (Node)    # Damage arbitration (core)
-¢x  ¢u¢w SpawnSystem (Node)     # Spawn rhythm & waves
-¢x  ¢u¢w TimeSystem (Node)      # Time scale / pause (optional)
-¢x  ¢|¢w DebugSystem (Node)     # Debug visualization (optional)
-¢|¢w UI (CanvasLayer)          # HUD, death prompts
+â”œâ”€ World (Node2D)            # Map, obstacles, boundaries
+â”œâ”€ Player (CharacterBody2D)  # Player entity
+â”œâ”€ Enemies (Node2D)          # Enemy container
+â”œâ”€ Projectiles (Node2D)      # Bullet container
+â”œâ”€ Systems (Node)            # Global systems
+â”‚  â”œâ”€ CombatSystem (Node)    # Damage arbitration (core)
+â”‚  â”œâ”€ SpawnSystem (Node)     # Spawn rhythm & waves
+â”‚  â”œâ”€ TimeSystem (Node)      # Time scale / pause (optional)
+â”‚  â””â”€ DebugSystem (Node)     # Debug visualization (optional)
+â””â”€ UI (CanvasLayer)          # HUD, death prompts
 ```
 
 Rules:
@@ -43,29 +43,29 @@ Rules:
 
 ```
 Scripts/
-¢u¢w Player/
-¢x  ¢u¢w Player.cs                # Player entity and assembly point (thin)
-¢x  ¢u¢w PlayerMovement.cs         # Movement
-¢x  ¢u¢w PlayerDash.cs             # Dash
-¢x  ¢u¢w PlayerWeapon.cs           # Shooting / bullet spawn
-¢x  ¢|¢w PlayerHurtbox.cs          # Player hurt sensor (Area2D)
-¢u¢w Enemy/
-¢x  ¢u¢w Enemy.cs                  # Enemy entity and movement/state (thin)
-¢x  ¢u¢w EnemyHitbox.cs            # Enemy contact damage sensor (Area2D)
-¢x  ¢u¢w EnemyHurtbox.cs           # Enemy hit sensor (Area2D)
-¢x  ¢|¢w EnemyHealth.cs            # Enemy HP / death
-¢u¢w Projectiles/
-¢x  ¢|¢w Bullet.cs                 # Bullet behavior (send request on hit)
-¢u¢w Systems/
-¢x  ¢u¢w CombatSystem.cs           # Single arbitration point
-¢x  ¢u¢w SpawnSystem.cs
-¢x  ¢u¢w TimeSystem.cs (optional)
-¢x  ¢|¢w DebugSystem.cs (optional)
-¢u¢w Shared/
-¢x  ¢u¢w DamageRequest.cs
-¢x  ¢u¢w IDamageable.cs
-¢x  ¢|¢w Groups.cs                 # Group constants (recommended)
-¢|¢w _Legacy/                     # Archive old hitbox/hurtbox files
+â”œâ”€ Player/
+â”‚  â”œâ”€ Player.cs                # Player entity and assembly point (thin)
+â”‚  â”œâ”€ PlayerMovement.cs         # Movement
+â”‚  â”œâ”€ PlayerDash.cs             # Dash
+â”‚  â”œâ”€ PlayerWeapon.cs           # Shooting / bullet spawn
+â”‚  â””â”€ PlayerHurtbox.cs          # Player hurt sensor (Area2D)
+â”œâ”€ Enemy/
+â”‚  â”œâ”€ Enemy.cs                  # Enemy entity and movement/state (thin)
+â”‚  â”œâ”€ EnemyHitbox.cs            # Enemy contact damage sensor (Area2D)
+â”‚  â”œâ”€ EnemyHurtbox.cs           # Enemy hit sensor (Area2D)
+â”‚  â””â”€ EnemyHealth.cs            # Enemy HP / death
+â”œâ”€ Projectiles/
+â”‚  â””â”€ Bullet.cs                 # Bullet behavior (send request on hit)
+â”œâ”€ Systems/
+â”‚  â”œâ”€ CombatSystem.cs           # Single arbitration point
+â”‚  â”œâ”€ SpawnSystem.cs
+â”‚  â”œâ”€ TimeSystem.cs (optional)
+â”‚  â””â”€ DebugSystem.cs (optional)
+â”œâ”€ Shared/
+â”‚  â”œâ”€ DamageRequest.cs
+â”‚  â”œâ”€ IDamageable.cs
+â”‚  â””â”€ Groups.cs                 # Group constants (recommended)
+â””â”€ _Legacy/                     # Archive old hitbox/hurtbox files
 ```
 
 Rules:
