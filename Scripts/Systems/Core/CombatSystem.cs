@@ -6,6 +6,7 @@ public partial class CombatSystem : Node
 {
 	private readonly HashSet<ulong> _frameHitGuard = new();
 	private ulong _lastFrame = 0;
+	public event Action<Node, Node> EnemyKilled;
 
 	public override void _EnterTree()
 	{
@@ -47,7 +48,11 @@ public partial class CombatSystem : Node
 		if (finalDamage <= 0)
 			return;
 
+		bool wasDead = damageable.IsDead;
 		damageable.TakeDamage(finalDamage, req.Source);
+
+		if (!wasDead && damageable.IsDead && req.Target is EnemyHurtbox)
+			EnemyKilled?.Invoke(req.Source, req.Target);
 	}
 
 	private static ulong MakeGuardKey(Node source, Node target)

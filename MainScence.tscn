@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=20 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
@@ -10,12 +10,13 @@
 [ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
 [ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
 [ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="6_melee"]
-[ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/CombatSystem.cs" id="8_4xcne"]
+[ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="8_4xcne"]
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
-[ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/SpawnSystem.cs" id="12_vpcxr"]
-[ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/DebugSystem.cs" id="13_debug"]
-[ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/UpgradeSystem.cs" id="14_upgrade"]
+[ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/Director/SpawnSystem.cs" id="12_vpcxr"]
+[ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="13_debug"]
+[ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
+[ext_resource type="Script" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 32.0
@@ -58,6 +59,8 @@ script = ExtResource("4_embg1")
 script = ExtResource("5_embg1")
 ProjectileScene = ExtResource("2_wyi7j")
 ProjectileContainerPath = NodePath("../../Projectiles")
+Cooldown = 0.32
+ProjectileSpeed = 760.0
 
 [node name="SecondaryAttack" type="Node" parent="Player"]
 script = ExtResource("6_melee")
@@ -72,7 +75,7 @@ script = ExtResource("5_x4450")
 
 [node name="Health" type="Node" parent="Player"]
 script = ExtResource("8_vpcxr")
-MaxHp = 999
+MaxHp = 3
 HurtIFrame = 0.1
 
 [node name="Enemies" type="Node2D" parent="."]
@@ -99,6 +102,7 @@ script = ExtResource("13_debug")
 script = ExtResource("14_upgrade")
 
 [node name="TimeSystem" type="Node" parent="Systems"]
+script = ExtResource("16_pressure")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
