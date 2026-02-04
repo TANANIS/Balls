@@ -61,4 +61,11 @@ public partial class PlayerHealth : Node
 			Died?.Invoke();
 		}
 	}
+
+	public void ResetToFull()
+	{
+		_hp = MaxHp;
+		_isDead = false;
+		_invincibleTimer = 0f;
+	}
 }

@@ -22,6 +22,8 @@ public partial class Player : CharacterBody2D
 	public bool IsInvincible => _health != null && _health.IsInvincible;
 
 	private bool _deathLogged = false;
+	[Export] public bool UseMovementBounds = true;
+	[Export] public Rect2 MovementBounds = new Rect2(48f, 48f, 1184f, 624f);
 
 	public override void _Ready()
 	{
@@ -46,7 +48,6 @@ public partial class Player : CharacterBody2D
 
 		if (IsDead)
 		{
-			CheckRestartInput();
 			return;
 		}
 
@@ -55,11 +56,15 @@ public partial class Player : CharacterBody2D
 			_lastMoveDir = inputDir.Normalized();
 
 		if (_dash.Tick(dt, inputDir))
+		{
+			ClampInsideBounds();
 			return;
+		}
 
 		_movement.Tick(dt, inputDir);
 		_primaryAttack.Tick(dt);
 		_secondaryAttack.Tick(dt);
+		ClampInsideBounds();
 	}
 
 	public void SetInvincible(float duration)
@@ -91,12 +96,25 @@ public partial class Player : CharacterBody2D
 	{
 		if (_deathLogged) return;
 		_deathLogged = true;
-		DebugSystem.Log("[Player] Died. Press Enter to restart.");
+		DebugSystem.Log("[Player] Died.");
 	}
 
-	private void CheckRestartInput()
+	private void ClampInsideBounds()
 	{
-		if (Input.IsActionJustPressed("ui_accept"))
-			GetTree().ReloadCurrentScene();
+		if (!UseMovementBounds)
+			return;
+
+		Vector2 p = GlobalPosition;
+		p.X = Mathf.Clamp(p.X, MovementBounds.Position.X, MovementBounds.Position.X + MovementBounds.Size.X);
+		p.Y = Mathf.Clamp(p.Y, MovementBounds.Position.Y, MovementBounds.Position.Y + MovementBounds.Size.Y);
+		GlobalPosition = p;
+	}
+
+	public void RespawnAt(Vector2 globalPosition)
+	{
+		GlobalPosition = globalPosition;
+		Velocity = Vector2.Zero;
+		_deathLogged = false;
+		_health?.ResetToFull();
 	}
 }
