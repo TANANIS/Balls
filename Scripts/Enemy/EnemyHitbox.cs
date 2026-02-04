@@ -60,7 +60,9 @@ public partial class EnemyHitbox : Area2D
 			tag: "contact"
 		);
 
-		_combat.RequestDamage(req);
+		bool didDamage = _combat.RequestDamage(req);
+		if (didDamage)
+			_ownerEnemy.NotifyHitPlayer(_currentTarget);
 
 		Vector2 pushDir = _ownerEnemy.GlobalPosition - _currentTarget.GlobalPosition;
 		_ownerEnemy.ApplySeparation(pushDir, SeparationStrength, SeparationDuration);
