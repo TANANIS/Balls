@@ -10,6 +10,10 @@ public partial class MeleeVFX : Node2D
 	[Export] public float SpriteSideOffset = 0f;
 	[Export] public float SpriteAngleOffset = 0f;
 	[Export] public bool FadeSprite = true;
+	[Export] public bool MatchSpriteSizeToRange = true;
+	[Export] public float SpriteSizeFromRange = 1.2f;
+	[Export] public float MinSpriteScale = 0.05f;
+	[Export] public float MaxSpriteScale = 1.0f;
 
 	private Polygon2D _arc;
 	private Sprite2D _sprite;
@@ -25,9 +29,8 @@ public partial class MeleeVFX : Node2D
 	{
 		if (_arc == null)
 			_arc = GetNodeOrNull<Polygon2D>("Arc");
-
-		if (_arc == null)
-			return;
+		if (_sprite == null && SpritePath != null && !SpritePath.IsEmpty)
+			_sprite = GetNodeOrNull<Sprite2D>(SpritePath);
 
 		if (direction.LengthSquared() < 0.0001f)
 			direction = Vector2.Right;
@@ -54,6 +57,18 @@ public partial class MeleeVFX : Node2D
 		}
 		if (_sprite != null)
 		{
+			if (MatchSpriteSizeToRange && _sprite.Texture != null)
+			{
+				Vector2 texSize = _sprite.Texture.GetSize();
+				float textureMaxSize = Mathf.Max(texSize.X, texSize.Y);
+				if (textureMaxSize > 0f)
+				{
+					float targetWorldSize = Mathf.Max(1f, range * SpriteSizeFromRange);
+					float uniformScale = Mathf.Clamp(targetWorldSize / textureMaxSize, MinSpriteScale, MaxSpriteScale);
+					_sprite.Scale = new Vector2(uniformScale, uniformScale);
+				}
+			}
+
 			_sprite.Position = new Vector2(SpriteForwardOffset, SpriteSideOffset);
 			_sprite.Rotation = Mathf.DegToRad(SpriteAngleOffset);
 			_sprite.Modulate = color;
