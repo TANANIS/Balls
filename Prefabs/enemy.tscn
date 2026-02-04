@@ -1,13 +1,12 @@
-﻿[gd_scene load_steps=12 format=3 uid="uid://lt2ee22cjppb"]
+[gd_scene load_steps=11 format=3 uid="uid://lt2ee22cjppb"]
 
-[ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
+[ext_resource type="Script" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SwarmCircle.png" id="2_tex"]
-[ext_resource type="Script" uid="uid://xsfiln41pkvm" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
-[ext_resource type="Script" uid="uid://cdemuwgfu8h68" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
-[ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyChaseBehavior.cs" id="6_behavior"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
-[ext_resource type="Script" path="res://Scripts/Enemy/EnemyDebugEventModule.cs" id="8_debug_event"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -31,6 +30,7 @@ texture = ExtResource("2_tex")
 scale = Vector2(0.125, 0.125)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
@@ -38,11 +38,6 @@ script = ExtResource("6_behavior")
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
-
-[node name="Events" type="Node" parent="."]
-
-[node name="DebugEvents" type="Node" parent="Events"]
-script = ExtResource("8_debug_event")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 64
@@ -53,9 +48,12 @@ TickInterval = 0.3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visible = false
+position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_hitbox")
+debug_color = Color(0.831, 0.304, 0.633, 0.42)
 
 [node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, -1)
 collision_layer = 32
 collision_mask = 8
 script = ExtResource("4_hurtbox")
@@ -63,6 +61,7 @@ script = ExtResource("4_hurtbox")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 visible = false
 shape = SubResource("CircleShape2D_hurtbox")
+debug_color = Color(0.778, 0.314, 0.772, 0.42)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")

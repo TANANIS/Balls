@@ -5,9 +5,7 @@
 
 [node name="MeleeVFX" type="Node2D"]
 script = ExtResource("1_meleevfx")
-UseArc = false
 SpriteForwardOffset = 14.0
-FadeSprite = true
 SpriteSizeFromRange = 1.15
 
 [node name="Arc" type="Polygon2D" parent="."]
