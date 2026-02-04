@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://bxen3q3hvcxk"]
 
-[ext_resource type="Texture2D" uid="uid://ei7c4bbypv1g" path="res://Assets/Sprites/BaseCore.png" id="1_ikhqc"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
@@ -19,10 +19,10 @@
 [ext_resource type="Script" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
-radius = 32.0
+radius = 34.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
-radius = 33.0
+radius = 36.0
 
 [node name="Game" type="Node2D"]
 
@@ -35,6 +35,7 @@ script = ExtResource("1_tyo64")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 texture = ExtResource("1_ikhqc")
+scale = Vector2(0.14, 0.14)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 position = Vector2(0, -1)
@@ -68,7 +69,8 @@ Range = 100.0
 ArcDegrees = 200.0
 MeleeVfxScene = ExtResource("2_meleevfx")
 VfxPath = NodePath("../../World")
-VfxColor = Color(0.024715064, 0.019556979, 0.00081818626, 0.7019608)
+VfxColor = Color(1, 1, 1, 0.9)
+VfxForwardOffset = 36.0
 
 [node name="Dash" type="Node" parent="Player"]
 script = ExtResource("5_x4450")
