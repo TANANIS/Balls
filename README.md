@@ -1,101 +1,285 @@
-# Project Genesis: 2D 幾何極簡生存遊戲
+# Balls  
+A 2D Top-Down Real-Time Survival Action Game (System-Driven Prototype)
 
-這是一份開發紀錄與架構指南。本專案核心目標是建立一個**高飽和、高壓、且具備清晰權責分離**的生存射擊遊戲原型。
+This repository contains a **playable and actively evolving prototype** of a 2D top-down real-time survival action game built with **Godot Engine 4 (C# / Mono)**.
 
-## 🛠 架構哲學 (Core Philosophy)
-
-本專案不採用傳統的「萬能類別（God Object）」設計，而是嚴格遵循以下原則：
-
-1. **裁決權中心化**：只有 `CombatSystem` 能決定傷害是否成立，其他模組僅能發出「請求」。
-2. **狀態與行為分離**：
-* **狀態 (State)**：你是誰？（HP、是否無敵、是否死亡）→ 由 `Health` 模組維護。
-* **行為 (Behavior)**：你在做什麼？（移動、Dash、射擊）→ 由獨立行為節點處理。
-
-
-3. **資料流單向化**：`Request -> Resolve -> Apply`。
+The project is not focused on content scale or visual polish.  
+Its primary goal is to explore **system-driven game architecture**, especially **pressure-based pacing, centralized combat arbitration, and strictly controlled data flow**.
 
 ---
 
-## 🏗 專案結構 (Project Structure)
+## 🎮 Game Overview
 
-### Scene Tree 節點規範
+**Genre**  
+2D Top-Down · Real-Time · Survival Action
 
-```text
-Game (Node2D)
-├─ Player (CharacterBody2D)      # 門面：負責調度與輸入轉發
-│  ├─ PlayerHealth (Node)        # 狀態：HP、無敵 Timer
-│  ├─ PlayerMovement (Node)      # 行為：加速/摩擦運動
-│  ├─ PlayerDash (Node)          # 行為：位移與 I-Frame 注入
-│  └─ PlayerWeapon (Node)        # 行為：射擊與子彈生成
-├─ Systems (Node)                # 權威中心
-│  ├─ CombatSystem (Node)        # 核心：唯一傷害裁決入口
-│  └─ SpawnSystem (Node)         # 節奏：敵人生成管理
-├─ Projectiles (Node2D)          # 容器：子彈
-└─ Enemies (Node2D)              # 容器：敵人
+**Player Experience**
+- Enemies continuously spawn and close in on the player
+- Screen density and tactical pressure increase over time
+- The player survives via movement, positioning, ranged and melee attacks
+- At critical moments, the game pauses and presents upgrade choices
+- Death immediately restarts the run — no stages, no checkpoints
 
-```
-
-### 📁 資料夾組織
-
-* `/Scripts/Player/`: 玩家模組化腳本。
-* `/Scripts/Systems/`: 全域權威系統（Combat, Spawn）。
-* `/Scripts/Projectiles/`: 子彈邏輯（僅限傳感與飛行）。
-* `/_Legacy/`: 棄用的事件驅動型碰撞腳本（僅供參考，禁止引用）。
+Each run is short, intense, and fully restartable.
 
 ---
 
-## ⚔️ 戰鬥管線 (Combat Pipeline)
+## 🧠 Core Design Goals
 
-當攻擊發生時，必須經過以下流程：
+This project is built around three non-negotiable goals:
 
-1. **偵測 (Detection)**：`Bullet` 或 `EnemyHitbox` 偵測到目標。
-2. **請求 (Request)**：建立 `DamageRequest` 物件，包含來源、傷害量、擊退方向。
-3. **裁決 (Authority)**：呼叫 `CombatSystem.RequestDamage(req)`。
-* 檢查目標是否已死。
-* 檢查目標是否處於無敵幀。
+1. **Predictable and controllable pacing**  
+   Difficulty escalation must be *designed*, not left to raw RNG.
 
+2. **Strict responsibility boundaries between systems**  
+   Systems must not “peek” into each other’s internal state.
 
-4. **落地 (Execution)**：若通過裁決，`CombatSystem` 呼叫目標的 `TakeDamage()`。
-
----
-
-## 🚦 碰撞層級定義 (Collision Layers)
-
-| Layer | 名稱 | 職責 |
-| --- | --- | --- |
-| 1 | World | 地形、牆壁、障礙物 |
-| 2 | PlayerBody | 玩家物理本體（處理 MoveAndSlide 碰撞） |
-| 3 | EnemyBody | 敵人物理本體 |
-| 4 | PlayerBullet | 玩家子彈偵測層 |
-| 5 | PlayerHurtbox | 玩家受傷判定區 |
-| 6 | EnemyHurtbox | 敵人受傷判定區 |
-| 7 | EnemyHitbox | 敵人攻擊判定區 |
+3. **Architecture that survives iteration**  
+   The codebase is expected to be rewritten, refactored, and extended without collapsing.
 
 ---
 
-## 📝 開發者備忘錄 (Dev Notes)
+## 🔁 High-Level Data Flow
 
-### 關於 Timer 的放置
+The entire game loop follows a **single-direction data flow**:
 
-* **不要把所有 Timer 都塞在 Player.cs！**
-* 如果是「受傷無敵時間」，請去 `PlayerHealth.cs`。
-* 如果是「Dash 冷卻時間」，請去 `PlayerDash.cs`。
-* 如果是「射擊間隔」，請去 `PlayerWeapon.cs`。
+PressureSystem
+↓
+Director
+↓
+SpawnSystem
+↓
+EnemyFactory
+↓
+Enemy
 
-### 關於物理座標
 
-* 視覺 Sprite 的偏移（Offset）不代表物理位置。Debug 時永遠以節點的 `GlobalPosition` 為準。
+### Critical Rule
+> **Enemies never read pressure values directly.**
+
+All difficulty, pacing, and composition decisions are mediated through explicit data structures, not shared state.
 
 ---
 
-## 🚀 待辦清單 (Roadmap)
+## 🧩 System Responsibilities
 
-* [ ] **DebugSystem**: 實作碰撞區可視化與傷害 Log。
-* [ ] **Enemy AI**: 實作基礎追蹤與避障。
-* [ ] **Spawn 2.0**: 實作避障生成與難度曲線調整。
-* [ ] **UI MVP**: 實作幾何風格的 3 格血條。
+### 1. PressureSystem — World Pressure State
 
-<<<<<<< HEAD
----
-=======
->>>>>>> ac2e85bfa82332ef47d7fcd37419ab54c43b5946
+**Role**  
+Maintains global pressure as an immutable snapshot.
+
+**Responsibilities**
+- Tracks pressure value (0–100)
+- Derives pressure tier and intensity
+- Aggregates abstract world metrics:
+  - Time progression
+  - Enemy count / density
+  - Player survivability signals (e.g. HP ratio)
+- (Optionally) reacts to player performance with capped influence
+- 
+**Output**
+```csharp
+PressureState {
+  float value;
+  int tier;
+  float intensity;
+}
+
+
+This system has no knowledge of enemies, spawn points, or generation rules.
+
+2. Director — Pacing & Strategy Translation
+
+Role
+Translates PressureState into a concrete spawning strategy.
+
+Responsibilities
+
+Maps pressure tiers to gameplay rules
+
+Produces a SpawnPlan snapshot, containing:
+
+Spawn rate or interval
+
+Budget per wave
+
+Max alive enemies
+
+Spawn distance constraints
+
+Enemy type weight distributions
+
+Tier-specific special rules (e.g. chargers, tanks, flanking)
+
+The Director is the only system that understands how pressure becomes pacing.
+
+3. SpawnSystem — Execution Layer
+
+Role
+Executes the current SpawnPlan.
+
+Responsibilities
+
+Controls spawn timing (wave-based or interval-based)
+
+Resolves spawn positions relative to the player
+
+Enforces alive limits
+
+Issues spawn requests without deciding enemy composition
+
+Output
+
+SpawnRequest {
+  enemyTypeId;
+  position;
+  initialParams;
+}
+
+
+The SpawnSystem does not read raw pressure values.
+
+4. EnemyDistributor — Composition Logic
+
+Role
+Selects enemy groups, not individual RNG picks.
+
+Responsibilities
+
+Consumes:
+
+Budget constraints
+
+Enemy weights
+
+Tier gates
+
+Produces balanced enemy packs:
+
+Prevents repetitive RNG streaks
+
+Avoids early high-pressure combinations
+
+Supports designed compositions (e.g. swarm + charger + tank)
+
+Enemy selection is budget-driven, not purely random.
+
+5. EnemyFactory — Instantiation Boundary
+
+Role
+Materializes enemies from data.
+
+Responsibilities
+
+Maps enemyTypeId to scenes
+
+Instantiates PackedScenes
+
+Applies initial parameters (HP multipliers, speed modifiers, behavior seeds)
+
+This layer cannot access pressure, pacing, or generation logic.
+
+6. Enemy — Terminal Entity
+
+Role
+Owns only its local behavior and state.
+
+Responsibilities
+
+Movement and attack behavior
+
+Receiving damage
+
+Emitting death events
+
+On death, enemies emit events only:
+
+EnemyDied(enemyId, tags, position)
+
+
+They never modify global systems directly.
+
+⚔️ Combat System Philosophy
+
+Combat is governed by centralized arbitration.
+
+Attacks generate DamageRequest
+
+Only CombatSystem may resolve damage
+
+No entity directly modifies another entity’s HP
+
+Invulnerability, cooldowns, and death checks are handled centrally
+
+This avoids:
+
+Frame-order race conditions
+
+Dash / contact damage inconsistencies
+
+Distributed damage logic bugs
+
+📊 Data-Driven Design
+
+Most pacing and spawning logic is externalized via CSV:
+
+PressureTierRules.csv
+
+EnemyDefinitions.csv
+
+TierEnemyWeights.csv
+
+Benefits:
+
+Difficulty tuning without recompilation
+
+Clear separation between design data and execution logic
+
+Safe fallbacks when data is missing or invalid
+
+🛠 Technology Stack
+
+Engine: Godot Engine 4.x
+
+Language: C# (Mono)
+
+Platform: PC (prototype)
+
+Focus: System architecture, pacing control, combat reliability
+
+🚧 Project Status
+
+This is an active prototype under heavy iteration.
+
+Current focus:
+
+Pressure → pacing → spawning pipeline
+
+Combat feel and determinism
+
+Architecture stability under refactor
+
+Out of scope (for now):
+
+Narrative content
+
+Art polish
+
+Audio production
+
+Monetization or release planning
+
+📌 Purpose of This Repository
+
+This project exists to:
+
+Explore system-driven survival gameplay
+
+Demonstrate clean responsibility separation in game architecture
+
+Serve as a foundation for future 2D or 3D action games
+
+📄 License
+
+This project is currently unlicensed.
+All rights reserved unless otherwise stated.
