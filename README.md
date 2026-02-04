@@ -114,7 +114,3 @@ Active prototype under heavy iteration.
 Focus is on architecture, pacing control, and combat reliability.
 
 ---
-
-## License
-
-Unlicensed. All rights reserved.
