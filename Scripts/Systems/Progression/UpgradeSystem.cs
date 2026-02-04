@@ -10,6 +10,9 @@ public partial class UpgradeSystem : Node
 	private PlayerWeapon _primaryAttack;
 	private PlayerMelee _secondaryAttack;
 	private PlayerDash _dash;
+	private int _appliedUpgradeCount = 0;
+
+	public int AppliedUpgradeCount => _appliedUpgradeCount;
 
 	private static readonly List<UpgradeOptionData> FallbackOptions = new()
 	{
@@ -80,7 +83,9 @@ public partial class UpgradeSystem : Node
 				break;
 		}
 
+		_appliedUpgradeCount++;
 		DebugSystem.Log("[UpgradeSystem] Applied upgrade: " + id);
+		DebugSystem.Log("[UpgradeSystem] Applied count: " + _appliedUpgradeCount);
 	}
 
 	public bool TryPickTwo(RandomNumberGenerator rng, out UpgradeOptionData left, out UpgradeOptionData right)
