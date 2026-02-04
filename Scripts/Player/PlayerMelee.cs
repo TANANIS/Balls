@@ -81,13 +81,14 @@ public partial class PlayerMelee : Node
 			vfx2d.Rotation = direction.Angle();
 		}
 
-		if (vfx is MeleeVFX meleeVfx)
-			meleeVfx.Init(direction, Range, ArcDegrees, VfxDuration, VfxColor);
-
 		Node parent = _player.GetParent();
 		if (VfxPath != null && !VfxPath.IsEmpty)
 			parent = GetNode(VfxPath);
 		parent.AddChild(vfx);
+
+		// Initialize after entering tree so MeleeVFX._Ready references are valid.
+		if (vfx is MeleeVFX meleeVfx)
+			meleeVfx.Init(direction, Range, ArcDegrees, VfxDuration, VfxColor);
 	}
 
 	private void ExecuteAttack()
