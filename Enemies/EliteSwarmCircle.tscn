@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
-[ext_resource type="Script" path="res://Scripts/Enemy/EnemyChaseBehavior.cs" id="6_behavior"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyEliteSwarmBehavior.cs" id="6_behavior"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
@@ -36,7 +36,9 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-SpeedMultiplier = 1.15
+BaseSpeedMultiplier = 1.18
+WeaveAmplitude = 0.34
+WeaveFrequency = 6.1
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
