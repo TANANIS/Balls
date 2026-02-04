@@ -10,6 +10,7 @@ public partial class DebugSystem : Node
 	[Export] public bool EnableErrors = true;
 	[Export] public bool ShowOverlayInGame = true;
 	[Export] public bool OverlayVisibleByDefault = true;
+	[Export] public bool EnableF3DebugToggle = false;
 	[Export] public int OverlayMaxLines = 18;
 	[Export] public string ToggleOverlayAction = "debug_toggle_overlay";
 	[Export] public int OverlayWidth = 760;
@@ -49,7 +50,7 @@ public partial class DebugSystem : Node
 			return;
 
 		CreateOverlayUi();
-		_overlayVisible = OverlayVisibleByDefault;
+		_overlayVisible = EnableF3DebugToggle ? false : OverlayVisibleByDefault;
 		UpdateOverlayVisibility();
 
 		if (_pendingOverlayLines.Count > 0)
@@ -64,12 +65,15 @@ public partial class DebugSystem : Node
 	{
 		if (_overlayLayer == null)
 			return;
+		if (!EnableF3DebugToggle)
+		{
+			_lastTogglePressed = false;
+			return;
+		}
 
-		bool togglePressed = false;
+		bool togglePressed = Input.IsPhysicalKeyPressed(Key.F3);
 		if (!string.IsNullOrWhiteSpace(ToggleOverlayAction) && InputMap.HasAction(ToggleOverlayAction))
-			togglePressed = Input.IsActionPressed(ToggleOverlayAction);
-		else
-			togglePressed = Input.IsPhysicalKeyPressed(Key.F3);
+			togglePressed = togglePressed || Input.IsActionPressed(ToggleOverlayAction);
 
 		if (togglePressed && !_lastTogglePressed)
 		{
