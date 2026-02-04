@@ -6,6 +6,7 @@ This document defines pacing logic for spawn orchestration and upgrade timing.
 - Keep early game readable.
 - Escalate pressure via spawn tempo and enemy composition.
 - Guarantee upgrade cadence without punishing strong play.
+- Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`, not pressure.
 
 ## Dual-Meter Model
 - `CurrentPressure` (volatile): reflects immediate danger from enemy density, low HP, and elapsed time.
@@ -31,6 +32,12 @@ Boss exception:
 3. Pick enemy by weighted roll from `TierEnemyWeights.csv`.
 4. Resolve `enemy_id` to scene path via `EnemyDefinitions.csv`.
 5. Spawn around player using tier radius range.
+
+Unlock milestone rule:
+- Pressure/tier only controls pacing.
+- Content unlock uses `UpgradeSystem.AppliedUpgradeCount`.
+- `upgrade_count >= 4`: allow elite injection (10%~15% chance per spawn decision).
+- `upgrade_count == 6`: schedule one miniboss event and freeze regular spawns for 2 seconds.
 
 Fallback behavior:
 - If CSV or mapping is incomplete, fallback to `EnemyScene` export.
@@ -59,3 +66,4 @@ Used fields now include:
 - Do not access pressure directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.
 - Tune balance in CSV first, then patch code only when needed.
+- Do not use pressure as content unlock gate for elite/miniboss milestones.

@@ -20,10 +20,19 @@ public partial class SpawnSystem : Node
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
 	[Export] public bool VerboseLog = true;
+	[Export] public bool UseUpgradeCountUnlocks = true;
+	[Export] public int EliteUnlockUpgradeCount = 4;
+	[Export] public float EliteInjectChanceMin = 0.10f;
+	[Export] public float EliteInjectChanceMax = 0.15f;
+	[Export] public string EliteEnemyId = "elite_swarm_circle";
+	[Export] public int MiniBossUnlockUpgradeCount = 6;
+	[Export] public string MiniBossEnemyId = "miniboss_hex";
+	[Export] public float MiniBossFreezeSeconds = 2.0f;
 
 	private Node2D _enemiesRoot;
 	private Node2D _player;
 	private PressureSystem _pressureSystem;
+	private UpgradeSystem _upgradeSystem;
 	private float _timer;
 	private int _activeTier = -1;
 	private int _activeTierRuleIndex = -1;
@@ -36,6 +45,9 @@ public partial class SpawnSystem : Node
 	private readonly Dictionary<string, EnemyDefinition> _enemyDefinitions = new();
 	private readonly Dictionary<int, List<WeightedEnemy>> _tierWeights = new();
 	private readonly RandomNumberGenerator _rng = new();
+	private bool _miniBossScheduled = false;
+	private bool _miniBossSpawned = false;
+	private float _spawnFreezeTimer = 0f;
 
 	public override void _Ready()
 	{
@@ -53,6 +65,7 @@ public partial class SpawnSystem : Node
 			DebugSystem.Error("[SpawnSystem] Player not found. Check PlayerPath.");
 
 		EnsurePressureSystem();
+		EnsureUpgradeSystem();
 		ApplyFallbackRuntimeSettings();
 
 		if (UseTierRulesCsv)
@@ -71,7 +84,12 @@ public partial class SpawnSystem : Node
 			return;
 
 		EnsurePressureSystem();
+		EnsureUpgradeSystem();
 		UpdateTierRuntimeSettings();
+		UpdateUpgradeDrivenEvents((float)delta);
+
+		if (_spawnFreezeTimer > 0f)
+			return;
 
 		if (_enemiesRoot.GetChildCount() >= _activeMaxAlive)
 			return;
@@ -119,6 +137,16 @@ public partial class SpawnSystem : Node
 			_pressureSystem = list[0] as PressureSystem;
 	}
 
+	private void EnsureUpgradeSystem()
+	{
+		if (IsInstanceValid(_upgradeSystem))
+			return;
+
+		var list = GetTree().GetNodesInGroup("UpgradeSystem");
+		if (list.Count > 0)
+			_upgradeSystem = list[0] as UpgradeSystem;
+	}
+
 	private void ApplyFallbackRuntimeSettings()
 	{
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, SpawnInterval);
@@ -145,6 +173,8 @@ public partial class SpawnSystem : Node
 			return EnemyScene;
 
 		float total = 0f;
+		int upgradeCount = GetUpgradeCount();
+		bool eliteUnlocked = !UseUpgradeCountUnlocks || upgradeCount >= EliteUnlockUpgradeCount;
 		foreach (var item in weights)
 		{
 			if (item.Weight <= 0f)
@@ -154,6 +184,8 @@ public partial class SpawnSystem : Node
 				continue;
 
 			if (_activeTier < def.MinTier || def.Scene == null)
+				continue;
+			if (!eliteUnlocked && string.Equals(item.EnemyId, EliteEnemyId, StringComparison.OrdinalIgnoreCase))
 				continue;
 
 			total += item.Weight;
@@ -175,13 +207,18 @@ public partial class SpawnSystem : Node
 
 			if (_activeTier < def.MinTier || def.Scene == null)
 				continue;
+			if (!eliteUnlocked && string.Equals(item.EnemyId, EliteEnemyId, StringComparison.OrdinalIgnoreCase))
+				continue;
 
 			accumulated += item.Weight;
 			if (roll <= accumulated)
-				return def.Scene;
+			{
+				PackedScene picked = def.Scene;
+				return TryInjectElite(picked, upgradeCount);
+			}
 		}
 
-		return EnemyScene;
+		return TryInjectElite(EnemyScene, upgradeCount);
 	}
 
 	private List<WeightedEnemy> GetWeightsForTier(int tier)
@@ -228,6 +265,79 @@ public partial class SpawnSystem : Node
 		}
 
 		ResetSpawnTimer();
+	}
+
+	private void UpdateUpgradeDrivenEvents(float dt)
+	{
+		if (!UseUpgradeCountUnlocks)
+			return;
+
+		if (_spawnFreezeTimer > 0f)
+		{
+			_spawnFreezeTimer -= dt;
+			if (_spawnFreezeTimer <= 0f && _miniBossScheduled && !_miniBossSpawned)
+				SpawnScheduledMiniBoss();
+			return;
+		}
+
+		if (_miniBossScheduled || _miniBossSpawned)
+			return;
+
+		int upgradeCount = GetUpgradeCount();
+		if (upgradeCount != MiniBossUnlockUpgradeCount)
+			return;
+
+		_miniBossScheduled = true;
+		_spawnFreezeTimer = Mathf.Max(0f, MiniBossFreezeSeconds);
+		DebugSystem.Log($"[SpawnSystem] MiniBoss scheduled at upgrade_count={upgradeCount}, freeze={_spawnFreezeTimer:F2}s");
+	}
+
+	private void SpawnScheduledMiniBoss()
+	{
+		_miniBossScheduled = false;
+		_miniBossSpawned = true;
+
+		if (!_enemyDefinitions.TryGetValue(MiniBossEnemyId, out EnemyDefinition def) || def.Scene == null)
+		{
+			DebugSystem.Warn($"[SpawnSystem] MiniBoss definition missing: {MiniBossEnemyId}");
+			return;
+		}
+
+		if (def.Scene.Instantiate() is not Node2D miniBoss)
+		{
+			DebugSystem.Warn("[SpawnSystem] MiniBoss scene root is not Node2D.");
+			return;
+		}
+
+		miniBoss.GlobalPosition = GetSpawnPositionAroundPlayer();
+		_enemiesRoot.AddChild(miniBoss);
+		DebugSystem.Log($"[SpawnSystem] MiniBoss spawned: {MiniBossEnemyId}");
+	}
+
+	private PackedScene TryInjectElite(PackedScene picked, int upgradeCount)
+	{
+		if (!UseUpgradeCountUnlocks)
+			return picked;
+		if (upgradeCount < EliteUnlockUpgradeCount)
+			return picked;
+		if (!_enemyDefinitions.TryGetValue(EliteEnemyId, out EnemyDefinition eliteDef) || eliteDef.Scene == null)
+			return picked;
+
+		float min = Mathf.Clamp(EliteInjectChanceMin, 0f, 1f);
+		float max = Mathf.Clamp(EliteInjectChanceMax, min, 1f);
+		float chance = _rng.RandfRange(min, max);
+		if (_rng.Randf() <= chance)
+			return eliteDef.Scene;
+
+		return picked;
+	}
+
+	private int GetUpgradeCount()
+	{
+		if (_upgradeSystem == null)
+			return 0;
+
+		return Mathf.Max(0, _upgradeSystem.AppliedUpgradeCount);
 	}
 
 	private int FindTierRuleIndex(float pressure)
