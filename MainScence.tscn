@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
-[ext_resource type="PackedScene" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
+[ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
 [ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
 [ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
@@ -17,7 +17,7 @@
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
 [ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
-[ext_resource type="Script" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
+[ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0
@@ -34,11 +34,10 @@ color = Color(0.07058824, 0.07450981, 0.10196079, 1)
 polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
 
 [node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(-101, -46)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_tyo64")
-UseMovementBounds = true
-MovementBounds = Rect2(48, 48, 1184, 624)
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 scale = Vector2(0.14, 0.14)
@@ -107,6 +106,7 @@ EliteUnlockUpgradeCount = 6
 
 [node name="DebugSystem" type="Node" parent="Systems"]
 script = ExtResource("13_debug")
+EnableF3DebugToggle = true
 
 [node name="UpgradeSystem" type="Node" parent="Systems"]
 script = ExtResource("14_upgrade")
@@ -145,9 +145,11 @@ offset_left = -270.0
 offset_top = -140.0
 offset_right = 270.0
 offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/StartPanel/Panel"]
-layout_mode = 2
+layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 516.0
@@ -162,7 +164,11 @@ horizontal_alignment = 1
 [node name="Desc" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Move: WASD\nPrimary: Left Click\nMelee: Right Click\nDash: Space\nSurvive as long as you can."
+text = "Move: WASD
+Primary: Left Click
+Melee: Right Click
+Dash: Space
+Survive as long as you can."
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -192,9 +198,11 @@ offset_left = -250.0
 offset_top = -110.0
 offset_right = 250.0
 offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/RestartPanel/Panel"]
-layout_mode = 2
+layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 476.0
