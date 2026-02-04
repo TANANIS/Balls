@@ -1,101 +1,116 @@
-# Project Genesis: 2D 幾何極簡生存遊戲
+# Balls  
+A 2D Top-Down Real-Time Survival Action Game (System-Driven Prototype)
 
-這是一份開發紀錄與架構指南。本專案核心目標是建立一個**高飽和、高壓、且具備清晰權責分離**的生存射擊遊戲原型。
+This repository contains a playable and actively evolving prototype of a 2D top-down real-time survival action game built with Godot Engine 4 (C# / Mono).
 
-## 🛠 架構哲學 (Core Philosophy)
-
-本專案不採用傳統的「萬能類別（God Object）」設計，而是嚴格遵循以下原則：
-
-1. **裁決權中心化**：只有 `CombatSystem` 能決定傷害是否成立，其他模組僅能發出「請求」。
-2. **狀態與行為分離**：
-* **狀態 (State)**：你是誰？（HP、是否無敵、是否死亡）→ 由 `Health` 模組維護。
-* **行為 (Behavior)**：你在做什麼？（移動、Dash、射擊）→ 由獨立行為節點處理。
-
-
-3. **資料流單向化**：`Request -> Resolve -> Apply`。
+The project is not focused on content scale or visual polish.
+Its primary goal is to explore system-driven game architecture, especially pressure-based pacing, centralized combat arbitration, and strictly controlled data flow.
 
 ---
 
-## 🏗 專案結構 (Project Structure)
+## Game Overview
 
-### Scene Tree 節點規範
+Genre:
+2D Top-Down · Real-Time · Survival Action
 
-```text
-Game (Node2D)
-├─ Player (CharacterBody2D)      # 門面：負責調度與輸入轉發
-│  ├─ PlayerHealth (Node)        # 狀態：HP、無敵 Timer
-│  ├─ PlayerMovement (Node)      # 行為：加速/摩擦運動
-│  ├─ PlayerDash (Node)          # 行為：位移與 I-Frame 注入
-│  └─ PlayerWeapon (Node)        # 行為：射擊與子彈生成
-├─ Systems (Node)                # 權威中心
-│  ├─ CombatSystem (Node)        # 核心：唯一傷害裁決入口
-│  └─ SpawnSystem (Node)         # 節奏：敵人生成管理
-├─ Projectiles (Node2D)          # 容器：子彈
-└─ Enemies (Node2D)              # 容器：敵人
+Player Experience:
+- Enemies continuously spawn and close in on the player
+- Screen density and tactical pressure increase over time
+- The player survives via movement, positioning, ranged and melee attacks
+- At critical moments, the game pauses and presents upgrade choices
+- Death immediately restarts the run — no stages, no checkpoints
 
-```
-
-### 📁 資料夾組織
-
-* `/Scripts/Player/`: 玩家模組化腳本。
-* `/Scripts/Systems/`: 全域權威系統（Combat, Spawn）。
-* `/Scripts/Projectiles/`: 子彈邏輯（僅限傳感與飛行）。
-* `/_Legacy/`: 棄用的事件驅動型碰撞腳本（僅供參考，禁止引用）。
+Each run is short, intense, and fully restartable.
 
 ---
 
-## ⚔️ 戰鬥管線 (Combat Pipeline)
+## Core Design Goals
 
-當攻擊發生時，必須經過以下流程：
-
-1. **偵測 (Detection)**：`Bullet` 或 `EnemyHitbox` 偵測到目標。
-2. **請求 (Request)**：建立 `DamageRequest` 物件，包含來源、傷害量、擊退方向。
-3. **裁決 (Authority)**：呼叫 `CombatSystem.RequestDamage(req)`。
-* 檢查目標是否已死。
-* 檢查目標是否處於無敵幀。
-
-
-4. **落地 (Execution)**：若通過裁決，`CombatSystem` 呼叫目標的 `TakeDamage()`。
+1. Predictable and controllable pacing
+2. Strict responsibility boundaries between systems
+3. Architecture that survives iteration
 
 ---
 
-## 🚦 碰撞層級定義 (Collision Layers)
+## High-Level Data Flow
 
-| Layer | 名稱 | 職責 |
-| --- | --- | --- |
-| 1 | World | 地形、牆壁、障礙物 |
-| 2 | PlayerBody | 玩家物理本體（處理 MoveAndSlide 碰撞） |
-| 3 | EnemyBody | 敵人物理本體 |
-| 4 | PlayerBullet | 玩家子彈偵測層 |
-| 5 | PlayerHurtbox | 玩家受傷判定區 |
-| 6 | EnemyHurtbox | 敵人受傷判定區 |
-| 7 | EnemyHitbox | 敵人攻擊判定區 |
+PressureSystem
+  ↓
+Director
+  ↓
+SpawnSystem
+  ↓
+EnemyFactory
+  ↓
+Enemy
 
----
-
-## 📝 開發者備忘錄 (Dev Notes)
-
-### 關於 Timer 的放置
-
-* **不要把所有 Timer 都塞在 Player.cs！**
-* 如果是「受傷無敵時間」，請去 `PlayerHealth.cs`。
-* 如果是「Dash 冷卻時間」，請去 `PlayerDash.cs`。
-* 如果是「射擊間隔」，請去 `PlayerWeapon.cs`。
-
-### 關於物理座標
-
-* 視覺 Sprite 的偏移（Offset）不代表物理位置。Debug 時永遠以節點的 `GlobalPosition` 為準。
+Critical rule:
+Enemies never read pressure values directly.
 
 ---
 
-## 🚀 待辦清單 (Roadmap)
+## System Responsibilities
 
-* [ ] **DebugSystem**: 實作碰撞區可視化與傷害 Log。
-* [ ] **Enemy AI**: 實作基礎追蹤與避障。
-* [ ] **Spawn 2.0**: 實作避障生成與難度曲線調整。
-* [ ] **UI MVP**: 實作幾何風格的 3 格血條。
+PressureSystem:
+- Maintains global pressure state (0–100)
+- Outputs immutable PressureState (value, tier, intensity)
+- Has no knowledge of enemies or spawning
 
-<<<<<<< HEAD
+Director:
+- Translates PressureState into SpawnPlan
+- Owns all pacing and difficulty mapping logic
+
+SpawnSystem:
+- Executes SpawnPlan timing and positioning
+- Emits SpawnRequest objects
+- Does not read raw pressure
+
+EnemyDistributor:
+- Selects enemy groups using budget + weight rules
+- Avoids repetitive RNG patterns
+- Enables designed compositions
+
+EnemyFactory:
+- Instantiates enemies from enemyTypeId
+- Applies initial parameters only
+
+Enemy:
+- Owns local behavior and state
+- Emits EnemyDied events only
+
 ---
-=======
->>>>>>> ac2e85bfa82332ef47d7fcd37419ab54c43b5946
+
+## Combat System Philosophy
+
+- All attacks emit DamageRequest
+- Only CombatSystem resolves damage
+- No entity directly modifies another entity’s HP
+- Centralized arbitration avoids race conditions
+
+---
+
+## Data-Driven Design
+
+CSV-driven configuration:
+- PressureTierRules.csv
+- EnemyDefinitions.csv
+- TierEnemyWeights.csv
+
+Allows tuning without recompilation and enforces clean separation between data and logic.
+
+---
+
+## Technology Stack
+
+Engine: Godot Engine 4.x
+Language: C# (Mono)
+Platform: PC (prototype)
+
+---
+
+## Project Status
+
+Active prototype under heavy iteration.
+Focus is on architecture, pacing control, and combat reliability.
+
+---
