@@ -23,36 +23,38 @@ public partial class CombatSystem : Node
 		}
 	}
 
-	public void RequestDamage(in DamageRequest req)
+	public bool RequestDamage(in DamageRequest req)
 	{
 		if (!req.IsValid())
-			return;
+			return false;
 		DebugSystem.Log("[CombatSystem] RequestDamage: valid request received");
 
 		ulong guardKey = MakeGuardKey(req.Source, req.Target);
 		if (_frameHitGuard.Contains(guardKey))
-			return;
+			return false;
 
 		_frameHitGuard.Add(guardKey);
 
 		if (req.Target is not IDamageable damageable)
-			return;
+			return false;
 
 		if (damageable.IsDead)
-			return;
+			return false;
 
 		if (damageable.IsInvincible)
-			return;
+			return false;
 
 		int finalDamage = req.BaseDamage;
 		if (finalDamage <= 0)
-			return;
+			return false;
 
 		bool wasDead = damageable.IsDead;
 		damageable.TakeDamage(finalDamage, req.Source);
 
 		if (!wasDead && damageable.IsDead && req.Target is EnemyHurtbox)
 			EnemyKilled?.Invoke(req.Source, req.Target);
+
+		return true;
 	}
 
 	private static ulong MakeGuardKey(Node source, Node target)

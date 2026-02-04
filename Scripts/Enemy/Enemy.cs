@@ -8,11 +8,13 @@ public partial class Enemy : CharacterBody2D
 	[Export] public NodePath PlayerPath = new NodePath("../../Player");
 	[Export] public NodePath BehaviorPath = new NodePath("Behavior");
 	[Export] public NodePath SeparationPath = new NodePath("Separation");
+	[Export] public NodePath EventsPath = new NodePath("Events");
 
 	private EnemyHealth _health;
 	private Node2D _player;
 	private EnemyBehaviorModule _behavior;
 	private EnemySeparationModule _separation;
+	private readonly Godot.Collections.Array<EnemyEventModule> _events = new();
 
 	public override void _Ready()
 	{
@@ -20,6 +22,8 @@ public partial class Enemy : CharacterBody2D
 		ResolvePlayer();
 		ResolveBehavior();
 		ResolveSeparation();
+		ResolveEvents();
+		EmitSpawned();
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -48,6 +52,36 @@ public partial class Enemy : CharacterBody2D
 	public void ApplySeparation(Vector2 pushDir, float strength, float duration)
 	{
 		_separation?.ApplyImpulse(pushDir, strength, duration);
+	}
+
+	public void NotifyDamaged(int amount, object source)
+	{
+		foreach (EnemyEventModule evt in _events)
+		{
+			if (!evt.Active)
+				continue;
+			evt.OnDamaged(this, amount, source);
+		}
+	}
+
+	public void NotifyHitPlayer(Node playerTarget)
+	{
+		foreach (EnemyEventModule evt in _events)
+		{
+			if (!evt.Active)
+				continue;
+			evt.OnHitPlayer(this, playerTarget);
+		}
+	}
+
+	public void NotifyDeath(object killer)
+	{
+		foreach (EnemyEventModule evt in _events)
+		{
+			if (!evt.Active)
+				continue;
+			evt.OnDeath(this, killer);
+		}
 	}
 
 	private void ResolvePlayer()
@@ -93,6 +127,32 @@ public partial class Enemy : CharacterBody2D
 		}
 	}
 
+	private void ResolveEvents()
+	{
+		_events.Clear();
+
+		Node root = GetNodeOrNull<Node>(EventsPath);
+		if (root != null)
+		{
+			foreach (Node child in root.GetChildren())
+			{
+				if (child is EnemyEventModule evt)
+					_events.Add(evt);
+			}
+		}
+		else
+		{
+			foreach (Node child in GetChildren())
+			{
+				if (child is EnemyEventModule evt)
+					_events.Add(evt);
+			}
+		}
+
+		foreach (EnemyEventModule evt in _events)
+			evt.OnInitialized(this);
+	}
+
 	private Vector2 GetDesiredVelocity(double delta)
 	{
 		if (_behavior != null && _behavior.Active)
@@ -107,5 +167,15 @@ public partial class Enemy : CharacterBody2D
 			return Vector2.Zero;
 
 		return toPlayer.Normalized() * MaxSpeed;
+	}
+
+	private void EmitSpawned()
+	{
+		foreach (EnemyEventModule evt in _events)
+		{
+			if (!evt.Active)
+				continue;
+			evt.OnSpawned(this);
+		}
 	}
 }

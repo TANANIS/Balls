@@ -1,4 +1,4 @@
-﻿[gd_scene load_steps=11 format=3 uid="uid://lt2ee22cjppb"]
+﻿[gd_scene load_steps=12 format=3 uid="uid://lt2ee22cjppb"]
 
 [ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SwarmCircle.png" id="2_tex"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyChaseBehavior.cs" id="6_behavior"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyDebugEventModule.cs" id="8_debug_event"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -37,6 +38,11 @@ script = ExtResource("6_behavior")
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
+
+[node name="Events" type="Node" parent="."]
+
+[node name="DebugEvents" type="Node" parent="Events"]
+script = ExtResource("8_debug_event")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 64
