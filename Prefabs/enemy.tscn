@@ -1,55 +1,63 @@
-[gd_scene load_steps=9 format=3 uid="uid://lt2ee22cjppb"]
+﻿[gd_scene load_steps=11 format=3 uid="uid://lt2ee22cjppb"]
 
-[ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_30yes"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SwarmCircle.png" id="2_t4g6b"]
-[ext_resource type="Script" uid="uid://xsfiln41pkvm" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_30yes"]
-[ext_resource type="Script" uid="uid://cdemuwgfu8h68" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_n7q57"]
-[ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_n7q57"]
+[ext_resource type="Script" uid="uid://rq2t1r45isp2" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SwarmCircle.png" id="2_tex"]
+[ext_resource type="Script" uid="uid://xsfiln41pkvm" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
+[ext_resource type="Script" uid="uid://cdemuwgfu8h68" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
+[ext_resource type="Script" uid="uid://b5j5u6cfwjan2" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyChaseBehavior.cs" id="6_behavior"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_30yes"]
-radius = 30.016663
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_80imi"]
-radius = 35.014282
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_n7q57"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 33.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
+radius = 26.0
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 7
-script = ExtResource("1_30yes")
+script = ExtResource("1_enemy")
+MaxSpeed = 110.0
+Accel = 1200.0
+Friction = 900.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_t4g6b")
+texture = ExtResource("2_tex")
 scale = Vector2(0.125, 0.125)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1)
-shape = SubResource("CircleShape2D_30yes")
+shape = SubResource("CircleShape2D_body")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("6_behavior")
+
+[node name="Separation" type="Node" parent="."]
+script = ExtResource("7_separation")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 64
 collision_mask = 16
-script = ExtResource("3_30yes")
+script = ExtResource("3_hitbox")
+ContactDamage = 1
+TickInterval = 0.3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visible = false
-position = Vector2(0, -1)
-shape = SubResource("CircleShape2D_80imi")
-debug_color = Color(0.83190435, 0.30449724, 0.6336639, 0.41960785)
+shape = SubResource("CircleShape2D_hitbox")
 
 [node name="Hurtbox" type="Area2D" parent="."]
-position = Vector2(0, -1)
 collision_layer = 32
 collision_mask = 8
-script = ExtResource("4_n7q57")
+script = ExtResource("4_hurtbox")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 visible = false
-shape = SubResource("CircleShape2D_n7q57")
-debug_color = Color(0.7789724, 0.31464693, 0.7721506, 0.41960785)
+shape = SubResource("CircleShape2D_hurtbox")
 
 [node name="Health" type="Node" parent="."]
-script = ExtResource("5_n7q57")
-MaxHp = 1
+script = ExtResource("5_health")
+MaxHp = 6

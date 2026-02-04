@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://bxen3q3hvcxk"]
 
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
+[ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="13_debug"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
-[ext_resource type="Script" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
+[ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0
@@ -34,8 +34,8 @@ collision_mask = 5
 script = ExtResource("1_tyo64")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("1_ikhqc")
 scale = Vector2(0.14, 0.14)
+texture = ExtResource("1_ikhqc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 position = Vector2(0, -1)
@@ -77,7 +77,6 @@ script = ExtResource("5_x4450")
 
 [node name="Health" type="Node" parent="Player"]
 script = ExtResource("8_vpcxr")
-MaxHp = 3
 HurtIFrame = 0.1
 
 [node name="Enemies" type="Node2D" parent="."]

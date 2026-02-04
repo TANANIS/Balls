@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SwarmCircle.png" id="2_tex"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyChaseBehavior.cs" id="6_behavior"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 28.0
@@ -30,6 +32,12 @@ scale = Vector2(0.125, 0.125)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
 shape = SubResource("CircleShape2D_body")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("6_behavior")
+
+[node name="Separation" type="Node" parent="."]
+script = ExtResource("7_separation")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 64
