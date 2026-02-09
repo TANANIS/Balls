@@ -29,14 +29,19 @@ public partial class SpawnSystem : Node
 	[Export] public string MiniBossEnemyId = "miniboss_hex";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
 
-	[Export] public float LateGameStartSeconds = 300f;
-	[Export] public float LateGameGrowthPerMinute = 1.25f;
-	[Export] public float LateGameSpawnIntervalMinClamp = 0.2f;
-	[Export] public int LateGameMaxAliveCap = 220;
-	[Export] public float LateGameEliteChanceMultiplier = 1.6f;
-	[Export] public int LateGameEliteUnlockReduction = 2;
-	[Export] public int LateGameMiniBossUnlockReduction = 2;
-	[Export] public float LateGameMiniBossInterval = 75f;
+	[Export] public float LateGameStartSeconds = 60f;
+	[Export] public float LateGameSpawnIntervalMinClamp = 0.1f;
+	[Export] public int LateGameMaxAliveCap = 900;
+	[Export] public float LateGameSecondRampStartSeconds = 240f;
+	[Export] public float LateGameSecondRampStepSeconds = 20f;
+	[Export] public float LateGameEliteChanceMultiplier = 2.0f;
+	[Export] public int LateGameEliteUnlockReduction = 4;
+	[Export] public int LateGameMiniBossUnlockReduction = 4;
+	[Export] public float LateGameMiniBossInterval = 60f;
+	[Export] public float LateGameWeightSwarm = 40f;
+	[Export] public float LateGameWeightCharger = 30f;
+	[Export] public float LateGameWeightTank = 20f;
+	[Export] public float LateGameWeightElite = 10f;
 
 	private Node2D _enemiesRoot;
 	private Node2D _player;
@@ -244,6 +249,9 @@ public partial class SpawnSystem : Node
 
 	private List<WeightedEnemy> GetWeightsForTier(int tier)
 	{
+		if (IsLateGame())
+			return BuildLateGameWeights(tier);
+
 		if (_tierWeights.TryGetValue(tier, out List<WeightedEnemy> weights))
 			return weights;
 
@@ -254,6 +262,30 @@ public partial class SpawnSystem : Node
 		}
 
 		return null;
+	}
+
+	private List<WeightedEnemy> BuildLateGameWeights(int tier)
+	{
+		var list = new List<WeightedEnemy>();
+
+		TryAddWeight(list, "swarm_circle", LateGameWeightSwarm, tier);
+		TryAddWeight(list, "charger_triangle", LateGameWeightCharger, tier);
+		TryAddWeight(list, "tank_square", LateGameWeightTank, tier);
+		TryAddWeight(list, "elite_swarm_circle", LateGameWeightElite, tier);
+
+		return list;
+	}
+
+	private void TryAddWeight(List<WeightedEnemy> list, string enemyId, float weight, int tier)
+	{
+		if (weight <= 0f)
+			return;
+		if (!_enemyDefinitions.TryGetValue(enemyId, out EnemyDefinition def))
+			return;
+		if (def.Scene == null || tier < def.MinTier)
+			return;
+
+		list.Add(new WeightedEnemy { EnemyId = enemyId, Weight = weight });
 	}
 
 	private void UpdateTierRuntimeSettings()
@@ -270,7 +302,7 @@ public partial class SpawnSystem : Node
 
 		_activeTierRuleIndex = idx;
 		TierRule active = _tierRules[idx];
-		_activeTier = active.Tier;
+		_activeTier = Mathf.Max(active.Tier, GetTimeForcedTier());
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, active.SpawnIntervalMin);
 		_activeSpawnIntervalMax = Mathf.Max(_activeSpawnIntervalMin, active.SpawnIntervalMax);
 		_activeMaxAlive = Mathf.Max(1, active.MaxAlive);
@@ -291,6 +323,16 @@ public partial class SpawnSystem : Node
 		ResetSpawnTimer();
 	}
 
+	private int GetTimeForcedTier()
+	{
+		// Force higher tiers by time so tanks/elites appear quickly.
+		if (_survivalSeconds >= 240f) return 4;
+		if (_survivalSeconds >= 180f) return 4;
+		if (_survivalSeconds >= 120f) return 3;
+		if (_survivalSeconds >= 60f) return 2;
+		return -1;
+	}
+
 	private bool IsLateGame()
 	{
 		return LateGameStartSeconds > 0f && _survivalSeconds >= LateGameStartSeconds;
@@ -301,8 +343,20 @@ public partial class SpawnSystem : Node
 		if (!IsLateGame())
 			return 1f;
 
-		float minutes = Mathf.Max(0f, (_survivalSeconds - LateGameStartSeconds) / 60f);
-		return Mathf.Pow(Mathf.Max(1.01f, LateGameGrowthPerMinute), minutes);
+		float minutesSince = Mathf.Max(0f, (_survivalSeconds - LateGameStartSeconds) / 60f);
+		int steps = Mathf.FloorToInt(minutesSince) + 1; // 1 min => x2, 2 min => x4, ...
+		float mult = Mathf.Pow(2f, steps);
+
+		// Second ramp: after a later time, keep doubling faster.
+		if (LateGameSecondRampStartSeconds > 0f && _survivalSeconds >= LateGameSecondRampStartSeconds)
+		{
+			float extra = Mathf.Max(0f, _survivalSeconds - LateGameSecondRampStartSeconds);
+			int extraSteps = Mathf.FloorToInt(extra / Mathf.Max(1f, LateGameSecondRampStepSeconds));
+			if (extraSteps > 0)
+				mult *= Mathf.Pow(2f, extraSteps);
+		}
+
+		return mult;
 	}
 
 	private float GetLateGameSpawnInterval(float baseInterval)
