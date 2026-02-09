@@ -1,6 +1,62 @@
-[gd_scene load_steps=2 format=3 uid="uid://cc5l4n54jpjpi"]
+[gd_scene load_steps=5 format=3 uid="uid://cc5l4n54jpjpi"]
 
 [ext_resource type="Script" uid="uid://dq3t2pkhxa0k0" path="res://Scripts/UI/UpgradeMenu.cs" id="1_upgrade_menu_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.05, 0.07, 0.12, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 12
+shadow_color = Color(0.0, 0.6, 0.8, 0.2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.08, 0.12, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 6
+shadow_color = Color(0.0, 0.6, 0.8, 0.25)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.1, 0.18, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 1.0, 1.0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_color = Color(0.0, 0.8, 1.0, 0.35)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.06, 0.1, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.7, 0.85, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 3
+shadow_color = Color(0.0, 0.4, 0.6, 0.2)
 
 [node name="UpgradeMenu" type="Control"]
 layout_mode = 1
@@ -18,35 +74,48 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -130.0
-offset_right = 280.0
-offset_bottom = 130.0
+offset_left = -340.0
+offset_top = -170.0
+offset_right = 340.0
+offset_bottom = 170.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="VBox" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
 [node name="Title" type="Label" parent="Panel/VBox"]
 layout_mode = 2
-text = "選擇一項升級"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+text = "CHOOSE UPGRADE"
 horizontal_alignment = 1
 
 [node name="Options" type="HBoxContainer" parent="Panel/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 14
 
 [node name="LeftButton" type="Button" parent="Panel/VBox/Options"]
-custom_minimum_size = Vector2(250, 150)
+custom_minimum_size = Vector2(300, 170)
 layout_mode = 2
-text = "左側選項"
+text = "Upgrade A"
 text_overrun_behavior = 1
 autowrap_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
 
 [node name="RightButton" type="Button" parent="Panel/VBox/Options"]
-custom_minimum_size = Vector2(250, 150)
+custom_minimum_size = Vector2(300, 170)
 layout_mode = 2
-text = "右側選項"
+text = "Upgrade B"
 text_overrun_behavior = 1
 autowrap_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 16

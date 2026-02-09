@@ -4,16 +4,16 @@ public partial class PlayerMelee : Node
 {
 	[Export] public string AttackAction = InputActions.AttackSecondary;
 	[Export] public float Cooldown = 0.35f;
-	[Export] public float Range = 56f;
-	[Export] public float ArcDegrees = 90f;
-	[Export] public int Damage = 1;
+	[Export] public float Range = 140f;
+	[Export] public float ArcDegrees = 220f;
+	[Export] public int Damage = 3;
 	[Export] public uint TargetMask = 1u << 5; // Layer 6: EnemyHurtbox
 
 	[Export] public PackedScene MeleeVfxScene;
 	[Export] public NodePath VfxPath;
 	[Export] public float VfxDuration = 0.12f;
 	[Export] public Color VfxColor = new Color(1f, 0.9f, 0.2f, 0.7f);
-	[Export] public float VfxForwardOffset = 24f;
+	[Export] public float VfxForwardOffset = 36f;
 	[Export] public float VfxSideOffset = 0f;
 
 	private Player _player;
