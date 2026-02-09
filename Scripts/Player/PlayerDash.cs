@@ -127,6 +127,8 @@ public partial class PlayerDash : Node
 		_isDashing = true;
 		_dashTimer = DashDuration;
 
+		AudioManager.Instance?.PlaySfxPlayerDash();
+
 		// 若當下沒有輸入，就用玩家最後方向，避免原地 dash 無方向
 		_dashDir = (inputDir == Vector2.Zero) ? _player.LastMoveDir : inputDir.Normalized();
 

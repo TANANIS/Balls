@@ -96,6 +96,8 @@ public partial class PlayerMelee : Node
 		if (_combat == null || _player == null)
 			return;
 
+		AudioManager.Instance?.PlaySfxPlayerMelee();
+
 		Vector2 attackDir = _player.GetGlobalMousePosition() - _player.GlobalPosition;
 		if (attackDir.LengthSquared() < 0.0001f)
 			attackDir = _player.LastMoveDir;

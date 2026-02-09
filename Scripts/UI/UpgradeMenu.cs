@@ -51,6 +51,7 @@ public partial class UpgradeMenu : Control
 
 		if (_isOpen && @event.IsActionPressed("ui_cancel"))
 		{
+			AudioManager.Instance?.PlaySfxUiExit();
 			ApplyRandomCurrentOption();
 		}
 	}
@@ -67,6 +68,7 @@ public partial class UpgradeMenu : Control
 		_isOpen = true;
 		Visible = true;
 		GetTree().Paused = true;
+		AudioManager.Instance?.PlaySfxUiButton();
 		_leftButton.GrabFocus();
 	}
 
@@ -113,7 +115,9 @@ public partial class UpgradeMenu : Control
 
 	private void ApplyOption(UpgradeSystem.UpgradeOptionData option)
 	{
+		AudioManager.Instance?.PlaySfxUiUpgradeSelect();
 		_upgradeSystem?.ApplyUpgrade(option.Id);
+		AudioManager.Instance?.PlaySfxPlayerUpgrade();
 		CloseMenu();
 	}
 

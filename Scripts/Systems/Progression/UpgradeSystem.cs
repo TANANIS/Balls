@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +10,7 @@ public partial class UpgradeSystem : Node
 	private PlayerWeapon _primaryAttack;
 	private PlayerMelee _secondaryAttack;
 	private PlayerDash _dash;
+	private PlayerHealth _playerHealth;
 	private int _appliedUpgradeCount = 0;
 
 	public int AppliedUpgradeCount => _appliedUpgradeCount;
@@ -25,7 +26,8 @@ public partial class UpgradeSystem : Node
 		new UpgradeOptionData(UpgradeId.SecondaryFaster, "近戰加速", "近戰冷卻 -12%"),
 		new UpgradeOptionData(UpgradeId.DashFasterCooldown, "衝刺加速", "衝刺冷卻 -12%"),
 		new UpgradeOptionData(UpgradeId.DashSpeedUp, "衝刺速度提升", "衝刺速度 +90"),
-		new UpgradeOptionData(UpgradeId.DashLonger, "衝刺延長", "衝刺持續時間 +0.03 秒")
+		new UpgradeOptionData(UpgradeId.DashLonger, "衝刺延長", "衝刺持續時間 +0.03 秒"),
+		new UpgradeOptionData(UpgradeId.MaxHpUp, "最大生命值提升", "最大生命值 +1")
 	};
 
 	public override void _EnterTree()
@@ -45,6 +47,7 @@ public partial class UpgradeSystem : Node
 		_primaryAttack = player.GetNodeOrNull<PlayerWeapon>("PrimaryAttack");
 		_secondaryAttack = player.GetNodeOrNull<PlayerMelee>("SecondaryAttack");
 		_dash = player.GetNodeOrNull<PlayerDash>("Dash");
+		_playerHealth = player.GetNodeOrNull<PlayerHealth>("Health");
 	}
 
 	public void ApplyUpgrade(UpgradeId id)
@@ -80,6 +83,9 @@ public partial class UpgradeSystem : Node
 				break;
 			case UpgradeId.DashLonger:
 				_dash?.AddDuration(0.03f);
+				break;
+			case UpgradeId.MaxHpUp:
+				_playerHealth?.AddMaxHp(1);
 				break;
 		}
 
