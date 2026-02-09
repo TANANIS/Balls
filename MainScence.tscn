@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=80 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
@@ -15,9 +15,66 @@
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/Director/SpawnSystem.cs" id="12_vpcxr"]
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="13_debug"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
+[ext_resource type="Script" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="14_score"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
 [ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
+[ext_resource type="Script" path="res://Scripts/Audio/AudioManager.cs" id="18_audio_manager"]
+[ext_resource type="Script" path="res://Scripts/UI/BackgroundAnimatedSprite.cs" id="19_bg_script"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-001.png" id="bg_001"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-002.png" id="bg_002"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-003.png" id="bg_003"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-004.png" id="bg_004"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-005.png" id="bg_005"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-006.png" id="bg_006"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-007.png" id="bg_007"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-008.png" id="bg_008"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-009.png" id="bg_009"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-010.png" id="bg_010"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-011.png" id="bg_011"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-012.png" id="bg_012"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-013.png" id="bg_013"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-014.png" id="bg_014"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-015.png" id="bg_015"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-016.png" id="bg_016"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-017.png" id="bg_017"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-018.png" id="bg_018"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-019.png" id="bg_019"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-020.png" id="bg_020"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-021.png" id="bg_021"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-022.png" id="bg_022"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-023.png" id="bg_023"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-024.png" id="bg_024"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-025.png" id="bg_025"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-026.png" id="bg_026"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-027.png" id="bg_027"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-028.png" id="bg_028"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-029.png" id="bg_029"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-030.png" id="bg_030"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-031.png" id="bg_031"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-032.png" id="bg_032"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-033.png" id="bg_033"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-034.png" id="bg_034"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-035.png" id="bg_035"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-036.png" id="bg_036"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-037.png" id="bg_037"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-038.png" id="bg_038"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-039.png" id="bg_039"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-040.png" id="bg_040"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-041.png" id="bg_041"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-042.png" id="bg_042"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-043.png" id="bg_043"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-044.png" id="bg_044"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-045.png" id="bg_045"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-046.png" id="bg_046"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-047.png" id="bg_047"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-048.png" id="bg_048"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-049.png" id="bg_049"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-050.png" id="bg_050"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-051.png" id="bg_051"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-052.png" id="bg_052"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-053.png" id="bg_053"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-054.png" id="bg_054"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0
@@ -25,13 +82,31 @@ radius = 34.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
 radius = 36.0
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_bg"]
+animations = [{
+"frames": [ExtResource("bg_001"), ExtResource("bg_002"), ExtResource("bg_003"), ExtResource("bg_004"), ExtResource("bg_005"), ExtResource("bg_006"), ExtResource("bg_007"), ExtResource("bg_008"), ExtResource("bg_009"), ExtResource("bg_010"), ExtResource("bg_011"), ExtResource("bg_012"), ExtResource("bg_013"), ExtResource("bg_014"), ExtResource("bg_015"), ExtResource("bg_016"), ExtResource("bg_017"), ExtResource("bg_018"), ExtResource("bg_019"), ExtResource("bg_020"), ExtResource("bg_021"), ExtResource("bg_022"), ExtResource("bg_023"), ExtResource("bg_024"), ExtResource("bg_025"), ExtResource("bg_026"), ExtResource("bg_027"), ExtResource("bg_028"), ExtResource("bg_029"), ExtResource("bg_030"), ExtResource("bg_031"), ExtResource("bg_032"), ExtResource("bg_033"), ExtResource("bg_034"), ExtResource("bg_035"), ExtResource("bg_036"), ExtResource("bg_037"), ExtResource("bg_038"), ExtResource("bg_039"), ExtResource("bg_040"), ExtResource("bg_041"), ExtResource("bg_042"), ExtResource("bg_043"), ExtResource("bg_044"), ExtResource("bg_045"), ExtResource("bg_046"), ExtResource("bg_047"), ExtResource("bg_048"), ExtResource("bg_049"), ExtResource("bg_050"), ExtResource("bg_051"), ExtResource("bg_052"), ExtResource("bg_053"), ExtResource("bg_054")],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="Shader" id="Shader_low_hp_vignette"]
+code = "shader_type canvas_item;\nuniform float intensity : hint_range(0.0, 1.0) = 0.0;\nuniform float radius : hint_range(0.2, 1.0) = 0.7;\nuniform float softness : hint_range(0.01, 1.0) = 0.25;\nuniform vec4 tint : source_color = vec4(0.85, 0.08, 0.08, 1.0);\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\tvec2 centered = uv * 2.0 - 1.0;\n\tfloat dist = length(centered);\n\tfloat edge = smoothstep(radius, radius + softness, dist);\n\tfloat alpha = edge * intensity;\n\tCOLOR = vec4(tint.rgb, tint.a * alpha);\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_low_hp_vignette"]
+shader = SubResource("Shader_low_hp_vignette")
+
 [node name="Game" type="Node2D"]
 
 [node name="World" type="Node2D" parent="."]
 
-[node name="Background" type="Polygon2D" parent="World"]
-color = Color(0.07058824, 0.07450981, 0.10196079, 1)
-polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
+[node name="Background" type="AnimatedSprite2D" parent="World"]
+sprite_frames = SubResource("SpriteFrames_bg")
+animation = &"default"
+playing = true
+centered = true
+z_index = -10
+script = ExtResource("19_bg_script")
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(-101, -46)
@@ -94,6 +169,9 @@ HurtIFrame = 0.1
 [node name="CombatSystem" type="Node" parent="Systems"]
 script = ExtResource("8_4xcne")
 
+[node name="AudioManager" type="Node" parent="Systems"]
+script = ExtResource("18_audio_manager")
+
 [node name="SpawnSystem" type="Node" parent="Systems"]
 script = ExtResource("12_vpcxr")
 EnemyScene = ExtResource("2_0d7xb")
@@ -111,10 +189,34 @@ EnableF3DebugToggle = true
 [node name="UpgradeSystem" type="Node" parent="Systems"]
 script = ExtResource("14_upgrade")
 
+[node name="ScoreSystem" type="Node" parent="Systems"]
+script = ExtResource("14_score")
+
 [node name="TimeSystem" type="Node" parent="Systems"]
 script = ExtResource("16_pressure")
 
+[node name="BackgroundDimmer" type="ColorRect" parent="World"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5)
+z_index = -9
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="LowHealthVignette" type="ColorRect" parent="CanvasLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("ShaderMaterial_low_hp_vignette")
 
 [node name="UI" type="Control" parent="CanvasLayer"]
 layout_mode = 3
@@ -124,6 +226,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("17_flow_ui")
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/UI"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 320.0
+offset_bottom = 48.0
+text = "Score: 0"
 
 [node name="StartPanel" type="Control" parent="CanvasLayer/UI"]
 layout_mode = 1
@@ -221,9 +331,19 @@ text = "Press the button to restart this run."
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Score" type="Label" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Score: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="RestartButton" type="Button" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "Restart Run"
 
 [node name="UpgradeMenu" parent="CanvasLayer/UI" instance=ExtResource("15_upgrade_menu")]
+
+
+

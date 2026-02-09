@@ -50,6 +50,7 @@ public partial class PlayerHealth : Node
 		if (IsInvincible) return;
 
 		_hp -= amount;
+		AudioManager.Instance?.PlaySfxPlayerGetHit();
 		DebugSystem.Log($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
 
 		if (HurtIFrame > 0f)
@@ -58,7 +59,13 @@ public partial class PlayerHealth : Node
 		if (_hp <= 0 && !_isDead)
 		{
 			_isDead = true;
+			AudioManager.Instance?.StopLowHpLoop();
+			AudioManager.Instance?.PlaySfxPlayerDie();
 			Died?.Invoke();
+		}
+		else
+		{
+			UpdateLowHpAudio();
 		}
 	}
 
@@ -67,5 +74,31 @@ public partial class PlayerHealth : Node
 		_hp = MaxHp;
 		_isDead = false;
 		_invincibleTimer = 0f;
+		UpdateLowHpAudio();
+	}
+
+	public void AddMaxHp(int amount, bool healByAmount = true)
+	{
+		if (amount <= 0) return;
+
+		MaxHp += amount;
+		if (healByAmount)
+			_hp += amount;
+
+		if (_hp > MaxHp)
+			_hp = MaxHp;
+
+		UpdateLowHpAudio();
+	}
+
+	private void UpdateLowHpAudio()
+	{
+		if (_isDead)
+			return;
+
+		if (_hp <= 1)
+			AudioManager.Instance?.StartLowHpLoop();
+		else
+			AudioManager.Instance?.StopLowHpLoop();
 	}
 }

@@ -9,5 +9,6 @@ public enum UpgradeId
 	SecondaryFaster,
 	DashFasterCooldown,
 	DashSpeedUp,
-	DashLonger
+	DashLonger,
+	MaxHpUp
 }

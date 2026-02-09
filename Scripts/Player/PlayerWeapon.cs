@@ -62,6 +62,8 @@ public partial class PlayerWeapon : Node
 		if (ProjectileScene == null || _projectileContainer == null || _player == null)
 			return;
 
+		AudioManager.Instance?.PlaySfxPlayerFire();
+
 		Vector2 mouseWorld = _player.GetGlobalMousePosition();
 		Vector2 dir = mouseWorld - _player.GlobalPosition;
 		if (dir.LengthSquared() < 0.0001f)
