@@ -29,6 +29,15 @@ public partial class SpawnSystem : Node
 	[Export] public string MiniBossEnemyId = "miniboss_hex";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
 
+	[Export] public float LateGameStartSeconds = 300f;
+	[Export] public float LateGameGrowthPerMinute = 1.25f;
+	[Export] public float LateGameSpawnIntervalMinClamp = 0.2f;
+	[Export] public int LateGameMaxAliveCap = 220;
+	[Export] public float LateGameEliteChanceMultiplier = 1.6f;
+	[Export] public int LateGameEliteUnlockReduction = 2;
+	[Export] public int LateGameMiniBossUnlockReduction = 2;
+	[Export] public float LateGameMiniBossInterval = 75f;
+
 	private Node2D _enemiesRoot;
 	private Node2D _player;
 	private PressureSystem _pressureSystem;
@@ -39,6 +48,9 @@ public partial class SpawnSystem : Node
 	private float _activeSpawnIntervalMin;
 	private float _activeSpawnIntervalMax;
 	private int _activeMaxAlive;
+	private float _baseSpawnIntervalMin;
+	private float _baseSpawnIntervalMax;
+	private int _baseMaxAlive;
 	private float _activeSpawnRadiusMin;
 	private float _activeSpawnRadiusMax;
 	private readonly List<TierRule> _tierRules = new();
@@ -48,6 +60,8 @@ public partial class SpawnSystem : Node
 	private bool _miniBossScheduled = false;
 	private bool _miniBossSpawned = false;
 	private float _spawnFreezeTimer = 0f;
+	private float _survivalSeconds = 0f;
+	private float _nextLateMiniBossAt = -1f;
 
 	public override void _Ready()
 	{
@@ -83,15 +97,19 @@ public partial class SpawnSystem : Node
 		if (_enemiesRoot == null || _player == null)
 			return;
 
+		_survivalSeconds += (float)delta;
+
 		EnsurePressureSystem();
 		EnsureUpgradeSystem();
 		UpdateTierRuntimeSettings();
 		UpdateUpgradeDrivenEvents((float)delta);
+		TryLateGameMiniBoss();
 
 		if (_spawnFreezeTimer > 0f)
 			return;
 
-		if (_enemiesRoot.GetChildCount() >= _activeMaxAlive)
+		int maxAlive = GetLateGameMaxAlive();
+		if (_enemiesRoot.GetChildCount() >= maxAlive)
 			return;
 
 		_timer -= (float)delta;
@@ -152,14 +170,17 @@ public partial class SpawnSystem : Node
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, SpawnInterval);
 		_activeSpawnIntervalMax = _activeSpawnIntervalMin;
 		_activeMaxAlive = Mathf.Max(1, MaxAliveEnemies);
+		_baseSpawnIntervalMin = _activeSpawnIntervalMin;
+		_baseSpawnIntervalMax = _activeSpawnIntervalMax;
+		_baseMaxAlive = _activeMaxAlive;
 		_activeSpawnRadiusMin = Mathf.Max(1f, SpawnRadiusMin);
 		_activeSpawnRadiusMax = Mathf.Max(_activeSpawnRadiusMin, SpawnRadiusMax);
 	}
 
 	private void ResetSpawnTimer()
 	{
-		float min = Mathf.Max(0.05f, _activeSpawnIntervalMin);
-		float max = Mathf.Max(min, _activeSpawnIntervalMax);
+		float min = Mathf.Max(0.05f, GetLateGameSpawnInterval(_baseSpawnIntervalMin));
+		float max = Mathf.Max(min, GetLateGameSpawnInterval(_baseSpawnIntervalMax));
 		_timer = _rng.RandfRange(min, max);
 	}
 
@@ -253,6 +274,9 @@ public partial class SpawnSystem : Node
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, active.SpawnIntervalMin);
 		_activeSpawnIntervalMax = Mathf.Max(_activeSpawnIntervalMin, active.SpawnIntervalMax);
 		_activeMaxAlive = Mathf.Max(1, active.MaxAlive);
+		_baseSpawnIntervalMin = _activeSpawnIntervalMin;
+		_baseSpawnIntervalMax = _activeSpawnIntervalMax;
+		_baseMaxAlive = _activeMaxAlive;
 		_activeSpawnRadiusMin = Mathf.Max(1f, active.SpawnRadiusMin);
 		_activeSpawnRadiusMax = Mathf.Max(_activeSpawnRadiusMin, active.SpawnRadiusMax);
 
@@ -265,6 +289,36 @@ public partial class SpawnSystem : Node
 		}
 
 		ResetSpawnTimer();
+	}
+
+	private bool IsLateGame()
+	{
+		return LateGameStartSeconds > 0f && _survivalSeconds >= LateGameStartSeconds;
+	}
+
+	private float GetLateGameMultiplier()
+	{
+		if (!IsLateGame())
+			return 1f;
+
+		float minutes = Mathf.Max(0f, (_survivalSeconds - LateGameStartSeconds) / 60f);
+		return Mathf.Pow(Mathf.Max(1.01f, LateGameGrowthPerMinute), minutes);
+	}
+
+	private float GetLateGameSpawnInterval(float baseInterval)
+	{
+		float mult = GetLateGameMultiplier();
+		float interval = baseInterval / mult;
+		return Mathf.Max(LateGameSpawnIntervalMinClamp, interval);
+	}
+
+	private int GetLateGameMaxAlive()
+	{
+		float mult = GetLateGameMultiplier();
+		int max = Mathf.RoundToInt(_baseMaxAlive * mult);
+		if (LateGameMaxAliveCap > 0)
+			max = Mathf.Min(max, LateGameMaxAliveCap);
+		return Mathf.Max(1, max);
 	}
 
 	private void UpdateUpgradeDrivenEvents(float dt)
@@ -284,7 +338,10 @@ public partial class SpawnSystem : Node
 			return;
 
 		int upgradeCount = GetUpgradeCount();
-		if (upgradeCount != MiniBossUnlockUpgradeCount)
+		int required = MiniBossUnlockUpgradeCount;
+		if (IsLateGame())
+			required = Mathf.Max(0, MiniBossUnlockUpgradeCount - LateGameMiniBossUnlockReduction);
+		if (upgradeCount != required)
 			return;
 
 		_miniBossScheduled = true;
@@ -318,13 +375,21 @@ public partial class SpawnSystem : Node
 	{
 		if (!UseUpgradeCountUnlocks)
 			return picked;
-		if (upgradeCount < EliteUnlockUpgradeCount)
+		int required = EliteUnlockUpgradeCount;
+		if (IsLateGame())
+			required = Mathf.Max(0, EliteUnlockUpgradeCount - LateGameEliteUnlockReduction);
+		if (upgradeCount < required)
 			return picked;
 		if (!_enemyDefinitions.TryGetValue(EliteEnemyId, out EnemyDefinition eliteDef) || eliteDef.Scene == null)
 			return picked;
 
 		float min = Mathf.Clamp(EliteInjectChanceMin, 0f, 1f);
 		float max = Mathf.Clamp(EliteInjectChanceMax, min, 1f);
+		if (IsLateGame())
+		{
+			min = Mathf.Clamp(min * LateGameEliteChanceMultiplier, 0f, 1f);
+			max = Mathf.Clamp(max * LateGameEliteChanceMultiplier, min, 1f);
+		}
 		float chance = _rng.RandfRange(min, max);
 		if (_rng.Randf() <= chance)
 			return eliteDef.Scene;
@@ -338,6 +403,27 @@ public partial class SpawnSystem : Node
 			return 0;
 
 		return Mathf.Max(0, _upgradeSystem.AppliedUpgradeCount);
+	}
+
+	private void TryLateGameMiniBoss()
+	{
+		if (!IsLateGame())
+			return;
+		if (LateGameMiniBossInterval <= 0f)
+			return;
+		if (_spawnFreezeTimer > 0f)
+			return;
+		if (_enemiesRoot == null)
+			return;
+
+		if (_nextLateMiniBossAt < 0f)
+			_nextLateMiniBossAt = LateGameStartSeconds + LateGameMiniBossInterval;
+
+		if (_survivalSeconds >= _nextLateMiniBossAt)
+		{
+			SpawnScheduledMiniBoss();
+			_nextLateMiniBossAt = _survivalSeconds + LateGameMiniBossInterval;
+		}
 	}
 
 	private int FindTierRuleIndex(float pressure)
