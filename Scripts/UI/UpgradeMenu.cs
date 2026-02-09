@@ -8,6 +8,7 @@ public partial class UpgradeMenu : Control
 	[Export] public NodePath TitlePath = "Panel/VBox/Title";
 	[Export] public NodePath LeftButtonPath = "Panel/VBox/Options/LeftButton";
 	[Export] public NodePath RightButtonPath = "Panel/VBox/Options/RightButton";
+	[Export] public NodePath PanelPath = "Panel";
 
 	private UpgradeSystem _upgradeSystem;
 	private readonly RandomNumberGenerator _rng = new();
@@ -15,6 +16,7 @@ public partial class UpgradeMenu : Control
 	private Label _title;
 	private Button _leftButton;
 	private Button _rightButton;
+	private Control _panel;
 
 	private bool _isOpen = false;
 	private UpgradeSystem.UpgradeOptionData _leftOption;
@@ -68,6 +70,7 @@ public partial class UpgradeMenu : Control
 		_isOpen = true;
 		Visible = true;
 		GetTree().Paused = true;
+		CallDeferred(nameof(CenterPanel));
 		AudioManager.Instance?.PlaySfxUiButton();
 		_leftButton.GrabFocus();
 	}
@@ -84,6 +87,7 @@ public partial class UpgradeMenu : Control
 		_title = GetNodeOrNull<Label>(TitlePath);
 		_leftButton = GetNodeOrNull<Button>(LeftButtonPath);
 		_rightButton = GetNodeOrNull<Button>(RightButtonPath);
+		_panel = GetNodeOrNull<Control>(PanelPath);
 
 		if (_title == null || _leftButton == null || _rightButton == null)
 		{
@@ -129,4 +133,23 @@ public partial class UpgradeMenu : Control
 			ApplyOption(_rightOption);
 	}
 
+	private void CenterPanel()
+	{
+		if (_panel == null)
+			return;
+
+		Vector2 size = _panel.GetCombinedMinimumSize();
+		if (size == Vector2.Zero)
+			size = _panel.Size;
+
+		_panel.AnchorLeft = 0.5f;
+		_panel.AnchorTop = 0.5f;
+		_panel.AnchorRight = 0.5f;
+		_panel.AnchorBottom = 0.5f;
+
+		_panel.OffsetLeft = -size.X * 0.5f;
+		_panel.OffsetTop = -size.Y * 0.5f;
+		_panel.OffsetRight = size.X * 0.5f;
+		_panel.OffsetBottom = size.Y * 0.5f;
+	}
 }

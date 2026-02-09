@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=87 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
@@ -14,67 +14,239 @@
 [ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/Director/SpawnSystem.cs" id="12_vpcxr"]
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="13_debug"]
+[ext_resource type="Script" uid="uid://csx6eukc73bnk" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="14_score"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
-[ext_resource type="Script" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="14_score"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
 [ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
-[ext_resource type="Script" path="res://Scripts/Audio/AudioManager.cs" id="18_audio_manager"]
-[ext_resource type="Script" path="res://Scripts/UI/BackgroundAnimatedSprite.cs" id="19_bg_script"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-001.png" id="bg_001"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-002.png" id="bg_002"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-003.png" id="bg_003"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-004.png" id="bg_004"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-005.png" id="bg_005"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-006.png" id="bg_006"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-007.png" id="bg_007"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-008.png" id="bg_008"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-009.png" id="bg_009"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-010.png" id="bg_010"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-011.png" id="bg_011"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-012.png" id="bg_012"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-013.png" id="bg_013"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-014.png" id="bg_014"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-015.png" id="bg_015"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-016.png" id="bg_016"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-017.png" id="bg_017"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-018.png" id="bg_018"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-019.png" id="bg_019"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-020.png" id="bg_020"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-021.png" id="bg_021"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-022.png" id="bg_022"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-023.png" id="bg_023"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-024.png" id="bg_024"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-025.png" id="bg_025"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-026.png" id="bg_026"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-027.png" id="bg_027"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-028.png" id="bg_028"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-029.png" id="bg_029"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-030.png" id="bg_030"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-031.png" id="bg_031"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-032.png" id="bg_032"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-033.png" id="bg_033"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-034.png" id="bg_034"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-035.png" id="bg_035"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-036.png" id="bg_036"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-037.png" id="bg_037"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-038.png" id="bg_038"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-039.png" id="bg_039"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-040.png" id="bg_040"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-041.png" id="bg_041"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-042.png" id="bg_042"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-043.png" id="bg_043"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-044.png" id="bg_044"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-045.png" id="bg_045"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-046.png" id="bg_046"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-047.png" id="bg_047"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-048.png" id="bg_048"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-049.png" id="bg_049"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-050.png" id="bg_050"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-051.png" id="bg_051"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-052.png" id="bg_052"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-053.png" id="bg_053"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Background/PNG/ezgif-frame-054.png" id="bg_054"]
+[ext_resource type="Script" uid="uid://cbh21dgjcvlcu" path="res://Scripts/Audio/AudioManager.cs" id="18_audio_manager"]
+[ext_resource type="Script" uid="uid://15repuk4hw16" path="res://Scripts/UI/BackgroundAnimatedSprite.cs" id="19_bg_script"]
+[ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="20_menu_bg"]
+[ext_resource type="Script" uid="uid://bqyuxaxwk71we" path="res://Scripts/UI/CursorRing.cs" id="21_cursor_ring"]
+[ext_resource type="Texture2D" uid="uid://dva4g0fkamrsm" path="res://Assets/Sprites/Background/PNG/ezgif-frame-001.png" id="bg_001"]
+[ext_resource type="Texture2D" uid="uid://exnlmru7qmwc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-002.png" id="bg_002"]
+[ext_resource type="Texture2D" uid="uid://b6tc8w2i8qibs" path="res://Assets/Sprites/Background/PNG/ezgif-frame-003.png" id="bg_003"]
+[ext_resource type="Texture2D" uid="uid://cqq7cshguko7r" path="res://Assets/Sprites/Background/PNG/ezgif-frame-004.png" id="bg_004"]
+[ext_resource type="Texture2D" uid="uid://dnhbgucaprffk" path="res://Assets/Sprites/Background/PNG/ezgif-frame-005.png" id="bg_005"]
+[ext_resource type="Texture2D" uid="uid://bt0djj765wnf3" path="res://Assets/Sprites/Background/PNG/ezgif-frame-006.png" id="bg_006"]
+[ext_resource type="Texture2D" uid="uid://c54ifurug6vyw" path="res://Assets/Sprites/Background/PNG/ezgif-frame-007.png" id="bg_007"]
+[ext_resource type="Texture2D" uid="uid://crn7ac575yels" path="res://Assets/Sprites/Background/PNG/ezgif-frame-008.png" id="bg_008"]
+[ext_resource type="Texture2D" uid="uid://bf7m7jvjq0b6m" path="res://Assets/Sprites/Background/PNG/ezgif-frame-009.png" id="bg_009"]
+[ext_resource type="Texture2D" uid="uid://csoh87umrngqp" path="res://Assets/Sprites/Background/PNG/ezgif-frame-010.png" id="bg_010"]
+[ext_resource type="Texture2D" uid="uid://blny0n7j23l5h" path="res://Assets/Sprites/Background/PNG/ezgif-frame-011.png" id="bg_011"]
+[ext_resource type="Texture2D" uid="uid://btjkj33g4lbpj" path="res://Assets/Sprites/Background/PNG/ezgif-frame-012.png" id="bg_012"]
+[ext_resource type="Texture2D" uid="uid://b6d22d1be0sgt" path="res://Assets/Sprites/Background/PNG/ezgif-frame-013.png" id="bg_013"]
+[ext_resource type="Texture2D" uid="uid://ewg5tyuw6l5w" path="res://Assets/Sprites/Background/PNG/ezgif-frame-014.png" id="bg_014"]
+[ext_resource type="Texture2D" uid="uid://b8i4c38vay6ho" path="res://Assets/Sprites/Background/PNG/ezgif-frame-015.png" id="bg_015"]
+[ext_resource type="Texture2D" uid="uid://s6uq86ap64yt" path="res://Assets/Sprites/Background/PNG/ezgif-frame-016.png" id="bg_016"]
+[ext_resource type="Texture2D" uid="uid://c2qgnybg8rar5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-017.png" id="bg_017"]
+[ext_resource type="Texture2D" uid="uid://e6jaf3bk2rik" path="res://Assets/Sprites/Background/PNG/ezgif-frame-018.png" id="bg_018"]
+[ext_resource type="Texture2D" uid="uid://dsf8ul14g6rt5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-019.png" id="bg_019"]
+[ext_resource type="Texture2D" uid="uid://dt4512gpvpf2k" path="res://Assets/Sprites/Background/PNG/ezgif-frame-020.png" id="bg_020"]
+[ext_resource type="Texture2D" uid="uid://bdnftnbljnlgg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-021.png" id="bg_021"]
+[ext_resource type="Texture2D" uid="uid://bdv0r8st4o5ar" path="res://Assets/Sprites/Background/PNG/ezgif-frame-022.png" id="bg_022"]
+[ext_resource type="Texture2D" uid="uid://0d45exg5s0pi" path="res://Assets/Sprites/Background/PNG/ezgif-frame-023.png" id="bg_023"]
+[ext_resource type="Texture2D" uid="uid://br7cau5moyfyx" path="res://Assets/Sprites/Background/PNG/ezgif-frame-024.png" id="bg_024"]
+[ext_resource type="Texture2D" uid="uid://co555hqnxng41" path="res://Assets/Sprites/Background/PNG/ezgif-frame-025.png" id="bg_025"]
+[ext_resource type="Texture2D" uid="uid://bs88jmg2g825r" path="res://Assets/Sprites/Background/PNG/ezgif-frame-026.png" id="bg_026"]
+[ext_resource type="Texture2D" uid="uid://b54h6vvqqif4k" path="res://Assets/Sprites/Background/PNG/ezgif-frame-027.png" id="bg_027"]
+[ext_resource type="Texture2D" uid="uid://ip8mtpdynpfg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-028.png" id="bg_028"]
+[ext_resource type="Texture2D" uid="uid://bwt5cw8pcxglc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-029.png" id="bg_029"]
+[ext_resource type="Texture2D" uid="uid://cq82rh4q6t7va" path="res://Assets/Sprites/Background/PNG/ezgif-frame-030.png" id="bg_030"]
+[ext_resource type="Texture2D" uid="uid://cdtt0qu88cqwy" path="res://Assets/Sprites/Background/PNG/ezgif-frame-031.png" id="bg_031"]
+[ext_resource type="Texture2D" uid="uid://c5gm57tns8swc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-032.png" id="bg_032"]
+[ext_resource type="Texture2D" uid="uid://kt0obrhg5ntg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-033.png" id="bg_033"]
+[ext_resource type="Texture2D" uid="uid://baooxtve6p1ne" path="res://Assets/Sprites/Background/PNG/ezgif-frame-034.png" id="bg_034"]
+[ext_resource type="Texture2D" uid="uid://dntgi2e8dna6i" path="res://Assets/Sprites/Background/PNG/ezgif-frame-035.png" id="bg_035"]
+[ext_resource type="Texture2D" uid="uid://c11mnrinl4gxu" path="res://Assets/Sprites/Background/PNG/ezgif-frame-036.png" id="bg_036"]
+[ext_resource type="Texture2D" uid="uid://w187xgtm5i20" path="res://Assets/Sprites/Background/PNG/ezgif-frame-037.png" id="bg_037"]
+[ext_resource type="Texture2D" uid="uid://drt41idmk01s4" path="res://Assets/Sprites/Background/PNG/ezgif-frame-038.png" id="bg_038"]
+[ext_resource type="Texture2D" uid="uid://4kqn4rxovk12" path="res://Assets/Sprites/Background/PNG/ezgif-frame-039.png" id="bg_039"]
+[ext_resource type="Texture2D" uid="uid://o13sh2mtjgxe" path="res://Assets/Sprites/Background/PNG/ezgif-frame-040.png" id="bg_040"]
+[ext_resource type="Texture2D" uid="uid://2dkoqnougnxe" path="res://Assets/Sprites/Background/PNG/ezgif-frame-041.png" id="bg_041"]
+[ext_resource type="Texture2D" uid="uid://b1yjch1nv4kso" path="res://Assets/Sprites/Background/PNG/ezgif-frame-042.png" id="bg_042"]
+[ext_resource type="Texture2D" uid="uid://drfa7uc0eyaus" path="res://Assets/Sprites/Background/PNG/ezgif-frame-043.png" id="bg_043"]
+[ext_resource type="Texture2D" uid="uid://kc5gy83nplad" path="res://Assets/Sprites/Background/PNG/ezgif-frame-044.png" id="bg_044"]
+[ext_resource type="Texture2D" uid="uid://c7lbjrb68yro" path="res://Assets/Sprites/Background/PNG/ezgif-frame-045.png" id="bg_045"]
+[ext_resource type="Texture2D" uid="uid://coa0eny5jip6g" path="res://Assets/Sprites/Background/PNG/ezgif-frame-046.png" id="bg_046"]
+[ext_resource type="Texture2D" uid="uid://biajnmfisw1dx" path="res://Assets/Sprites/Background/PNG/ezgif-frame-047.png" id="bg_047"]
+[ext_resource type="Texture2D" uid="uid://1st35d5v6b0b" path="res://Assets/Sprites/Background/PNG/ezgif-frame-048.png" id="bg_048"]
+[ext_resource type="Texture2D" uid="uid://c6kigh00cqpy5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-049.png" id="bg_049"]
+[ext_resource type="Texture2D" uid="uid://k3mec6si52eg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-050.png" id="bg_050"]
+[ext_resource type="Texture2D" uid="uid://c5llyw450vs2p" path="res://Assets/Sprites/Background/PNG/ezgif-frame-051.png" id="bg_051"]
+[ext_resource type="Texture2D" uid="uid://cgajqkol8ng2p" path="res://Assets/Sprites/Background/PNG/ezgif-frame-052.png" id="bg_052"]
+[ext_resource type="Texture2D" uid="uid://bunbskdvsle7o" path="res://Assets/Sprites/Background/PNG/ezgif-frame-053.png" id="bg_053"]
+[ext_resource type="Texture2D" uid="uid://djjhg4t5bbqse" path="res://Assets/Sprites/Background/PNG/ezgif-frame-054.png" id="bg_054"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("bg_001")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_002")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_003")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_004")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_005")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_006")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_007")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_008")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_009")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_010")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_011")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_012")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_013")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_014")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_015")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_017")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_018")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_019")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_020")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_021")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_022")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_023")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_024")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_025")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_026")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_027")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_028")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_029")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_030")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_031")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_032")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_033")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_034")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_035")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_036")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_037")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_038")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_039")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_040")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_041")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_042")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_043")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_044")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_045")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_046")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_047")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_048")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_049")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_050")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_051")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_052")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_053")
+}, {
+"duration": 1.0,
+"texture": ExtResource("bg_054")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0
@@ -82,31 +254,120 @@ radius = 34.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
 radius = 36.0
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_bg"]
-animations = [{
-"frames": [ExtResource("bg_001"), ExtResource("bg_002"), ExtResource("bg_003"), ExtResource("bg_004"), ExtResource("bg_005"), ExtResource("bg_006"), ExtResource("bg_007"), ExtResource("bg_008"), ExtResource("bg_009"), ExtResource("bg_010"), ExtResource("bg_011"), ExtResource("bg_012"), ExtResource("bg_013"), ExtResource("bg_014"), ExtResource("bg_015"), ExtResource("bg_016"), ExtResource("bg_017"), ExtResource("bg_018"), ExtResource("bg_019"), ExtResource("bg_020"), ExtResource("bg_021"), ExtResource("bg_022"), ExtResource("bg_023"), ExtResource("bg_024"), ExtResource("bg_025"), ExtResource("bg_026"), ExtResource("bg_027"), ExtResource("bg_028"), ExtResource("bg_029"), ExtResource("bg_030"), ExtResource("bg_031"), ExtResource("bg_032"), ExtResource("bg_033"), ExtResource("bg_034"), ExtResource("bg_035"), ExtResource("bg_036"), ExtResource("bg_037"), ExtResource("bg_038"), ExtResource("bg_039"), ExtResource("bg_040"), ExtResource("bg_041"), ExtResource("bg_042"), ExtResource("bg_043"), ExtResource("bg_044"), ExtResource("bg_045"), ExtResource("bg_046"), ExtResource("bg_047"), ExtResource("bg_048"), ExtResource("bg_049"), ExtResource("bg_050"), ExtResource("bg_051"), ExtResource("bg_052"), ExtResource("bg_053"), ExtResource("bg_054")],
-"loop": true,
-"name": &"default",
-"speed": 1.0
-}]
-
 [sub_resource type="Shader" id="Shader_low_hp_vignette"]
-code = "shader_type canvas_item;\nuniform float intensity : hint_range(0.0, 1.0) = 0.0;\nuniform float radius : hint_range(0.2, 1.0) = 0.7;\nuniform float softness : hint_range(0.01, 1.0) = 0.25;\nuniform vec4 tint : source_color = vec4(0.85, 0.08, 0.08, 1.0);\n\nvoid fragment() {\n\tvec2 uv = SCREEN_UV;\n\tvec2 centered = uv * 2.0 - 1.0;\n\tfloat dist = length(centered);\n\tfloat edge = smoothstep(radius, radius + softness, dist);\n\tfloat alpha = edge * intensity;\n\tCOLOR = vec4(tint.rgb, tint.a * alpha);\n}\n"
+code = "shader_type canvas_item;
+uniform float intensity : hint_range(0.0, 1.0) = 0.0;
+uniform float radius : hint_range(0.2, 1.0) = 0.7;
+uniform float softness : hint_range(0.01, 1.0) = 0.25;
+uniform vec4 tint : source_color = vec4(0.85, 0.08, 0.08, 1.0);
+
+void fragment() {
+	vec2 uv = SCREEN_UV;
+	vec2 centered = uv * 2.0 - 1.0;
+	float dist = length(centered);
+	float edge = smoothstep(radius, radius + softness, dist);
+	float alpha = edge * intensity;
+	COLOR = vec4(tint.rgb, tint.a * alpha);
+}
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_low_hp_vignette"]
 shader = SubResource("Shader_low_hp_vignette")
+shader_parameter/intensity = 0.0
+shader_parameter/radius = 0.7
+shader_parameter/softness = 0.25
+shader_parameter/tint = Color(0.85, 0.08, 0.08, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.05, 0.07, 0.12, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0.6, 0.8, 0.2)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.08, 0.12, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.6, 0.8, 0.25)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.06, 0.1, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.7, 0.85, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.4, 0.6, 0.2)
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.1, 0.18, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.8, 1, 0.35)
+shadow_size = 8
 
 [node name="Game" type="Node2D"]
 
 [node name="World" type="Node2D" parent="."]
 
 [node name="Background" type="AnimatedSprite2D" parent="World"]
-sprite_frames = SubResource("SpriteFrames_bg")
-animation = &"default"
-playing = true
-centered = true
+visible = false
 z_index = -10
+sprite_frames = SubResource("SpriteFrames_bg")
 script = ExtResource("19_bg_script")
+
+[node name="MenuBackground" type="Sprite2D" parent="World"]
+z_index = -11
+texture = ExtResource("20_menu_bg")
+
+[node name="BackgroundDimmer" type="ColorRect" parent="World"]
+visible = false
+z_index = -9
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="MenuDimmer" type="ColorRect" parent="World"]
+z_index = -9
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(-101, -46)
@@ -146,12 +407,12 @@ ProjectileSpeed = 760.0
 
 [node name="SecondaryAttack" type="Node" parent="Player"]
 script = ExtResource("6_melee")
-Range = 100.0
-ArcDegrees = 200.0
+Range = 160.0
+ArcDegrees = 240.0
 MeleeVfxScene = ExtResource("2_meleevfx")
 VfxPath = NodePath("../../World")
 VfxColor = Color(1, 1, 1, 0.9)
-VfxForwardOffset = 10.0
+VfxForwardOffset = 24.0
 
 [node name="Dash" type="Node" parent="Player"]
 script = ExtResource("5_x4450")
@@ -195,28 +456,16 @@ script = ExtResource("14_score")
 [node name="TimeSystem" type="Node" parent="Systems"]
 script = ExtResource("16_pressure")
 
-[node name="BackgroundDimmer" type="ColorRect" parent="World"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0.5)
-z_index = -9
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="LowHealthVignette" type="ColorRect" parent="CanvasLayer"]
-layout_mode = 1
+material = SubResource("ShaderMaterial_low_hp_vignette")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-material = SubResource("ShaderMaterial_low_hp_vignette")
 
 [node name="UI" type="Control" parent="CanvasLayer"]
 layout_mode = 3
@@ -233,6 +482,8 @@ offset_left = 16.0
 offset_top = 16.0
 offset_right = 320.0
 offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.3, 1, 0.9, 0.9)
+theme_override_font_sizes/font_size = 18
 text = "Score: 0"
 
 [node name="StartPanel" type="Control" parent="CanvasLayer/UI"]
@@ -257,6 +508,7 @@ offset_right = 270.0
 offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/StartPanel/Panel"]
 layout_mode = 0
@@ -267,13 +519,15 @@ offset_bottom = 256.0
 
 [node name="Title" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Project Genesis"
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "PROJECT GENESIS"
 horizontal_alignment = 1
 
 [node name="Desc" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
 text = "Move: WASD
 Primary: Left Click
 Melee: Right Click
@@ -285,6 +539,11 @@ vertical_alignment = 1
 [node name="StartButton" type="Button" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Start"
 
 [node name="RestartPanel" type="Control" parent="CanvasLayer/UI"]
@@ -310,6 +569,7 @@ offset_right = 250.0
 offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/RestartPanel/Panel"]
 layout_mode = 0
@@ -320,13 +580,15 @@ offset_bottom = 196.0
 
 [node name="Title" type="Label" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "You Died"
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "SYSTEM FAILURE"
 horizontal_alignment = 1
 
 [node name="Hint" type="Label" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
 text = "Press the button to restart this run."
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -334,6 +596,8 @@ vertical_alignment = 1
 [node name="Score" type="Label" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.3, 1, 0.9, 1)
+theme_override_font_sizes/font_size = 18
 text = "Score: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -341,9 +605,15 @@ vertical_alignment = 1
 [node name="RestartButton" type="Button" parent="CanvasLayer/UI/RestartPanel/Panel/VBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Restart Run"
 
 [node name="UpgradeMenu" parent="CanvasLayer/UI" instance=ExtResource("15_upgrade_menu")]
 
-
-
+[node name="CursorRing" type="Node2D" parent="CanvasLayer"]
+z_index = 100
+script = ExtResource("21_cursor_ring")

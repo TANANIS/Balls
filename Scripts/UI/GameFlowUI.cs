@@ -10,6 +10,10 @@ public partial class GameFlowUI : Control
 	[Export] public NodePath LowHealthVignettePath = "../LowHealthVignette";
 	[Export] public NodePath ScoreLabelPath = "ScoreLabel";
 	[Export] public NodePath FinalScoreLabelPath = "RestartPanel/Panel/VBox/Score";
+	[Export] public NodePath BackgroundPath = "../../World/Background";
+	[Export] public NodePath BackgroundDimmerPath = "../../World/BackgroundDimmer";
+	[Export] public NodePath MenuBackgroundPath = "../../World/MenuBackground";
+	[Export] public NodePath MenuDimmerPath = "../../World/MenuDimmer";
 	[Export] public float LowHealthMaxIntensity = 0.9f;
 	[Export] public float LowHealthPower = 1.6f;
 
@@ -24,6 +28,10 @@ public partial class GameFlowUI : Control
 	private Label _scoreLabel;
 	private Label _finalScoreLabel;
 	private ScoreSystem _scoreSystem;
+	private CanvasItem _background;
+	private ColorRect _backgroundDimmer;
+	private Sprite2D _menuBackground;
+	private ColorRect _menuDimmer;
 	private bool _started;
 
 	public override void _Ready()
@@ -42,6 +50,14 @@ public partial class GameFlowUI : Control
 		_lowHealthMaterial = _lowHealthVignette?.Material as ShaderMaterial;
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
+		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
+		_backgroundDimmer = GetNodeOrNull<ColorRect>(BackgroundDimmerPath);
+		_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
+		_menuDimmer = GetNodeOrNull<ColorRect>(MenuDimmerPath);
+
+		if (_menuBackground != null)
+			FitMenuBackground();
+		GetViewport().SizeChanged += OnViewportSizeChanged;
 
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
 		if (scoreList.Count > 0)
@@ -82,6 +98,10 @@ public partial class GameFlowUI : Control
 		if (_startPanel != null) _startPanel.Visible = true;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
+		if (_background != null) _background.Visible = false;
+		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
+		if (_menuBackground != null) _menuBackground.Visible = true;
+		if (_menuDimmer != null) _menuDimmer.Visible = true;
 		GetTree().Paused = true;
 		_startButton?.GrabFocus();
 	}
@@ -95,6 +115,10 @@ public partial class GameFlowUI : Control
 		if (_startPanel != null) _startPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
+		if (_background != null) _background.Visible = true;
+		if (_backgroundDimmer != null) _backgroundDimmer.Visible = true;
+		if (_menuBackground != null) _menuBackground.Visible = false;
+		if (_menuDimmer != null) _menuDimmer.Visible = false;
 		GetTree().Paused = false;
 		RespawnPlayerAtViewportCenter();
 
@@ -143,5 +167,26 @@ public partial class GameFlowUI : Control
 	{
 		if (_scoreLabel != null)
 			_scoreLabel.Text = $"Score: {score}";
+	}
+
+	private void OnViewportSizeChanged()
+	{
+		if (_menuBackground != null)
+			FitMenuBackground();
+	}
+
+	private void FitMenuBackground()
+	{
+		if (_menuBackground?.Texture == null)
+			return;
+
+		Vector2 texSize = _menuBackground.Texture.GetSize();
+		if (texSize.X <= 0 || texSize.Y <= 0)
+			return;
+
+		Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
+		float scale = Mathf.Max(viewportSize.X / texSize.X, viewportSize.Y / texSize.Y);
+		_menuBackground.Scale = new Vector2(scale, scale);
+		_menuBackground.Position = viewportSize * 0.5f;
 	}
 }
