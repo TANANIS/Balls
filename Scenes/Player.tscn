@@ -1,0 +1,70 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
+[ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
+[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
+[ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
+[ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
+[ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="4_embg1"]
+[ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
+[ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
+[ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="6_melee"]
+[ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
+radius = 34.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
+radius = 36.0
+
+[node name="Player" type="CharacterBody2D"]
+position = Vector2(-101, -46)
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_tyo64")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.14, 0.14)
+texture = ExtResource("1_ikhqc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_ikhqc")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+
+[node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, -1)
+collision_layer = 16
+collision_mask = 64
+script = ExtResource("3_x4450")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_i30mb")
+debug_color = Color(0.85284024, 0.35988984, 0.24184075, 0.41960785)
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_embg1")
+
+[node name="PrimaryAttack" type="Node" parent="."]
+script = ExtResource("5_embg1")
+ProjectileScene = ExtResource("2_wyi7j")
+ProjectileContainerPath = NodePath("../../Projectiles")
+Cooldown = 0.32
+ProjectileSpeed = 760.0
+
+[node name="SecondaryAttack" type="Node" parent="."]
+script = ExtResource("6_melee")
+Range = 160.0
+ArcDegrees = 240.0
+MeleeVfxScene = ExtResource("2_meleevfx")
+VfxPath = NodePath("../../World")
+VfxColor = Color(1, 1, 1, 0.9)
+VfxForwardOffset = 24.0
+
+[node name="Dash" type="Node" parent="."]
+script = ExtResource("5_x4450")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("8_vpcxr")
+HurtIFrame = 0.1

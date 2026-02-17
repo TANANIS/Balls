@@ -1,5 +1,11 @@
 using Godot;
 
+/*
+ * Enemy actor:
+ * - Pulls intent from behavior module.
+ * - Applies separation impulse module.
+ * - Emits lifecycle events to event modules.
+ */
 public partial class Enemy : CharacterBody2D
 {
 	[Export] public float MaxSpeed = 160f;
@@ -56,126 +62,16 @@ public partial class Enemy : CharacterBody2D
 
 	public void NotifyDamaged(int amount, object source)
 	{
-		foreach (EnemyEventModule evt in _events)
-		{
-			if (!evt.Active)
-				continue;
-			evt.OnDamaged(this, amount, source);
-		}
+		ForEachActiveEventModule(evt => evt.OnDamaged(this, amount, source));
 	}
 
 	public void NotifyHitPlayer(Node playerTarget)
 	{
-		foreach (EnemyEventModule evt in _events)
-		{
-			if (!evt.Active)
-				continue;
-			evt.OnHitPlayer(this, playerTarget);
-		}
+		ForEachActiveEventModule(evt => evt.OnHitPlayer(this, playerTarget));
 	}
 
 	public void NotifyDeath(object killer)
 	{
-		foreach (EnemyEventModule evt in _events)
-		{
-			if (!evt.Active)
-				continue;
-			evt.OnDeath(this, killer);
-		}
-	}
-
-	private void ResolvePlayer()
-	{
-		_player = GetNodeOrNull<Node2D>(PlayerPath);
-		if (_player == null)
-			_player = GetTree().GetFirstNodeInGroup("Player") as Node2D;
-	}
-
-	private void ResolveBehavior()
-	{
-		_behavior = GetNodeOrNull<EnemyBehaviorModule>(BehaviorPath);
-
-		if (_behavior == null)
-		{
-			foreach (Node child in GetChildren())
-			{
-				if (child is EnemyBehaviorModule module)
-				{
-					_behavior = module;
-					break;
-				}
-			}
-		}
-
-		_behavior?.OnInitialized(this);
-	}
-
-	private void ResolveSeparation()
-	{
-		_separation = GetNodeOrNull<EnemySeparationModule>(SeparationPath);
-
-		if (_separation == null)
-		{
-			foreach (Node child in GetChildren())
-			{
-				if (child is EnemySeparationModule module)
-				{
-					_separation = module;
-					break;
-				}
-			}
-		}
-	}
-
-	private void ResolveEvents()
-	{
-		_events.Clear();
-
-		Node root = GetNodeOrNull<Node>(EventsPath);
-		if (root != null)
-		{
-			foreach (Node child in root.GetChildren())
-			{
-				if (child is EnemyEventModule evt)
-					_events.Add(evt);
-			}
-		}
-		else
-		{
-			foreach (Node child in GetChildren())
-			{
-				if (child is EnemyEventModule evt)
-					_events.Add(evt);
-			}
-		}
-
-		foreach (EnemyEventModule evt in _events)
-			evt.OnInitialized(this);
-	}
-
-	private Vector2 GetDesiredVelocity(double delta)
-	{
-		if (_behavior != null && _behavior.Active)
-			return _behavior.GetDesiredVelocity(this, _player, delta);
-
-		// Fallback: simple chase behavior.
-		if (_player == null)
-			return Vector2.Zero;
-
-		Vector2 toPlayer = _player.GlobalPosition - GlobalPosition;
-		if (toPlayer.LengthSquared() < 0.0001f)
-			return Vector2.Zero;
-
-		return toPlayer.Normalized() * MaxSpeed;
-	}
-
-	private void EmitSpawned()
-	{
-		foreach (EnemyEventModule evt in _events)
-		{
-			if (!evt.Active)
-				continue;
-			evt.OnSpawned(this);
-		}
+		ForEachActiveEventModule(evt => evt.OnDeath(this, killer));
 	}
 }

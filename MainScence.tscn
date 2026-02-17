@@ -1,19 +1,10 @@
 [gd_scene load_steps=87 format=3 uid="uid://bxen3q3hvcxk"]
 
-[ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
-[ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
-[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
-[ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
-[ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
-[ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="4_embg1"]
-[ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
-[ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
-[ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="6_melee"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="8_4xcne"]
-[ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/Director/SpawnSystem.cs" id="12_vpcxr"]
 [ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="13_debug"]
+[ext_resource type="Script" uid="uid://b84p6u2jdt5kj" path="res://Scripts/Systems/Core/PerfProbe.cs" id="13_perf"]
 [ext_resource type="Script" uid="uid://csx6eukc73bnk" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="14_score"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
@@ -23,6 +14,7 @@
 [ext_resource type="Script" uid="uid://15repuk4hw16" path="res://Scripts/UI/BackgroundAnimatedSprite.cs" id="19_bg_script"]
 [ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="20_menu_bg"]
 [ext_resource type="Script" uid="uid://bqyuxaxwk71we" path="res://Scripts/UI/CursorRing.cs" id="21_cursor_ring"]
+[ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="22_player_scene"]
 [ext_resource type="Texture2D" uid="uid://dva4g0fkamrsm" path="res://Assets/Sprites/Background/PNG/ezgif-frame-001.png" id="bg_001"]
 [ext_resource type="Texture2D" uid="uid://exnlmru7qmwc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-002.png" id="bg_002"]
 [ext_resource type="Texture2D" uid="uid://b6tc8w2i8qibs" path="res://Assets/Sprites/Background/PNG/ezgif-frame-003.png" id="bg_003"]
@@ -248,12 +240,6 @@ animations = [{
 "speed": 1.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
-radius = 34.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
-radius = 36.0
-
 [sub_resource type="Shader" id="Shader_low_hp_vignette"]
 code = "shader_type canvas_item;
 uniform float intensity : hint_range(0.0, 1.0) = 0.0;
@@ -369,57 +355,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="Player" type="CharacterBody2D" parent="."]
-position = Vector2(-101, -46)
-collision_layer = 2
-collision_mask = 5
-script = ExtResource("1_tyo64")
-
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-scale = Vector2(0.14, 0.14)
-texture = ExtResource("1_ikhqc")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(0, -1)
-shape = SubResource("CircleShape2D_ikhqc")
-
-[node name="Muzzle" type="Marker2D" parent="Player"]
-
-[node name="Hurtbox" type="Area2D" parent="Player"]
-position = Vector2(0, -1)
-collision_layer = 16
-collision_mask = 64
-script = ExtResource("3_x4450")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Hurtbox"]
-shape = SubResource("CircleShape2D_i30mb")
-debug_color = Color(0.85284024, 0.35988984, 0.24184075, 0.41960785)
-
-[node name="Movement" type="Node" parent="Player"]
-script = ExtResource("4_embg1")
-
-[node name="PrimaryAttack" type="Node" parent="Player"]
-script = ExtResource("5_embg1")
-ProjectileScene = ExtResource("2_wyi7j")
-ProjectileContainerPath = NodePath("../../Projectiles")
-Cooldown = 0.32
-ProjectileSpeed = 760.0
-
-[node name="SecondaryAttack" type="Node" parent="Player"]
-script = ExtResource("6_melee")
-Range = 160.0
-ArcDegrees = 240.0
-MeleeVfxScene = ExtResource("2_meleevfx")
-VfxPath = NodePath("../../World")
-VfxColor = Color(1, 1, 1, 0.9)
-VfxForwardOffset = 24.0
-
-[node name="Dash" type="Node" parent="Player"]
-script = ExtResource("5_x4450")
-
-[node name="Health" type="Node" parent="Player"]
-script = ExtResource("8_vpcxr")
-HurtIFrame = 0.1
+[node name="Player" parent="." instance=ExtResource("22_player_scene")]
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -446,6 +382,9 @@ EliteUnlockUpgradeCount = 6
 [node name="DebugSystem" type="Node" parent="Systems"]
 script = ExtResource("13_debug")
 EnableF3DebugToggle = true
+
+[node name="PerfProbe" type="Node" parent="Systems"]
+script = ExtResource("13_perf")
 
 [node name="UpgradeSystem" type="Node" parent="Systems"]
 script = ExtResource("14_upgrade")
