@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=88 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="2_0d7xb"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="8_4xcne"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="22_player_scene"]
 [ext_resource type="Script" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="23_obstacle_gen"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/ObstacleRock.png" id="24_obstacle_tex"]
+[ext_resource type="Script" path="res://Scripts/World/SpaceBackdrop.cs" id="25_space_backdrop"]
 
 
 [sub_resource type="Shader" id="Shader_low_hp_vignette"]
@@ -135,6 +136,16 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.7)
+
+[node name="SpaceBackdrop" type="Node2D" parent="World"]
+script = ExtResource("25_space_backdrop")
+StarCount = 140
+MaskAlpha = 0.88
+StarMinScale = 0.08
+StarMaxScale = 0.26
+StarMinAlpha = 0.35
+StarMaxAlpha = 0.95
+TwinkleAmplitude = 0.42
 
 [node name="Obstacles" type="Node2D" parent="World"]
 script = ExtResource("23_obstacle_gen")
@@ -266,46 +277,59 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="Panel" parent="CanvasLayer/UI/StartPanel"]
-custom_minimum_size = Vector2(540, 280)
+custom_minimum_size = Vector2(680, 500)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -270.0
-offset_top = -140.0
-offset_right = 270.0
-offset_bottom = 140.0
+offset_left = -340.0
+offset_top = -250.0
+offset_right = 340.0
+offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/StartPanel/Panel"]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 516.0
-offset_bottom = 256.0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 470.0
+theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 46
 text = "PROJECT GENESIS"
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.85, 0.95, 0.95)
+theme_override_font_sizes/font_size = 18
+text = "宇宙穩定度崩解中，盡可能撐久並完成你的戰鬥配置。"
 horizontal_alignment = 1
 
 [node name="Desc" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 10
 theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
-text = "Move: WASD
-Primary: Left Click
-Melee: Right Click
-Dash: Space
-Survive as long as you can."
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_font_sizes/font_size = 17
+text = "操作說明
+移動：W A S D
+射擊：滑鼠左鍵
+近戰：滑鼠右鍵
+衝刺：Space
+
+目標
+在 15 分鐘內維持戰線，避免角色死亡或宇宙崩潰。"
+horizontal_alignment = 0
+vertical_alignment = 0
+autowrap_mode = 3
 
 [node name="StartButton" type="Button" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
 custom_minimum_size = Vector2(0, 48)
@@ -315,7 +339,249 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Start"
+text = "開始遊戲"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "設定"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/UI/StartPanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "離開遊戲"
+
+[node name="SettingsPanel" type="Control" parent="CanvasLayer/UI/StartPanel/Panel"]
+visible = false
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 470.0
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "設定"
+horizontal_alignment = 1
+
+[node name="BgmLabel" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "背景音樂音量"
+
+[node name="BgmSlider" type="HSlider" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="SfxLabel" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "音效音量"
+
+[node name="SfxSlider" type="HSlider" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="WindowModeLabel" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "視窗模式"
+
+[node name="WindowModeOption" type="OptionButton" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="WindowSizeLabel" type="Label" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "視窗尺寸"
+
+[node name="WindowSizeOption" type="OptionButton" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CanvasLayer/UI/StartPanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "返回"
+
+[node name="PausePanel" type="Control" parent="CanvasLayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="CanvasLayer/UI/PausePanel"]
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -210.0
+offset_right = 280.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/PausePanel/Panel"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 536.0
+offset_bottom = 396.0
+
+[node name="Title" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Resume"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Settings"
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Restart Run"
+
+[node name="ToTitleButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back To Menu"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Quit Game"
+
+[node name="SettingsPanel" type="Control" parent="CanvasLayer/UI/PausePanel/Panel"]
+visible = false
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 536.0
+offset_bottom = 396.0
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="BgmLabel" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+text = "BGM Volume"
+
+[node name="BgmSlider" type="HSlider" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="SfxLabel" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+text = "SFX Volume"
+
+[node name="SfxSlider" type="HSlider" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="WindowModeLabel" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Window Mode"
+
+[node name="WindowModeOption" type="OptionButton" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="WindowSizeLabel" type="Label" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Window Size"
+
+[node name="WindowSizeOption" type="OptionButton" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CanvasLayer/UI/PausePanel/Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"
 
 [node name="RestartPanel" type="Control" parent="CanvasLayer/UI"]
 visible = false

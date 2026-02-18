@@ -7,12 +7,20 @@ public partial class GameFlowUI
 		// Enter title/menu state and pause gameplay simulation.
 		_started = false;
 		_ending = false;
+		_pauseMenuOpen = false;
+		_settingsOpen = false;
+		_startSettingsOpen = false;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
+		if (_startMainVBox != null) _startMainVBox.Visible = true;
+		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
 		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
+		if (_pausePanel != null) _pausePanel.Visible = false;
+		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
+		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = true;
@@ -29,12 +37,20 @@ public partial class GameFlowUI
 
 		_started = true;
 		_ending = false;
+		_pauseMenuOpen = false;
+		_settingsOpen = false;
+		_startSettingsOpen = false;
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
+		if (_startMainVBox != null) _startMainVBox.Visible = true;
+		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = true;
 		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
+		if (_pausePanel != null) _pausePanel.Visible = false;
+		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
+		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
 		_eventNoticeTimer = 0f;
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
@@ -68,6 +84,28 @@ public partial class GameFlowUI
 
 		GetTree().Paused = false;
 		GetTree().ReloadCurrentScene();
+	}
+
+	private void OnStartSettingsPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startSettingsOpen = true;
+		if (_startMainVBox != null)
+			_startMainVBox.Visible = false;
+		if (_startSettingsPanel != null)
+			_startSettingsPanel.Visible = true;
+		_startSettingsBackButton?.GrabFocus();
+	}
+
+	private void OnStartSettingsBackPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiExit();
+		_startSettingsOpen = false;
+		if (_startMainVBox != null)
+			_startMainVBox.Visible = true;
+		if (_startSettingsPanel != null)
+			_startSettingsPanel.Visible = false;
+		_startSettingsButton?.GrabFocus();
 	}
 
 	private void RespawnPlayerAtViewportCenter()
@@ -153,6 +191,12 @@ public partial class GameFlowUI
 			_eventCountdownLabel.Visible = false;
 		if (_eventNoticeLabel != null)
 			_eventNoticeLabel.Visible = false;
+		if (_pausePanel != null)
+			_pausePanel.Visible = false;
+		if (_pauseMainVBox != null)
+			_pauseMainVBox.Visible = true;
+		if (_pauseSettingsPanel != null)
+			_pauseSettingsPanel.Visible = false;
 
 		GetTree().Paused = true;
 		_restartButton?.GrabFocus();

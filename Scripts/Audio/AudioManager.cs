@@ -55,4 +55,38 @@ public partial class AudioManager : Node
 	public void PlaySfxPlayerUpgrade() => PlaySfx(_sfxPlayerUpgrade);
 	public void PlaySfxPlayerGetHit() => PlaySfx(_sfxPlayerGetHit);
 	public void PlaySfxPlayerDie() => PlaySfx(_sfxPlayerDie, +6f);
+
+	public float GetBgmVolumeLinear()
+	{
+		return Mathf.Clamp(Mathf.DbToLinear(BgmVolumeDb), 0f, 1f);
+	}
+
+	public float GetSfxVolumeLinear()
+	{
+		return Mathf.Clamp(Mathf.DbToLinear(SfxVolumeDb), 0f, 1f);
+	}
+
+	public void SetBgmVolumeLinear(float linear)
+	{
+		BgmVolumeDb = LinearToDb(linear);
+		if (_bgmPlayer != null)
+			_bgmPlayer.VolumeDb = BgmVolumeDb;
+	}
+
+	public void SetSfxVolumeLinear(float linear)
+	{
+		SfxVolumeDb = LinearToDb(linear);
+		foreach (AudioStreamPlayer player in _sfxPlayers)
+			player.VolumeDb = SfxVolumeDb;
+		if (_lowHpLoopPlayer != null)
+			_lowHpLoopPlayer.VolumeDb = SfxVolumeDb;
+	}
+
+	private static float LinearToDb(float linear)
+	{
+		float clamped = Mathf.Clamp(linear, 0f, 1f);
+		if (clamped <= 0.0001f)
+			return -80f;
+		return Mathf.LinearToDb(clamped);
+	}
 }
