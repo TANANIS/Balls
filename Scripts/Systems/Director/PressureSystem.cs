@@ -26,10 +26,13 @@ public partial class PressureSystem : Node
 
 	[Export] public float EnemyWeight = 0.55f;
 	[Export] public float LowHpWeight = 0.25f;
-	[Export] public float TimeWeight = 0.20f;
+	[Export] public float StabilityWeight = 0.20f;
+	[Export] public bool UseLegacyTimePressure = false;
+	[Export] public float TimeWeight = 0.0f;
 
 	[Export] public float RisePerSecond = 45f;
 	[Export] public float FallPerSecond = 20f;
+	[Export] public float PressureWaveFrequency = 0.7f;
 
 	[Export] public bool VerboseLog = true;
 	[Export] public float LogInterval = 0.5f;
@@ -39,6 +42,7 @@ public partial class PressureSystem : Node
 	private Node2D _enemiesRoot;
 	private UpgradeMenu _upgradeMenu;
 	private CombatSystem _combatSystem;
+	private StabilitySystem _stabilitySystem;
 
 	private float _pressure = 0f;
 	private float _upgradeProgress = 0f;
@@ -71,6 +75,9 @@ public partial class PressureSystem : Node
 			_combatSystem = list[0] as CombatSystem;
 		if (_combatSystem != null)
 			_combatSystem.EnemyKilled += OnEnemyKilled;
+		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
+		if (stabilityList.Count > 0)
+			_stabilitySystem = stabilityList[0] as StabilitySystem;
 
 		if (_playerHealth == null)
 			DebugSystem.Error("[PressureSystem] PlayerHealth not found.");
@@ -80,6 +87,8 @@ public partial class PressureSystem : Node
 			DebugSystem.Error("[PressureSystem] UpgradeMenu not found.");
 		if (_combatSystem == null)
 			DebugSystem.Error("[PressureSystem] CombatSystem not found.");
+		if (_stabilitySystem == null)
+			DebugSystem.Warn("[PressureSystem] StabilitySystem not found. Stability pressure contribution disabled.");
 
 		if (UseTierRulesCsv)
 			LoadTierRulesFromCsv();
@@ -138,12 +147,37 @@ public partial class PressureSystem : Node
 		if (_playerHealth != null && _playerHealth.MaxHp > 0)
 			hpFactor = Mathf.Clamp(1f - ((float)_playerHealth.Hp / _playerHealth.MaxHp), 0f, 1f);
 
+		float stabilityFactor = 0f;
+		if (_stabilitySystem != null)
+			stabilityFactor = Mathf.Clamp(1f - (_stabilitySystem.CurrentStability / 100f), 0f, 1f);
+
 		float timeFactor = 0f;
-		if (SecondsForMaxTimePressure > 0f)
+		if (UseLegacyTimePressure && SecondsForMaxTimePressure > 0f)
 			timeFactor = Mathf.Clamp(_survivalSeconds / SecondsForMaxTimePressure, 0f, 1f);
 
-		float weighted = (enemyFactor * EnemyWeight) + (hpFactor * LowHpWeight) + (timeFactor * TimeWeight);
-		return Mathf.Clamp(weighted, 0f, 1f) * MaxPressure;
+		float weighted = (enemyFactor * EnemyWeight) + (hpFactor * LowHpWeight) + (stabilityFactor * StabilityWeight);
+		float totalWeight = EnemyWeight + LowHpWeight + Mathf.Max(0f, StabilityWeight);
+		if (UseLegacyTimePressure && TimeWeight > 0f)
+		{
+			weighted += timeFactor * TimeWeight;
+			totalWeight += TimeWeight;
+		}
+
+		if (totalWeight <= 0f)
+			return 0f;
+
+		float normalized = Mathf.Clamp(weighted / totalWeight, 0f, 1f);
+		if (_stabilitySystem != null)
+		{
+			float amp = Mathf.Clamp(_stabilitySystem.GetPressureFluctuationAmplitude(), 0f, 0.45f);
+			if (amp > 0f)
+			{
+				float wave = Mathf.Sin(_survivalSeconds * Mathf.Tau * Mathf.Max(0.05f, PressureWaveFrequency));
+				normalized = Mathf.Clamp(normalized + (wave * amp), 0f, 1f);
+			}
+		}
+
+		return normalized * MaxPressure;
 	}
 
 	private void OnEnemyKilled(Node source, Node target)

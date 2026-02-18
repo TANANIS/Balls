@@ -16,7 +16,8 @@ public partial class PlayerDash
 	private void StopDash()
 	{
 		_isDashing = false;
-		_cooldownTimer = DashCooldown;
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		_cooldownTimer = DashCooldown / Mathf.Max(0.1f, powerMult);
 		_player.ExitDashCollisionMode();
 	}
 

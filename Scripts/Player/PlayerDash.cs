@@ -14,6 +14,7 @@ public partial class PlayerDash : Node
 	[Export] public float DashIFrame = 0.08f;
 
 	private Player _player;
+	private StabilitySystem _stabilitySystem;
 	private bool _isDashing = false;
 	private float _dashTimer = 0f;
 	private float _cooldownTimer = 0f;
@@ -26,10 +27,14 @@ public partial class PlayerDash : Node
 	public void Setup(Player player)
 	{
 		_player = player;
+		ResolveStabilitySystem();
 	}
 
 	public bool Tick(float dt, Vector2 inputDir)
 	{
+		if (!IsInstanceValid(_stabilitySystem))
+			ResolveStabilitySystem();
+
 		if (_cooldownTimer > 0f)
 			_cooldownTimer -= dt;
 
@@ -40,7 +45,8 @@ public partial class PlayerDash : Node
 			return false;
 
 		_dashTimer -= dt;
-		_player.Velocity = _dashDir * DashSpeed;
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		_player.Velocity = _dashDir * DashSpeed * (1f + ((powerMult - 1f) * 0.5f));
 
 		if (DashIFrame > 0f)
 			_player.SetInvincible(DashIFrame);
@@ -51,5 +57,12 @@ public partial class PlayerDash : Node
 			StopDash();
 
 		return true;
+	}
+
+	private void ResolveStabilitySystem()
+	{
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
 	}
 }

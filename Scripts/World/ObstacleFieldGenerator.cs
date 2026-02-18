@@ -12,29 +12,31 @@ public partial class ObstacleFieldGenerator : Node2D
 	[Export] public Texture2D ObstacleTexture;
 	[Export] public NodePath PlayerPath = "../../Player";
 
-	[Export] public float SpawnIntervalSeconds = 0.7f;
+	[Export] public float SpawnIntervalSeconds = 2.8f;
 	[Export] public int SpawnPerTickMin = 1;
-	[Export] public int SpawnPerTickMax = 2;
-	[Export] public int MaxObstacleCount = 220;
-	[Export] public float SpawnOutsideMargin = 180f;
-	[Export] public float SpawnRingThickness = 360f;
+	[Export] public int SpawnPerTickMax = 1;
+	[Export] public int MaxObstacleCount = 90;
+	[Export] public float SpawnOutsideMargin = 220f;
+	[Export] public float SpawnRingThickness = 560f;
 	[Export] public float ScaleMin = 0.28f;
-	[Export] public float ScaleMax = 0.52f;
+	[Export] public float ScaleMax = 0.48f;
 	[Export] public float RotationMinDegrees = -22f;
 	[Export] public float RotationMaxDegrees = 22f;
 	[Export] public float ColliderWidthFactor = 0.58f;
 	[Export] public float ColliderHeightFactor = 0.40f;
-	[Export] public float ObstacleSpacingMultiplier = 1.35f;
+	[Export] public float ObstacleSpacingMultiplier = 2.75f;
 	[Export] public int PlacementAttemptsPerSpawn = 24;
 
 	private readonly RandomNumberGenerator _rng = new();
 	private readonly List<(Vector2 pos, float radius)> _placed = new();
 	private float _spawnTimer;
 	private bool _wasPaused = true;
+	private StabilitySystem _stabilitySystem;
 
 	public override void _Ready()
 	{
 		_rng.Randomize();
+		EnsureStabilitySystem();
 		CacheExistingObstacles();
 	}
 
@@ -50,13 +52,15 @@ public partial class ObstacleFieldGenerator : Node2D
 		if (ObstacleTexture == null)
 			return;
 
-		_spawnTimer -= (float)delta;
+		EnsureStabilitySystem();
+		float phaseRate = _stabilitySystem?.GetObstacleSpawnMultiplier() ?? 1f;
+		_spawnTimer -= (float)delta * Mathf.Max(0.05f, phaseRate);
 
 		// Generate a small initial burst right after leaving pause/start menu.
 		if (_wasPaused)
 		{
 			_wasPaused = false;
-			SpawnBatch(Mathf.Max(3, SpawnPerTickMax + 1));
+			SpawnBatch(1);
 			_spawnTimer = SpawnIntervalSeconds;
 			return;
 		}
@@ -66,6 +70,13 @@ public partial class ObstacleFieldGenerator : Node2D
 
 		_spawnTimer = SpawnIntervalSeconds;
 		int burst = _rng.RandiRange(Mathf.Max(1, SpawnPerTickMin), Mathf.Max(SpawnPerTickMin, SpawnPerTickMax));
+		if (_stabilitySystem != null)
+		{
+			if (_stabilitySystem.CurrentPhase == StabilitySystem.StabilityPhase.StructuralFracture)
+				burst = Mathf.Max(1, burst + 1);
+			else if (_stabilitySystem.CurrentPhase == StabilitySystem.StabilityPhase.CollapseCritical)
+				burst = Mathf.Max(1, burst + 2);
+		}
 		SpawnBatch(burst);
 	}
 
@@ -107,7 +118,7 @@ public partial class ObstacleFieldGenerator : Node2D
 			float dist = _rng.RandfRange(minDist, maxDist);
 			Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 			pos = center + (dir * dist);
-			radius = Mathf.Max(24f, tex.Length() * scale * 0.24f);
+			radius = Mathf.Max(48f, tex.Length() * scale * 0.30f);
 
 			bool overlap = false;
 			foreach (var it in _placed)
@@ -127,6 +138,16 @@ public partial class ObstacleFieldGenerator : Node2D
 		scale = 1f;
 		radius = 0f;
 		return false;
+	}
+
+	private void EnsureStabilitySystem()
+	{
+		if (IsInstanceValid(_stabilitySystem))
+			return;
+
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
 	}
 
 	private void CreateObstacle(Vector2 globalPos, float scale)

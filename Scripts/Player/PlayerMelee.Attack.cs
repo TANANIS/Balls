@@ -15,13 +15,17 @@ public partial class PlayerMelee
 		else
 			attackDir = attackDir.Normalized();
 
-		SpawnVfx(attackDir);
-		QueryAndApplyMeleeDamage(attackDir);
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float runtimeRange = Range * (1f + ((powerMult - 1f) * 0.25f));
+		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
+
+		SpawnVfx(attackDir, runtimeRange);
+		QueryAndApplyMeleeDamage(attackDir, runtimeRange, runtimeDamage);
 	}
 
-	private void QueryAndApplyMeleeDamage(Vector2 attackDir)
+	private void QueryAndApplyMeleeDamage(Vector2 attackDir, float runtimeRange, int runtimeDamage)
 	{
-		var circle = new CircleShape2D { Radius = Range };
+		var circle = new CircleShape2D { Radius = runtimeRange };
 		var query = new PhysicsShapeQueryParameters2D
 		{
 			Shape = circle,
@@ -60,7 +64,7 @@ public partial class PlayerMelee
 			var req = new DamageRequest(
 				source: _player,
 				target: area,
-				baseDamage: Damage,
+				baseDamage: runtimeDamage,
 				worldPos: area.GlobalPosition,
 				tag: "melee"
 			);
@@ -69,7 +73,7 @@ public partial class PlayerMelee
 		}
 	}
 
-	private void SpawnVfx(Vector2 direction)
+	private void SpawnVfx(Vector2 direction, float runtimeRange)
 	{
 		if (MeleeVfxScene == null || _player == null)
 			return;
@@ -89,6 +93,6 @@ public partial class PlayerMelee
 		parent.AddChild(vfx);
 
 		if (vfx is MeleeVFX meleeVfx)
-			meleeVfx.Init(direction, Range, ArcDegrees, VfxDuration, VfxColor);
+			meleeVfx.Init(direction, runtimeRange, ArcDegrees, VfxDuration, VfxColor);
 	}
 }

@@ -9,7 +9,11 @@ public partial class GameFlowUI : Control
 	[Export] public NodePath RestartButtonPath = "RestartPanel/Panel/VBox/RestartButton";
 	[Export] public NodePath LowHealthVignettePath = "../LowHealthVignette";
 	[Export] public NodePath ScoreLabelPath = "ScoreLabel";
+	[Export] public NodePath EventCountdownLabelPath = "EventCountdownLabel";
+	[Export] public NodePath EventNoticeLabelPath = "EventNoticeLabel";
 	[Export] public NodePath FinalScoreLabelPath = "RestartPanel/Panel/VBox/Score";
+	[Export] public NodePath RestartTitleLabelPath = "RestartPanel/Panel/VBox/Title";
+	[Export] public NodePath RestartHintLabelPath = "RestartPanel/Panel/VBox/Hint";
 	[Export] public NodePath BackgroundPath = "../../World/Background";
 	[Export] public NodePath BackgroundDimmerPath = "../../World/BackgroundDimmer";
 	[Export] public NodePath MenuBackgroundPath = "../../World/MenuBackground";
@@ -29,8 +33,13 @@ public partial class GameFlowUI : Control
 	private ColorRect _lowHealthVignette;
 	private ShaderMaterial _lowHealthMaterial;
 	private Label _scoreLabel;
+	private Label _eventCountdownLabel;
+	private Label _eventNoticeLabel;
 	private Label _finalScoreLabel;
+	private Label _restartTitleLabel;
+	private Label _restartHintLabel;
 	private ScoreSystem _scoreSystem;
+	private StabilitySystem _stabilitySystem;
 	private CanvasItem _background;
 	private ColorRect _backgroundDimmer;
 	private Sprite2D _menuBackground;
@@ -39,6 +48,8 @@ public partial class GameFlowUI : Control
 	private CanvasItem _projectilesRoot;
 	private CanvasItem _obstaclesRoot;
 	private bool _started;
+	private bool _ending;
+	private float _eventNoticeTimer;
 
 	public override void _Ready()
 	{
@@ -53,6 +64,7 @@ public partial class GameFlowUI : Control
 	public override void _Process(double delta)
 	{
 		UpdateLowHealthVignette();
+		UpdateUniverseEventUi(delta);
 		if (!_started)
 			FitMenuBackground();
 	}
@@ -71,7 +83,11 @@ public partial class GameFlowUI : Control
 		_lowHealthVignette = GetNodeOrNull<ColorRect>(LowHealthVignettePath);
 		_lowHealthMaterial = _lowHealthVignette?.Material as ShaderMaterial;
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
+		_eventCountdownLabel = GetNodeOrNull<Label>(EventCountdownLabelPath);
+		_eventNoticeLabel = GetNodeOrNull<Label>(EventNoticeLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
+		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
+		_restartHintLabel = GetNodeOrNull<Label>(RestartHintLabelPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
 		_backgroundDimmer = GetNodeOrNull<ColorRect>(BackgroundDimmerPath);
 		_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
@@ -91,6 +107,10 @@ public partial class GameFlowUI : Control
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
 		if (scoreList.Count > 0)
 			_scoreSystem = scoreList[0] as ScoreSystem;
+
+		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
+		if (stabilityList.Count > 0)
+			_stabilitySystem = stabilityList[0] as StabilitySystem;
 	}
 
 	private void BindSignals()
@@ -106,5 +126,13 @@ public partial class GameFlowUI : Control
 			_playerHealth.Died += OnPlayerDied;
 		if (_scoreSystem != null)
 			_scoreSystem.ScoreChanged += OnScoreChanged;
+		if (_stabilitySystem != null)
+		{
+			_stabilitySystem.Collapsed += OnUniverseCollapsed;
+			_stabilitySystem.MatchDurationReached += OnMatchDurationReached;
+			_stabilitySystem.EventIncoming += OnUniverseEventIncoming;
+			_stabilitySystem.EventStarted += OnUniverseEventStarted;
+			_stabilitySystem.EventEnded += OnUniverseEventEnded;
+		}
 	}
 }

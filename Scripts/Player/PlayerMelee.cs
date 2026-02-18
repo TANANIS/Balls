@@ -18,6 +18,7 @@ public partial class PlayerMelee : Node
 
 	private Player _player;
 	private CombatSystem _combat;
+	private StabilitySystem _stabilitySystem;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
 
@@ -29,6 +30,7 @@ public partial class PlayerMelee : Node
 	public void Setup(Player player)
 	{
 		_player = player;
+		ResolveStabilitySystem();
 
 		// Resolve combat service from group to keep scene wiring flexible.
 		var list = GetTree().GetNodesInGroup("CombatSystem");
@@ -43,6 +45,9 @@ public partial class PlayerMelee : Node
 
 	public void Tick(float dt)
 	{
+		if (!IsInstanceValid(_stabilitySystem))
+			ResolveStabilitySystem();
+
 		if (_cooldownTimer > 0f)
 			_cooldownTimer -= dt;
 		if (_cooldownTimer > 0f)
@@ -52,7 +57,8 @@ public partial class PlayerMelee : Node
 			return;
 
 		ExecuteAttack();
-		_cooldownTimer = Cooldown;
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
 	private void ResolveInputAction()
@@ -70,5 +76,12 @@ public partial class PlayerMelee : Node
 		{
 			DebugSystem.Error("[PlayerMelee] No valid secondary attack action found.");
 		}
+	}
+
+	private void ResolveStabilitySystem()
+	{
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
 	}
 }

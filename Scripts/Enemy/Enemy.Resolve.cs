@@ -27,6 +27,13 @@ public partial class Enemy
 		_behavior?.OnInitialized(this);
 	}
 
+	private void ResolveStabilitySystem()
+	{
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
+	}
+
 	private void ResolveSeparation()
 	{
 		_separation = GetNodeOrNull<EnemySeparationModule>(SeparationPath);

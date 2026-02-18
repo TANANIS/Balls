@@ -23,6 +23,21 @@ public partial class SpawnSystem
 			_upgradeSystem = list[0] as UpgradeSystem;
 	}
 
+	private void EnsureStabilitySystem()
+	{
+		if (IsInstanceValid(_stabilitySystem))
+			return;
+
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
+	}
+
+	private StabilitySystem.StabilityPhase GetCurrentPhase()
+	{
+		return _stabilitySystem?.CurrentPhase ?? StabilitySystem.StabilityPhase.Stable;
+	}
+
 	private void ApplyFallbackRuntimeSettings()
 	{
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, SpawnInterval);
@@ -37,8 +52,8 @@ public partial class SpawnSystem
 
 	private void ResetSpawnTimer()
 	{
-		float min = Mathf.Max(0.05f, GetLateGameSpawnInterval(_baseSpawnIntervalMin));
-		float max = Mathf.Max(min, GetLateGameSpawnInterval(_baseSpawnIntervalMax));
+		float min = Mathf.Max(0.05f, GetPhaseSpawnInterval(_baseSpawnIntervalMin));
+		float max = Mathf.Max(min, GetPhaseSpawnInterval(_baseSpawnIntervalMax));
 		_timer = _rng.RandfRange(min, max);
 	}
 
@@ -56,7 +71,7 @@ public partial class SpawnSystem
 
 		_activeTierRuleIndex = idx;
 		TierRule active = _tierRules[idx];
-		_activeTier = Mathf.Max(active.Tier, GetTimeForcedTier());
+		_activeTier = active.Tier;
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, active.SpawnIntervalMin);
 		_activeSpawnIntervalMax = Mathf.Max(_activeSpawnIntervalMin, active.SpawnIntervalMax);
 		_activeMaxAlive = Mathf.Max(1, active.MaxAlive);
@@ -71,60 +86,77 @@ public partial class SpawnSystem
 			DebugSystem.Log(
 				$"[SpawnSystem] Tier={active.Tier} pressure={pressure:F1} " +
 				$"spawn={_activeSpawnIntervalMin:F2}-{_activeSpawnIntervalMax:F2}s " +
-				$"maxAlive={_activeMaxAlive} radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0}");
+				$"maxAlive={_activeMaxAlive} radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0} phase={GetCurrentPhase()}");
 		}
 
 		ResetSpawnTimer();
 	}
 
-	private int GetTimeForcedTier()
+	private float GetPhaseSpawnRateMultiplier()
 	{
-		if (_survivalSeconds >= 240f) return 4;
-		if (_survivalSeconds >= 180f) return 4;
-		if (_survivalSeconds >= 120f) return 3;
-		if (_survivalSeconds >= 60f) return 2;
-		return -1;
-	}
-
-	private bool IsLateGame()
-	{
-		return LateGameStartSeconds > 0f && _survivalSeconds >= LateGameStartSeconds;
-	}
-
-	private float GetLateGameMultiplier()
-	{
-		if (!IsLateGame())
-			return 1f;
-
-		float minutesSince = Mathf.Max(0f, (_survivalSeconds - LateGameStartSeconds) / 60f);
-		int steps = Mathf.FloorToInt(minutesSince) + 1;
-		float mult = Mathf.Pow(2f, steps);
-
-		if (LateGameSecondRampStartSeconds > 0f && _survivalSeconds >= LateGameSecondRampStartSeconds)
+		return GetCurrentPhase() switch
 		{
-			float extra = Mathf.Max(0f, _survivalSeconds - LateGameSecondRampStartSeconds);
-			int extraSteps = Mathf.FloorToInt(extra / Mathf.Max(1f, LateGameSecondRampStepSeconds));
-			if (extraSteps > 0)
-				mult *= Mathf.Pow(2f, extraSteps);
-		}
-
-		return mult;
+			StabilitySystem.StabilityPhase.Stable => StableSpawnRateMultiplier,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => EnergyAnomalySpawnRateMultiplier,
+			StabilitySystem.StabilityPhase.StructuralFracture => StructuralFractureSpawnRateMultiplier,
+			StabilitySystem.StabilityPhase.CollapseCritical => CollapseCriticalSpawnRateMultiplier,
+			_ => 1f
+		};
 	}
 
-	private float GetLateGameSpawnInterval(float baseInterval)
+	private float GetPhaseMaxAliveMultiplier()
 	{
-		float mult = GetLateGameMultiplier();
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.Stable => StableMaxAliveMultiplier,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => EnergyAnomalyMaxAliveMultiplier,
+			StabilitySystem.StabilityPhase.StructuralFracture => StructuralFractureMaxAliveMultiplier,
+			StabilitySystem.StabilityPhase.CollapseCritical => CollapseCriticalMaxAliveMultiplier,
+			_ => 1f
+		};
+	}
+
+	private float GetPhaseSpawnInterval(float baseInterval)
+	{
+		float mult = Mathf.Max(0.01f, GetPhaseSpawnRateMultiplier());
 		float interval = baseInterval / mult;
-		return Mathf.Max(LateGameSpawnIntervalMinClamp, interval);
+		if (GetCurrentPhase() == StabilitySystem.StabilityPhase.CollapseCritical)
+		{
+			float jitter = Mathf.Clamp(CollapseCriticalSpawnChaosJitter, 0f, 0.95f);
+			float chaos = _rng.RandfRange(1f - jitter, 1f + jitter);
+			interval *= chaos;
+		}
+		return Mathf.Max(SpawnIntervalMinClamp, interval);
 	}
 
-	private int GetLateGameMaxAlive()
+	private int GetPhaseMaxAlive()
 	{
-		float mult = GetLateGameMultiplier();
+		float mult = Mathf.Max(0.01f, GetPhaseMaxAliveMultiplier());
 		int max = Mathf.RoundToInt(_baseMaxAlive * mult);
-		if (LateGameMaxAliveCap > 0)
-			max = Mathf.Min(max, LateGameMaxAliveCap);
+		if (MaxAliveCap > 0)
+			max = Mathf.Min(max, MaxAliveCap);
 		return Mathf.Max(1, max);
+	}
+
+	private int GetEliteUnlockReductionForPhase()
+	{
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.EnergyAnomaly => Mathf.Max(0, EnergyAnomalyEliteUnlockReduction),
+			StabilitySystem.StabilityPhase.StructuralFracture => Mathf.Max(0, StructuralFractureEliteUnlockReduction),
+			StabilitySystem.StabilityPhase.CollapseCritical => Mathf.Max(0, CollapseCriticalEliteUnlockReduction),
+			_ => 0
+		};
+	}
+
+	private int GetMiniBossUnlockReductionForPhase()
+	{
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.StructuralFracture => Mathf.Max(0, StructuralFractureMiniBossUnlockReduction),
+			StabilitySystem.StabilityPhase.CollapseCritical => Mathf.Max(0, CollapseCriticalMiniBossUnlockReduction),
+			_ => 0
+		};
 	}
 
 	private void UpdateUpgradeDrivenEvents(float dt)
@@ -144,9 +176,7 @@ public partial class SpawnSystem
 			return;
 
 		int upgradeCount = GetUpgradeCount();
-		int required = MiniBossUnlockUpgradeCount;
-		if (IsLateGame())
-			required = Mathf.Max(0, MiniBossUnlockUpgradeCount - LateGameMiniBossUnlockReduction);
+		int required = Mathf.Max(0, MiniBossUnlockUpgradeCount - GetMiniBossUnlockReductionForPhase());
 		if (upgradeCount != required)
 			return;
 
@@ -187,9 +217,9 @@ public partial class SpawnSystem
 
 	private void TryLateGameMiniBoss()
 	{
-		if (!IsLateGame())
+		if (GetCurrentPhase() != StabilitySystem.StabilityPhase.CollapseCritical)
 			return;
-		if (LateGameMiniBossInterval <= 0f)
+		if (CriticalMiniBossInterval <= 0f)
 			return;
 		if (_spawnFreezeTimer > 0f)
 			return;
@@ -197,12 +227,12 @@ public partial class SpawnSystem
 			return;
 
 		if (_nextLateMiniBossAt < 0f)
-			_nextLateMiniBossAt = LateGameStartSeconds + LateGameMiniBossInterval;
+			_nextLateMiniBossAt = _survivalSeconds + CriticalMiniBossInterval;
 
 		if (_survivalSeconds >= _nextLateMiniBossAt)
 		{
 			SpawnScheduledMiniBoss();
-			_nextLateMiniBossAt = _survivalSeconds + LateGameMiniBossInterval;
+			_nextLateMiniBossAt = _survivalSeconds + CriticalMiniBossInterval;
 		}
 	}
 

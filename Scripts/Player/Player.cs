@@ -12,6 +12,9 @@ public partial class Player : CharacterBody2D
 	private PlayerDash _dash;
 	private PlayerWeapon _primaryAttack;
 	private PlayerMelee _secondaryAttack;
+	private Camera2D _camera;
+	private StabilitySystem _stabilitySystem;
+	private Vector2 _cameraBaseZoom = Vector2.One;
 
 	private Vector2 _lastMoveDir = Vector2.Right;
 	private bool _deathLogged = false;
@@ -52,5 +55,6 @@ public partial class Player : CharacterBody2D
 		_primaryAttack.Tick(dt);
 		_secondaryAttack.Tick(dt);
 		ClampInsideBounds();
+		UpdatePhaseCamera(dt);
 	}
 }

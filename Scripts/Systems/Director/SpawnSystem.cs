@@ -27,24 +27,16 @@ public partial class SpawnSystem : Node
 	[Export] public string MiniBossEnemyId = "miniboss_hex";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
 
-	[Export] public float LateGameStartSeconds = 60f;
-	[Export] public float LateGameSpawnIntervalMinClamp = 0.1f;
-	[Export] public int LateGameMaxAliveCap = 900;
-	[Export] public float LateGameSecondRampStartSeconds = 240f;
-	[Export] public float LateGameSecondRampStepSeconds = 20f;
-	[Export] public float LateGameEliteChanceMultiplier = 2.0f;
-	[Export] public int LateGameEliteUnlockReduction = 4;
-	[Export] public int LateGameMiniBossUnlockReduction = 4;
-	[Export] public float LateGameMiniBossInterval = 60f;
-	[Export] public float LateGameWeightSwarm = 40f;
-	[Export] public float LateGameWeightCharger = 30f;
-	[Export] public float LateGameWeightTank = 20f;
-	[Export] public float LateGameWeightElite = 10f;
+	[Export] public float ChaosWeightSwarm = 40f;
+	[Export] public float ChaosWeightCharger = 30f;
+	[Export] public float ChaosWeightTank = 20f;
+	[Export] public float ChaosWeightElite = 10f;
 
 	private Node2D _enemiesRoot;
 	private Node2D _player;
 	private PressureSystem _pressureSystem;
 	private UpgradeSystem _upgradeSystem;
+	private StabilitySystem _stabilitySystem;
 	private float _timer;
 	private int _activeTier = -1;
 	private int _activeTierRuleIndex = -1;
@@ -65,6 +57,33 @@ public partial class SpawnSystem : Node
 	private float _spawnFreezeTimer = 0f;
 	private float _survivalSeconds = 0f;
 	private float _nextLateMiniBossAt = -1f;
+
+	[Export] public float StableSpawnRateMultiplier = 1.0f;
+	[Export] public float EnergyAnomalySpawnRateMultiplier = 1.20f;
+	[Export] public float StructuralFractureSpawnRateMultiplier = 1.70f;
+	[Export] public float CollapseCriticalSpawnRateMultiplier = 2.60f;
+	[Export] public float SpawnIntervalMinClamp = 0.1f;
+
+	[Export] public float StableMaxAliveMultiplier = 1.0f;
+	[Export] public float EnergyAnomalyMaxAliveMultiplier = 1.20f;
+	[Export] public float StructuralFractureMaxAliveMultiplier = 1.65f;
+	[Export] public float CollapseCriticalMaxAliveMultiplier = 2.25f;
+	[Export] public int MaxAliveCap = 900;
+
+	[Export] public float CriticalMiniBossInterval = 60f;
+	[Export] public int EnergyAnomalyEliteUnlockReduction = 1;
+	[Export] public int StructuralFractureEliteUnlockReduction = 2;
+	[Export] public int CollapseCriticalEliteUnlockReduction = 4;
+	[Export] public int StructuralFractureMiniBossUnlockReduction = 2;
+	[Export] public int CollapseCriticalMiniBossUnlockReduction = 4;
+	[Export] public float StructuralFractureEliteChanceMultiplier = 1.25f;
+	[Export] public float CollapseCriticalEliteChanceMultiplier = 2.0f;
+	[Export] public float CollapseCriticalSpawnChaosJitter = 0.35f;
+
+	public override void _EnterTree()
+	{
+		AddToGroup("SpawnSystem");
+	}
 
 	public override void _Ready()
 	{
@@ -104,6 +123,7 @@ public partial class SpawnSystem : Node
 
 		EnsurePressureSystem();
 		EnsureUpgradeSystem();
+		EnsureStabilitySystem();
 		UpdateTierRuntimeSettings();
 		UpdateUpgradeDrivenEvents((float)delta);
 		TryLateGameMiniBoss();
@@ -111,7 +131,7 @@ public partial class SpawnSystem : Node
 		if (_spawnFreezeTimer > 0f)
 			return;
 
-		int maxAlive = GetLateGameMaxAlive();
+		int maxAlive = GetPhaseMaxAlive();
 		if (_enemiesRoot.GetChildCount() >= maxAlive)
 			return;
 

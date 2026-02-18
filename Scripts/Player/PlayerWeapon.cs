@@ -13,6 +13,7 @@ public partial class PlayerWeapon : Node
 
 	private Player _player;
 	private Node _projectileContainer;
+	private StabilitySystem _stabilitySystem;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackPrimary;
 
@@ -23,6 +24,7 @@ public partial class PlayerWeapon : Node
 	public void Setup(Player player)
 	{
 		_player = player;
+		ResolveStabilitySystem();
 
 		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
 			_projectileContainer = GetNode(ProjectileContainerPath);
@@ -44,6 +46,9 @@ public partial class PlayerWeapon : Node
 
 	public void Tick(float dt)
 	{
+		if (!IsInstanceValid(_stabilitySystem))
+			ResolveStabilitySystem();
+
 		if (_cooldownTimer > 0f)
 			_cooldownTimer -= dt;
 
@@ -54,7 +59,8 @@ public partial class PlayerWeapon : Node
 			return;
 
 		ExecuteAttack();
-		_cooldownTimer = Cooldown;
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
 	private void ExecuteAttack()
@@ -75,8 +81,19 @@ public partial class PlayerWeapon : Node
 		if (bullet is Node2D bullet2D)
 			bullet2D.GlobalPosition = _player.GlobalPosition;
 
-		bullet.Call("InitFromPlayer", _player, dir, ProjectileSpeed, Damage);
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
+		int damage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
+
+		bullet.Call("InitFromPlayer", _player, dir, speed, damage);
 		_projectileContainer.AddChild(bullet);
+	}
+
+	private void ResolveStabilitySystem()
+	{
+		var list = GetTree().GetNodesInGroup("StabilitySystem");
+		if (list.Count > 0)
+			_stabilitySystem = list[0] as StabilitySystem;
 	}
 
 	public void AddDamage(int amount)

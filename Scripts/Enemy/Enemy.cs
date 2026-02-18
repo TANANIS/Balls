@@ -18,6 +18,7 @@ public partial class Enemy : CharacterBody2D
 
 	private EnemyHealth _health;
 	private Node2D _player;
+	private StabilitySystem _stabilitySystem;
 	private EnemyBehaviorModule _behavior;
 	private EnemySeparationModule _separation;
 	private readonly Godot.Collections.Array<EnemyEventModule> _events = new();
@@ -26,6 +27,7 @@ public partial class Enemy : CharacterBody2D
 	{
 		_health = GetNodeOrNull<EnemyHealth>("Health");
 		ResolvePlayer();
+		ResolveStabilitySystem();
 		ResolveBehavior();
 		ResolveSeparation();
 		ResolveEvents();
@@ -44,8 +46,12 @@ public partial class Enemy : CharacterBody2D
 
 		if (!IsInstanceValid(_player))
 			ResolvePlayer();
+		if (!IsInstanceValid(_stabilitySystem))
+			ResolveStabilitySystem();
 
 		Vector2 desired = GetDesiredVelocity(delta);
+		if (_stabilitySystem != null)
+			desired *= _stabilitySystem.GetEnemySpeedMultiplier();
 		float moveRate = desired == Vector2.Zero ? Friction : Accel;
 		Velocity = Velocity.MoveToward(desired, Mathf.Max(1f, moveRate) * dt);
 

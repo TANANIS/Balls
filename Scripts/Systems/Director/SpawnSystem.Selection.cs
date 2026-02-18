@@ -15,7 +15,8 @@ public partial class SpawnSystem
 
 		float total = 0f;
 		int upgradeCount = GetUpgradeCount();
-		bool eliteUnlocked = !UseUpgradeCountUnlocks || upgradeCount >= EliteUnlockUpgradeCount;
+		int eliteRequired = Mathf.Max(0, EliteUnlockUpgradeCount - GetEliteUnlockReductionForPhase());
+		bool eliteUnlocked = !UseUpgradeCountUnlocks || upgradeCount >= eliteRequired;
 		foreach (var item in weights)
 		{
 			if (item.Weight <= 0f)
@@ -64,8 +65,8 @@ public partial class SpawnSystem
 
 	private List<WeightedEnemy> GetWeightsForTier(int tier)
 	{
-		if (IsLateGame())
-			return BuildLateGameWeights(tier);
+		if (IsChaosPhase())
+			return BuildPhaseChaosWeights(tier);
 
 		if (_tierWeights.TryGetValue(tier, out List<WeightedEnemy> weights))
 			return weights;
@@ -79,14 +80,24 @@ public partial class SpawnSystem
 		return null;
 	}
 
-	private List<WeightedEnemy> BuildLateGameWeights(int tier)
+	private bool IsChaosPhase()
+	{
+		StabilitySystem.StabilityPhase phase = GetCurrentPhase();
+		return phase == StabilitySystem.StabilityPhase.StructuralFracture || phase == StabilitySystem.StabilityPhase.CollapseCritical;
+	}
+
+	private List<WeightedEnemy> BuildPhaseChaosWeights(int tier)
 	{
 		var list = new List<WeightedEnemy>();
 
-		TryAddWeight(list, "swarm_circle", LateGameWeightSwarm, tier);
-		TryAddWeight(list, "charger_triangle", LateGameWeightCharger, tier);
-		TryAddWeight(list, "tank_square", LateGameWeightTank, tier);
-		TryAddWeight(list, "elite_swarm_circle", LateGameWeightElite, tier);
+		float eliteWeight = ChaosWeightElite;
+		if (GetCurrentPhase() == StabilitySystem.StabilityPhase.CollapseCritical)
+			eliteWeight *= 1.35f;
+
+		TryAddWeight(list, "swarm_circle", ChaosWeightSwarm, tier);
+		TryAddWeight(list, "charger_triangle", ChaosWeightCharger, tier);
+		TryAddWeight(list, "tank_square", ChaosWeightTank, tier);
+		TryAddWeight(list, "elite_swarm_circle", eliteWeight, tier);
 
 		return list;
 	}
@@ -107,9 +118,8 @@ public partial class SpawnSystem
 	{
 		if (!UseUpgradeCountUnlocks)
 			return picked;
-		int required = EliteUnlockUpgradeCount;
-		if (IsLateGame())
-			required = Mathf.Max(0, EliteUnlockUpgradeCount - LateGameEliteUnlockReduction);
+
+		int required = Mathf.Max(0, EliteUnlockUpgradeCount - GetEliteUnlockReductionForPhase());
 		if (upgradeCount < required)
 			return picked;
 		if (!_enemyDefinitions.TryGetValue(EliteEnemyId, out EnemyDefinition eliteDef) || eliteDef.Scene == null)
@@ -117,11 +127,18 @@ public partial class SpawnSystem
 
 		float min = Mathf.Clamp(EliteInjectChanceMin, 0f, 1f);
 		float max = Mathf.Clamp(EliteInjectChanceMax, min, 1f);
-		if (IsLateGame())
+		StabilitySystem.StabilityPhase phase = GetCurrentPhase();
+		if (phase == StabilitySystem.StabilityPhase.StructuralFracture)
 		{
-			min = Mathf.Clamp(min * LateGameEliteChanceMultiplier, 0f, 1f);
-			max = Mathf.Clamp(max * LateGameEliteChanceMultiplier, min, 1f);
+			min = Mathf.Clamp(min * StructuralFractureEliteChanceMultiplier, 0f, 1f);
+			max = Mathf.Clamp(max * StructuralFractureEliteChanceMultiplier, min, 1f);
 		}
+		else if (phase == StabilitySystem.StabilityPhase.CollapseCritical)
+		{
+			min = Mathf.Clamp(min * CollapseCriticalEliteChanceMultiplier, 0f, 1f);
+			max = Mathf.Clamp(max * CollapseCriticalEliteChanceMultiplier, min, 1f);
+		}
+
 		float chance = _rng.RandfRange(min, max);
 		if (_rng.Randf() <= chance)
 			return eliteDef.Scene;

@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="14_upgrade"]
 [ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="15_upgrade_menu"]
 [ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
+[ext_resource type="Script" path="res://Scripts/Systems/Director/StabilitySystem.cs" id="16_stability"]
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
 [ext_resource type="Script" uid="uid://cbh21dgjcvlcu" path="res://Scripts/Audio/AudioManager.cs" id="18_audio_manager"]
 [ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="20_menu_bg"]
@@ -138,17 +139,17 @@ color = Color(0, 0, 0, 0.7)
 [node name="Obstacles" type="Node2D" parent="World"]
 script = ExtResource("23_obstacle_gen")
 ObstacleTexture = ExtResource("24_obstacle_tex")
-SpawnIntervalSeconds = 0.85
+SpawnIntervalSeconds = 2.9
 SpawnPerTickMin = 1
 SpawnPerTickMax = 1
-MaxObstacleCount = 220
-SpawnOutsideMargin = 180.0
-SpawnRingThickness = 420.0
+MaxObstacleCount = 80
+SpawnOutsideMargin = 240.0
+SpawnRingThickness = 620.0
 ScaleMin = 0.22
-ScaleMax = 0.42
+ScaleMax = 0.38
 ColliderWidthFactor = 0.56
 ColliderHeightFactor = 0.34
-ObstacleSpacingMultiplier = 1.4
+ObstacleSpacingMultiplier = 3.0
 
 [node name="Player" parent="." instance=ExtResource("22_player_scene")]
 
@@ -190,6 +191,10 @@ script = ExtResource("14_score")
 [node name="TimeSystem" type="Node" parent="Systems"]
 script = ExtResource("16_pressure")
 
+[node name="StabilitySystem" type="Node" parent="Systems"]
+script = ExtResource("16_stability")
+BaseDecayPerSecond = 0.42
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="LowHealthVignette" type="ColorRect" parent="CanvasLayer"]
@@ -219,6 +224,38 @@ offset_bottom = 48.0
 theme_override_colors/font_color = Color(0.3, 1, 0.9, 0.9)
 theme_override_font_sizes/font_size = 18
 text = "Score: 0"
+
+[node name="EventCountdownLabel" type="Label" parent="CanvasLayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -140.0
+offset_top = 16.0
+offset_right = 140.0
+offset_bottom = 44.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 18
+text = "Next Event In: 180s"
+horizontal_alignment = 1
+
+[node name="EventNoticeLabel" type="Label" parent="CanvasLayer/UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -280.0
+offset_top = 52.0
+offset_right = 280.0
+offset_bottom = 96.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+text = "Universe Event Incoming"
+horizontal_alignment = 1
 
 [node name="StartPanel" type="Control" parent="CanvasLayer/UI"]
 layout_mode = 1

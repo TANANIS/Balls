@@ -6,10 +6,13 @@ public partial class GameFlowUI
 	{
 		// Enter title/menu state and pause gameplay simulation.
 		_started = false;
+		_ending = false;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
+		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
+		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = true;
@@ -25,15 +28,24 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlayBgmGameplay();
 
 		_started = true;
+		_ending = false;
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
+		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = true;
+		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
+		_eventNoticeTimer = 0f;
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
 		if (_menuDimmer != null) _menuDimmer.Visible = false;
 		GetTree().Paused = false;
+		if (_player != null)
+		{
+			_player.SetProcess(true);
+			_player.SetPhysicsProcess(true);
+		}
 		RespawnPlayerAtViewportCenter();
 
 		_scoreSystem?.ResetScore();
@@ -43,20 +55,9 @@ public partial class GameFlowUI
 	private void OnPlayerDied()
 	{
 		// Present restart state only if the run was actually started.
-		if (!_started)
+		if (!_started || _ending)
 			return;
-
-		if (_restartPanel != null)
-			_restartPanel.Visible = true;
-
-		if (_finalScoreLabel != null)
-			_finalScoreLabel.Text = $"Score: {(_scoreSystem != null ? _scoreSystem.Score : 0)}";
-
-		if (_lowHealthMaterial != null)
-			_lowHealthMaterial.SetShaderParameter("intensity", 0f);
-
-		GetTree().Paused = true;
-		_restartButton?.GrabFocus();
+		EnterEndState("Player Down", true);
 	}
 
 	private void OnRestartPressed()
@@ -89,5 +90,71 @@ public partial class GameFlowUI
 			_projectilesRoot.Visible = visible;
 		if (_obstaclesRoot != null)
 			_obstaclesRoot.Visible = visible;
+	}
+
+	private async void OnUniverseCollapsed()
+	{
+		if (!_started || _ending)
+			return;
+		_ending = true;
+
+		// Freeze direct player input and stop further spawns during collapse sequence.
+		if (_player != null)
+		{
+			_player.SetProcess(false);
+			_player.SetPhysicsProcess(false);
+		}
+
+		var spawnList = GetTree().GetNodesInGroup("SpawnSystem");
+		foreach (Node node in spawnList)
+		{
+			node.SetProcess(false);
+			node.SetPhysicsProcess(false);
+		}
+
+		if (_lowHealthMaterial != null)
+			_lowHealthMaterial.SetShaderParameter("intensity", 1f);
+
+		await ToSignal(GetTree().CreateTimer(1.35f), SceneTreeTimer.SignalName.Timeout);
+		EnterEndState("Universe Collapsed", true);
+	}
+
+	private void OnMatchDurationReached()
+	{
+		if (!_started || _ending)
+			return;
+		EnterEndState("Run Complete", false);
+	}
+
+	private void EnterEndState(string reason, bool isFailure)
+	{
+		_ending = true;
+
+		if (_restartPanel != null)
+			_restartPanel.Visible = true;
+
+		if (_restartTitleLabel != null)
+			_restartTitleLabel.Text = isFailure ? "SYSTEM FAILURE" : "RUN COMPLETE";
+		if (_restartHintLabel != null)
+			_restartHintLabel.Text = isFailure
+				? "Press the button to restart this run."
+				: "Time limit reached. Press to start another run.";
+
+		int score = _scoreSystem != null ? _scoreSystem.Score : 0;
+		int seconds = _stabilitySystem != null ? Mathf.FloorToInt(_stabilitySystem.ElapsedSeconds) : 0;
+		string survival = $"{seconds / 60:D2}:{seconds % 60:D2}";
+
+		if (_finalScoreLabel != null)
+			_finalScoreLabel.Text = $"{reason}\nSurvival: {survival}\nScore: {score}";
+
+		if (_lowHealthMaterial != null)
+			_lowHealthMaterial.SetShaderParameter("intensity", 0f);
+		if (_eventCountdownLabel != null)
+			_eventCountdownLabel.Visible = false;
+		if (_eventNoticeLabel != null)
+			_eventNoticeLabel.Visible = false;
+
+		GetTree().Paused = true;
+		_restartButton?.GrabFocus();
 	}
 }
