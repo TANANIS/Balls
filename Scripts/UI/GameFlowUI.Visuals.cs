@@ -22,13 +22,12 @@ public partial class GameFlowUI
 
 	private void OnViewportSizeChanged()
 	{
-		if (_menuBackground != null)
-			FitMenuBackground();
+		FitMenuBackground();
 	}
 
 	private void FitMenuBackground()
 	{
-		// Scale-to-fill while preserving texture aspect ratio.
+		// Keep menu background aligned to camera center and scale-to-fill viewport.
 		if (_menuBackground?.Texture == null)
 			return;
 
@@ -37,8 +36,27 @@ public partial class GameFlowUI
 			return;
 
 		Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
-		float scale = Mathf.Max(viewportSize.X / texSize.X, viewportSize.Y / texSize.Y);
+		float scale = Mathf.Max(viewportSize.X / texSize.X, viewportSize.Y / texSize.Y) * 1.03f;
+		Vector2 center = GetMenuWorldCenter();
+
 		_menuBackground.Scale = new Vector2(scale, scale);
-		_menuBackground.Position = viewportSize * 0.5f;
+		_menuBackground.GlobalPosition = center;
+
+		if (_menuDimmer != null)
+		{
+			_menuDimmer.Size = viewportSize;
+			_menuDimmer.GlobalPosition = center - (viewportSize * 0.5f);
+		}
+	}
+
+	private Vector2 GetMenuWorldCenter()
+	{
+		var camera = GetViewport().GetCamera2D();
+		if (camera != null)
+			return camera.GetScreenCenterPosition();
+		if (_player != null)
+			return _player.GlobalPosition;
+		Rect2 rect = GetViewport().GetVisibleRect();
+		return rect.Position + (rect.Size * 0.5f);
 	}
 }

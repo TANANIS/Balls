@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b54h6vvqqif4k"
-path="res://.godot/imported/ezgif-frame-027.png-a367182f4db0bcc24cfaaa13c7f74436.ctex"
+uid="uid://sydrg2or7k1d"
+path="res://.godot/imported/ObstacleRock.png-2a42836ab71699ca13b425c02f0c8255.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Background/PNG/ezgif-frame-027.png"
-dest_files=["res://.godot/imported/ezgif-frame-027.png-a367182f4db0bcc24cfaaa13c7f74436.ctex"]
+source_file="res://Assets/Sprites/Environment/ObstacleRock.png"
+dest_files=["res://.godot/imported/ObstacleRock.png-2a42836ab71699ca13b425c02f0c8255.ctex"]
 
 [params]
 

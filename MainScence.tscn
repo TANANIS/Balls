@@ -11,234 +11,12 @@
 [ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="16_pressure"]
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="17_flow_ui"]
 [ext_resource type="Script" uid="uid://cbh21dgjcvlcu" path="res://Scripts/Audio/AudioManager.cs" id="18_audio_manager"]
-[ext_resource type="Script" uid="uid://15repuk4hw16" path="res://Scripts/UI/BackgroundAnimatedSprite.cs" id="19_bg_script"]
 [ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="20_menu_bg"]
 [ext_resource type="Script" uid="uid://bqyuxaxwk71we" path="res://Scripts/UI/CursorRing.cs" id="21_cursor_ring"]
 [ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="22_player_scene"]
-[ext_resource type="Texture2D" uid="uid://dva4g0fkamrsm" path="res://Assets/Sprites/Background/PNG/ezgif-frame-001.png" id="bg_001"]
-[ext_resource type="Texture2D" uid="uid://exnlmru7qmwc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-002.png" id="bg_002"]
-[ext_resource type="Texture2D" uid="uid://b6tc8w2i8qibs" path="res://Assets/Sprites/Background/PNG/ezgif-frame-003.png" id="bg_003"]
-[ext_resource type="Texture2D" uid="uid://cqq7cshguko7r" path="res://Assets/Sprites/Background/PNG/ezgif-frame-004.png" id="bg_004"]
-[ext_resource type="Texture2D" uid="uid://dnhbgucaprffk" path="res://Assets/Sprites/Background/PNG/ezgif-frame-005.png" id="bg_005"]
-[ext_resource type="Texture2D" uid="uid://bt0djj765wnf3" path="res://Assets/Sprites/Background/PNG/ezgif-frame-006.png" id="bg_006"]
-[ext_resource type="Texture2D" uid="uid://c54ifurug6vyw" path="res://Assets/Sprites/Background/PNG/ezgif-frame-007.png" id="bg_007"]
-[ext_resource type="Texture2D" uid="uid://crn7ac575yels" path="res://Assets/Sprites/Background/PNG/ezgif-frame-008.png" id="bg_008"]
-[ext_resource type="Texture2D" uid="uid://bf7m7jvjq0b6m" path="res://Assets/Sprites/Background/PNG/ezgif-frame-009.png" id="bg_009"]
-[ext_resource type="Texture2D" uid="uid://csoh87umrngqp" path="res://Assets/Sprites/Background/PNG/ezgif-frame-010.png" id="bg_010"]
-[ext_resource type="Texture2D" uid="uid://blny0n7j23l5h" path="res://Assets/Sprites/Background/PNG/ezgif-frame-011.png" id="bg_011"]
-[ext_resource type="Texture2D" uid="uid://btjkj33g4lbpj" path="res://Assets/Sprites/Background/PNG/ezgif-frame-012.png" id="bg_012"]
-[ext_resource type="Texture2D" uid="uid://b6d22d1be0sgt" path="res://Assets/Sprites/Background/PNG/ezgif-frame-013.png" id="bg_013"]
-[ext_resource type="Texture2D" uid="uid://ewg5tyuw6l5w" path="res://Assets/Sprites/Background/PNG/ezgif-frame-014.png" id="bg_014"]
-[ext_resource type="Texture2D" uid="uid://b8i4c38vay6ho" path="res://Assets/Sprites/Background/PNG/ezgif-frame-015.png" id="bg_015"]
-[ext_resource type="Texture2D" uid="uid://s6uq86ap64yt" path="res://Assets/Sprites/Background/PNG/ezgif-frame-016.png" id="bg_016"]
-[ext_resource type="Texture2D" uid="uid://c2qgnybg8rar5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-017.png" id="bg_017"]
-[ext_resource type="Texture2D" uid="uid://e6jaf3bk2rik" path="res://Assets/Sprites/Background/PNG/ezgif-frame-018.png" id="bg_018"]
-[ext_resource type="Texture2D" uid="uid://dsf8ul14g6rt5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-019.png" id="bg_019"]
-[ext_resource type="Texture2D" uid="uid://dt4512gpvpf2k" path="res://Assets/Sprites/Background/PNG/ezgif-frame-020.png" id="bg_020"]
-[ext_resource type="Texture2D" uid="uid://bdnftnbljnlgg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-021.png" id="bg_021"]
-[ext_resource type="Texture2D" uid="uid://bdv0r8st4o5ar" path="res://Assets/Sprites/Background/PNG/ezgif-frame-022.png" id="bg_022"]
-[ext_resource type="Texture2D" uid="uid://0d45exg5s0pi" path="res://Assets/Sprites/Background/PNG/ezgif-frame-023.png" id="bg_023"]
-[ext_resource type="Texture2D" uid="uid://br7cau5moyfyx" path="res://Assets/Sprites/Background/PNG/ezgif-frame-024.png" id="bg_024"]
-[ext_resource type="Texture2D" uid="uid://co555hqnxng41" path="res://Assets/Sprites/Background/PNG/ezgif-frame-025.png" id="bg_025"]
-[ext_resource type="Texture2D" uid="uid://bs88jmg2g825r" path="res://Assets/Sprites/Background/PNG/ezgif-frame-026.png" id="bg_026"]
-[ext_resource type="Texture2D" uid="uid://b54h6vvqqif4k" path="res://Assets/Sprites/Background/PNG/ezgif-frame-027.png" id="bg_027"]
-[ext_resource type="Texture2D" uid="uid://ip8mtpdynpfg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-028.png" id="bg_028"]
-[ext_resource type="Texture2D" uid="uid://bwt5cw8pcxglc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-029.png" id="bg_029"]
-[ext_resource type="Texture2D" uid="uid://cq82rh4q6t7va" path="res://Assets/Sprites/Background/PNG/ezgif-frame-030.png" id="bg_030"]
-[ext_resource type="Texture2D" uid="uid://cdtt0qu88cqwy" path="res://Assets/Sprites/Background/PNG/ezgif-frame-031.png" id="bg_031"]
-[ext_resource type="Texture2D" uid="uid://c5gm57tns8swc" path="res://Assets/Sprites/Background/PNG/ezgif-frame-032.png" id="bg_032"]
-[ext_resource type="Texture2D" uid="uid://kt0obrhg5ntg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-033.png" id="bg_033"]
-[ext_resource type="Texture2D" uid="uid://baooxtve6p1ne" path="res://Assets/Sprites/Background/PNG/ezgif-frame-034.png" id="bg_034"]
-[ext_resource type="Texture2D" uid="uid://dntgi2e8dna6i" path="res://Assets/Sprites/Background/PNG/ezgif-frame-035.png" id="bg_035"]
-[ext_resource type="Texture2D" uid="uid://c11mnrinl4gxu" path="res://Assets/Sprites/Background/PNG/ezgif-frame-036.png" id="bg_036"]
-[ext_resource type="Texture2D" uid="uid://w187xgtm5i20" path="res://Assets/Sprites/Background/PNG/ezgif-frame-037.png" id="bg_037"]
-[ext_resource type="Texture2D" uid="uid://drt41idmk01s4" path="res://Assets/Sprites/Background/PNG/ezgif-frame-038.png" id="bg_038"]
-[ext_resource type="Texture2D" uid="uid://4kqn4rxovk12" path="res://Assets/Sprites/Background/PNG/ezgif-frame-039.png" id="bg_039"]
-[ext_resource type="Texture2D" uid="uid://o13sh2mtjgxe" path="res://Assets/Sprites/Background/PNG/ezgif-frame-040.png" id="bg_040"]
-[ext_resource type="Texture2D" uid="uid://2dkoqnougnxe" path="res://Assets/Sprites/Background/PNG/ezgif-frame-041.png" id="bg_041"]
-[ext_resource type="Texture2D" uid="uid://b1yjch1nv4kso" path="res://Assets/Sprites/Background/PNG/ezgif-frame-042.png" id="bg_042"]
-[ext_resource type="Texture2D" uid="uid://drfa7uc0eyaus" path="res://Assets/Sprites/Background/PNG/ezgif-frame-043.png" id="bg_043"]
-[ext_resource type="Texture2D" uid="uid://kc5gy83nplad" path="res://Assets/Sprites/Background/PNG/ezgif-frame-044.png" id="bg_044"]
-[ext_resource type="Texture2D" uid="uid://c7lbjrb68yro" path="res://Assets/Sprites/Background/PNG/ezgif-frame-045.png" id="bg_045"]
-[ext_resource type="Texture2D" uid="uid://coa0eny5jip6g" path="res://Assets/Sprites/Background/PNG/ezgif-frame-046.png" id="bg_046"]
-[ext_resource type="Texture2D" uid="uid://biajnmfisw1dx" path="res://Assets/Sprites/Background/PNG/ezgif-frame-047.png" id="bg_047"]
-[ext_resource type="Texture2D" uid="uid://1st35d5v6b0b" path="res://Assets/Sprites/Background/PNG/ezgif-frame-048.png" id="bg_048"]
-[ext_resource type="Texture2D" uid="uid://c6kigh00cqpy5" path="res://Assets/Sprites/Background/PNG/ezgif-frame-049.png" id="bg_049"]
-[ext_resource type="Texture2D" uid="uid://k3mec6si52eg" path="res://Assets/Sprites/Background/PNG/ezgif-frame-050.png" id="bg_050"]
-[ext_resource type="Texture2D" uid="uid://c5llyw450vs2p" path="res://Assets/Sprites/Background/PNG/ezgif-frame-051.png" id="bg_051"]
-[ext_resource type="Texture2D" uid="uid://cgajqkol8ng2p" path="res://Assets/Sprites/Background/PNG/ezgif-frame-052.png" id="bg_052"]
-[ext_resource type="Texture2D" uid="uid://bunbskdvsle7o" path="res://Assets/Sprites/Background/PNG/ezgif-frame-053.png" id="bg_053"]
-[ext_resource type="Texture2D" uid="uid://djjhg4t5bbqse" path="res://Assets/Sprites/Background/PNG/ezgif-frame-054.png" id="bg_054"]
+[ext_resource type="Script" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="23_obstacle_gen"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/ObstacleRock.png" id="24_obstacle_tex"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_bg"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("bg_001")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_002")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_003")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_004")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_005")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_006")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_007")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_008")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_009")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_010")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_011")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_012")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_013")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_014")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_015")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_016")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_017")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_018")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_019")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_020")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_021")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_022")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_023")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_024")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_025")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_026")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_027")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_028")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_029")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_030")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_031")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_032")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_033")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_034")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_035")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_036")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_037")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_038")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_039")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_040")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_041")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_042")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_043")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_044")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_045")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_046")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_047")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_048")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_049")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_050")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_051")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_052")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_053")
-}, {
-"duration": 1.0,
-"texture": ExtResource("bg_054")
-}],
-"loop": true,
-"name": &"default",
-"speed": 1.0
-}]
 
 [sub_resource type="Shader" id="Shader_low_hp_vignette"]
 code = "shader_type canvas_item;
@@ -320,15 +98,17 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0.8, 1, 0.35)
 shadow_size = 8
 
+
+
+
 [node name="Game" type="Node2D"]
 
 [node name="World" type="Node2D" parent="."]
 
-[node name="Background" type="AnimatedSprite2D" parent="World"]
+[node name="Background" type="Sprite2D" parent="World"]
 visible = false
 z_index = -10
-sprite_frames = SubResource("SpriteFrames_bg")
-script = ExtResource("19_bg_script")
+texture = ExtResource("20_menu_bg")
 
 [node name="MenuBackground" type="Sprite2D" parent="World"]
 z_index = -11
@@ -354,6 +134,21 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.7)
+
+[node name="Obstacles" type="Node2D" parent="World"]
+script = ExtResource("23_obstacle_gen")
+ObstacleTexture = ExtResource("24_obstacle_tex")
+SpawnIntervalSeconds = 0.85
+SpawnPerTickMin = 1
+SpawnPerTickMax = 1
+MaxObstacleCount = 220
+SpawnOutsideMargin = 180.0
+SpawnRingThickness = 420.0
+ScaleMin = 0.22
+ScaleMax = 0.42
+ColliderWidthFactor = 0.56
+ColliderHeightFactor = 0.34
+ObstacleSpacingMultiplier = 1.4
 
 [node name="Player" parent="." instance=ExtResource("22_player_scene")]
 

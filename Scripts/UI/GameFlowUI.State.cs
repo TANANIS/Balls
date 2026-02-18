@@ -6,6 +6,7 @@ public partial class GameFlowUI
 	{
 		// Enter title/menu state and pause gameplay simulation.
 		_started = false;
+		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
@@ -24,11 +25,12 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlayBgmGameplay();
 
 		_started = true;
+		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
-		if (_background != null) _background.Visible = true;
-		if (_backgroundDimmer != null) _backgroundDimmer.Visible = true;
+		if (_background != null) _background.Visible = false;
+		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
 		if (_menuDimmer != null) _menuDimmer.Visible = false;
 		GetTree().Paused = false;
@@ -75,5 +77,17 @@ public partial class GameFlowUI
 		Rect2 rect = GetViewport().GetVisibleRect();
 		Vector2 center = rect.Position + (rect.Size * 0.5f);
 		_player.RespawnAt(center);
+	}
+
+	private void SetGameplayObjectsVisible(bool visible)
+	{
+		if (_player != null)
+			_player.Visible = visible;
+		if (_enemiesRoot != null)
+			_enemiesRoot.Visible = visible;
+		if (_projectilesRoot != null)
+			_projectilesRoot.Visible = visible;
+		if (_obstaclesRoot != null)
+			_obstaclesRoot.Visible = visible;
 	}
 }

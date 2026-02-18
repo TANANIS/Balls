@@ -68,3 +68,7 @@ script = ExtResource("5_x4450")
 [node name="Health" type="Node" parent="."]
 script = ExtResource("8_vpcxr")
 HurtIFrame = 0.1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = true
+position_smoothing_enabled = false

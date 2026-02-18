@@ -16,7 +16,7 @@ public partial class Player : CharacterBody2D
 	private Vector2 _lastMoveDir = Vector2.Right;
 	private bool _deathLogged = false;
 
-	[Export] public bool UseMovementBounds = true;
+	[Export] public bool UseMovementBounds = false;
 	[Export] public Rect2 MovementBounds = new Rect2(48f, 48f, 1184f, 624f);
 
 	public Vector2 LastMoveDir => _lastMoveDir;
