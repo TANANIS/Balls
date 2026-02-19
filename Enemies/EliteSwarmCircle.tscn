@@ -21,8 +21,8 @@ radius = 29.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 130.0
-Accel = 1300.0
+MaxSpeed = 155.0
+Accel = 1520.0
 Friction = 950.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -36,8 +36,13 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-BaseSpeedMultiplier = 1.18
-WeaveAmplitude = 0.34
+BaseSpeedMultiplier = 1.32
+BurstSpeedMultiplier = 1.82
+BurstDuration = 0.52
+BurstCooldownMin = 0.85
+BurstCooldownMax = 1.45
+InterceptSeconds = 0.26
+WeaveAmplitude = 0.42
 WeaveFrequency = 6.1
 
 [node name="Separation" type="Node" parent="."]
@@ -69,4 +74,4 @@ debug_color = Color(0.778, 0.314, 0.772, 0.42)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")
-MaxHp = 16
+MaxHp = 18

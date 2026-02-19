@@ -42,9 +42,13 @@ public partial class SpawnSystem
 	{
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, SpawnInterval);
 		_activeSpawnIntervalMax = _activeSpawnIntervalMin;
+		_activeBudgetMin = Mathf.Max(1, SpawnBudgetMin);
+		_activeBudgetMax = Mathf.Max(_activeBudgetMin, SpawnBudgetMax);
 		_activeMaxAlive = Mathf.Max(1, MaxAliveEnemies);
 		_baseSpawnIntervalMin = _activeSpawnIntervalMin;
 		_baseSpawnIntervalMax = _activeSpawnIntervalMax;
+		_baseBudgetMin = _activeBudgetMin;
+		_baseBudgetMax = _activeBudgetMax;
 		_baseMaxAlive = _activeMaxAlive;
 		_activeSpawnRadiusMin = Mathf.Max(1f, SpawnRadiusMin);
 		_activeSpawnRadiusMax = Mathf.Max(_activeSpawnRadiusMin, SpawnRadiusMax);
@@ -74,9 +78,13 @@ public partial class SpawnSystem
 		_activeTier = active.Tier;
 		_activeSpawnIntervalMin = Mathf.Max(0.05f, active.SpawnIntervalMin);
 		_activeSpawnIntervalMax = Mathf.Max(_activeSpawnIntervalMin, active.SpawnIntervalMax);
+		_activeBudgetMin = Mathf.Max(1, active.BudgetMin);
+		_activeBudgetMax = Mathf.Max(_activeBudgetMin, active.BudgetMax);
 		_activeMaxAlive = Mathf.Max(1, active.MaxAlive);
 		_baseSpawnIntervalMin = _activeSpawnIntervalMin;
 		_baseSpawnIntervalMax = _activeSpawnIntervalMax;
+		_baseBudgetMin = _activeBudgetMin;
+		_baseBudgetMax = _activeBudgetMax;
 		_baseMaxAlive = _activeMaxAlive;
 		_activeSpawnRadiusMin = Mathf.Max(1f, active.SpawnRadiusMin);
 		_activeSpawnRadiusMax = Mathf.Max(_activeSpawnRadiusMin, active.SpawnRadiusMax);
@@ -86,7 +94,8 @@ public partial class SpawnSystem
 			DebugSystem.Log(
 				$"[SpawnSystem] Tier={active.Tier} pressure={pressure:F1} " +
 				$"spawn={_activeSpawnIntervalMin:F2}-{_activeSpawnIntervalMax:F2}s " +
-				$"maxAlive={_activeMaxAlive} radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0} phase={GetCurrentPhase()}");
+				$"budget={_activeBudgetMin}-{_activeBudgetMax} maxAlive={_activeMaxAlive} " +
+				$"radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0} phase={GetCurrentPhase()}");
 		}
 
 		ResetSpawnTimer();
@@ -119,7 +128,11 @@ public partial class SpawnSystem
 	private float GetPhaseSpawnInterval(float baseInterval)
 	{
 		float mult = Mathf.Max(0.01f, GetPhaseSpawnRateMultiplier());
+		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
+		float tierProgress = GetCurrentTierProgress01();
 		float interval = baseInterval / mult;
+		interval /= Mathf.Lerp(1f, tierTailRamp, tierProgress);
+		interval *= GetOpeningSpawnIntervalMultiplier();
 		if (GetCurrentPhase() == StabilitySystem.StabilityPhase.CollapseCritical)
 		{
 			float jitter = Mathf.Clamp(CollapseCriticalSpawnChaosJitter, 0f, 0.95f);
@@ -132,10 +145,98 @@ public partial class SpawnSystem
 	private int GetPhaseMaxAlive()
 	{
 		float mult = Mathf.Max(0.01f, GetPhaseMaxAliveMultiplier());
-		int max = Mathf.RoundToInt(_baseMaxAlive * mult);
+		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
+		float tierProgress = GetCurrentTierProgress01();
+		float openingMult = GetOpeningVolumeMultiplier(OpeningMaxAliveStartMultiplier);
+		int max = Mathf.RoundToInt(_baseMaxAlive * mult * Mathf.Lerp(1f, tierTailRamp, tierProgress) * openingMult);
 		if (MaxAliveCap > 0)
 			max = Mathf.Min(max, MaxAliveCap);
 		return Mathf.Max(1, max);
+	}
+
+	private float GetPhaseBudgetMultiplier()
+	{
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.Stable => StableBudgetMultiplier,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => EnergyAnomalyBudgetMultiplier,
+			StabilitySystem.StabilityPhase.StructuralFracture => StructuralFractureBudgetMultiplier,
+			StabilitySystem.StabilityPhase.CollapseCritical => CollapseCriticalBudgetMultiplier,
+			_ => 1f
+		};
+	}
+
+	private float GetPhaseBudget(int baseBudget)
+	{
+		float phaseMult = Mathf.Max(0.05f, GetPhaseBudgetMultiplier());
+		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
+		float tierProgress = GetCurrentTierProgress01();
+		float rampMult = Mathf.Lerp(1f, tierTailRamp, tierProgress);
+		float openingMult = GetOpeningVolumeMultiplier(OpeningBudgetStartMultiplier);
+		return Mathf.Max(1f, baseBudget * phaseMult * rampMult * openingMult);
+	}
+
+	private float GetOpeningRamp01()
+	{
+		if (!UseOpeningRamp)
+			return 1f;
+
+		float duration = Mathf.Max(0.1f, OpeningRampSeconds);
+		float t = Mathf.Clamp(_survivalSeconds / duration, 0f, 1f);
+		return t * t * (3f - 2f * t); // smoothstep
+	}
+
+	private float GetOpeningSpawnIntervalMultiplier()
+	{
+		float start = Mathf.Max(1f, OpeningSpawnIntervalStartMultiplier);
+		float ramp = GetOpeningRamp01();
+		return Mathf.Lerp(start, 1f, ramp);
+	}
+
+	private float GetOpeningVolumeMultiplier(float startMultiplier)
+	{
+		float start = Mathf.Clamp(startMultiplier, 0.05f, 1f);
+		float ramp = GetOpeningRamp01();
+		return Mathf.Lerp(start, 1f, ramp);
+	}
+
+	private float GetPhaseTierTailRampMultiplier()
+	{
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.Stable => StableTierTailRampMultiplier,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => EnergyAnomalyTierTailRampMultiplier,
+			StabilitySystem.StabilityPhase.StructuralFracture => StructuralFractureTierTailRampMultiplier,
+			StabilitySystem.StabilityPhase.CollapseCritical => CollapseCriticalTierTailRampMultiplier,
+			_ => 1f
+		};
+	}
+
+	private float GetCurrentTierProgress01()
+	{
+		if (_activeTierRuleIndex < 0 || _activeTierRuleIndex >= _tierRules.Count)
+			return 0f;
+
+		TierRule rule = _tierRules[_activeTierRuleIndex];
+		float span = rule.PressureMax - rule.PressureMin;
+		if (span <= 0.01f)
+			return 0f;
+
+		float pressure = _pressureSystem?.CurrentPressure ?? rule.PressureMin;
+		float normalized = (pressure - rule.PressureMin) / span;
+		return Mathf.Clamp(normalized, 0f, 1f);
+	}
+
+	private int GetPhasePackCount()
+	{
+		return GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.Stable => Mathf.Max(1, StablePacksPerWave),
+			StabilitySystem.StabilityPhase.EnergyAnomaly => Mathf.Max(1, EnergyAnomalyPacksPerWave),
+			StabilitySystem.StabilityPhase.StructuralFracture => Mathf.Max(1, StructuralFracturePacksPerWave),
+			StabilitySystem.StabilityPhase.CollapseCritical => Mathf.Max(1, CollapseCriticalPacksPerWave),
+			_ => 1
+		};
 	}
 
 	private int GetEliteUnlockReductionForPhase()

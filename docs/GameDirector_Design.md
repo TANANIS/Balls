@@ -7,6 +7,37 @@ This document defines pacing logic for spawn orchestration and upgrade timing.
 - Escalate pressure via spawn tempo and enemy composition.
 - Guarantee upgrade cadence without punishing strong play.
 - Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`, not pressure.
+- Lock run duration to 15 minutes and shape pacing by four environment-state phases.
+
+## Match Timeline Contract (15:00)
+- `00:00 - 03:00` Stable:
+  - Base enemies only.
+  - Pressure has natural decay room.
+  - No universe anomaly effect.
+  - Goal: establish baseline build and first attack-modifier power spike.
+- `03:00 - 07:00` Energy Anomaly:
+  - First anomaly cycle starts.
+  - First hard pressure point.
+- `07:00 - 11:00` Structural Fracture:
+  - Enemy composition upgrades sharply.
+  - Spawn waves accelerate.
+  - Universe events are stronger and/or more frequent.
+  - Pressure natural decay is reduced.
+  - Goal: build validation window.
+- `11:00 - 15:00` Collapse Critical:
+  - Layered anomalies.
+  - High-density horde generation.
+  - Pressure decay nearly stalls.
+  - End-phase elite presence.
+
+## Universe Event Cadence Contract
+- Target cadence: every 3 minutes.
+- Target timestamps in one 15-minute run:
+  - `03:00`
+  - `06:00`
+  - `09:00`
+  - `12:00`
+- Note: current project implementation is not fully aligned yet; this is the target logic to sync toward.
 
 ## Dual-Meter Model
 - `CurrentPressure` (volatile): reflects immediate danger from enemy density, low HP, and elapsed time.
@@ -29,9 +60,10 @@ Boss exception:
 `SpawnSystem` is tier-driven and data-driven:
 1. Read pressure tier from `PressureSystem.CurrentPressure`.
 2. Apply tier runtime settings from `PressureTierRules.csv`.
-3. Pick enemy by weighted roll from `TierEnemyWeights.csv`.
-4. Resolve `enemy_id` to scene path via `EnemyDefinitions.csv`.
-5. Spawn around player using tier radius range.
+3. Roll wave budget and split into packed group spawns.
+4. Pick enemies by weighted roll from `TierEnemyWeights.csv` under budget/cost constraints.
+5. Resolve `enemy_id` to scene path via `EnemyDefinitions.csv`.
+6. Spawn around player with tier radius plus pack scatter.
 
 Unlock milestone rule:
 - Pressure/tier only controls pacing.
@@ -54,6 +86,7 @@ All under `Data/Director/`:
 Used fields now include:
 - `pressure_min`, `pressure_max`
 - `spawn_interval_min`, `spawn_interval_max`
+- `budget_min`, `budget_max`
 - `max_alive`
 - `spawn_radius_min`, `spawn_radius_max`
 - `kill_progress_base`

@@ -21,9 +21,9 @@ radius = 34.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 70.0
-Accel = 850.0
-Friction = 700.0
+MaxSpeed = 92.0
+Accel = 1000.0
+Friction = 760.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.125, 0.125)
@@ -34,10 +34,13 @@ shape = SubResource("RectangleShape2D_7qjt4")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-ApproachSpeedMultiplier = 0.82
-OrbitSpeedMultiplier = 0.42
-DesiredBlockDistance = 150.0
-DistanceTolerance = 28.0
+ApproachSpeedMultiplier = 1.06
+OrbitSpeedMultiplier = 0.62
+DesiredBlockDistance = 170.0
+DistanceTolerance = 20.0
+InterceptSeconds = 0.7
+CutoffAheadDistance = 150.0
+RetreatSpeedMultiplier = 0.52
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
@@ -47,7 +50,7 @@ collision_layer = 64
 collision_mask = 16
 script = ExtResource("3_hitbox")
 ContactDamage = 2
-TickInterval = 0.35
+TickInterval = 0.3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visible = false
@@ -68,4 +71,4 @@ debug_color = Color(0.778, 0.314, 0.772, 0.42)
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")
-MaxHp = 22
+MaxHp = 24

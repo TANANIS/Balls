@@ -1,61 +1,71 @@
-# 待辦清單
+# TODO
+
+## 當前版本規格（2026-02 sync）
+- 單局總時長：`15:00`
+- 節奏四階段（以環境狀態變化為主，不只是數值加難）
+  - `00:00 - 03:00` 宇宙穩定：基礎敵人、壓力自然下降、無宇宙異常
+  - `03:00 - 07:00` 能量異常：進入第一個壓力點
+  - `07:00 - 11:00` 結構破碎：敵人種類升級、生成波段加快、壓力自然下降速度降低
+  - `11:00 - 15:00` 坍縮臨界：宇宙異常疊加、高密度生怪、壓力下降近乎停滯、結束菁英怪出現
+- 宇宙事件節點：每 `3:00` 一次（`03:00`、`06:00`、`09:00`、`12:00`）
 
 ## 已完成
-- [x] 新增 `Esc` 暫停流程（暫停、繼續、重新開始、返回主選單）。
-- [x] 新增設定介面（BGM、SFX、視窗模式、視窗尺寸）。
-- [x] 設定存檔/讀檔（`user://settings.cfg`）。
-- [x] 重寫開始畫面主版面與文案（繁體中文）。
-- [x] 開始畫面新增 `Settings` 與 `離開遊戲`。
-- [x] 暫停畫面新增 `Quit Game`。
-- [x] 新增臨時宇宙背景（黑色遮罩 + 白色發光星點）。
-- [x] 背景改為視差移動，提供角色移動參考。
+- [x] `Esc` 暫停流程（含 Resume / Settings / Restart / ToTitle / Quit）
+- [x] 設定面板（BGM / SFX / 視窗模式 / 視窗大小）
+- [x] 設定存檔與讀檔（`user://settings.cfg`）
+- [x] 主選單與重開流程整理
+- [x] Universe Event 基礎 UI（倒數 / 通知）
+- [x] 升級介面改為三選一
+- [x] 升級選項顯示改為遊戲文案（移除程式欄位字樣）
+- [x] ESC 暫停面板顯示當前 Build 與關鍵詞條
+- [x] Run 結束顯示 Build 統計（分類占比 / 關鍵詞條）
+- [x] 滑鼠點擊失效修正（UI 容器 `mouse_filter`）
+- [x] 場景檔解析錯誤修正（`.tscn` UTF-8 no BOM）
+- [x] 場景拆分第一階段：`MainScence` -> `WorldRoot` / `SystemsRoot` / `GameFlowUIRoot`
+- [x] UI 拆分第二階段：`HudOverlay` / `StartPanel` / `PausePanel` / `RestartPanel`
+- [x] `GameFlowUI` Inspector 綁定欄位精簡（NodePath 常量化）
 
-## 進行中
-- [ ] 進一步調校 Stability 驅動的 Pressure 手感（不同戰鬥密度與 phase）。
-- [ ] 補齊 Universe Event 實際玩法效果（不只 UI 提示）。
+## 玩家升級系統（MVP）
 
-## 下一步
-- [ ] 加入高風險行為觸發的 Stability 回復（MVP：高壓區擊殺回復）。
-- [ ] 新增 Stability / Event HUD（phase、modifier、警示狀態）。
-- [ ] 擴充結算資料（死亡/崩潰/時間到的統計差異）。
-- [ ] 大改玩家升級系統（build identity 與分支策略）。
-- [ ] 加入局外養成（跨局資源與永久成長）。
-- [ ] 依 phase 再調整障礙物與刷怪密度，並跑大範圍移動實測。
-
-## 技術債
-- [ ] 清理剩餘 time-ramp 參數，避免與 Stability phase 規則重疊。
-- [ ] 補上 Stability phase 切換與 collapse 觸發的自動化測試。
-- [ ] 稽核 Director / UI 系統註解一致性與命名統一。
-
-## 玩家升級系統與分支策略（MVP）
-
-### 升級區塊分類
-- [ ] 建立 `UpgradeCategory`：`WeaponModifier`、`PressureModifier`、`AnomalySpecialist`、`SpatialControl`、`RiskAmplifier`
-- [ ] 每個區塊先做 4-6 個基礎詞條（總量 20-30）
-- [ ] 每個詞條需包含：效果敘述、數值、最大堆疊、權重、稀有度
-
-### 詞條資料結構
-- [ ] 建立 `UpgradeDef` 資料欄位：`id`、`name`、`category`、`rarity`、`weight`、`maxStack`
-- [ ] 支援 `prerequisites`（前置）與 `exclusiveWith`（排他）
-- [ ] 建立 `UpgradeRarity`：`Common`、`Rare`、`Epic`
+### 區塊分類與資料模型
+- [x] 建立 `UpgradeCategory`：`WeaponModifier`、`PressureModifier`、`AnomalySpecialist`、`SpatialControl`、`RiskAmplifier`
+- [x] 建立 `UpgradeRarity`：`Common`、`Rare`、`Epic`
+- [x] 擴充 `UpgradeDefinition`：`id`、`name`、`category`、`rarity`、`weight`、`maxStack`
+- [x] 支援 `prerequisites`（前置）與 `exclusiveWith`（排他）
+- [x] 建立 20 條基礎詞條（`Data/Upgrades/DefaultUpgradeCatalog.tres`）
 
 ### 抽選與分支策略
-- [ ] 實作每次升級三選一
-- [ ] 抽選需排除：已滿堆疊詞條、排他衝突詞條、未滿足前置詞條
-- [ ] 實作「同類加權」：玩家每次選某分類，後續該分類出現權重小幅上升
-- [ ] 保底規則：連續 N 次沒出特定稀有度時提高該稀有度權重
-
-### 流派驗證（第一輪）
-- [ ] 武器連射流：`WeaponModifier` + `RiskAmplifier`
-- [ ] 壓力操控流：`PressureModifier` + `AnomalySpecialist`
-- [ ] 控場位移流：`SpatialControl` + `PressureModifier`
+- [x] 實作升級三選一抽選
+- [x] 過濾規則：滿堆疊 / 排他衝突 / 前置未滿
+- [x] 同類加權（玩家選某分類後，該分類權重上升）
+- [x] Rare / Epic 保底（pity）
 
 ### 系統串接
-- [ ] 升級選擇後即時套用至玩家/戰鬥/壓力系統
-- [ ] HUD 顯示目前 build 核心分類與關鍵詞條
-- [ ] Run 結束統計：本局選擇分布、最終 build 類型、勝敗結果
+- [x] 升級效果套用至玩家/壓力/穩定度系統
+- [x] 新增 `UpgradeSystem` 統計輸出（分類占比 / 關鍵詞條）
+
+## 待完成
+
+### 核心玩法調校
+- [ ] 三個流派首輪平衡與手感調整
+- [ ] 升級池數值與權重微調（避免單一最優解）
+- [ ] 前置/排他關係再設計（提高 build identity）
+
+### Director / Universe Event
+- [ ] Stability / Pressure / Event 三者更緊密耦合
+- [ ] Universe Event 種類擴充與機制差異化
+- [ ] Universe Event 對 Upgrade 池的動態影響
+- [ ] 將 Universe Event 觸發對齊固定時間軸（`03:00`、`06:00`、`09:00`、`12:00`）
+- [ ] 完成 `03:00 - 07:00` 第一輪宇宙事件玩法（目前尚未完成）
+- [ ] 完成 `11:00 - 15:00` 坍縮臨界的異常疊加與終局菁英壓制體驗
+
+### UI / Editor Workflow
+- [ ] 提供 UI 狀態預覽模式（Editor 快速切換 Start / Pause / Restart / Upgrade）
+- [ ] PausePanel 的 Settings 子場景獨立化（若仍覺得編輯繁瑣）
+- [ ] 文件化場景拆分規範（命名/目錄/責任邊界）
 
 ### 驗收條件
-- [ ] 30 分鐘遊玩內不出現無詞可抽或死循環
-- [ ] 三個流派都能穩定成形，且體感差異明顯
-- [ ] 同一流派重複遊玩仍有詞條變化，不會每局完全相同
+- [ ] 15 分鐘遊玩內不出現無詞可抽或死循環
+- [ ] 三個流派都能穩定成形，差異明顯
+- [ ] 同流派重玩仍有變化，不會每局完全一致
+- [ ] 四階段節奏邊界體感清晰（`03:00`、`07:00`、`11:00`）

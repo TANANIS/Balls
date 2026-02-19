@@ -23,6 +23,15 @@ public partial class StabilitySystem : Node
 	[Export] public float EnergyAnomalyDecayMultiplier = 1.25f;
 	[Export] public float StructuralFractureDecayMultiplier = 1.60f;
 	[Export] public float CollapseCriticalDecayMultiplier = 2.10f;
+	[Export] public bool UseTimelinePhaseModel = true;
+	[Export] public float StablePhaseEndSeconds = 180f;
+	[Export] public float EnergyAnomalyPhaseEndSeconds = 420f;
+	[Export] public float StructuralFracturePhaseEndSeconds = 660f;
+	[Export] public bool UseFixedEventSchedule = true;
+	[Export] public float EventAt03m = 180f;
+	[Export] public float EventAt06m = 360f;
+	[Export] public float EventAt09m = 540f;
+	[Export] public float EventAt12m = 720f;
 	[Export] public float EventIntervalSeconds = 180f;
 	[Export] public float EventDurationMinSeconds = 30f;
 	[Export] public float EventDurationMaxSeconds = 60f;
@@ -54,6 +63,7 @@ public partial class StabilitySystem : Node
 	private bool _collapsed;
 	private float _elapsedSeconds;
 	private float _nextEventAtSeconds;
+	private int _nextScheduledEventIndex;
 	private float _activeEventRemainingSeconds;
 	private float _decayPauseRemainingSeconds;
 	private float _inputFlipTimer;
@@ -94,9 +104,12 @@ public partial class StabilitySystem : Node
 	{
 		_rng.Randomize();
 		_stability = Mathf.Clamp(StartStability, 0f, 100f);
-		_phase = ResolvePhase(_stability);
+		_phase = UseTimelinePhaseModel ? ResolvePhaseByTimeline(0f) : ResolvePhase(_stability);
 		_pendingEvent = RollUniverseEvent();
-		_nextEventAtSeconds = Mathf.Max(1f, EventIntervalSeconds);
+		_nextScheduledEventIndex = 0;
+		_nextEventAtSeconds = GetNextScheduledEventTime();
+		if (!UseFixedEventSchedule)
+			_nextEventAtSeconds = Mathf.Max(1f, EventIntervalSeconds);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -114,6 +127,7 @@ public partial class StabilitySystem : Node
 			MatchDurationReached?.Invoke();
 		}
 
+		UpdatePhaseAndSignals();
 		TickUniverseEventRuntime(dt);
 		TickDirectionDistortion(dt);
 		TickStabilityDecay(dt);
@@ -160,7 +174,7 @@ public partial class StabilitySystem : Node
 	{
 		if (!IsUniverseEventActive)
 		{
-			float incomingLead = Mathf.Clamp(EventIncomingLeadSeconds, 1f, Mathf.Max(1f, EventIntervalSeconds));
+			float incomingLead = Mathf.Max(1f, EventIncomingLeadSeconds);
 			float until = _nextEventAtSeconds - _elapsedSeconds;
 			if (!_incomingAnnounced && until <= incomingLead && until > 0f)
 			{
@@ -168,8 +182,15 @@ public partial class StabilitySystem : Node
 				EventIncoming?.Invoke(until, _pendingEvent);
 			}
 
-			if (_elapsedSeconds >= _nextEventAtSeconds)
+			if (_nextEventAtSeconds > 0f && _elapsedSeconds >= _nextEventAtSeconds)
+			{
 				StartUniverseEvent(_pendingEvent);
+				if (UseFixedEventSchedule)
+				{
+					_nextScheduledEventIndex++;
+					_nextEventAtSeconds = GetNextScheduledEventTime();
+				}
+			}
 		}
 		else
 		{
@@ -194,7 +215,8 @@ public partial class StabilitySystem : Node
 		if (VerboseLog)
 			DebugSystem.Log($"[StabilitySystem] Event started: {_activeEvent} ({duration:F1}s)");
 
-		_nextEventAtSeconds = _elapsedSeconds + Mathf.Max(1f, EventIntervalSeconds);
+		if (!UseFixedEventSchedule)
+			_nextEventAtSeconds = _elapsedSeconds + Mathf.Max(1f, EventIntervalSeconds);
 		_pendingEvent = RollUniverseEvent();
 		_incomingAnnounced = false;
 	}
@@ -237,7 +259,9 @@ public partial class StabilitySystem : Node
 
 	private void UpdatePhaseAndSignals()
 	{
-		StabilityPhase next = ResolvePhase(_stability);
+		StabilityPhase next = UseTimelinePhaseModel
+			? ResolvePhaseByTimeline(_elapsedSeconds)
+			: ResolvePhase(_stability);
 		if (next != _phase)
 		{
 			_phase = next;
@@ -255,11 +279,45 @@ public partial class StabilitySystem : Node
 		}
 	}
 
+	private float GetNextScheduledEventTime()
+	{
+		if (!UseFixedEventSchedule)
+			return Mathf.Max(1f, EventIntervalSeconds);
+
+		float[] schedule =
+		{
+			Mathf.Max(1f, EventAt03m),
+			Mathf.Max(1f, EventAt06m),
+			Mathf.Max(1f, EventAt09m),
+			Mathf.Max(1f, EventAt12m)
+		};
+
+		while (_nextScheduledEventIndex < schedule.Length && _elapsedSeconds >= schedule[_nextScheduledEventIndex])
+			_nextScheduledEventIndex++;
+
+		if (_nextScheduledEventIndex >= schedule.Length)
+			return -1f;
+
+		return schedule[_nextScheduledEventIndex];
+	}
+
 	private static StabilityPhase ResolvePhase(float stability)
 	{
 		if (stability > 70f) return StabilityPhase.Stable;
 		if (stability > 40f) return StabilityPhase.EnergyAnomaly;
 		if (stability > 15f) return StabilityPhase.StructuralFracture;
+		return StabilityPhase.CollapseCritical;
+	}
+
+	private StabilityPhase ResolvePhaseByTimeline(float elapsed)
+	{
+		float stableEnd = Mathf.Max(1f, StablePhaseEndSeconds);
+		float anomalyEnd = Mathf.Max(stableEnd + 1f, EnergyAnomalyPhaseEndSeconds);
+		float fractureEnd = Mathf.Max(anomalyEnd + 1f, StructuralFracturePhaseEndSeconds);
+
+		if (elapsed < stableEnd) return StabilityPhase.Stable;
+		if (elapsed < anomalyEnd) return StabilityPhase.EnergyAnomaly;
+		if (elapsed < fractureEnd) return StabilityPhase.StructuralFracture;
 		return StabilityPhase.CollapseCritical;
 	}
 

@@ -6,7 +6,7 @@ public partial class PressureSystem : Node
 {
 	[Export] public NodePath PlayerPath = "../../Player";
 	[Export] public NodePath EnemiesPath = "../../Enemies";
-	[Export] public NodePath UpgradeMenuPath = "../../CanvasLayer/UI/UpgradeMenu";
+	[Export] public NodePath UpgradeMenuPath = "../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu";
 	[Export] public bool UseTierRulesCsv = true;
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
 
@@ -32,6 +32,10 @@ public partial class PressureSystem : Node
 
 	[Export] public float RisePerSecond = 45f;
 	[Export] public float FallPerSecond = 20f;
+	[Export] public float StablePressureFallMultiplier = 1.00f;
+	[Export] public float EnergyAnomalyPressureFallMultiplier = 0.75f;
+	[Export] public float StructuralFracturePressureFallMultiplier = 0.40f;
+	[Export] public float CollapseCriticalPressureFallMultiplier = 0.08f;
 	[Export] public float PressureWaveFrequency = 0.7f;
 
 	[Export] public bool VerboseLog = true;
@@ -74,6 +78,10 @@ public partial class PressureSystem : Node
 
 		_enemiesRoot = GetNodeOrNull<Node2D>(EnemiesPath);
 		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
+		if (_upgradeMenu == null)
+			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeMenu");
+		if (_upgradeMenu == null)
+			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu");
 		var list = GetTree().GetNodesInGroup("CombatSystem");
 		if (list.Count > 0)
 			_combatSystem = list[0] as CombatSystem;
@@ -115,7 +123,7 @@ public partial class PressureSystem : Node
 			_triggerCooldownTimer -= dt;
 
 		float target = CalculateTargetPressure();
-		float speed = target >= _pressure ? RisePerSecond : FallPerSecond;
+		float speed = target >= _pressure ? RisePerSecond : GetPhaseFallSpeed();
 		_pressure = Mathf.MoveToward(_pressure, target, speed * dt);
 		if (TimeProgressPerSecond > 0f)
 			_upgradeProgress = Mathf.Clamp(_upgradeProgress + (TimeProgressPerSecond * _timeProgressMultiplier * dt), 0f, MaxUpgradeProgress);
@@ -183,6 +191,23 @@ public partial class PressureSystem : Node
 		}
 
 		return normalized * MaxPressure;
+	}
+
+	private float GetPhaseFallSpeed()
+	{
+		if (_stabilitySystem == null)
+			return FallPerSecond;
+
+		float mult = _stabilitySystem.CurrentPhase switch
+		{
+			StabilitySystem.StabilityPhase.Stable => StablePressureFallMultiplier,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => EnergyAnomalyPressureFallMultiplier,
+			StabilitySystem.StabilityPhase.StructuralFracture => StructuralFracturePressureFallMultiplier,
+			StabilitySystem.StabilityPhase.CollapseCritical => CollapseCriticalPressureFallMultiplier,
+			_ => 1f
+		};
+
+		return Mathf.Max(0.01f, FallPerSecond * Mathf.Max(0f, mult));
 	}
 
 	private void OnEnemyKilled(Node source, Node target)

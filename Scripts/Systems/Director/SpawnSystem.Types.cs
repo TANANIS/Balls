@@ -9,6 +9,8 @@ public partial class SpawnSystem
 		public float PressureMax;
 		public float SpawnIntervalMin;
 		public float SpawnIntervalMax;
+		public int BudgetMin;
+		public int BudgetMax;
 		public int MaxAlive;
 		public float SpawnRadiusMin;
 		public float SpawnRadiusMax;
@@ -18,6 +20,7 @@ public partial class SpawnSystem
 	{
 		public string Id;
 		public string ScenePath;
+		public int Cost;
 		public int MinTier;
 		public PackedScene Scene;
 	}

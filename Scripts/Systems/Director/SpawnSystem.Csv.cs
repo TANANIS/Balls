@@ -25,6 +25,8 @@ public partial class SpawnSystem
 				PressureMax = ParseFloat(cols[2], 100f),
 				SpawnIntervalMin = ParseFloat(cols[3], SpawnInterval),
 				SpawnIntervalMax = ParseFloat(cols[4], SpawnInterval),
+				BudgetMin = ParseInt(cols[5], 1),
+				BudgetMax = ParseInt(cols[6], 1),
 				MaxAlive = ParseInt(cols[7], MaxAliveEnemies),
 				SpawnRadiusMin = ParseFloat(cols[8], SpawnRadiusMin),
 				SpawnRadiusMax = ParseFloat(cols[9], SpawnRadiusMax)
@@ -50,6 +52,7 @@ public partial class SpawnSystem
 
 			string id = cols[0];
 			string scenePath = cols[1];
+			int cost = ParseInt(cols[3], 1);
 			int minTier = ParseInt(cols[4], 0);
 
 			if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(scenePath))
@@ -66,6 +69,7 @@ public partial class SpawnSystem
 			{
 				Id = id,
 				ScenePath = scenePath,
+				Cost = Mathf.Max(1, cost),
 				MinTier = minTier,
 				Scene = scene
 			};
