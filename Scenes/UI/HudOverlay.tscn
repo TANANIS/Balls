@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[node name="HudOverlay" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ScoreLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 320.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.3, 1, 0.9, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "Score: 0"
+
+[node name="EventCountdownLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -140.0
+offset_top = 16.0
+offset_right = 140.0
+offset_bottom = 44.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 0.95)
+theme_override_font_sizes/font_size = 18
+text = "Next Event In: 180s"
+horizontal_alignment = 1
+
+[node name="EventNoticeLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -280.0
+offset_top = 52.0
+offset_right = 280.0
+offset_bottom = 96.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.55, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+text = "Universe Event Incoming"
+horizontal_alignment = 1

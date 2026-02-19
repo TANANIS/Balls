@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="1_menu_bg"]
+[ext_resource type="Script" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="2_obstacle_gen"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/ObstacleRock.png" id="3_obstacle_tex"]
+[ext_resource type="Script" path="res://Scripts/World/SpaceBackdrop.cs" id="4_space_backdrop"]
+
+[node name="World" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+visible = false
+z_index = -10
+texture = ExtResource("1_menu_bg")
+
+[node name="MenuBackground" type="Sprite2D" parent="."]
+z_index = -11
+texture = ExtResource("1_menu_bg")
+
+[node name="BackgroundDimmer" type="ColorRect" parent="."]
+visible = false
+z_index = -9
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="MenuDimmer" type="ColorRect" parent="."]
+z_index = -9
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="SpaceBackdrop" type="Node2D" parent="."]
+script = ExtResource("4_space_backdrop")
+StarCount = 140
+MaskAlpha = 0.88
+StarMinScale = 0.08
+StarMaxScale = 0.26
+StarMinAlpha = 0.35
+StarMaxAlpha = 0.95
+TwinkleAmplitude = 0.42
+
+[node name="Obstacles" type="Node2D" parent="."]
+script = ExtResource("2_obstacle_gen")
+ObstacleTexture = ExtResource("3_obstacle_tex")
+SpawnIntervalSeconds = 2.9
+SpawnPerTickMin = 1
+SpawnPerTickMax = 1
+MaxObstacleCount = 80
+SpawnOutsideMargin = 240.0
+SpawnRingThickness = 620.0
+ScaleMin = 0.22
+ScaleMax = 0.38
+ColliderWidthFactor = 0.56
+ColliderHeightFactor = 0.34
+ObstacleSpacingMultiplier = 3.0

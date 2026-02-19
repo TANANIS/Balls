@@ -25,6 +25,7 @@ public partial class GameFlowUI
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = true;
 		if (_menuDimmer != null) _menuDimmer.Visible = true;
+		ResetBuildSummaryLabels();
 		GetTree().Paused = true;
 		_startButton?.GrabFocus();
 	}
@@ -56,6 +57,7 @@ public partial class GameFlowUI
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
 		if (_menuDimmer != null) _menuDimmer.Visible = false;
+		ResetBuildSummaryLabels();
 		GetTree().Paused = false;
 		if (_player != null)
 		{
@@ -184,6 +186,8 @@ public partial class GameFlowUI
 
 		if (_finalScoreLabel != null)
 			_finalScoreLabel.Text = $"{reason}\nSurvival: {survival}\nScore: {score}";
+
+		RefreshFinalBuildSummary();
 
 		if (_lowHealthMaterial != null)
 			_lowHealthMaterial.SetShaderParameter("intensity", 0f);

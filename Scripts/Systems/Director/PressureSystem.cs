@@ -53,6 +53,10 @@ public partial class PressureSystem : Node
 	private bool _upgradeArmed = false;
 	private readonly List<TierRule> _tierRules = new();
 	private int _activeTierIndex = -1;
+	private float _killProgressMultiplier = 1f;
+	private float _timeProgressMultiplier = 1f;
+	private float _triggerThresholdOffset = 0f;
+	private float _pressureDropOnTriggerBonus = 0f;
 
 	public float CurrentPressure => _pressure;
 	public float CurrentUpgradeProgress => _upgradeProgress;
@@ -114,7 +118,7 @@ public partial class PressureSystem : Node
 		float speed = target >= _pressure ? RisePerSecond : FallPerSecond;
 		_pressure = Mathf.MoveToward(_pressure, target, speed * dt);
 		if (TimeProgressPerSecond > 0f)
-			_upgradeProgress = Mathf.Clamp(_upgradeProgress + (TimeProgressPerSecond * dt), 0f, MaxUpgradeProgress);
+			_upgradeProgress = Mathf.Clamp(_upgradeProgress + (TimeProgressPerSecond * _timeProgressMultiplier * dt), 0f, MaxUpgradeProgress);
 
 		if (VerboseLog)
 		{
@@ -132,7 +136,8 @@ public partial class PressureSystem : Node
 		if (_triggerCooldownTimer > 0f)
 			return;
 
-		float required = _firstUpgradeTriggered ? TriggerThreshold : FirstTriggerThreshold;
+		float requiredBase = _firstUpgradeTriggered ? TriggerThreshold : FirstTriggerThreshold;
+		float required = Mathf.Max(5f, requiredBase + _triggerThresholdOffset);
 		if (_upgradeProgress >= required)
 			_upgradeArmed = true;
 	}
@@ -192,7 +197,7 @@ public partial class PressureSystem : Node
 		bool wasArmed = _upgradeArmed;
 
 		float pressureNorm = MaxPressure > 0f ? Mathf.Clamp(_pressure / MaxPressure, 0f, 1f) : 0f;
-		float gain = KillProgressBase * (1f + (pressureNorm * KillPressureBonusFactor));
+		float gain = KillProgressBase * _killProgressMultiplier * (1f + (pressureNorm * KillPressureBonusFactor));
 		_upgradeProgress = Mathf.Clamp(_upgradeProgress + gain, 0f, MaxUpgradeProgress);
 		if (VerboseLog)
 			DebugSystem.Log($"[PressureSystem] kill gain={gain:F1} progress={_upgradeProgress:F1}/{MaxUpgradeProgress:F1}");
@@ -220,8 +225,28 @@ public partial class PressureSystem : Node
 		_firstUpgradeTriggered = true;
 		_upgradeArmed = false;
 		_triggerCooldownTimer = TriggerCooldown;
-		_pressure = Mathf.Max(0f, _pressure - PressureDropOnTrigger);
+		_pressure = Mathf.Max(0f, _pressure - (PressureDropOnTrigger + _pressureDropOnTriggerBonus));
 		_upgradeProgress = Mathf.Max(0f, _upgradeProgress - ProgressDropOnTrigger);
 		DebugSystem.Log($"[PressureSystem] Triggered upgrade menu: {reason}.");
+	}
+
+	public void MultiplyKillProgressGain(float factor)
+	{
+		_killProgressMultiplier = Mathf.Clamp(_killProgressMultiplier * factor, 0.2f, 4.5f);
+	}
+
+	public void MultiplyTimeProgressGain(float factor)
+	{
+		_timeProgressMultiplier = Mathf.Clamp(_timeProgressMultiplier * factor, 0.2f, 4.5f);
+	}
+
+	public void AddTriggerThresholdOffset(float amount)
+	{
+		_triggerThresholdOffset = Mathf.Clamp(_triggerThresholdOffset + amount, -40f, 40f);
+	}
+
+	public void AddPressureDropOnTrigger(float amount)
+	{
+		_pressureDropOnTriggerBonus = Mathf.Clamp(_pressureDropOnTriggerBonus + amount, -20f, 50f);
 	}
 }

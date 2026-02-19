@@ -62,6 +62,9 @@ public partial class StabilitySystem : Node
 	private bool _inputSignNegative;
 	private UniverseEventType _activeEvent = UniverseEventType.None;
 	private UniverseEventType _pendingEvent = UniverseEventType.EnergySurge;
+	private float _upgradeDecayMultiplier = 1f;
+	private float _eventDurationMultiplier = 1f;
+	private float _playerPowerBonus = 0f;
 
 	public float CurrentStability => _stability;
 	public StabilityPhase CurrentPhase => _phase;
@@ -149,7 +152,7 @@ public partial class StabilitySystem : Node
 			return;
 		}
 
-		float decay = Mathf.Max(0f, BaseDecayPerSecond) * GetPhaseDecayMultiplier(_phase);
+		float decay = Mathf.Max(0f, BaseDecayPerSecond) * GetPhaseDecayMultiplier(_phase) * _upgradeDecayMultiplier;
 		ApplyDelta(-decay * dt);
 	}
 
@@ -180,7 +183,7 @@ public partial class StabilitySystem : Node
 	{
 		float minDur = Mathf.Max(5f, EventDurationMinSeconds);
 		float maxDur = Mathf.Max(minDur, EventDurationMaxSeconds);
-		float duration = _rng.RandfRange(minDur, maxDur);
+		float duration = _rng.RandfRange(minDur, maxDur) * _eventDurationMultiplier;
 
 		_activeEvent = eventType;
 		_activeEventRemainingSeconds = duration;
@@ -317,6 +320,8 @@ public partial class StabilitySystem : Node
 
 		if (_activeEvent == UniverseEventType.EnergySurge)
 			baseMult *= 1.12f;
+
+		baseMult *= (1f + _playerPowerBonus);
 		return Mathf.Max(0.1f, baseMult);
 	}
 
@@ -363,5 +368,20 @@ public partial class StabilitySystem : Node
 			StabilityPhase.CollapseCritical => CollapseCriticalPressureFluctuationAmplitude,
 			_ => 0f
 		};
+	}
+
+	public void MultiplyDecayRate(float factor)
+	{
+		_upgradeDecayMultiplier = Mathf.Clamp(_upgradeDecayMultiplier * factor, 0.2f, 3f);
+	}
+
+	public void MultiplyEventDuration(float factor)
+	{
+		_eventDurationMultiplier = Mathf.Clamp(_eventDurationMultiplier * factor, 0.4f, 2.2f);
+	}
+
+	public void AddPlayerPowerBonus(float amount)
+	{
+		_playerPowerBonus = Mathf.Clamp(_playerPowerBonus + amount, 0f, 0.8f);
 	}
 }

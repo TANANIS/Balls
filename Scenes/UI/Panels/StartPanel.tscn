@@ -1,0 +1,220 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.05, 0.07, 0.12, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0.6, 0.8, 0.2)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.08, 0.12, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 0.95, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.6, 0.8, 0.25)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.06, 0.1, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.7, 0.85, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.4, 0.6, 0.2)
+shadow_size = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.1, 0.18, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.8, 1, 0.35)
+shadow_size = 8
+
+[node name="StartPanel" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(680, 500)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -250.0
+offset_right = 340.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 470.0
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 46
+text = "PROJECT GENESIS"
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.85, 0.95, 0.95)
+theme_override_font_sizes/font_size = 18
+text = "Survive the collapsing universe and build your strategy."
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
+theme_override_font_sizes/font_size = 17
+text = "Controls:\nMove: W A S D\nPrimary Attack: Left Mouse\nMelee: Right Mouse\nDash: Space\n\nGoal:\nSurvive for 15 minutes before the universe collapses."
+horizontal_alignment = 0
+vertical_alignment = 0
+autowrap_mode = 3
+
+[node name="StartButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Start"
+
+[node name="SettingsButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Quit"
+
+[node name="SettingsPanel" type="Control" parent="Panel"]
+visible = false
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 470.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="BgmLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "BGM Volume"
+
+[node name="BgmSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "SFX Volume"
+
+[node name="SfxSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+
+[node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Window Mode"
+
+[node name="WindowModeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="WindowSizeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Window Size"
+
+[node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"

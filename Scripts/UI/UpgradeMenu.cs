@@ -4,21 +4,24 @@ public partial class UpgradeMenu : Control
 {
 	[Export] public bool DebugOpenWithKey = true;
 	[Export] public Key DebugOpenKey = Key.U;
-	[Export] public NodePath TitlePath = "Panel/VBox/Title";
-	[Export] public NodePath LeftButtonPath = "Panel/VBox/Options/LeftButton";
-	[Export] public NodePath RightButtonPath = "Panel/VBox/Options/RightButton";
-	[Export] public NodePath PanelPath = "Panel";
+	private const string TitlePath = "Panel/VBox/Title";
+	private const string LeftButtonPath = "Panel/VBox/Options/LeftButton";
+	private const string MiddleButtonPath = "Panel/VBox/Options/MiddleButton";
+	private const string RightButtonPath = "Panel/VBox/Options/RightButton";
+	private const string PanelPath = "Panel";
 
 	private UpgradeSystem _upgradeSystem;
 	private readonly RandomNumberGenerator _rng = new();
 
 	private Label _title;
 	private Button _leftButton;
+	private Button _middleButton;
 	private Button _rightButton;
 	private Control _panel;
 
 	private bool _isOpen = false;
 	private UpgradeSystem.UpgradeOptionData _leftOption;
+	private UpgradeSystem.UpgradeOptionData _middleOption;
 	private UpgradeSystem.UpgradeOptionData _rightOption;
 	public bool IsOpen => _isOpen;
 
@@ -66,7 +69,6 @@ public partial class UpgradeMenu : Control
 		_isOpen = true;
 		Visible = true;
 		GetTree().Paused = true;
-		CallDeferred(nameof(CenterPanel));
 		AudioManager.Instance?.PlaySfxUiButton();
 		_leftButton?.GrabFocus();
 	}

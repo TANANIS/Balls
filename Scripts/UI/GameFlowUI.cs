@@ -2,48 +2,50 @@ using Godot;
 
 public partial class GameFlowUI : Control
 {
-	[Export] public NodePath PlayerPath = "../../Player";
-	[Export] public NodePath StartPanelPath = "StartPanel";
-	[Export] public NodePath StartMainVBoxPath = "StartPanel/Panel/VBox";
-	[Export] public NodePath StartSettingsPanelPath = "StartPanel/Panel/SettingsPanel";
-	[Export] public NodePath RestartPanelPath = "RestartPanel";
-	[Export] public NodePath PausePanelPath = "PausePanel";
-	[Export] public NodePath PauseMainVBoxPath = "PausePanel/Panel/VBox";
-	[Export] public NodePath PauseSettingsPanelPath = "PausePanel/Panel/SettingsPanel";
-	[Export] public NodePath StartButtonPath = "StartPanel/Panel/VBox/StartButton";
-	[Export] public NodePath StartSettingsButtonPath = "StartPanel/Panel/VBox/SettingsButton";
-	[Export] public NodePath StartQuitButtonPath = "StartPanel/Panel/VBox/QuitButton";
-	[Export] public NodePath StartSettingsBackButtonPath = "StartPanel/Panel/SettingsPanel/VBox/BackButton";
-	[Export] public NodePath StartSettingsBgmSliderPath = "StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
-	[Export] public NodePath StartSettingsSfxSliderPath = "StartPanel/Panel/SettingsPanel/VBox/SfxSlider";
-	[Export] public NodePath StartSettingsWindowSizePath = "StartPanel/Panel/SettingsPanel/VBox/WindowSizeOption";
-	[Export] public NodePath StartSettingsWindowModePath = "StartPanel/Panel/SettingsPanel/VBox/WindowModeOption";
-	[Export] public NodePath RestartButtonPath = "RestartPanel/Panel/VBox/RestartButton";
-	[Export] public NodePath PauseResumeButtonPath = "PausePanel/Panel/VBox/ResumeButton";
-	[Export] public NodePath PauseSettingsButtonPath = "PausePanel/Panel/VBox/SettingsButton";
-	[Export] public NodePath PauseRestartButtonPath = "PausePanel/Panel/VBox/RestartButton";
-	[Export] public NodePath PauseToTitleButtonPath = "PausePanel/Panel/VBox/ToTitleButton";
-	[Export] public NodePath PauseQuitButtonPath = "PausePanel/Panel/VBox/QuitButton";
-	[Export] public NodePath SettingsBackButtonPath = "PausePanel/Panel/SettingsPanel/VBox/BackButton";
-	[Export] public NodePath SettingsBgmSliderPath = "PausePanel/Panel/SettingsPanel/VBox/BgmSlider";
-	[Export] public NodePath SettingsSfxSliderPath = "PausePanel/Panel/SettingsPanel/VBox/SfxSlider";
-	[Export] public NodePath SettingsWindowSizePath = "PausePanel/Panel/SettingsPanel/VBox/WindowSizeOption";
-	[Export] public NodePath SettingsWindowModePath = "PausePanel/Panel/SettingsPanel/VBox/WindowModeOption";
-	[Export] public NodePath UpgradeMenuPath = "UpgradeMenu";
-	[Export] public NodePath LowHealthVignettePath = "../LowHealthVignette";
-	[Export] public NodePath ScoreLabelPath = "ScoreLabel";
-	[Export] public NodePath EventCountdownLabelPath = "EventCountdownLabel";
-	[Export] public NodePath EventNoticeLabelPath = "EventNoticeLabel";
-	[Export] public NodePath FinalScoreLabelPath = "RestartPanel/Panel/VBox/Score";
-	[Export] public NodePath RestartTitleLabelPath = "RestartPanel/Panel/VBox/Title";
-	[Export] public NodePath RestartHintLabelPath = "RestartPanel/Panel/VBox/Hint";
-	[Export] public NodePath BackgroundPath = "../../World/Background";
-	[Export] public NodePath BackgroundDimmerPath = "../../World/BackgroundDimmer";
-	[Export] public NodePath MenuBackgroundPath = "../../World/MenuBackground";
-	[Export] public NodePath MenuDimmerPath = "../../World/MenuDimmer";
-	[Export] public NodePath EnemiesPath = "../../Enemies";
-	[Export] public NodePath ProjectilesPath = "../../Projectiles";
-	[Export] public NodePath ObstaclesPath = "../../World/Obstacles";
+	private const string PlayerPath = "../../Player";
+	private const string StartPanelPath = "Panels/StartPanel";
+	private const string StartMainVBoxPath = "Panels/StartPanel/Panel/VBox";
+	private const string StartSettingsPanelPath = "Panels/StartPanel/Panel/SettingsPanel";
+	private const string RestartPanelPath = "Panels/RestartPanel";
+	private const string PausePanelPath = "Panels/PausePanel";
+	private const string PauseMainVBoxPath = "Panels/PausePanel/Panel/VBox";
+	private const string PauseSettingsPanelPath = "Panels/PausePanel/Panel/SettingsPanel";
+	private const string StartButtonPath = "Panels/StartPanel/Panel/VBox/StartButton";
+	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/VBox/SettingsButton";
+	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/VBox/QuitButton";
+	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
+	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
+	private const string StartSettingsSfxSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/SfxSlider";
+	private const string StartSettingsWindowSizePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowSizeOption";
+	private const string StartSettingsWindowModePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowModeOption";
+	private const string RestartButtonPath = "Panels/RestartPanel/Panel/VBox/RestartButton";
+	private const string PauseResumeButtonPath = "Panels/PausePanel/Panel/VBox/ResumeButton";
+	private const string PauseSettingsButtonPath = "Panels/PausePanel/Panel/VBox/SettingsButton";
+	private const string PauseRestartButtonPath = "Panels/PausePanel/Panel/VBox/RestartButton";
+	private const string PauseToTitleButtonPath = "Panels/PausePanel/Panel/VBox/ToTitleButton";
+	private const string PauseQuitButtonPath = "Panels/PausePanel/Panel/VBox/QuitButton";
+	private const string SettingsBackButtonPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/BackButton";
+	private const string SettingsBgmSliderPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/BgmSlider";
+	private const string SettingsSfxSliderPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/SfxSlider";
+	private const string SettingsWindowSizePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowSizeOption";
+	private const string SettingsWindowModePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowModeOption";
+	private const string UpgradeMenuPath = "UpgradeLayer/UpgradeMenu";
+	private const string LowHealthVignettePath = "../LowHealthVignette";
+	private const string ScoreLabelPath = "Overlay/HudOverlay/ScoreLabel";
+	private const string EventCountdownLabelPath = "Overlay/HudOverlay/EventCountdownLabel";
+	private const string EventNoticeLabelPath = "Overlay/HudOverlay/EventNoticeLabel";
+	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/VBox/Score";
+	private const string PauseBuildSummaryLabelPath = "Panels/PausePanel/Panel/VBox/BuildSummary";
+	private const string FinalBuildSummaryLabelPath = "Panels/RestartPanel/Panel/VBox/BuildSummary";
+	private const string RestartTitleLabelPath = "Panels/RestartPanel/Panel/VBox/Title";
+	private const string RestartHintLabelPath = "Panels/RestartPanel/Panel/VBox/Hint";
+	private const string BackgroundPath = "../../World/Background";
+	private const string BackgroundDimmerPath = "../../World/BackgroundDimmer";
+	private const string MenuBackgroundPath = "../../World/MenuBackground";
+	private const string MenuDimmerPath = "../../World/MenuDimmer";
+	private const string EnemiesPath = "../../Enemies";
+	private const string ProjectilesPath = "../../Projectiles";
+	private const string ObstaclesPath = "../../World/Obstacles";
 	[Export] public float LowHealthMaxIntensity = 0.9f;
 	[Export] public float LowHealthPower = 1.6f;
 
@@ -82,8 +84,11 @@ public partial class GameFlowUI : Control
 	private Label _eventCountdownLabel;
 	private Label _eventNoticeLabel;
 	private Label _finalScoreLabel;
+	private Label _pauseBuildSummaryLabel;
+	private Label _finalBuildSummaryLabel;
 	private Label _restartTitleLabel;
 	private Label _restartHintLabel;
+	private UpgradeSystem _upgradeSystem;
 	private ScoreSystem _scoreSystem;
 	private StabilitySystem _stabilitySystem;
 	private CanvasItem _background;
@@ -160,6 +165,8 @@ public partial class GameFlowUI : Control
 		_eventCountdownLabel = GetNodeOrNull<Label>(EventCountdownLabelPath);
 		_eventNoticeLabel = GetNodeOrNull<Label>(EventNoticeLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
+		_pauseBuildSummaryLabel = GetNodeOrNull<Label>(PauseBuildSummaryLabelPath);
+		_finalBuildSummaryLabel = GetNodeOrNull<Label>(FinalBuildSummaryLabelPath);
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
 		_restartHintLabel = GetNodeOrNull<Label>(RestartHintLabelPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
@@ -195,6 +202,10 @@ public partial class GameFlowUI : Control
 		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
 		if (stabilityList.Count > 0)
 			_stabilitySystem = stabilityList[0] as StabilitySystem;
+
+		var upgradeList = GetTree().GetNodesInGroup("UpgradeSystem");
+		if (upgradeList.Count > 0)
+			_upgradeSystem = upgradeList[0] as UpgradeSystem;
 	}
 
 	private void BindSignals()

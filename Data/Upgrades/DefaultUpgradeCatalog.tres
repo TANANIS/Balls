@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=14 format=3 uid="uid://bm8r67lsfg5sw"]
+﻿[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=23 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
@@ -7,68 +7,206 @@
 script = ExtResource("2_definition_script")
 Title = "主武器傷害提升"
 Description = "遠距射擊傷害 +1"
+Category = 0
+Rarity = 0
+Weight = 18
+MaxStack = 4
 
 [sub_resource type="Resource" id="Upgrade_PrimaryFaster"]
 script = ExtResource("2_definition_script")
 Id = 1
 Title = "主武器加速"
 Description = "遠距射擊冷卻 -12%"
+Category = 0
+Rarity = 0
+Weight = 16
+MaxStack = 4
 
 [sub_resource type="Resource" id="Upgrade_PrimarySpeed"]
 script = ExtResource("2_definition_script")
 Id = 2
 Title = "主武器彈速提升"
 Description = "子彈速度 +120"
+Category = 0
+Rarity = 0
+Weight = 14
+MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_SecondaryDamage"]
 script = ExtResource("2_definition_script")
 Id = 3
 Title = "近戰傷害提升"
 Description = "近戰傷害 +1"
+Category = 0
+Rarity = 0
+Weight = 16
+MaxStack = 4
 
 [sub_resource type="Resource" id="Upgrade_SecondaryRange"]
 script = ExtResource("2_definition_script")
 Id = 4
 Title = "近戰範圍提升"
 Description = "近戰範圍 +10"
+Category = 0
+Rarity = 0
+Weight = 14
+MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_SecondaryArc"]
 script = ExtResource("2_definition_script")
 Id = 5
 Title = "近戰角度擴張"
 Description = "近戰扇形角度 +15°"
+Category = 0
+Rarity = 1
+Weight = 10
+MaxStack = 2
 
-[sub_resource type="Resource" id="Upgrade_SecondaryFaster"]
+[sub_resource type="Resource" id="Upgrade_PressureKillGain"]
 script = ExtResource("2_definition_script")
 Id = 6
-Title = "近戰加速"
-Description = "近戰冷卻 -12%"
+Title = "壓力收斂演算"
+Description = "擊殺升級進度 +18%"
+Category = 1
+Rarity = 0
+Weight = 14
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_PressureThresholdDown"]
+script = ExtResource("2_definition_script")
+Id = 7
+Title = "壓力觸發前移"
+Description = "升級觸發門檻 -6"
+Category = 1
+Rarity = 1
+Weight = 10
+MaxStack = 2
+
+[sub_resource type="Resource" id="Upgrade_PressureRelief"]
+script = ExtResource("2_definition_script")
+Id = 8
+Title = "壓力洩放閥"
+Description = "升級觸發時額外壓力減少 +6"
+Category = 1
+Rarity = 1
+Weight = 9
+MaxStack = 3
+Prerequisites = Array[int]([6])
+
+[sub_resource type="Resource" id="Upgrade_PressureTimeGain"]
+script = ExtResource("2_definition_script")
+Id = 9
+Title = "時間驅動增幅"
+Description = "每秒升級進度 +15%"
+Category = 1
+Rarity = 0
+Weight = 12
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_StabilityDecayDown"]
+script = ExtResource("2_definition_script")
+Id = 10
+Title = "宇宙穩定調諧"
+Description = "穩定度衰減 -10%"
+Category = 2
+Rarity = 1
+Weight = 11
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_StabilityPulse"]
+script = ExtResource("2_definition_script")
+Id = 11
+Title = "異常回穩脈衝"
+Description = "立即回復穩定度 +8"
+Category = 2
+Rarity = 0
+Weight = 10
+MaxStack = 2
+
+[sub_resource type="Resource" id="Upgrade_AnomalyLonger"]
+script = ExtResource("2_definition_script")
+Id = 12
+Title = "宇宙事件延展"
+Description = "事件持續時間 +15%"
+Category = 2
+Rarity = 1
+Weight = 9
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_AnomalyResonance"]
+script = ExtResource("2_definition_script")
+Id = 13
+Title = "異常共振輸出"
+Description = "玩家相位輸出係數 +4%"
+Category = 2
+Rarity = 2
+Weight = 5
+MaxStack = 3
+Prerequisites = Array[int]([10])
 
 [sub_resource type="Resource" id="Upgrade_DashCooldown"]
 script = ExtResource("2_definition_script")
-Id = 7
+Id = 14
 Title = "衝刺加速"
 Description = "衝刺冷卻 -12%"
+Category = 3
+Rarity = 0
+Weight = 14
+MaxStack = 4
 
 [sub_resource type="Resource" id="Upgrade_DashSpeed"]
 script = ExtResource("2_definition_script")
-Id = 8
+Id = 15
 Title = "衝刺速度提升"
 Description = "衝刺速度 +90"
+Category = 3
+Rarity = 0
+Weight = 13
+MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_DashLonger"]
 script = ExtResource("2_definition_script")
-Id = 9
+Id = 16
 Title = "衝刺延長"
 Description = "衝刺持續時間 +0.03 秒"
+Category = 3
+Rarity = 0
+Weight = 12
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_DashIFrame"]
+script = ExtResource("2_definition_script")
+Id = 17
+Title = "相位無敵延展"
+Description = "衝刺無敵時間 +0.015 秒"
+Category = 3
+Rarity = 1
+Weight = 8
+MaxStack = 3
+Prerequisites = Array[int]([16])
 
 [sub_resource type="Resource" id="Upgrade_MaxHp"]
 script = ExtResource("2_definition_script")
-Id = 10
+Id = 18
 Title = "最大生命值提升"
 Description = "最大生命值 +1"
+Category = 4
+Rarity = 0
+Weight = 11
+MaxStack = 3
+ExclusiveWith = Array[int]([19])
+
+[sub_resource type="Resource" id="Upgrade_RiskArms"]
+script = ExtResource("2_definition_script")
+Id = 19
+Title = "高壓武裝"
+Description = "主武器與近戰傷害 +2；升級門檻 +5"
+Category = 4
+Rarity = 2
+Weight = 5
+MaxStack = 2
+ExclusiveWith = Array[int]([18])
 
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_PrimaryDamage"), SubResource("Upgrade_PrimaryFaster"), SubResource("Upgrade_PrimarySpeed"), SubResource("Upgrade_SecondaryDamage"), SubResource("Upgrade_SecondaryRange"), SubResource("Upgrade_SecondaryArc"), SubResource("Upgrade_SecondaryFaster"), SubResource("Upgrade_DashCooldown"), SubResource("Upgrade_DashSpeed"), SubResource("Upgrade_DashLonger"), SubResource("Upgrade_MaxHp")])
-
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_PrimaryDamage"), SubResource("Upgrade_PrimaryFaster"), SubResource("Upgrade_PrimarySpeed"), SubResource("Upgrade_SecondaryDamage"), SubResource("Upgrade_SecondaryRange"), SubResource("Upgrade_SecondaryArc"), SubResource("Upgrade_PressureKillGain"), SubResource("Upgrade_PressureThresholdDown"), SubResource("Upgrade_PressureRelief"), SubResource("Upgrade_PressureTimeGain"), SubResource("Upgrade_StabilityDecayDown"), SubResource("Upgrade_StabilityPulse"), SubResource("Upgrade_AnomalyLonger"), SubResource("Upgrade_AnomalyResonance"), SubResource("Upgrade_DashCooldown"), SubResource("Upgrade_DashSpeed"), SubResource("Upgrade_DashLonger"), SubResource("Upgrade_DashIFrame"), SubResource("Upgrade_MaxHp"), SubResource("Upgrade_RiskArms")])

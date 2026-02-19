@@ -108,10 +108,22 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 
-[node name="RightButton" type="Button" parent="Panel/VBox/Options"]
+[node name="MiddleButton" type="Button" parent="Panel/VBox/Options"]
 custom_minimum_size = Vector2(300, 170)
 layout_mode = 2
 text = "Upgrade B"
+text_overrun_behavior = 1
+autowrap_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+
+[node name="RightButton" type="Button" parent="Panel/VBox/Options"]
+custom_minimum_size = Vector2(300, 170)
+layout_mode = 2
+text = "Upgrade C"
 text_overrun_behavior = 1
 autowrap_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")

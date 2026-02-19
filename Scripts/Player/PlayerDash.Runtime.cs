@@ -35,4 +35,9 @@ public partial class PlayerDash
 	{
 		DashDuration = Mathf.Clamp(DashDuration + amount, 0.02f, 3f);
 	}
+
+	public void AddIFrame(float amount)
+	{
+		DashIFrame = Mathf.Clamp(DashIFrame + amount, 0f, 1.2f);
+	}
 }

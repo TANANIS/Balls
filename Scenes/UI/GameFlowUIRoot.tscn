@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="1_flow_ui"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
+[ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="6_upgrade_menu"]
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_flow_ui")
+
+[node name="Overlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HudOverlay" parent="Overlay" instance=ExtResource("2_hud_overlay")]
+
+[node name="Panels" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="StartPanel" parent="Panels" instance=ExtResource("3_start_panel")]
+
+[node name="PausePanel" parent="Panels" instance=ExtResource("4_pause_panel")]
+
+[node name="RestartPanel" parent="Panels" instance=ExtResource("5_restart_panel")]
+
+[node name="UpgradeLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="UpgradeMenu" parent="UpgradeLayer" instance=ExtResource("6_upgrade_menu")]
+visible = false

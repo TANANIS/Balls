@@ -1,4 +1,4 @@
-using Godot;
+ï»¿using Godot;
 using System.Collections.Generic;
 
 public partial class UpgradeSystem
@@ -6,37 +6,38 @@ public partial class UpgradeSystem
 	// Fallback list used when catalog data is missing.
 	private static readonly List<UpgradeOptionData> FallbackOptions = new()
 	{
-		new UpgradeOptionData(UpgradeId.PrimaryDamageUp, "¥DªZ¾¹¶Ë®`´£¤É", "»·¶Z®gÀ»¶Ë®` +1"),
-		new UpgradeOptionData(UpgradeId.PrimaryFasterFire, "¥DªZ¾¹¥[³t", "»·¶Z®gÀ»§N«o -12%"),
-		new UpgradeOptionData(UpgradeId.PrimaryProjectileSpeedUp, "¥DªZ¾¹¼u³t´£¤É", "¤l¼u³t«× +120"),
-		new UpgradeOptionData(UpgradeId.SecondaryDamageUp, "ªñ¾Ô¶Ë®`´£¤É", "ªñ¾Ô¶Ë®` +1"),
-		new UpgradeOptionData(UpgradeId.SecondaryRangeUp, "ªñ¾Ô½d³ò´£¤É", "ªñ¾Ô½d³ò +10"),
-		new UpgradeOptionData(UpgradeId.SecondaryWiderArc, "ªñ¾Ô¨¤«×ÂX±i", "ªñ¾Ô®°§Î¨¤«× +15¢X"),
-		new UpgradeOptionData(UpgradeId.SecondaryFaster, "ªñ¾Ô¥[³t", "ªñ¾Ô§N«o -12%"),
-		new UpgradeOptionData(UpgradeId.DashFasterCooldown, "½Ä¨ë¥[³t", "½Ä¨ë§N«o -12%"),
-		new UpgradeOptionData(UpgradeId.DashSpeedUp, "½Ä¨ë³t«×´£¤É", "½Ä¨ë³t«× +90"),
-		new UpgradeOptionData(UpgradeId.DashLonger, "½Ä¨ë©µªø", "½Ä¨ë«ùÄò®É¶¡ +0.03 ¬í"),
-		new UpgradeOptionData(UpgradeId.MaxHpUp, "³Ì¤j¥Í©R­È´£¤É", "³Ì¤j¥Í©R­È +1")
+		new UpgradeOptionData(UpgradeId.PrimaryDamageUp, "ä¸»æ­¦å™¨å‚·å®³æå‡", "é è·å°„æ“Šå‚·å®³ +1", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
+		new UpgradeOptionData(UpgradeId.PrimaryFasterFire, "ä¸»æ­¦å™¨åŠ é€Ÿ", "é è·å°„æ“Šå†·å» -12%", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
+		new UpgradeOptionData(UpgradeId.SecondaryDamageUp, "è¿‘æˆ°å‚·å®³æå‡", "è¿‘æˆ°å‚·å®³ +1", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
+		new UpgradeOptionData(UpgradeId.PressureKillProgressUp, "å£“åŠ›æ”¶æ–‚æ¼”ç®—", "æ“Šæ®ºå‡ç´šé€²åº¦ +18%", UpgradeCategory.PressureModifier, UpgradeRarity.Common, 0, 3),
+		new UpgradeOptionData(UpgradeId.StabilityDecayDown, "å®‡å®™ç©©å®šèª¿è«§", "ç©©å®šåº¦è¡°æ¸› -10%", UpgradeCategory.AnomalySpecialist, UpgradeRarity.Rare, 0, 2),
+		new UpgradeOptionData(UpgradeId.DashFasterCooldown, "è¡åˆºåŠ é€Ÿ", "è¡åˆºå†·å» -12%", UpgradeCategory.SpatialControl, UpgradeRarity.Common, 0, 4),
+		new UpgradeOptionData(UpgradeId.MaxHpUp, "æœ€å¤§ç”Ÿå‘½å€¼æå‡", "æœ€å¤§ç”Ÿå‘½å€¼ +1", UpgradeCategory.RiskAmplifier, UpgradeRarity.Common, 0, 3)
 	};
 
-	public bool TryPickTwo(RandomNumberGenerator rng, out UpgradeOptionData left, out UpgradeOptionData right)
+	public bool TryPickOptions(RandomNumberGenerator rng, int count, out List<UpgradeOptionData> picks)
 	{
-		// Build current candidate pool, then draw two distinct indices.
-		var options = BuildOptionPool();
-		if (options.Count < 2)
+		picks = new List<UpgradeOptionData>();
+		if (count <= 0)
+			return false;
+
+		var candidates = BuildOptionPool();
+		if (candidates.Count < count)
 		{
-			left = default;
-			right = default;
 			return false;
 		}
 
-		int leftIdx = rng.RandiRange(0, options.Count - 1);
-		int rightIdx = rng.RandiRange(0, options.Count - 1);
-		while (rightIdx == leftIdx)
-			rightIdx = rng.RandiRange(0, options.Count - 1);
+		for (int i = 0; i < count; i++)
+		{
+			int idx = PickWeightedIndex(rng, candidates);
+			if (idx < 0 || idx >= candidates.Count)
+				return false;
 
-		left = options[leftIdx];
-		right = options[rightIdx];
+			picks.Add(candidates[idx]);
+			candidates.RemoveAt(idx);
+		}
+
+		UpdatePityCounters(picks);
 		return true;
 	}
 
@@ -44,6 +45,8 @@ public partial class UpgradeSystem
 	{
 		// Preferred source: authored catalog entries.
 		var pool = new List<UpgradeOptionData>();
+		if (_definitions.Count == 0)
+			RebuildDefinitionIndex();
 
 		if (Catalog != null && Catalog.Entries != null)
 		{
@@ -53,8 +56,19 @@ public partial class UpgradeSystem
 					continue;
 				if (string.IsNullOrWhiteSpace(entry.Title))
 					continue;
+				if (!CanApplyDefinition(entry))
+					continue;
 
-				pool.Add(new UpgradeOptionData(entry.Id, entry.Title, entry.Description, entry.Icon));
+				int stack = GetStack(entry.Id);
+				pool.Add(new UpgradeOptionData(
+					entry.Id,
+					entry.Title,
+					entry.Description,
+					entry.Category,
+					entry.Rarity,
+					stack,
+					Mathf.Max(1, entry.MaxStack),
+					entry.Icon));
 			}
 		}
 
@@ -66,5 +80,119 @@ public partial class UpgradeSystem
 		}
 
 		return pool;
+	}
+
+	private bool CanApplyDefinition(UpgradeDefinition definition)
+	{
+		if (definition == null)
+			return false;
+
+		int maxStack = Mathf.Max(1, definition.MaxStack);
+		if (GetStack(definition.Id) >= maxStack)
+			return false;
+
+		if (definition.Prerequisites != null)
+		{
+			foreach (var pre in definition.Prerequisites)
+			{
+				if (GetStack(pre) <= 0)
+					return false;
+			}
+		}
+
+		if (definition.ExclusiveWith != null)
+		{
+			foreach (var ex in definition.ExclusiveWith)
+			{
+				if (GetStack(ex) > 0)
+					return false;
+			}
+		}
+
+		foreach (var pair in _definitions)
+		{
+			if (GetStack(pair.Key) <= 0)
+				continue;
+
+			var selectedDef = pair.Value;
+			if (selectedDef?.ExclusiveWith == null)
+				continue;
+
+			foreach (var ex in selectedDef.ExclusiveWith)
+			{
+				if (ex == definition.Id)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	private int PickWeightedIndex(RandomNumberGenerator rng, List<UpgradeOptionData> candidates)
+	{
+		if (candidates == null || candidates.Count == 0)
+			return -1;
+
+		float totalWeight = 0f;
+		for (int i = 0; i < candidates.Count; i++)
+			totalWeight += GetEffectiveWeight(candidates[i]);
+
+		if (totalWeight <= 0f)
+			return rng.RandiRange(0, candidates.Count - 1);
+
+		float roll = rng.RandfRange(0f, totalWeight);
+		float accum = 0f;
+		for (int i = 0; i < candidates.Count; i++)
+		{
+			accum += GetEffectiveWeight(candidates[i]);
+			if (roll <= accum)
+				return i;
+		}
+
+		return candidates.Count - 1;
+	}
+
+	private float GetEffectiveWeight(UpgradeOptionData option)
+	{
+		float rarityWeight = option.Rarity switch
+		{
+			UpgradeRarity.Common => 1f,
+			UpgradeRarity.Rare => 0.75f,
+			UpgradeRarity.Epic => 0.45f,
+			_ => 1f
+		};
+
+		int categoryPicks = 0;
+		_categoryPickCounts.TryGetValue(option.Category, out categoryPicks);
+		float categoryBias = 1f + (categoryPicks * Mathf.Max(0f, CategoryBiasPerPick));
+
+		float pityBonus = 1f;
+		if (option.Rarity == UpgradeRarity.Rare && _offersWithoutRare >= Mathf.Max(1, RarePityThreshold))
+			pityBonus = 1.7f;
+		else if (option.Rarity == UpgradeRarity.Epic && _offersWithoutEpic >= Mathf.Max(1, EpicPityThreshold))
+			pityBonus = 2.2f;
+
+		if (!TryGetDefinition(option.Id, out var def))
+			return Mathf.Max(0.01f, rarityWeight * categoryBias * pityBonus);
+
+		int baseWeight = Mathf.Max(1, def.Weight);
+		return baseWeight * rarityWeight * categoryBias * pityBonus;
+	}
+
+	private void UpdatePityCounters(List<UpgradeOptionData> picks)
+	{
+		bool hasRare = false;
+		bool hasEpic = false;
+
+		foreach (var pick in picks)
+		{
+			if (pick.Rarity == UpgradeRarity.Epic)
+				hasEpic = true;
+			if (pick.Rarity == UpgradeRarity.Rare || pick.Rarity == UpgradeRarity.Epic)
+				hasRare = true;
+		}
+
+		_offersWithoutRare = hasRare ? 0 : _offersWithoutRare + 1;
+		_offersWithoutEpic = hasEpic ? 0 : _offersWithoutEpic + 1;
 	}
 }

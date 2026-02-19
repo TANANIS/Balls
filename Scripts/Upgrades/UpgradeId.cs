@@ -6,9 +6,18 @@ public enum UpgradeId
 	SecondaryDamageUp,
 	SecondaryRangeUp,
 	SecondaryWiderArc,
-	SecondaryFaster,
+	PressureKillProgressUp,
+	PressureThresholdDown,
+	PressureTriggerReliefUp,
+	PressureTimeProgressUp,
+	StabilityDecayDown,
+	StabilityRecoveryPulse,
+	AnomalyLongerEvents,
+	AnomalyPowerResonance,
 	DashFasterCooldown,
 	DashSpeedUp,
 	DashLonger,
-	MaxHpUp
+	DashIFrameUp,
+	MaxHpUp,
+	RiskVolatileArms
 }

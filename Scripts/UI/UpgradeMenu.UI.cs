@@ -7,23 +7,31 @@ public partial class UpgradeMenu
 		// Resolve mandatory UI nodes once and wire button callbacks.
 		_title = GetNodeOrNull<Label>(TitlePath);
 		_leftButton = GetNodeOrNull<Button>(LeftButtonPath);
+		_middleButton = GetNodeOrNull<Button>(MiddleButtonPath);
 		_rightButton = GetNodeOrNull<Button>(RightButtonPath);
 		_panel = GetNodeOrNull<Control>(PanelPath);
 
-		if (_title == null || _leftButton == null || _rightButton == null)
+		if (_title == null || _leftButton == null || _middleButton == null || _rightButton == null)
 		{
-			DebugSystem.Error("[UpgradeMenu] UI nodes are missing. Check TitlePath/LeftButtonPath/RightButtonPath.");
+			DebugSystem.Error("[UpgradeMenu] UI nodes are missing. Check TitlePath/LeftButtonPath/MiddleButtonPath/RightButtonPath.");
 			return;
 		}
 
 		_leftButton.Pressed += () => ApplyOption(_leftOption);
+		_middleButton.Pressed += () => ApplyOption(_middleOption);
 		_rightButton.Pressed += () => ApplyOption(_rightOption);
 	}
 
 	private void RefreshButtons()
 	{
-		_leftButton.Text = _leftOption.Title + "\n" + _leftOption.Description;
-		_rightButton.Text = _rightOption.Title + "\n" + _rightOption.Description;
+		_leftButton.Text = FormatOptionText(_leftOption);
+		_middleButton.Text = FormatOptionText(_middleOption);
+		_rightButton.Text = FormatOptionText(_rightOption);
+	}
+
+	private static string FormatOptionText(UpgradeSystem.UpgradeOptionData option)
+	{
+		return $"{option.Title}\n{option.Description}";
 	}
 
 	private void CenterPanel()

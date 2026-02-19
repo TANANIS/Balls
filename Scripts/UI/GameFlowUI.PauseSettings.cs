@@ -34,6 +34,7 @@ public partial class GameFlowUI
 	{
 		_pauseMenuOpen = true;
 		_settingsOpen = false;
+		RefreshPauseBuildSummary();
 		if (_pausePanel != null)
 			_pausePanel.Visible = true;
 		if (_pauseMainVBox != null)
