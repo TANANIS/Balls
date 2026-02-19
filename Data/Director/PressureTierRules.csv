@@ -1,6 +1,6 @@
 # PressureTierRules.csv
 # tier,pressure_min,pressure_max,spawn_interval_min,spawn_interval_max,budget_min,budget_max,max_alive,spawn_radius_min,spawn_radius_max,templates_enabled,allow_elites,allow_pincer,kill_progress_base,kill_pressure_bonus_factor,time_progress_per_sec,upgrade_threshold,first_upgrade_threshold,notes
-0,0,25,0.95,1.30,9,14,60,450,680,1,0,0,16,0.62,0.72,60,35,"Phase 1: early-to-late pressure ramp with consistent horde stacks."
-1,25,50,0.72,1.05,13,20,88,430,660,1,0,0,18,0.80,0.78,59,35,"Phase 2: persistent multi-angle pressure, fewer safe lanes."
-2,50,75,0.50,0.80,18,28,122,410,640,1,0,1,21,0.98,0.86,57,35,"Phase 3: aggressive crowd wall and routing denial."
-3,75,100,0.32,0.60,24,38,170,390,620,1,1,1,24,1.15,0.98,55,35,"Phase 4: near-constant refill and full-screen surround pressure."
+0,0,25,0.92,1.30,8,13,64,500,820,1,0,0,16,0.62,0.72,60,35,"Phase 1: readable ramp, leaves room for early build."
+1,25,50,0.64,0.96,14,22,102,490,800,1,0,0,18,0.80,0.78,59,35,"Phase 2: pressure rise after player has core upgrades."
+2,50,75,0.30,0.50,30,46,208,470,780,1,0,1,21,0.98,0.86,57,35,"Phase 3: dense surround generation with little downtime."
+3,75,100,0.18,0.34,40,62,280,450,760,1,1,1,24,1.15,0.98,55,35,"Phase 4: relentless full-direction spawn pressure."

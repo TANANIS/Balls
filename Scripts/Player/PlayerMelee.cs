@@ -53,7 +53,7 @@ public partial class PlayerMelee : Node
 		if (_cooldownTimer > 0f)
 			return;
 
-		if (!Input.IsActionJustPressed(_resolvedAction))
+		if (!Input.IsActionPressed(_resolvedAction))
 			return;
 
 		ExecuteAttack();

@@ -50,14 +50,14 @@ TwinkleAmplitude = 0.42
 [node name="Obstacles" type="Node2D" parent="."]
 script = ExtResource("2_obstacle_gen")
 ObstacleTexture = ExtResource("3_obstacle_tex")
-SpawnIntervalSeconds = 2.9
+SpawnIntervalSeconds = 2.55
 SpawnPerTickMin = 1
 SpawnPerTickMax = 1
-MaxObstacleCount = 80
+MaxObstacleCount = 96
 SpawnOutsideMargin = 240.0
 SpawnRingThickness = 620.0
 ScaleMin = 0.22
 ScaleMax = 0.38
 ColliderWidthFactor = 0.56
 ColliderHeightFactor = 0.34
-ObstacleSpacingMultiplier = 3.0
+ObstacleSpacingMultiplier = 2.65

@@ -24,10 +24,10 @@ public partial class SpawnSystem : Node
 	[Export] public float CollapseCriticalTierTailRampMultiplier = 1.16f;
 	[Export] public float HordeTargetAliveRatio = 0.90f;
 	[Export] public float HordeCatchUpBudgetFactor = 0.40f;
-	[Export] public int StablePacksPerWave = 2;
-	[Export] public int EnergyAnomalyPacksPerWave = 2;
-	[Export] public int StructuralFracturePacksPerWave = 3;
-	[Export] public int CollapseCriticalPacksPerWave = 4;
+	[Export] public int StablePacksPerWave = 3;
+	[Export] public int EnergyAnomalyPacksPerWave = 3;
+	[Export] public int StructuralFracturePacksPerWave = 4;
+	[Export] public int CollapseCriticalPacksPerWave = 6;
 	[Export] public bool UseEncirclementPackLayout = true;
 	[Export] public bool UsePlayerPathInterceptCenters = true;
 	[Export] public float InterceptLeadSeconds = 0.65f;
@@ -35,23 +35,24 @@ public partial class SpawnSystem : Node
 	[Export] public float InterceptVelocityThreshold = 85f;
 	[Export] public float PackAngleJitterDegrees = 20f;
 	[Export] public float PackInterceptSpreadDegrees = 62f;
-	[Export] public float PackCenterRadiusBias = 0.82f;
-	[Export] public float PackScatterRadius = 150f;
-	[Export] public float PackMinSpacing = 56f;
+	[Export] public float PackCenterRadiusBias = 1.08f;
+	[Export] public float PackScatterRadius = 210f;
+	[Export] public float PackMinSpacing = 78f;
 	[Export] public int PackPlacementAttempts = 26;
-	[Export] public float SpawnStepIntervalMinSeconds = 0.045f;
-	[Export] public float SpawnStepIntervalMaxSeconds = 0.10f;
+	[Export] public float SpawnStepIntervalMinSeconds = 0.042f;
+	[Export] public float SpawnStepIntervalMaxSeconds = 0.095f;
 	[Export] public float StableSpawnStepMultiplier = 1.0f;
-	[Export] public float EnergyAnomalySpawnStepMultiplier = 0.90f;
-	[Export] public float StructuralFractureSpawnStepMultiplier = 0.80f;
-	[Export] public float CollapseCriticalSpawnStepMultiplier = 0.68f;
+	[Export] public float EnergyAnomalySpawnStepMultiplier = 0.82f;
+	[Export] public float StructuralFractureSpawnStepMultiplier = 0.70f;
+	[Export] public float CollapseCriticalSpawnStepMultiplier = 0.56f;
 	[Export] public bool UseOpeningRamp = true;
 	[Export] public float OpeningRampSeconds = 10f;
-	[Export] public float OpeningSpawnIntervalStartMultiplier = 2.35f;
+	[Export] public float OpeningSpawnIntervalStartMultiplier = 2.2f;
 	[Export] public float OpeningBudgetStartMultiplier = 0.34f;
 	[Export] public float OpeningMaxAliveStartMultiplier = 0.42f;
-	[Export] public float SpawnOutsideViewportMargin = 180f;
-	[Export] public float SpawnRingThickness = 300f;
+	[Export] public float SpawnOutsideViewportMargin = 320f;
+	[Export] public float SpawnRingThickness = 460f;
+	[Export] public int MaxPendingSpawns = 320;
 
 	[Export] public bool UseTierRulesCsv = true;
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
@@ -179,11 +180,9 @@ public partial class SpawnSystem : Node
 
 		int maxAlive = GetPhaseMaxAlive();
 		TrySpawnPending((float)delta, maxAlive);
-		if (_pendingSpawns.Count > 0)
-			return;
-
 		int alive = _enemiesRoot.GetChildCount();
-		if (alive >= maxAlive)
+		int effectiveAlive = alive + _pendingSpawns.Count;
+		if (effectiveAlive >= maxAlive)
 			return;
 
 		_timer -= (float)delta;
@@ -191,7 +190,10 @@ public partial class SpawnSystem : Node
 			return;
 
 		ResetSpawnTimer();
-		ScheduleWave(alive, maxAlive);
+		if (MaxPendingSpawns > 0 && _pendingSpawns.Count >= MaxPendingSpawns)
+			return;
+
+		ScheduleWave(effectiveAlive, maxAlive);
 	}
 
 	private void ScheduleWave(int aliveCount, int maxAlive)
@@ -344,7 +346,7 @@ public partial class SpawnSystem : Node
 		}
 
 		GetSpawnRadiusRange(out float radiusMin, out float radiusMax);
-		float centerMin = Mathf.Max(radiusMin * Mathf.Clamp(PackCenterRadiusBias, 0.35f, 1f), 1f);
+		float centerMin = Mathf.Max(radiusMin * Mathf.Clamp(PackCenterRadiusBias, 0.35f, 1.8f), 1f);
 		float centerMax = Mathf.Max(centerMin + 1f, radiusMax);
 		float baseAngle = _rng.RandfRange(0f, Mathf.Tau);
 		float jitterRadians = Mathf.DegToRad(Mathf.Max(0f, PackAngleJitterDegrees));
@@ -395,7 +397,16 @@ public partial class SpawnSystem : Node
 			}
 
 			Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-			centers.Add(anchor + dir * radius);
+			Vector2 candidate = anchor + dir * radius;
+			Vector2 fromPlayer = candidate - _player.GlobalPosition;
+			float distToPlayer = fromPlayer.Length();
+			if (distToPlayer < radiusMin)
+			{
+				Vector2 safeDir = distToPlayer > 0.001f ? fromPlayer / distToPlayer : dir;
+				candidate = _player.GlobalPosition + safeDir * radiusMin;
+			}
+
+			centers.Add(candidate);
 		}
 
 		return centers;
