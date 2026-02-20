@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=23 format=3 uid="uid://bm8r67lsfg5sw"]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=23 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]

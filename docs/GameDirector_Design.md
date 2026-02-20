@@ -7,37 +7,24 @@ This document defines pacing logic for spawn orchestration and upgrade timing.
 - Escalate pressure via spawn tempo and enemy composition.
 - Guarantee upgrade cadence without punishing strong play.
 - Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`, not pressure.
-- Lock run duration to 15 minutes and shape pacing by four environment-state phases.
+- Lock run duration to 15 minutes and shape pacing by four pressure phases.
 
 ## Match Timeline Contract (15:00)
-- `00:00 - 03:00` Stable:
-  - Base enemies only.
-  - Pressure has natural decay room.
-  - No universe anomaly effect.
-  - Goal: establish baseline build and first attack-modifier power spike.
-- `03:00 - 07:00` Energy Anomaly:
-  - First anomaly cycle starts.
-  - First hard pressure point.
-- `07:00 - 11:00` Structural Fracture:
-  - Enemy composition upgrades sharply.
-  - Spawn waves accelerate.
-  - Universe events are stronger and/or more frequent.
-  - Pressure natural decay is reduced.
-  - Goal: build validation window.
-- `11:00 - 15:00` Collapse Critical:
-  - Layered anomalies.
-  - High-density horde generation.
-  - Pressure decay nearly stalls.
-  - End-phase elite presence.
+- `00:00 - 03:45` Stage 1 (Ramp-In)
+  - Low baseline pressure.
+  - Tail-end pressure peak.
+  - Stage boss: `MiniBossHex_Stage1` at `03:45`.
+- `03:45 - 07:30` Stage 2 (First Stress Cycle)
+  - Pressure resets lower than peak, then ramps again.
+  - Stage boss: `MiniBossHex_Stage2` at `07:30`.
+- `07:30 - 11:15` Stage 3 (Build Check)
+  - Faster spawn tempo and denser packs near tail.
+  - Stage boss: `MiniBossHex_Stage3` at `11:15`.
+- `11:15 - 15:00` Stage 4 (Final Climb)
+  - Highest sustained pressure with final tail peak.
+  - Stage boss: `MiniBossHex_Stage4` near run tail (`14:30~15:00` window).
 
-## Universe Event Cadence Contract
-- Target cadence: every 3 minutes.
-- Target timestamps in one 15-minute run:
-  - `03:00`
-  - `06:00`
-  - `09:00`
-  - `12:00`
-- Note: current project implementation is not fully aligned yet; this is the target logic to sync toward.
+Special universe events are removed in this model. Stage-tail miniboss is the only phase-special spike marker.
 
 ## Dual-Meter Model
 - `CurrentPressure` (volatile): reflects immediate danger from enemy density, low HP, and elapsed time.
@@ -47,14 +34,42 @@ Why this model:
 - Pressure-only triggers can be delayed forever by highly efficient clearing.
 - Kill-led progression preserves player agency while pressure still influences speed.
 
-## Upgrade Trigger Rule
-1. `UpgradeProgress` reaches threshold (`FirstTriggerThreshold` for first time, then `TriggerThreshold`).
-2. System becomes `armed`.
-3. Next player kill opens `UpgradeMenu`.
-4. On trigger: apply cooldown and reduce pressure/progress by configured amounts.
+## Upgrade Trigger Rule (Survivor-Style)
+1. Player kills enemies to generate `ExperiencePickup` drops.
+2. Player collects pickup to gain EXP immediately.
+3. When EXP reaches requirement, one level-up charge is queued.
+4. Upgrade menu opens and consumes one queued charge.
+5. EXP overflow is preserved; multiple charges can queue for chain level-up.
 
-Boss exception:
-- `ForceOpenForBoss()` can open the menu immediately for event pacing.
+System notes:
+- Pressure no longer auto-drops when opening upgrade from EXP.
+- Time-based passive EXP drip is disabled in EXP-pickup mode.
+- Pressure curve remains a director signal for spawning, not player leveling.
+
+## HUD Contract (Run-Time)
+- HP UI is hidden in menu/title and only shown after `StartRun()`.
+- XP bar is shown at top of screen during active run and reads from `PressureSystem`:
+  - Value = `CurrentUpgradeProgress`
+  - Max = `GetCurrentUpgradeRequirement()`
+  - Ready state = `IsUpgradeReady`
+- Match countdown (`15:00 -> 00:00`) is shown on top-right during active run.
+- When run ends (death/clear), HP UI and XP bar are hidden.
+
+## Character Balance Notes (Current)
+- Melee role has first-pass nerf applied:
+  - lower max HP
+  - higher melee cooldown
+  - higher dash cooldown
+  - shorter dash iframe
+- Tank role has anti-chase compensation:
+  - stronger base ranged damage
+  - tank bullet applies extra knockback and bonus damage on hit
+- Ranged compensation pass is pending and should be tuned with playtest data.
+
+## End-State And Local Record
+- Death path uses failure end-state UI (`SYSTEM FAILURE`).
+- Reaching full `15:00` uses dedicated perfect-clear end-state UI (`PERFECT CLEAR`).
+- Perfect clear writes local leaderboard record (score, datetime, character display name).
 
 ## Spawn Director Rule
 `SpawnSystem` is tier-driven and data-driven:
@@ -66,10 +81,9 @@ Boss exception:
 6. Spawn around player with tier radius plus pack scatter.
 
 Unlock milestone rule:
-- Pressure/tier only controls pacing.
-- Content unlock uses `UpgradeSystem.AppliedUpgradeCount`.
-- `upgrade_count >= 4`: allow elite injection (10%~15% chance per spawn decision).
-- `upgrade_count == 6`: schedule one miniboss event and freeze regular spawns for 2 seconds.
+- Pressure/tier controls pacing.
+- Stage-tail miniboss schedule controls boss pacing (4 fixed spawns per run).
+- Optional elite injection can remain upgrade-count gated.
 
 Fallback behavior:
 - If CSV or mapping is incomplete, fallback to `EnemyScene` export.
@@ -99,4 +113,4 @@ Used fields now include:
 - Do not access pressure directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.
 - Tune balance in CSV first, then patch code only when needed.
-- Do not use pressure as content unlock gate for elite/miniboss milestones.
+- Keep stage-tail boss pacing time-based, not random-event based.

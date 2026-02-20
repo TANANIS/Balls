@@ -98,6 +98,14 @@ theme_override_font_sizes/font_size = 30
 text = "SYSTEM FAILURE"
 horizontal_alignment = 1
 
+[node name="PerfectBanner" type="Label" parent="Panel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.95, 0.45, 1)
+theme_override_font_sizes/font_size = 24
+text = "PERFECT SURVIVAL"
+horizontal_alignment = 1
+
 [node name="Hint" type="Label" parent="Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3

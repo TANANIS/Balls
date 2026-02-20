@@ -23,10 +23,11 @@ public partial class StabilitySystem : Node
 	[Export] public float EnergyAnomalyDecayMultiplier = 1.25f;
 	[Export] public float StructuralFractureDecayMultiplier = 1.60f;
 	[Export] public float CollapseCriticalDecayMultiplier = 2.10f;
+	[Export] public bool EnableSpecialEvents = false;
 	[Export] public bool UseTimelinePhaseModel = true;
-	[Export] public float StablePhaseEndSeconds = 180f;
-	[Export] public float EnergyAnomalyPhaseEndSeconds = 420f;
-	[Export] public float StructuralFracturePhaseEndSeconds = 660f;
+	[Export] public float StablePhaseEndSeconds = 225f;
+	[Export] public float EnergyAnomalyPhaseEndSeconds = 450f;
+	[Export] public float StructuralFracturePhaseEndSeconds = 675f;
 	[Export] public bool UseFixedEventSchedule = true;
 	[Export] public float EventAt03m = 180f;
 	[Export] public float EventAt06m = 360f;
@@ -85,7 +86,7 @@ public partial class StabilitySystem : Node
 	public float ActiveEventRemainingSeconds => Mathf.Max(0f, _activeEventRemainingSeconds);
 	public float SecondsUntilNextEvent => Mathf.Max(0f, _nextEventAtSeconds - _elapsedSeconds);
 	public float ElapsedSeconds => _elapsedSeconds;
-	public bool IsMovementInversionActive => _activeEvent == UniverseEventType.GravityInversion || _phase == StabilityPhase.CollapseCritical;
+	public bool IsMovementInversionActive => false;
 	public float InputDirectionSign => IsMovementInversionActive && _inputSignNegative ? -1f : 1f;
 
 	public event Action<StabilityPhase> PhaseChanged;
@@ -105,11 +106,19 @@ public partial class StabilitySystem : Node
 		_rng.Randomize();
 		_stability = Mathf.Clamp(StartStability, 0f, 100f);
 		_phase = UseTimelinePhaseModel ? ResolvePhaseByTimeline(0f) : ResolvePhase(_stability);
-		_pendingEvent = RollUniverseEvent();
-		_nextScheduledEventIndex = 0;
-		_nextEventAtSeconds = GetNextScheduledEventTime();
-		if (!UseFixedEventSchedule)
-			_nextEventAtSeconds = Mathf.Max(1f, EventIntervalSeconds);
+		if (EnableSpecialEvents)
+		{
+			_pendingEvent = RollUniverseEvent();
+			_nextScheduledEventIndex = 0;
+			_nextEventAtSeconds = GetNextScheduledEventTime();
+			if (!UseFixedEventSchedule)
+				_nextEventAtSeconds = Mathf.Max(1f, EventIntervalSeconds);
+		}
+		else
+		{
+			_pendingEvent = UniverseEventType.None;
+			_nextEventAtSeconds = -1f;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -128,7 +137,8 @@ public partial class StabilitySystem : Node
 		}
 
 		UpdatePhaseAndSignals();
-		TickUniverseEventRuntime(dt);
+		if (EnableSpecialEvents)
+			TickUniverseEventRuntime(dt);
 		TickDirectionDistortion(dt);
 		TickStabilityDecay(dt);
 	}
@@ -270,7 +280,7 @@ public partial class StabilitySystem : Node
 				DebugSystem.Log($"[StabilitySystem] Phase -> {_phase}");
 		}
 
-		if (!_collapsed && _stability <= 0f)
+		if (!_collapsed && _stability <= 0f && !UseTimelinePhaseModel)
 		{
 			_collapsed = true;
 			_stability = 0f;
@@ -375,9 +385,6 @@ public partial class StabilitySystem : Node
 			StabilityPhase.CollapseCritical => CollapseCriticalPlayerPowerMultiplier,
 			_ => 1f
 		};
-
-		if (_activeEvent == UniverseEventType.EnergySurge)
-			baseMult *= 1.12f;
 
 		baseMult *= (1f + _playerPowerBonus);
 		return Mathf.Max(0.1f, baseMult);

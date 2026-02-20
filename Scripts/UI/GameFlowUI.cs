@@ -20,6 +20,7 @@ public partial class GameFlowUI : Control
 	private const string StartButtonPath = "Panels/StartPanel/Panel/VBox/StartButton";
 	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/VBox/SettingsButton";
 	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/VBox/QuitButton";
+	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/VBox/PerfectLeaderboard";
 	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
 	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
 	private const string StartSettingsSfxSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/SfxSlider";
@@ -39,12 +40,18 @@ public partial class GameFlowUI : Control
 	private const string UpgradeMenuPath = "UpgradeLayer/UpgradeMenu";
 	private const string LowHealthVignettePath = "../LowHealthVignette";
 	private const string ScoreLabelPath = "Overlay/HudOverlay/ScoreLabel";
+	private const string PlayerHealthBarPath = "Overlay/HudOverlay/PlayerHealthBarDemo";
+	private const string ExperienceBarRootPath = "Overlay/HudOverlay/ExperienceBarRoot";
+	private const string ExperienceBarPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceBar";
+	private const string ExperienceLabelPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceLabel";
 	private const string EventCountdownLabelPath = "Overlay/HudOverlay/EventCountdownLabel";
 	private const string EventNoticeLabelPath = "Overlay/HudOverlay/EventNoticeLabel";
+	private const string MatchCountdownLabelPath = "Overlay/HudOverlay/MatchCountdownLabel";
 	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/VBox/Score";
 	private const string PauseBuildSummaryLabelPath = "Panels/PausePanel/Panel/VBox/BuildSummary";
 	private const string FinalBuildSummaryLabelPath = "Panels/RestartPanel/Panel/VBox/BuildSummary";
 	private const string RestartTitleLabelPath = "Panels/RestartPanel/Panel/VBox/Title";
+	private const string RestartPerfectBannerPath = "Panels/RestartPanel/Panel/VBox/PerfectBanner";
 	private const string RestartHintLabelPath = "Panels/RestartPanel/Panel/VBox/Hint";
 	private const string BackgroundPath = "../../World/Background";
 	private const string BackgroundDimmerPath = "../../World/BackgroundDimmer";
@@ -72,6 +79,7 @@ public partial class GameFlowUI : Control
 	private Button _startButton;
 	private Button _startSettingsButton;
 	private Button _startQuitButton;
+	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
 	private Button _startCharacterRangedButton;
 	private Button _startCharacterMeleeButton;
@@ -97,17 +105,24 @@ public partial class GameFlowUI : Control
 	private ColorRect _lowHealthVignette;
 	private ShaderMaterial _lowHealthMaterial;
 	private Label _scoreLabel;
+	private Control _playerHealthBar;
+	private Control _experienceBarRoot;
+	private ProgressBar _experienceBar;
+	private Label _experienceLabel;
 	private Label _eventCountdownLabel;
 	private Label _eventNoticeLabel;
+	private Label _matchCountdownLabel;
 	private Label _finalScoreLabel;
 	private Label _pauseBuildSummaryLabel;
 	private Label _finalBuildSummaryLabel;
 	private Label _restartTitleLabel;
+	private Label _restartPerfectBannerLabel;
 	private Label _restartHintLabel;
 	private Label _startCharacterDescriptionLabel;
 	private UpgradeSystem _upgradeSystem;
 	private ScoreSystem _scoreSystem;
 	private StabilitySystem _stabilitySystem;
+	private PressureSystem _pressureSystem;
 	private CanvasItem _background;
 	private ColorRect _backgroundDimmer;
 	private Sprite2D _menuBackground;
@@ -141,6 +156,8 @@ public partial class GameFlowUI : Control
 	public override void _Process(double delta)
 	{
 		UpdateLowHealthVignette();
+		UpdateUpgradeProgressUi();
+		UpdateMatchCountdownUi();
 		UpdateUniverseEventUi(delta);
 		HandlePauseInput();
 		if (!_started)
@@ -165,6 +182,7 @@ public partial class GameFlowUI : Control
 		_startButton = GetNodeOrNull<Button>(StartButtonPath);
 		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
+		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
 		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
@@ -190,12 +208,18 @@ public partial class GameFlowUI : Control
 		_lowHealthVignette = GetNodeOrNull<ColorRect>(LowHealthVignettePath);
 		_lowHealthMaterial = _lowHealthVignette?.Material as ShaderMaterial;
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
+		_playerHealthBar = GetNodeOrNull<Control>(PlayerHealthBarPath);
+		_experienceBarRoot = GetNodeOrNull<Control>(ExperienceBarRootPath);
+		_experienceBar = GetNodeOrNull<ProgressBar>(ExperienceBarPath);
+		_experienceLabel = GetNodeOrNull<Label>(ExperienceLabelPath);
 		_eventCountdownLabel = GetNodeOrNull<Label>(EventCountdownLabelPath);
 		_eventNoticeLabel = GetNodeOrNull<Label>(EventNoticeLabelPath);
+		_matchCountdownLabel = GetNodeOrNull<Label>(MatchCountdownLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
 		_pauseBuildSummaryLabel = GetNodeOrNull<Label>(PauseBuildSummaryLabelPath);
 		_finalBuildSummaryLabel = GetNodeOrNull<Label>(FinalBuildSummaryLabelPath);
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
+		_restartPerfectBannerLabel = GetNodeOrNull<Label>(RestartPerfectBannerPath);
 		_restartHintLabel = GetNodeOrNull<Label>(RestartHintLabelPath);
 		_startCharacterDescriptionLabel = GetNodeOrNull<Label>(StartCharacterDescriptionPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
@@ -225,6 +249,7 @@ public partial class GameFlowUI : Control
 			_startSettingsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = false;
+		RefreshPerfectLeaderboardUi();
 
 		_rangedCharacter = GD.Load<CharacterDefinition>(RangedCharacterResourcePath);
 		_meleeCharacter = GD.Load<CharacterDefinition>(MeleeCharacterResourcePath);
@@ -238,6 +263,10 @@ public partial class GameFlowUI : Control
 		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
 		if (stabilityList.Count > 0)
 			_stabilitySystem = stabilityList[0] as StabilitySystem;
+
+		var pressureList = GetTree().GetNodesInGroup("PressureSystem");
+		if (pressureList.Count > 0)
+			_pressureSystem = pressureList[0] as PressureSystem;
 
 		var upgradeList = GetTree().GetNodesInGroup("UpgradeSystem");
 		if (upgradeList.Count > 0)
@@ -305,9 +334,6 @@ public partial class GameFlowUI : Control
 		{
 			_stabilitySystem.Collapsed += OnUniverseCollapsed;
 			_stabilitySystem.MatchDurationReached += OnMatchDurationReached;
-			_stabilitySystem.EventIncoming += OnUniverseEventIncoming;
-			_stabilitySystem.EventStarted += OnUniverseEventStarted;
-			_stabilitySystem.EventEnded += OnUniverseEventEnded;
 		}
 
 		InitializeSettingsUi();

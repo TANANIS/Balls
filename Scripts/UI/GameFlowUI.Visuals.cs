@@ -38,36 +38,71 @@ public partial class GameFlowUI
 			_scoreLabel.Text = $"Score: {score}";
 	}
 
-	private void UpdateUniverseEventUi(double delta)
+	private void UpdateUpgradeProgressUi()
 	{
-		if (_eventNoticeTimer > 0f)
+		if (_experienceBarRoot == null || _experienceBar == null || _experienceLabel == null)
+			return;
+
+		if (!_started || _ending)
 		{
-			_eventNoticeTimer = Mathf.Max(0f, _eventNoticeTimer - (float)delta);
-			if (_eventNoticeTimer <= 0f && _eventNoticeLabel != null)
-				_eventNoticeLabel.Visible = false;
+			_experienceBarRoot.Visible = false;
+			return;
 		}
 
-		if (_eventCountdownLabel == null)
+		_experienceBarRoot.Visible = true;
+
+		if (!IsInstanceValid(_pressureSystem))
+		{
+			var pressureList = GetTree().GetNodesInGroup("PressureSystem");
+			if (pressureList.Count > 0)
+				_pressureSystem = pressureList[0] as PressureSystem;
+		}
+
+		if (!IsInstanceValid(_pressureSystem))
+		{
+			_experienceBar.MaxValue = 1f;
+			_experienceBar.Value = 0f;
+			_experienceLabel.Text = "XP --/--";
+			return;
+		}
+
+		float required = Mathf.Max(1f, _pressureSystem.GetCurrentUpgradeRequirement());
+		float progress = Mathf.Clamp(_pressureSystem.CurrentUpgradeProgress, 0f, required);
+
+		_experienceBar.MaxValue = required;
+		_experienceBar.Value = progress;
+		_experienceLabel.Text = _pressureSystem.IsUpgradeReady
+			? $"LV {_pressureSystem.CurrentUpgradeLevel}  READY x{Mathf.Max(1, _pressureSystem.PendingUpgradeCount)}"
+			: $"LV {_pressureSystem.CurrentUpgradeLevel}  XP {Mathf.FloorToInt(progress)}/{Mathf.CeilToInt(required)}";
+	}
+
+	private void UpdateMatchCountdownUi()
+	{
+		if (_matchCountdownLabel == null)
 			return;
 
 		if (!_started || _ending || _stabilitySystem == null)
 		{
-			_eventCountdownLabel.Visible = false;
+			_matchCountdownLabel.Visible = false;
 			return;
 		}
 
-		_eventCountdownLabel.Visible = true;
-		if (_stabilitySystem.IsUniverseEventActive)
-		{
-			string name = StabilitySystem.GetEventDisplayName(_stabilitySystem.ActiveEvent);
-			int remain = Mathf.CeilToInt(_stabilitySystem.ActiveEventRemainingSeconds);
-			_eventCountdownLabel.Text = $"Event: {name} ({remain}s)";
-		}
-		else
-		{
-			int remain = Mathf.CeilToInt(_stabilitySystem.SecondsUntilNextEvent);
-			_eventCountdownLabel.Text = $"Next Event In: {remain}s";
-		}
+		_matchCountdownLabel.Visible = true;
+		float limit = Mathf.Max(1f, _stabilitySystem.MatchDurationLimitSeconds);
+		float remain = Mathf.Max(0f, limit - _stabilitySystem.ElapsedSeconds);
+		int total = Mathf.CeilToInt(remain);
+		int mm = total / 60;
+		int ss = total % 60;
+		_matchCountdownLabel.Text = $"{mm:D2}:{ss:D2}";
+	}
+
+	private void UpdateUniverseEventUi(double delta)
+	{
+		if (_eventNoticeLabel != null)
+			_eventNoticeLabel.Visible = false;
+		if (_eventCountdownLabel != null)
+			_eventCountdownLabel.Visible = false;
+		_eventNoticeTimer = 0f;
 	}
 
 	private void OnUniverseEventIncoming(float secondsLeft, StabilitySystem.UniverseEventType eventType)

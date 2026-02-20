@@ -18,8 +18,11 @@ public partial class GameFlowUI
 		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
+		if (_playerHealthBar != null) _playerHealthBar.Visible = false;
+		if (_experienceBarRoot != null) _experienceBarRoot.Visible = false;
 		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
 		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
+		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = false;
 		if (_pausePanel != null) _pausePanel.Visible = false;
 		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
 		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
@@ -27,6 +30,8 @@ public partial class GameFlowUI
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = true;
 		if (_menuDimmer != null) _menuDimmer.Visible = true;
+		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Visible = false;
+		RefreshPerfectLeaderboardUi();
 		ResetBuildSummaryLabels();
 		GetTree().Paused = true;
 		_startButton?.GrabFocus();
@@ -175,8 +180,11 @@ public partial class GameFlowUI
 		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
-		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = true;
+		if (_playerHealthBar != null) _playerHealthBar.Visible = true;
+		if (_experienceBarRoot != null) _experienceBarRoot.Visible = true;
+		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
 		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
+		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = true;
 		if (_pausePanel != null) _pausePanel.Visible = false;
 		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
 		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
@@ -185,6 +193,7 @@ public partial class GameFlowUI
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
 		if (_menuDimmer != null) _menuDimmer.Visible = false;
+		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Visible = false;
 		ResetBuildSummaryLabels();
 
 		if (_player != null)
@@ -254,7 +263,7 @@ public partial class GameFlowUI
 	{
 		if (!_started || _ending)
 			return;
-		EnterEndState("Run Complete", false);
+		EnterEndState("Perfect 15:00 Clear", false);
 	}
 
 	private void EnterEndState(string reason, bool isFailure)
@@ -264,16 +273,21 @@ public partial class GameFlowUI
 		if (_restartPanel != null)
 			_restartPanel.Visible = true;
 
+		bool isPerfectClear = !isFailure;
 		if (_restartTitleLabel != null)
-			_restartTitleLabel.Text = isFailure ? "SYSTEM FAILURE" : "RUN COMPLETE";
+			_restartTitleLabel.Text = isFailure ? "SYSTEM FAILURE" : "PERFECT CLEAR";
+		if (_restartPerfectBannerLabel != null)
+			_restartPerfectBannerLabel.Visible = isPerfectClear;
 		if (_restartHintLabel != null)
 			_restartHintLabel.Text = isFailure
 				? "Press the button to restart this run."
-				: "Time limit reached. Press to start another run.";
+				: "You survived the full 15:00. Press to start another perfect run.";
 
 		int score = _scoreSystem != null ? _scoreSystem.Score : 0;
 		int seconds = _stabilitySystem != null ? Mathf.FloorToInt(_stabilitySystem.ElapsedSeconds) : 0;
 		string survival = $"{seconds / 60:D2}:{seconds % 60:D2}";
+		if (isPerfectClear)
+			RecordPerfectClear(score, ResolvePerfectCharacterName());
 
 		if (_finalScoreLabel != null)
 			_finalScoreLabel.Text = $"{reason}\nSurvival: {survival}\nScore: {score}";
@@ -286,6 +300,12 @@ public partial class GameFlowUI
 			_eventCountdownLabel.Visible = false;
 		if (_eventNoticeLabel != null)
 			_eventNoticeLabel.Visible = false;
+		if (_matchCountdownLabel != null)
+			_matchCountdownLabel.Visible = false;
+		if (_playerHealthBar != null)
+			_playerHealthBar.Visible = false;
+		if (_experienceBarRoot != null)
+			_experienceBarRoot.Visible = false;
 		if (_pausePanel != null)
 			_pausePanel.Visible = false;
 		if (_pauseMainVBox != null)
@@ -295,5 +315,18 @@ public partial class GameFlowUI
 
 		GetTree().Paused = true;
 		_restartButton?.GrabFocus();
+	}
+
+	private string ResolvePerfectCharacterName()
+	{
+		string name = _player?.ActiveCharacter?.DisplayName;
+		if (!string.IsNullOrWhiteSpace(name))
+			return name;
+
+		name = _selectedCharacterDefinition?.DisplayName;
+		if (!string.IsNullOrWhiteSpace(name))
+			return name;
+
+		return "Unknown";
 	}
 }

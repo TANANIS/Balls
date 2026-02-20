@@ -8,6 +8,8 @@ public partial class EnemyHealth : Node
 	[Export] public float HurtKnockbackDuration = 0.08f;
 	[Export] public float HitFlashDuration = 0.08f;
 	[Export] public float HitPunchScale = 1.08f;
+	[Export] public float HitFlashOverlayScale = 1.22f;
+	[Export] public float HitFlashOverlayAlpha = 0.88f;
 
 	private int _hp;
 	private bool _isDead;
@@ -86,6 +88,8 @@ public partial class EnemyHealth : Node
 		if (_sprite == null)
 			return;
 
+		SpawnWhiteHitFlash();
+
 		_feedbackTween?.Kill();
 		Color baseColor = _baseSpriteModulate;
 		Vector2 baseScale = _baseSpriteScale;
@@ -95,5 +99,57 @@ public partial class EnemyHealth : Node
 		_feedbackTween = CreateTween();
 		_feedbackTween.TweenProperty(_sprite, "modulate", baseColor, Mathf.Max(0.03f, HitFlashDuration));
 		_feedbackTween.Parallel().TweenProperty(_sprite, "scale", baseScale, Mathf.Max(0.04f, HitFlashDuration + 0.03f));
+	}
+
+	private void SpawnWhiteHitFlash()
+	{
+		if (_ownerEnemy == null || _sprite == null || _sprite.Texture == null)
+			return;
+
+		var flashSprite = new Sprite2D
+		{
+			Texture = _sprite.Texture,
+			Centered = _sprite.Centered,
+			Offset = _sprite.Offset,
+			FlipH = _sprite.FlipH,
+			FlipV = _sprite.FlipV,
+			Hframes = _sprite.Hframes,
+			Vframes = _sprite.Vframes,
+			Frame = _sprite.Frame,
+			FrameCoords = _sprite.FrameCoords,
+			RegionEnabled = _sprite.RegionEnabled,
+			RegionRect = _sprite.RegionRect,
+			RegionFilterClipEnabled = _sprite.RegionFilterClipEnabled,
+			Position = _sprite.Position,
+			Rotation = _sprite.Rotation,
+			Scale = _sprite.Scale * Mathf.Max(1f, HitFlashOverlayScale),
+			ZIndex = _sprite.ZIndex + 1,
+			Modulate = new Color(1f, 1f, 1f, Mathf.Clamp(HitFlashOverlayAlpha, 0f, 1f))
+		};
+
+		flashSprite.Material = new CanvasItemMaterial
+		{
+			BlendMode = CanvasItemMaterial.BlendModeEnum.Add
+		};
+
+		_ownerEnemy.AddChild(flashSprite);
+
+		float duration = Mathf.Max(0.03f, HitFlashDuration);
+		Tween tween = CreateTween();
+		tween.TweenProperty(flashSprite, "modulate:a", 0f, duration);
+		tween.Parallel().TweenProperty(
+			flashSprite,
+			"scale",
+			_sprite.Scale * Mathf.Max(1.05f, HitFlashOverlayScale + 0.12f),
+			duration);
+		tween.Finished += flashSprite.QueueFree;
+	}
+
+	public void SetMaxHpAndRefill(int maxHp)
+	{
+		MaxHp = Mathf.Max(1, maxHp);
+		_hp = MaxHp;
+		_isDead = false;
+		_invincibleTimer = 0f;
 	}
 }

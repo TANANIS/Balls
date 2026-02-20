@@ -59,7 +59,7 @@ public partial class SpawnSystem : Node
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
 	[Export] public bool VerboseLog = true;
-	[Export] public bool UseUpgradeCountUnlocks = true;
+	[Export] public bool UseUpgradeCountUnlocks = false;
 	[Export] public int EliteUnlockUpgradeCount = 4;
 	[Export] public float EliteInjectChanceMin = 0.02f;
 	[Export] public float EliteInjectChanceMax = 0.05f;
@@ -67,6 +67,18 @@ public partial class SpawnSystem : Node
 	[Export] public int MiniBossUnlockUpgradeCount = 6;
 	[Export] public string MiniBossEnemyId = "miniboss_hex";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
+	[Export] public bool UsePhaseTailMiniBossSchedule = true;
+	[Export] public float Phase1MiniBossAtSeconds = 225f;
+	[Export] public float Phase2MiniBossAtSeconds = 450f;
+	[Export] public float Phase3MiniBossAtSeconds = 675f;
+	[Export] public float Phase4MiniBossAtSeconds = 870f;
+	[Export] public float PhaseMiniBossFreezeSeconds = 1.2f;
+	[Export] public float PhaseMiniBossScaleBase = 1.15f;
+	[Export] public float PhaseMiniBossScaleStep = 0.18f;
+	[Export] public int PhaseMiniBossHpBase = 120;
+	[Export] public int PhaseMiniBossHpStep = 50;
+	[Export] public int PhaseMiniBossContactDamageBase = 3;
+	[Export] public int PhaseMiniBossContactDamageStep = 1;
 
 	[Export] public float ChaosWeightSwarm = 40f;
 	[Export] public float ChaosWeightCharger = 30f;
@@ -101,6 +113,8 @@ public partial class SpawnSystem : Node
 	private float _spawnStepTimer = 0f;
 	private bool _miniBossScheduled = false;
 	private bool _miniBossSpawned = false;
+	private int _pendingPhaseMiniBossIndex = -1;
+	private readonly bool[] _phaseMiniBossSpawned = new bool[4];
 	private float _spawnFreezeTimer = 0f;
 	private float _survivalSeconds = 0f;
 	private float _nextLateMiniBossAt = -1f;
@@ -172,8 +186,7 @@ public partial class SpawnSystem : Node
 		EnsureUpgradeSystem();
 		EnsureStabilitySystem();
 		UpdateTierRuntimeSettings();
-		UpdateUpgradeDrivenEvents((float)delta);
-		TryLateGameMiniBoss();
+		UpdatePhaseTailMiniBossSchedule((float)delta);
 
 		if (_spawnFreezeTimer > 0f)
 			return;

@@ -4,6 +4,7 @@ public partial class ExperiencePickup : Area2D
 {
 	[Export] public float LifetimeSeconds = 20f;
 	[Export] public float PickupRadius = 16f;
+	[Export] public int ExperienceValue = 1;
 
 	private PressureSystem _pressureSystem;
 	private float _lifeTimer;
@@ -34,7 +35,7 @@ public partial class ExperiencePickup : Area2D
 		if (body is not Player)
 			return;
 
-		_pressureSystem?.TriggerUpgradeFromExperiencePickup();
+		_pressureSystem?.AddExperienceFromPickup(Mathf.Max(1, ExperienceValue));
 		AudioManager.Instance?.PlaySfxPlayerUpgrade();
 		QueueFree();
 	}

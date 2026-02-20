@@ -25,12 +25,21 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 ### GameFlowUI
 - `Scripts/UI/GameFlowUI.cs`: setup, references, and signal wiring.
 - `Scripts/UI/GameFlowUI.State.cs`: start/game over/restart state transitions.
-- `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, responsive background scaling.
+- `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, XP-bar refresh, 15:00 countdown refresh, responsive background scaling.
+- `Scripts/UI/PlayerHealthBarDemo.cs`: runtime HP segment HUD binding.
+- `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`: local Perfect 15:00 leaderboard persistence + start-menu rendering.
+
+### Combat
+- `Scripts/Systems/Core/CombatSystem.cs`: centralized damage processing and tank bullet bonus knockback/damage hook.
 
 ### UpgradeMenu
 - `Scripts/UI/UpgradeMenu.cs`: lifecycle, input gate, and open/close flow.
 - `Scripts/UI/UpgradeMenu.UI.cs`: UI node binding, button text refresh, panel centering.
 - `Scripts/UI/UpgradeMenu.Options.cs`: option picking and application flow.
+
+### Experience Progression
+- `Scripts/Systems/Progression/ExperienceDropSystem.cs`: listens to kill events and drops pickups.
+- `Scripts/Systems/Progression/ExperiencePickup.cs`: pickup collision + trigger upgrade flow.
 
 ### AudioManager
 - `Scripts/Audio/AudioManager.cs`: singleton and public playback API surface.

@@ -214,6 +214,43 @@ public partial class SpawnSystem
 
 	private float GetCurrentTierProgress01()
 	{
+		if (!IsInstanceValid(_stabilitySystem))
+			return GetPressureDrivenTierProgressFallback();
+
+		float elapsed = _stabilitySystem.ElapsedSeconds;
+		float stableEnd = Mathf.Max(1f, _stabilitySystem.StablePhaseEndSeconds);
+		float anomalyEnd = Mathf.Max(stableEnd + 1f, _stabilitySystem.EnergyAnomalyPhaseEndSeconds);
+		float fractureEnd = Mathf.Max(anomalyEnd + 1f, _stabilitySystem.StructuralFracturePhaseEndSeconds);
+		float matchEnd = Mathf.Max(fractureEnd + 1f, _stabilitySystem.MatchDurationLimitSeconds);
+
+		float phaseStart = 0f;
+		float phaseEnd = stableEnd;
+		switch (GetCurrentPhase())
+		{
+			case StabilitySystem.StabilityPhase.Stable:
+				phaseStart = 0f;
+				phaseEnd = stableEnd;
+				break;
+			case StabilitySystem.StabilityPhase.EnergyAnomaly:
+				phaseStart = stableEnd;
+				phaseEnd = anomalyEnd;
+				break;
+			case StabilitySystem.StabilityPhase.StructuralFracture:
+				phaseStart = anomalyEnd;
+				phaseEnd = fractureEnd;
+				break;
+			case StabilitySystem.StabilityPhase.CollapseCritical:
+				phaseStart = fractureEnd;
+				phaseEnd = matchEnd;
+				break;
+		}
+
+		float duration = Mathf.Max(1f, phaseEnd - phaseStart);
+		return Mathf.Clamp((elapsed - phaseStart) / duration, 0f, 1f);
+	}
+
+	private float GetPressureDrivenTierProgressFallback()
+	{
 		if (_activeTierRuleIndex < 0 || _activeTierRuleIndex >= _tierRules.Count)
 			return 0f;
 
@@ -260,37 +297,47 @@ public partial class SpawnSystem
 		};
 	}
 
-	private void UpdateUpgradeDrivenEvents(float dt)
+	private void UpdatePhaseTailMiniBossSchedule(float dt)
 	{
-		if (!UseUpgradeCountUnlocks)
-			return;
-
 		if (_spawnFreezeTimer > 0f)
 		{
 			_spawnFreezeTimer -= dt;
-			if (_spawnFreezeTimer <= 0f && _miniBossScheduled && !_miniBossSpawned)
-				SpawnScheduledMiniBoss();
+			if (_spawnFreezeTimer <= 0f && _pendingPhaseMiniBossIndex >= 0)
+			{
+				SpawnPhaseMiniBoss(_pendingPhaseMiniBossIndex);
+				_pendingPhaseMiniBossIndex = -1;
+			}
 			return;
 		}
 
-		if (_miniBossScheduled || _miniBossSpawned)
+		if (!UsePhaseTailMiniBossSchedule)
 			return;
 
-		int upgradeCount = GetUpgradeCount();
-		int required = Mathf.Max(0, MiniBossUnlockUpgradeCount - GetMiniBossUnlockReductionForPhase());
-		if (upgradeCount != required)
-			return;
+		float[] schedule =
+		{
+			Mathf.Max(1f, Phase1MiniBossAtSeconds),
+			Mathf.Max(1f, Phase2MiniBossAtSeconds),
+			Mathf.Max(1f, Phase3MiniBossAtSeconds),
+			Mathf.Max(1f, Phase4MiniBossAtSeconds)
+		};
 
-		_miniBossScheduled = true;
-		_spawnFreezeTimer = Mathf.Max(0f, MiniBossFreezeSeconds);
-		DebugSystem.Log($"[SpawnSystem] MiniBoss scheduled at upgrade_count={upgradeCount}, freeze={_spawnFreezeTimer:F2}s");
+		for (int i = 0; i < schedule.Length; i++)
+		{
+			if (_phaseMiniBossSpawned[i])
+				continue;
+			if (_survivalSeconds < schedule[i])
+				continue;
+
+			_phaseMiniBossSpawned[i] = true;
+			_pendingPhaseMiniBossIndex = i;
+			_spawnFreezeTimer = Mathf.Max(0f, PhaseMiniBossFreezeSeconds);
+			DebugSystem.Log($"[SpawnSystem] Phase tail MiniBoss scheduled: stage={i + 1}, freeze={_spawnFreezeTimer:F2}s");
+			return;
+		}
 	}
 
-	private void SpawnScheduledMiniBoss()
+	private void SpawnPhaseMiniBoss(int phaseIndex)
 	{
-		_miniBossScheduled = false;
-		_miniBossSpawned = true;
-
 		if (!_enemyDefinitions.TryGetValue(MiniBossEnemyId, out EnemyDefinition def) || def.Scene == null)
 		{
 			DebugSystem.Warn($"[SpawnSystem] MiniBoss definition missing: {MiniBossEnemyId}");
@@ -303,9 +350,25 @@ public partial class SpawnSystem
 			return;
 		}
 
+		int stage = Mathf.Clamp(phaseIndex + 1, 1, 4);
+		float scaleMult = Mathf.Max(0.5f, PhaseMiniBossScaleBase + ((stage - 1) * PhaseMiniBossScaleStep));
+		miniBoss.Scale *= scaleMult;
 		miniBoss.GlobalPosition = GetSpawnPositionAroundPlayer();
+		miniBoss.Name = $"MiniBossHex_Stage{stage}";
+
+		if (miniBoss.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health)
+		{
+			int hp = Mathf.Max(1, PhaseMiniBossHpBase + ((stage - 1) * PhaseMiniBossHpStep));
+			health.SetMaxHpAndRefill(hp);
+		}
+
+		if (miniBoss.GetNodeOrNull<EnemyHitbox>("Hitbox") is EnemyHitbox hitbox)
+		{
+			hitbox.ContactDamage = Mathf.Max(1, PhaseMiniBossContactDamageBase + ((stage - 1) * PhaseMiniBossContactDamageStep));
+		}
+
 		_enemiesRoot.AddChild(miniBoss);
-		DebugSystem.Log($"[SpawnSystem] MiniBoss spawned: {MiniBossEnemyId}");
+		DebugSystem.Log($"[SpawnSystem] MiniBoss spawned: stage={stage}, scale={scaleMult:F2}");
 	}
 
 	private int GetUpgradeCount()
@@ -316,29 +379,26 @@ public partial class SpawnSystem
 		return Mathf.Max(0, _upgradeSystem.AppliedUpgradeCount);
 	}
 
-	private void TryLateGameMiniBoss()
-	{
-		if (GetCurrentPhase() != StabilitySystem.StabilityPhase.CollapseCritical)
-			return;
-		if (CriticalMiniBossInterval <= 0f)
-			return;
-		if (_spawnFreezeTimer > 0f)
-			return;
-		if (_enemiesRoot == null)
-			return;
-
-		if (_nextLateMiniBossAt < 0f)
-			_nextLateMiniBossAt = _survivalSeconds + CriticalMiniBossInterval;
-
-		if (_survivalSeconds >= _nextLateMiniBossAt)
-		{
-			SpawnScheduledMiniBoss();
-			_nextLateMiniBossAt = _survivalSeconds + CriticalMiniBossInterval;
-		}
-	}
-
 	private int FindTierRuleIndex(float pressure)
 	{
+		if (IsInstanceValid(_stabilitySystem) && _tierRules.Count > 0)
+		{
+			int phaseTier = GetCurrentPhase() switch
+			{
+				StabilitySystem.StabilityPhase.Stable => 0,
+				StabilitySystem.StabilityPhase.EnergyAnomaly => 1,
+				StabilitySystem.StabilityPhase.StructuralFracture => 2,
+				StabilitySystem.StabilityPhase.CollapseCritical => 3,
+				_ => 0
+			};
+
+			for (int i = 0; i < _tierRules.Count; i++)
+			{
+				if (_tierRules[i].Tier == phaseTier)
+					return i;
+			}
+		}
+
 		for (int i = 0; i < _tierRules.Count; i++)
 		{
 			TierRule rule = _tierRules[i];

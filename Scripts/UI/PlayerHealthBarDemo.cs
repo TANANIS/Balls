@@ -2,7 +2,7 @@ using Godot;
 
 public partial class PlayerHealthBarDemo : Control
 {
-	[Export] public NodePath PlayerPath = new NodePath("../../../../../Player");
+	[Export] public NodePath PlayerPath = new NodePath("/root/Game/Player");
 	[Export] public Vector2 SegmentSize = new Vector2(22f, 14f);
 	[Export] public int SegmentGap = 6;
 	[Export] public Color FullColor = new Color(0.25f, 0.95f, 0.55f, 1f);

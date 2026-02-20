@@ -6,7 +6,7 @@
 script = ExtResource("1_char_def")
 CharacterId = "tank_burst"
 DisplayName = "Bulwark Core"
-Description = "5 HP. Recovers 1 HP every 60s. Half move speed. Primary attack fires a 3-round burst."
+Description = "5 HP. Recovers 1 HP every 60s. Half move speed. Primary attack fires a heavy 3-round burst with strong knockback."
 PrimaryAbility = 1
 SecondaryAbility = 0
 MobilityAbility = 0
@@ -21,7 +21,7 @@ MaxHp = 5
 HurtIFrame = 0.5
 RegenAmount = 1
 RegenIntervalSeconds = 60.0
-RangedDamage = 1
+RangedDamage = 2
 RangedCooldown = 0.72
 RangedProjectileSpeed = 760.0
 RangedFirePattern = 1

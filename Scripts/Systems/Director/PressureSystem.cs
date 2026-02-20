@@ -21,6 +21,10 @@ public partial class PressureSystem : Node
 	[Export] public float KillPressureBonusFactor = 0.8f;
 	[Export] public float TimeProgressPerSecond = 0.7f;
 	[Export] public bool UseExperiencePickupUpgradeFlow = true;
+	[Export] public int ExperiencePerPickup = 1;
+	[Export] public float SurvivorXpBaseRequirement = 8f;
+	[Export] public float SurvivorXpLinearGrowth = 2f;
+	[Export] public float SurvivorXpGrowthFactor = 1.08f;
 
 	[Export] public int EnemyCountForMaxPressure = 24;
 	[Export] public float SecondsForMaxTimePressure = 130f;
@@ -51,11 +55,14 @@ public partial class PressureSystem : Node
 
 	private float _pressure = 0f;
 	private float _upgradeProgress = 0f;
+	private float _currentUpgradeRequirement = 0f;
 	private float _triggerCooldownTimer = 0f;
 	private float _survivalSeconds = 0f;
 	private float _logTimer = 0f;
 	private bool _firstUpgradeTriggered = false;
 	private bool _upgradeArmed = false;
+	private int _upgradeLevel = 0;
+	private int _pendingUpgradeOpens = 0;
 	private readonly List<TierRule> _tierRules = new();
 	private int _activeTierIndex = -1;
 	private float _killProgressMultiplier = 1f;
@@ -65,6 +72,9 @@ public partial class PressureSystem : Node
 
 	public float CurrentPressure => _pressure;
 	public float CurrentUpgradeProgress => _upgradeProgress;
+	public bool IsUpgradeReady => _pendingUpgradeOpens > 0 || (_upgradeArmed && _triggerCooldownTimer <= 0f);
+	public int CurrentUpgradeLevel => _upgradeLevel;
+	public int PendingUpgradeCount => _pendingUpgradeOpens;
 
 	public override void _EnterTree()
 	{
@@ -105,6 +115,8 @@ public partial class PressureSystem : Node
 
 		if (UseTierRulesCsv)
 			LoadTierRulesFromCsv();
+
+		_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
 	}
 
 	public override void _ExitTree()
@@ -126,7 +138,7 @@ public partial class PressureSystem : Node
 		float target = CalculateTargetPressure();
 		float speed = target >= _pressure ? RisePerSecond : GetPhaseFallSpeed();
 		_pressure = Mathf.MoveToward(_pressure, target, speed * dt);
-		if (TimeProgressPerSecond > 0f)
+		if (!UseExperiencePickupUpgradeFlow && TimeProgressPerSecond > 0f)
 			_upgradeProgress = Mathf.Clamp(_upgradeProgress + (TimeProgressPerSecond * _timeProgressMultiplier * dt), 0f, MaxUpgradeProgress);
 
 		if (VerboseLog)
@@ -134,19 +146,28 @@ public partial class PressureSystem : Node
 			_logTimer -= dt;
 			if (_logTimer <= 0f)
 			{
-				DebugSystem.Log($"[PressureSystem] pressure={_pressure:F1}/{MaxPressure:F1} target={target:F1} progress={_upgradeProgress:F1}/{MaxUpgradeProgress:F1} armed={_upgradeArmed}");
+				float req = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+				DebugSystem.Log($"[PressureSystem] pressure={_pressure:F1}/{MaxPressure:F1} target={target:F1} xp={_upgradeProgress:F1}/{req:F1} pending={_pendingUpgradeOpens} armed={_upgradeArmed}");
 				_logTimer = Mathf.Max(0.1f, LogInterval);
 			}
 		}
 
-		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
+		if (_upgradeMenu == null)
+			return;
+
+		if (UseExperiencePickupUpgradeFlow)
+		{
+			TryConsumePendingUpgrade("pending experience");
+			return;
+		}
+
+		if (_upgradeMenu.IsOpen)
 			return;
 
 		if (_triggerCooldownTimer > 0f)
 			return;
 
-		float requiredBase = _firstUpgradeTriggered ? TriggerThreshold : FirstTriggerThreshold;
-		float required = Mathf.Max(5f, requiredBase + _triggerThresholdOffset);
+		float required = GetCurrentUpgradeRequirement();
 		if (_upgradeProgress >= required)
 			_upgradeArmed = true;
 	}
@@ -241,10 +262,45 @@ public partial class PressureSystem : Node
 	{
 		if (!UseExperiencePickupUpgradeFlow)
 			return;
-		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
+
+		AddExperienceFromPickup(ExperiencePerPickup);
+	}
+
+	public void AddExperienceFromPickup(int amount)
+	{
+		if (!UseExperiencePickupUpgradeFlow)
+			return;
+		if (amount <= 0)
 			return;
 
-		TriggerUpgradeMenu("experience pickup");
+		float expToAdd = Mathf.Max(1f, amount);
+		_upgradeProgress += expToAdd;
+		_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+
+		while (_upgradeProgress >= _currentUpgradeRequirement)
+		{
+			_upgradeProgress -= _currentUpgradeRequirement;
+			_upgradeLevel++;
+			_pendingUpgradeOpens++;
+			_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+		}
+
+		_upgradeProgress = Mathf.Clamp(_upgradeProgress, 0f, _currentUpgradeRequirement);
+		TryConsumePendingUpgrade("experience pickup");
+	}
+
+	public float GetCurrentUpgradeRequirement()
+	{
+		if (UseExperiencePickupUpgradeFlow)
+		{
+			float level = _upgradeLevel;
+			float curve = SurvivorXpBaseRequirement + (SurvivorXpLinearGrowth * level);
+			curve *= Mathf.Pow(Mathf.Max(1f, SurvivorXpGrowthFactor), level);
+			return Mathf.Max(1f, curve);
+		}
+
+		float requiredBase = _firstUpgradeTriggered ? TriggerThreshold : FirstTriggerThreshold;
+		return Mathf.Max(5f, requiredBase + _triggerThresholdOffset);
 	}
 
 	public void ForceOpenForBoss()
@@ -263,10 +319,26 @@ public partial class PressureSystem : Node
 		_upgradeMenu.OpenMenu();
 		_firstUpgradeTriggered = true;
 		_upgradeArmed = false;
-		_triggerCooldownTimer = TriggerCooldown;
-		_pressure = Mathf.Max(0f, _pressure - (PressureDropOnTrigger + _pressureDropOnTriggerBonus));
-		_upgradeProgress = Mathf.Max(0f, _upgradeProgress - ProgressDropOnTrigger);
+
+		if (!UseExperiencePickupUpgradeFlow)
+		{
+			_triggerCooldownTimer = TriggerCooldown;
+			_pressure = Mathf.Max(0f, _pressure - (PressureDropOnTrigger + _pressureDropOnTriggerBonus));
+			_upgradeProgress = Mathf.Max(0f, _upgradeProgress - ProgressDropOnTrigger);
+		}
+
 		DebugSystem.Log($"[PressureSystem] Triggered upgrade menu: {reason}.");
+	}
+
+	private void TryConsumePendingUpgrade(string reason)
+	{
+		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
+			return;
+		if (_pendingUpgradeOpens <= 0)
+			return;
+
+		_pendingUpgradeOpens--;
+		TriggerUpgradeMenu(reason);
 	}
 
 	public void MultiplyKillProgressGain(float factor)
