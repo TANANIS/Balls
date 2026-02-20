@@ -20,6 +20,7 @@ public partial class PressureSystem : Node
 	[Export] public float KillProgressBase = 18f;
 	[Export] public float KillPressureBonusFactor = 0.8f;
 	[Export] public float TimeProgressPerSecond = 0.7f;
+	[Export] public bool UseExperiencePickupUpgradeFlow = true;
 
 	[Export] public int EnemyCountForMaxPressure = 24;
 	[Export] public float SecondsForMaxTimePressure = 130f;
@@ -212,6 +213,9 @@ public partial class PressureSystem : Node
 
 	private void OnEnemyKilled(Node source, Node target)
 	{
+		if (UseExperiencePickupUpgradeFlow)
+			return;
+
 		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
 			return;
 		if (_triggerCooldownTimer > 0f)
@@ -231,6 +235,16 @@ public partial class PressureSystem : Node
 			return;
 
 		TriggerUpgradeMenu("kill after threshold");
+	}
+
+	public void TriggerUpgradeFromExperiencePickup()
+	{
+		if (!UseExperiencePickupUpgradeFlow)
+			return;
+		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
+			return;
+
+		TriggerUpgradeMenu("experience pickup");
 	}
 
 	public void ForceOpenForBoss()

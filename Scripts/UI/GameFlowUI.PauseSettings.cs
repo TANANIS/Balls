@@ -11,6 +11,11 @@ public partial class GameFlowUI
 			OnStartSettingsBackPressed();
 			return;
 		}
+		if (!_started && _startCharacterSelectOpen && Input.IsActionJustPressed("ui_cancel"))
+		{
+			OnCharacterSelectBackPressed();
+			return;
+		}
 
 		if (!_started || _ending)
 			return;

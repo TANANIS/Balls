@@ -40,4 +40,12 @@ public partial class PlayerDash
 	{
 		DashIFrame = Mathf.Clamp(DashIFrame + amount, 0f, 1.2f);
 	}
+
+	public void SetBaseStats(float speed, float duration, float cooldown, float iFrame)
+	{
+		DashSpeed = Mathf.Max(10f, speed);
+		DashDuration = Mathf.Clamp(duration, 0.02f, 3f);
+		DashCooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
+		DashIFrame = Mathf.Clamp(iFrame, 0f, 1.2f);
+	}
 }

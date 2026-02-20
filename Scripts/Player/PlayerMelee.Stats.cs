@@ -21,4 +21,12 @@ public partial class PlayerMelee
 	{
 		Cooldown = Mathf.Clamp(Cooldown * factor, 0.02f, 10f);
 	}
+
+	public void SetBaseStats(int damage, float cooldown, float range, float arcDegrees)
+	{
+		Damage = Mathf.Max(1, damage);
+		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
+		Range = Mathf.Max(4f, range);
+		ArcDegrees = Mathf.Clamp(arcDegrees, 5f, 180f);
+	}
 }

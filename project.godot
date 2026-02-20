@@ -15,6 +15,10 @@ run/main_scene="uid://bxen3q3hvcxk"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+RunContext="*res://Scripts/Runtime/RunContext.cs"
+
 [display]
 
 window/size/viewport_width=1280

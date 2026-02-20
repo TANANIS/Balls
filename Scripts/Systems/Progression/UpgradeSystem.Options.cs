@@ -56,6 +56,8 @@ public partial class UpgradeSystem
 					continue;
 				if (string.IsNullOrWhiteSpace(entry.Title))
 					continue;
+				if (!IsUpgradeCompatibleWithCurrentCharacter(entry.Id))
+					continue;
 				if (!CanApplyDefinition(entry))
 					continue;
 
@@ -76,10 +78,35 @@ public partial class UpgradeSystem
 		if (pool.Count == 0)
 		{
 			DebugSystem.Warn("[UpgradeSystem] Catalog missing/empty. Using fallback options.");
-			pool.AddRange(FallbackOptions);
+			foreach (var option in FallbackOptions)
+			{
+				if (IsUpgradeCompatibleWithCurrentCharacter(option.Id))
+					pool.Add(option);
+			}
 		}
 
 		return pool;
+	}
+
+	private bool IsUpgradeCompatibleWithCurrentCharacter(UpgradeId id)
+	{
+		if (_player == null)
+			return true;
+
+		return id switch
+		{
+			UpgradeId.PrimaryDamageUp => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
+			UpgradeId.PrimaryFasterFire => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
+			UpgradeId.PrimaryProjectileSpeedUp => _player.PrimarySupportsRanged(),
+			UpgradeId.SecondaryDamageUp => _player.SecondarySupportsRanged() || _player.SecondarySupportsMelee(),
+			UpgradeId.SecondaryRangeUp => _player.SecondarySupportsMelee(),
+			UpgradeId.SecondaryWiderArc => _player.SecondarySupportsMelee(),
+			UpgradeId.DashFasterCooldown => _player.HasDashAbility(),
+			UpgradeId.DashSpeedUp => _player.HasDashAbility(),
+			UpgradeId.DashLonger => _player.HasDashAbility(),
+			UpgradeId.DashIFrameUp => _player.HasDashAbility(),
+			_ => true
+		};
 	}
 
 	private bool CanApplyDefinition(UpgradeDefinition definition)

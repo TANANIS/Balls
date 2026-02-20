@@ -21,7 +21,7 @@ radius = 34.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 92.0
+MaxSpeed = 78.0
 Accel = 1000.0
 Friction = 760.0
 
@@ -34,13 +34,13 @@ shape = SubResource("RectangleShape2D_7qjt4")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-ApproachSpeedMultiplier = 1.06
-OrbitSpeedMultiplier = 0.62
+ApproachSpeedMultiplier = 0.95
+OrbitSpeedMultiplier = 0.55
 DesiredBlockDistance = 170.0
 DistanceTolerance = 20.0
 InterceptSeconds = 0.7
 CutoffAheadDistance = 150.0
-RetreatSpeedMultiplier = 0.52
+RetreatSpeedMultiplier = 0.48
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")

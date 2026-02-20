@@ -21,7 +21,7 @@ radius = 46.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 60.0
+MaxSpeed = 54.0
 Accel = 700.0
 Friction = 650.0
 
@@ -37,7 +37,7 @@ shape = SubResource("CircleShape2D_body")
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
 PatrolSpeedMultiplier = 0.55
-RushSpeedMultiplier = 1.75
+RushSpeedMultiplier = 1.6
 TriggerDistance = 340.0
 WindupDuration = 0.5
 RushDuration = 0.34

@@ -8,6 +8,7 @@ using Godot;
 public partial class PlayerDash : Node
 {
 	[Export] public string DashAction = "dash";
+	[Export] public bool EnabledInCurrentCharacter = true;
 	[Export] public float DashSpeed = 900f;
 	[Export] public float DashDuration = 0.12f;
 	[Export] public float DashCooldown = 0.6f;
@@ -19,6 +20,7 @@ public partial class PlayerDash : Node
 	private float _dashTimer = 0f;
 	private float _cooldownTimer = 0f;
 	private Vector2 _dashDir = Vector2.Right;
+	private bool _isEnabled = true;
 
 	public float CurrentCooldown => DashCooldown;
 	public float CurrentSpeed => DashSpeed;
@@ -28,10 +30,14 @@ public partial class PlayerDash : Node
 	{
 		_player = player;
 		ResolveStabilitySystem();
+		_isEnabled = EnabledInCurrentCharacter;
 	}
 
 	public bool Tick(float dt, Vector2 inputDir)
 	{
+		if (!_isEnabled)
+			return false;
+
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
 
@@ -64,5 +70,24 @@ public partial class PlayerDash : Node
 		var list = GetTree().GetNodesInGroup("StabilitySystem");
 		if (list.Count > 0)
 			_stabilitySystem = list[0] as StabilitySystem;
+	}
+
+	public void SetEnabled(bool enabled)
+	{
+		_isEnabled = enabled;
+		EnabledInCurrentCharacter = enabled;
+		if (!enabled && _isDashing)
+		{
+			_isDashing = false;
+			_dashTimer = 0f;
+			_player.Velocity = Vector2.Zero;
+		}
+	}
+
+	public void SetDashAction(string action)
+	{
+		if (string.IsNullOrWhiteSpace(action))
+			return;
+		DashAction = action;
 	}
 }

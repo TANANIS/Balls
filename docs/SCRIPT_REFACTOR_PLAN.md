@@ -42,11 +42,20 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Player/Player.Composition.cs`: module resolution/setup and death signal handling.
 - `Scripts/Player/Player.State.cs`: damage/invincibility hooks and respawn reset.
 - `Scripts/Player/Player.Bounds.cs`: movement bounds clamping.
+- `Scripts/Player/Player.Character.cs`: character-definition application, slot routing, and ability compatibility helpers.
 - `Scripts/Player/PlayerDash.cs`: dash state machine tick and movement ownership.
 - `Scripts/Player/PlayerDash.Runtime.cs`: dash start/stop and stat mutations.
 - `Scripts/Player/PlayerMelee.cs`: melee setup/input/cooldown flow.
 - `Scripts/Player/PlayerMelee.Attack.cs`: melee hit query, filtering, and damage request emission.
 - `Scripts/Player/PlayerMelee.Stats.cs`: melee stat mutation methods for upgrades.
+
+### Character Runtime
+- `Scripts/Characters/CharacterDefinition.cs`: data-driven character slots and base stats.
+- `Scripts/Characters/AttackAbilityKind.cs`: attack slot enum (`None`, `Ranged`, `Melee`).
+- `Scripts/Characters/MobilityAbilityKind.cs`: mobility slot enum (`None`, `Dash`).
+- `Scripts/Runtime/RunContext.cs`: autoload state for selected character between menu and run.
+
+Rule update: upgrades target logical slots (primary/secondary/mobility compatibility) instead of hard-coding ranged/melee ownership by node name.
 
 ### Enemy
 - `Scripts/Enemy/Enemy.cs`: enemy frame loop and external notifications.

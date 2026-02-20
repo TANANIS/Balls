@@ -1,4 +1,6 @@
-[gd_scene format=3]
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://Scenes/UI/PlayerHealthBarDemo.tscn" id="1_health_demo"]
 
 [node name="HudOverlay" type="Control"]
 layout_mode = 1
@@ -12,12 +14,19 @@ mouse_filter = 2
 [node name="ScoreLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 16.0
-offset_top = 16.0
+offset_top = 14.0
 offset_right = 320.0
-offset_bottom = 48.0
+offset_bottom = 46.0
 theme_override_colors/font_color = Color(0.3, 1, 0.9, 0.9)
 theme_override_font_sizes/font_size = 18
 text = "Score: 0"
+
+[node name="PlayerHealthBarDemo" parent="." instance=ExtResource("1_health_demo")]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 46.0
+offset_right = 336.0
+offset_bottom = 98.0
 
 [node name="EventCountdownLabel" type="Label" parent="."]
 visible = false

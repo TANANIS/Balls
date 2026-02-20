@@ -43,4 +43,12 @@ public partial class PlayerMovement : Node
 		if (list.Count > 0)
 			_stabilitySystem = list[0] as StabilitySystem;
 	}
+
+	public void SetBaseStats(float maxSpeed, float accel, float friction, float stopThreshold)
+	{
+		MaxSpeed = Mathf.Max(10f, maxSpeed);
+		Accel = Mathf.Max(1f, accel);
+		Friction = Mathf.Max(1f, friction);
+		StopThreshold = Mathf.Max(0f, stopThreshold);
+	}
 }

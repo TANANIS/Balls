@@ -2,14 +2,14 @@
 # tier,enemy_id,weight
 0,swarm_circle,100
 
-1,swarm_circle,68
-1,charger_triangle,32
+1,swarm_circle,75
+1,charger_triangle,25
 
-2,swarm_circle,50
-2,charger_triangle,32
-2,tank_square,18
+2,swarm_circle,60
+2,charger_triangle,26
+2,tank_square,14
 
-3,swarm_circle,34
-3,charger_triangle,38
-3,tank_square,24
-3,elite_swarm_circle,4
+3,swarm_circle,46
+3,charger_triangle,32
+3,tank_square,19
+3,elite_swarm_circle,3

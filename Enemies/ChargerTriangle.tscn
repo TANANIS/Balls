@@ -21,7 +21,7 @@ radius = 22.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 168.0
+MaxSpeed = 146.0
 Accel = 1550.0
 Friction = 950.0
 
@@ -35,15 +35,15 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-ChaseSpeedMultiplier = 1.02
-DashSpeedMultiplier = 3.45
-TriggerDistance = 360.0
+ChaseSpeedMultiplier = 0.92
+DashSpeedMultiplier = 3.0
+TriggerDistance = 330.0
 WindupDuration = 0.17
 DashDuration = 0.28
-DashCooldown = 0.7
+DashCooldown = 0.85
 AimPredictionSeconds = 0.24
 DashSteerStrength = 7.4
-ChainDashChance = 0.58
+ChainDashChance = 0.45
 ChainWindupMultiplier = 0.5
 
 [node name="Separation" type="Node" parent="."]

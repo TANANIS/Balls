@@ -15,10 +15,13 @@ public partial class PlayerHealth : Node
 
 	[Export] public int MaxHp = 3;
 	[Export] public float HurtIFrame = 0.5f;
+	[Export] public int RegenAmount = 0;
+	[Export] public float RegenIntervalSeconds = 60f;
 
 	private int _hp;
 	private bool _isDead = false;
 	private float _invincibleTimer = 0f;
+	private float _regenTimer = 0f;
 
 	public int Hp => _hp;
 	public bool IsDead => _isDead;
@@ -27,6 +30,7 @@ public partial class PlayerHealth : Node
 	public override void _Ready()
 	{
 		_hp = MaxHp;
+		_regenTimer = Mathf.Max(0f, RegenIntervalSeconds);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -35,6 +39,7 @@ public partial class PlayerHealth : Node
 
 		if (_invincibleTimer > 0f)
 			_invincibleTimer -= dt;
+		TickRegen(dt);
 	}
 
 	public void SetInvincible(float duration)
@@ -52,6 +57,8 @@ public partial class PlayerHealth : Node
 		_hp -= amount;
 		AudioManager.Instance?.PlaySfxPlayerGetHit();
 		DebugSystem.Log($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
+		if (RegenAmount > 0 && RegenIntervalSeconds > 0f)
+			_regenTimer = RegenIntervalSeconds;
 
 		if (HurtIFrame > 0f)
 			SetInvincible(HurtIFrame);
@@ -74,6 +81,7 @@ public partial class PlayerHealth : Node
 		_hp = MaxHp;
 		_isDead = false;
 		_invincibleTimer = 0f;
+		_regenTimer = Mathf.Max(0f, RegenIntervalSeconds);
 		UpdateLowHpAudio();
 	}
 
@@ -100,5 +108,45 @@ public partial class PlayerHealth : Node
 			AudioManager.Instance?.StartLowHpLoop();
 		else
 			AudioManager.Instance?.StopLowHpLoop();
+	}
+
+	public void SetBaseStats(int maxHp, float hurtIFrame, bool refill = true)
+	{
+		MaxHp = Mathf.Max(1, maxHp);
+		HurtIFrame = Mathf.Max(0f, hurtIFrame);
+		if (refill)
+		{
+			_hp = MaxHp;
+			_isDead = false;
+			_invincibleTimer = 0f;
+			UpdateLowHpAudio();
+		}
+		else if (_hp > MaxHp)
+		{
+			_hp = MaxHp;
+		}
+	}
+
+	public void SetRegen(int amount, float intervalSeconds)
+	{
+		RegenAmount = Mathf.Max(0, amount);
+		RegenIntervalSeconds = Mathf.Max(0f, intervalSeconds);
+		_regenTimer = Mathf.Max(0f, RegenIntervalSeconds);
+	}
+
+	private void TickRegen(float dt)
+	{
+		if (_isDead || RegenAmount <= 0 || RegenIntervalSeconds <= 0f)
+			return;
+		if (_hp >= MaxHp)
+			return;
+
+		_regenTimer -= dt;
+		if (_regenTimer > 0f)
+			return;
+
+		_hp = Mathf.Min(MaxHp, _hp + RegenAmount);
+		_regenTimer = RegenIntervalSeconds;
+		UpdateLowHpAudio();
 	}
 }

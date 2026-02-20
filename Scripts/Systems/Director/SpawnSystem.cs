@@ -15,9 +15,9 @@ public partial class SpawnSystem : Node
 	[Export] public int SpawnBudgetMin = 2;
 	[Export] public int SpawnBudgetMax = 4;
 	[Export] public float StableBudgetMultiplier = 1.0f;
-	[Export] public float EnergyAnomalyBudgetMultiplier = 1.05f;
-	[Export] public float StructuralFractureBudgetMultiplier = 1.12f;
-	[Export] public float CollapseCriticalBudgetMultiplier = 1.25f;
+	[Export] public float EnergyAnomalyBudgetMultiplier = 1.03f;
+	[Export] public float StructuralFractureBudgetMultiplier = 1.08f;
+	[Export] public float CollapseCriticalBudgetMultiplier = 1.15f;
 	[Export] public float StableTierTailRampMultiplier = 1.35f;
 	[Export] public float EnergyAnomalyTierTailRampMultiplier = 1.30f;
 	[Export] public float StructuralFractureTierTailRampMultiplier = 1.24f;
@@ -26,8 +26,8 @@ public partial class SpawnSystem : Node
 	[Export] public float HordeCatchUpBudgetFactor = 0.40f;
 	[Export] public int StablePacksPerWave = 3;
 	[Export] public int EnergyAnomalyPacksPerWave = 3;
-	[Export] public int StructuralFracturePacksPerWave = 4;
-	[Export] public int CollapseCriticalPacksPerWave = 6;
+	[Export] public int StructuralFracturePacksPerWave = 3;
+	[Export] public int CollapseCriticalPacksPerWave = 4;
 	[Export] public bool UseEncirclementPackLayout = true;
 	[Export] public bool UsePlayerPathInterceptCenters = true;
 	[Export] public float InterceptLeadSeconds = 0.65f;
@@ -106,15 +106,15 @@ public partial class SpawnSystem : Node
 	private float _nextLateMiniBossAt = -1f;
 
 	[Export] public float StableSpawnRateMultiplier = 1.0f;
-	[Export] public float EnergyAnomalySpawnRateMultiplier = 1.05f;
-	[Export] public float StructuralFractureSpawnRateMultiplier = 1.15f;
-	[Export] public float CollapseCriticalSpawnRateMultiplier = 1.30f;
+	[Export] public float EnergyAnomalySpawnRateMultiplier = 1.02f;
+	[Export] public float StructuralFractureSpawnRateMultiplier = 1.08f;
+	[Export] public float CollapseCriticalSpawnRateMultiplier = 1.16f;
 	[Export] public float SpawnIntervalMinClamp = 0.1f;
 
 	[Export] public float StableMaxAliveMultiplier = 1.0f;
-	[Export] public float EnergyAnomalyMaxAliveMultiplier = 1.05f;
-	[Export] public float StructuralFractureMaxAliveMultiplier = 1.12f;
-	[Export] public float CollapseCriticalMaxAliveMultiplier = 1.20f;
+	[Export] public float EnergyAnomalyMaxAliveMultiplier = 1.02f;
+	[Export] public float StructuralFractureMaxAliveMultiplier = 1.06f;
+	[Export] public float CollapseCriticalMaxAliveMultiplier = 1.12f;
 	[Export] public int MaxAliveCap = 900;
 
 	[Export] public float CriticalMiniBossInterval = 60f;

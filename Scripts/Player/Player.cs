@@ -31,6 +31,7 @@ public partial class Player : CharacterBody2D
 		ResolveModules();
 		BindSignals();
 		SetupModules();
+		ApplyCharacter(RunContext.Instance?.GetSelectedOrDefault() ?? DefaultCharacter);
 	}
 
 	public override void _PhysicsProcess(double delta)

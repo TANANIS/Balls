@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+
+[resource]
+script = ExtResource("1_char_def")
+CharacterId = "melee"
+DisplayName = "Blade Core"
+Description = "Left click performs melee. Dash remains on Space. Ranged attack is disabled."
+PrimaryAbility = 2
+SecondaryAbility = 0
+MobilityAbility = 1
+PrimaryAction = "attack_primary"
+SecondaryAction = "attack_secondary"
+MobilityAction = "dash"
+MoveMaxSpeed = 345.0
+MoveAccel = 2400.0
+MoveFriction = 2700.0
+MoveStopThreshold = 5.0
+MaxHp = 4
+HurtIFrame = 0.5
+RegenAmount = 0
+RegenIntervalSeconds = 60.0
+RangedDamage = 1
+RangedCooldown = 0.32
+RangedProjectileSpeed = 760.0
+RangedFirePattern = 0
+RangedBurstShotInterval = 0.08
+MeleeDamage = 3
+MeleeCooldown = 0.3
+MeleeRange = 175.0
+MeleeArcDegrees = 170.0
+DashSpeed = 980.0
+DashDuration = 0.14
+DashCooldown = 0.55
+DashIFrame = 0.1

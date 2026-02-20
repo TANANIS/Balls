@@ -109,7 +109,7 @@ layout_mode = 2
 size_flags_vertical = 10
 theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
 theme_override_font_sizes/font_size = 17
-text = "Controls:\nMove: W A S D\nPrimary Attack: Left Mouse\nMelee: Right Mouse\nDash: Space\n\nGoal:\nSurvive for 15 minutes before the universe collapses."
+text = "Controls:\nMove: W A S D\nConfirm / Menu: Left Mouse\nPause: Esc\n\nAfter pressing Start, choose your operator loadout.\n\nGoal:\nSurvive for 15 minutes before the universe collapses."
 horizontal_alignment = 0
 vertical_alignment = 0
 autowrap_mode = 3
@@ -143,6 +143,98 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Quit"
+
+[node name="CharacterSelectPanel" type="Control" parent="Panel"]
+visible = false
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 470.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/CharacterSelectPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/CharacterSelectPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 38
+text = "CHOOSE OPERATOR"
+horizontal_alignment = 1
+
+[node name="CharacterButtons" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RangedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Ranger Core"
+
+[node name="MeleeButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Blade Core"
+
+[node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Bulwark Core"
+
+[node name="SelectedCharacterDesc" type="Label" parent="Panel/CharacterSelectPanel/VBox"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.95)
+theme_override_font_sizes/font_size = 17
+text = "Select a character."
+autowrap_mode = 3
+
+[node name="ActionButtons" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"
+
+[node name="ConfirmButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Start Run"
 
 [node name="SettingsPanel" type="Control" parent="Panel"]
 visible = false

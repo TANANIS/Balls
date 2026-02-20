@@ -10,9 +10,8 @@ public partial class UpgradeSystem : Node
 	[Export(PropertyHint.Range, "1,20,1")] public int RarePityThreshold = 4;
 	[Export(PropertyHint.Range, "1,30,1")] public int EpicPityThreshold = 8;
 
-	// Cached player modules that receive upgrade effects.
-	private PlayerWeapon _primaryAttack;
-	private PlayerMelee _secondaryAttack;
+	// Cached runtime dependencies.
+	private Player _player;
 	private PlayerDash _dash;
 	private PlayerHealth _playerHealth;
 	private PressureSystem _pressureSystem;
@@ -34,17 +33,15 @@ public partial class UpgradeSystem : Node
 	public override void _Ready()
 	{
 		// Resolve player and cache all upgrade targets once.
-		var player = GetNodeOrNull<Player>(PlayerPath);
-		if (player == null)
+		_player = GetNodeOrNull<Player>(PlayerPath);
+		if (_player == null)
 		{
 			DebugSystem.Error("[UpgradeSystem] Player not found.");
 			return;
 		}
 
-		_primaryAttack = player.GetNodeOrNull<PlayerWeapon>("PrimaryAttack");
-		_secondaryAttack = player.GetNodeOrNull<PlayerMelee>("SecondaryAttack");
-		_dash = player.GetNodeOrNull<PlayerDash>("Dash");
-		_playerHealth = player.GetNodeOrNull<PlayerHealth>("Health");
+		_dash = _player.GetNodeOrNull<PlayerDash>("Dash");
+		_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
 		var pressureList = GetTree().GetNodesInGroup("PressureSystem");
 		if (pressureList.Count > 0)
@@ -59,6 +56,12 @@ public partial class UpgradeSystem : Node
 
 	public bool ApplyUpgrade(UpgradeId id)
 	{
+		if (!IsUpgradeCompatibleWithCurrentCharacter(id))
+		{
+			DebugSystem.Warn("[UpgradeSystem] Upgrade incompatible with active character: " + id);
+			return false;
+		}
+
 		bool hasDefinition = TryGetDefinition(id, out var definition);
 		if (hasDefinition && !CanApplyDefinition(definition))
 		{
@@ -70,22 +73,22 @@ public partial class UpgradeSystem : Node
 		switch (id)
 		{
 			case UpgradeId.PrimaryDamageUp:
-				_primaryAttack?.AddDamage(1);
+				_player?.AddPrimaryDamage(1);
 				break;
 			case UpgradeId.PrimaryFasterFire:
-				_primaryAttack?.MultiplyCooldown(0.88f);
+				_player?.MultiplyPrimaryCooldown(0.88f);
 				break;
 			case UpgradeId.PrimaryProjectileSpeedUp:
-				_primaryAttack?.AddProjectileSpeed(120f);
+				_player?.AddPrimaryProjectileSpeed(120f);
 				break;
 			case UpgradeId.SecondaryDamageUp:
-				_secondaryAttack?.AddDamage(1);
+				_player?.AddSecondaryDamage(1);
 				break;
 			case UpgradeId.SecondaryRangeUp:
-				_secondaryAttack?.AddRange(10f);
+				_player?.AddSecondaryRange(10f);
 				break;
 			case UpgradeId.SecondaryWiderArc:
-				_secondaryAttack?.AddArcDegrees(15f);
+				_player?.AddSecondaryArc(15f);
 				break;
 			case UpgradeId.PressureKillProgressUp:
 				_pressureSystem?.MultiplyKillProgressGain(1.18f);
@@ -127,8 +130,7 @@ public partial class UpgradeSystem : Node
 				_playerHealth?.AddMaxHp(1);
 				break;
 			case UpgradeId.RiskVolatileArms:
-				_primaryAttack?.AddDamage(2);
-				_secondaryAttack?.AddDamage(2);
+				_player?.AddAllAttackDamage(2);
 				_pressureSystem?.AddTriggerThresholdOffset(5f);
 				break;
 		}

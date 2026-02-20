@@ -6,6 +6,13 @@ public partial class GameFlowUI : Control
 	private const string StartPanelPath = "Panels/StartPanel";
 	private const string StartMainVBoxPath = "Panels/StartPanel/Panel/VBox";
 	private const string StartSettingsPanelPath = "Panels/StartPanel/Panel/SettingsPanel";
+	private const string StartCharacterSelectPanelPath = "Panels/StartPanel/Panel/CharacterSelectPanel";
+	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/RangedButton";
+	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/MeleeButton";
+	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/TankButton";
+	private const string StartCharacterDescriptionPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/SelectedCharacterDesc";
+	private const string StartCharacterBackButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ActionButtons/BackButton";
+	private const string StartCharacterConfirmButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ActionButtons/ConfirmButton";
 	private const string RestartPanelPath = "Panels/RestartPanel";
 	private const string PausePanelPath = "Panels/PausePanel";
 	private const string PauseMainVBoxPath = "Panels/PausePanel/Panel/VBox";
@@ -46,6 +53,9 @@ public partial class GameFlowUI : Control
 	private const string EnemiesPath = "../../Enemies";
 	private const string ProjectilesPath = "../../Projectiles";
 	private const string ObstaclesPath = "../../World/Obstacles";
+	private const string RangedCharacterResourcePath = "res://Data/Characters/RangedCharacter.tres";
+	private const string MeleeCharacterResourcePath = "res://Data/Characters/MeleeCharacter.tres";
+	private const string TankCharacterResourcePath = "res://Data/Characters/TankBurstCharacter.tres";
 	[Export] public float LowHealthMaxIntensity = 0.9f;
 	[Export] public float LowHealthPower = 1.6f;
 
@@ -54,6 +64,7 @@ public partial class GameFlowUI : Control
 	private Control _startPanel;
 	private Control _startMainVBox;
 	private Control _startSettingsPanel;
+	private Control _startCharacterSelectPanel;
 	private Control _restartPanel;
 	private Control _pausePanel;
 	private Control _pauseMainVBox;
@@ -62,6 +73,11 @@ public partial class GameFlowUI : Control
 	private Button _startSettingsButton;
 	private Button _startQuitButton;
 	private Button _startSettingsBackButton;
+	private Button _startCharacterRangedButton;
+	private Button _startCharacterMeleeButton;
+	private Button _startCharacterTankButton;
+	private Button _startCharacterBackButton;
+	private Button _startCharacterConfirmButton;
 	private Button _restartButton;
 	private Button _pauseResumeButton;
 	private Button _pauseSettingsButton;
@@ -88,6 +104,7 @@ public partial class GameFlowUI : Control
 	private Label _finalBuildSummaryLabel;
 	private Label _restartTitleLabel;
 	private Label _restartHintLabel;
+	private Label _startCharacterDescriptionLabel;
 	private UpgradeSystem _upgradeSystem;
 	private ScoreSystem _scoreSystem;
 	private StabilitySystem _stabilitySystem;
@@ -103,8 +120,13 @@ public partial class GameFlowUI : Control
 	private bool _pauseMenuOpen;
 	private bool _settingsOpen;
 	private bool _startSettingsOpen;
+	private bool _startCharacterSelectOpen;
 	private bool _suppressSettingsSignal;
 	private float _eventNoticeTimer;
+	private CharacterDefinition _rangedCharacter;
+	private CharacterDefinition _meleeCharacter;
+	private CharacterDefinition _tankCharacter;
+	private CharacterDefinition _selectedCharacterDefinition;
 
 	public override void _Ready()
 	{
@@ -135,6 +157,7 @@ public partial class GameFlowUI : Control
 		_startPanel = GetNodeOrNull<Control>(StartPanelPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
+		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
 		_restartPanel = GetNodeOrNull<Control>(RestartPanelPath);
 		_pausePanel = GetNodeOrNull<Control>(PausePanelPath);
 		_pauseMainVBox = GetNodeOrNull<Control>(PauseMainVBoxPath);
@@ -143,6 +166,11 @@ public partial class GameFlowUI : Control
 		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
+		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
+		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
+		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
+		_startCharacterBackButton = GetNodeOrNull<Button>(StartCharacterBackButtonPath);
+		_startCharacterConfirmButton = GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
 		_restartButton = GetNodeOrNull<Button>(RestartButtonPath);
 		_pauseResumeButton = GetNodeOrNull<Button>(PauseResumeButtonPath);
 		_pauseSettingsButton = GetNodeOrNull<Button>(PauseSettingsButtonPath);
@@ -169,6 +197,7 @@ public partial class GameFlowUI : Control
 		_finalBuildSummaryLabel = GetNodeOrNull<Label>(FinalBuildSummaryLabelPath);
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
 		_restartHintLabel = GetNodeOrNull<Label>(RestartHintLabelPath);
+		_startCharacterDescriptionLabel = GetNodeOrNull<Label>(StartCharacterDescriptionPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
 		_backgroundDimmer = GetNodeOrNull<ColorRect>(BackgroundDimmerPath);
 		_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
@@ -194,6 +223,13 @@ public partial class GameFlowUI : Control
 			_startMainVBox.Visible = true;
 		if (_startSettingsPanel != null)
 			_startSettingsPanel.Visible = false;
+		if (_startCharacterSelectPanel != null)
+			_startCharacterSelectPanel.Visible = false;
+
+		_rangedCharacter = GD.Load<CharacterDefinition>(RangedCharacterResourcePath);
+		_meleeCharacter = GD.Load<CharacterDefinition>(MeleeCharacterResourcePath);
+		_tankCharacter = GD.Load<CharacterDefinition>(TankCharacterResourcePath);
+		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
 
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
 		if (scoreList.Count > 0)
@@ -221,6 +257,16 @@ public partial class GameFlowUI : Control
 			_startQuitButton.Pressed += OnQuitGamePressed;
 		if (_startSettingsBackButton != null)
 			_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
+		if (_startCharacterRangedButton != null)
+			_startCharacterRangedButton.Pressed += OnCharacterRangedPressed;
+		if (_startCharacterMeleeButton != null)
+			_startCharacterMeleeButton.Pressed += OnCharacterMeleePressed;
+		if (_startCharacterTankButton != null)
+			_startCharacterTankButton.Pressed += OnCharacterTankPressed;
+		if (_startCharacterBackButton != null)
+			_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
+		if (_startCharacterConfirmButton != null)
+			_startCharacterConfirmButton.Pressed += OnCharacterSelectConfirmPressed;
 		if (_restartButton != null)
 			_restartButton.Pressed += OnRestartPressed;
 		if (_playerHealth != null)

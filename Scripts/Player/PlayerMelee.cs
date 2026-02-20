@@ -3,6 +3,7 @@ using Godot;
 public partial class PlayerMelee : Node
 {
 	[Export] public string AttackAction = InputActions.AttackSecondary;
+	[Export] public bool EnabledInCurrentCharacter = true;
 	[Export] public float Cooldown = 0.35f;
 	[Export] public float Range = 140f;
 	[Export] public float ArcDegrees = 220f;
@@ -21,6 +22,7 @@ public partial class PlayerMelee : Node
 	private StabilitySystem _stabilitySystem;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
+	private bool _isEnabled = true;
 
 	public float CurrentCooldown => Cooldown;
 	public int CurrentDamage => Damage;
@@ -31,6 +33,7 @@ public partial class PlayerMelee : Node
 	{
 		_player = player;
 		ResolveStabilitySystem();
+		_isEnabled = EnabledInCurrentCharacter;
 
 		// Resolve combat service from group to keep scene wiring flexible.
 		var list = GetTree().GetNodesInGroup("CombatSystem");
@@ -45,6 +48,9 @@ public partial class PlayerMelee : Node
 
 	public void Tick(float dt)
 	{
+		if (!_isEnabled)
+			return;
+
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
 
@@ -83,5 +89,19 @@ public partial class PlayerMelee : Node
 		var list = GetTree().GetNodesInGroup("StabilitySystem");
 		if (list.Count > 0)
 			_stabilitySystem = list[0] as StabilitySystem;
+	}
+
+	public void SetEnabled(bool enabled)
+	{
+		_isEnabled = enabled;
+		EnabledInCurrentCharacter = enabled;
+	}
+
+	public void SetAttackAction(string action)
+	{
+		if (string.IsNullOrWhiteSpace(action))
+			return;
+		AttackAction = action;
+		ResolveInputAction();
 	}
 }
