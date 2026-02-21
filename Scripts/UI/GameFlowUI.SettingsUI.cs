@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 
 public partial class GameFlowUI
 {
@@ -76,14 +76,14 @@ public partial class GameFlowUI
 		{
 			_settingsLanguageOption.Clear();
 			_settingsLanguageOption.AddItem("English");
-			_settingsLanguageOption.AddItem("蝜?銝剜?");
+			_settingsLanguageOption.AddItem("繁體中文");
 			_settingsLanguageOption.Select(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
 		}
 		if (_startSettingsLanguageOption != null)
 		{
 			_startSettingsLanguageOption.Clear();
 			_startSettingsLanguageOption.AddItem("English");
-			_startSettingsLanguageOption.AddItem("蝜?銝剜?");
+			_startSettingsLanguageOption.AddItem("繁體中文");
 			_startSettingsLanguageOption.Select(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
 		}
 
