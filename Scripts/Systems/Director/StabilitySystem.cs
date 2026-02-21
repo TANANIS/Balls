@@ -31,6 +31,10 @@ public partial class StabilitySystem : Node
 	[Export] public float CollapseCriticalInertiaMultiplier = 0.58f;
 	[Export] public float StructuralFractureCameraZoomMultiplier = 1.16f;
 	[Export] public float CollapseCriticalCameraZoomMultiplier = 1.32f;
+	[Export] public float StructuralFractureZoomHoldSeconds = 4f;
+	[Export] public float StructuralFractureZoomRecoverSeconds = 3f;
+	[Export] public float CollapseCriticalZoomHoldSeconds = 5f;
+	[Export] public float CollapseCriticalZoomRecoverSeconds = 4f;
 	[Export] public float StableObstacleSpawnMultiplier = 0.35f;
 	[Export] public float EnergyAnomalyObstacleSpawnMultiplier = 0.55f;
 	[Export] public float StructuralFractureObstacleSpawnMultiplier = 1.30f;
@@ -44,6 +48,7 @@ public partial class StabilitySystem : Node
 	private StabilityPhase _phase = StabilityPhase.Stable;
 	private bool _collapsed;
 	private float _elapsedSeconds;
+	private float _phaseElapsedSeconds;
 	private bool _timeLimitReached;
 	private float _upgradeDecayMultiplier = 1f;
 	private float _playerPowerBonus = 0f;
@@ -79,6 +84,7 @@ public partial class StabilitySystem : Node
 
 		float dt = (float)delta;
 		_elapsedSeconds += dt;
+		_phaseElapsedSeconds += dt;
 		if (!_timeLimitReached && MatchDurationLimitSeconds > 0f && _elapsedSeconds >= MatchDurationLimitSeconds)
 		{
 			_timeLimitReached = true;
@@ -128,6 +134,7 @@ public partial class StabilitySystem : Node
 		if (next != _phase)
 		{
 			_phase = next;
+			_phaseElapsedSeconds = 0f;
 			PhaseChanged?.Invoke(_phase);
 			if (VerboseLog)
 				DebugSystem.Log($"[StabilitySystem] Phase -> {_phase}");
@@ -224,12 +231,39 @@ public partial class StabilitySystem : Node
 
 	public float GetCameraZoomMultiplier()
 	{
-		return _phase switch
+		float peakZoom = _phase switch
 		{
 			StabilityPhase.StructuralFracture => StructuralFractureCameraZoomMultiplier,
 			StabilityPhase.CollapseCritical => CollapseCriticalCameraZoomMultiplier,
 			_ => 1f
 		};
+
+		if (peakZoom <= 1f)
+			return 1f;
+
+		float hold = _phase switch
+		{
+			StabilityPhase.StructuralFracture => Mathf.Max(0f, StructuralFractureZoomHoldSeconds),
+			StabilityPhase.CollapseCritical => Mathf.Max(0f, CollapseCriticalZoomHoldSeconds),
+			_ => 0f
+		};
+
+		float recover = _phase switch
+		{
+			StabilityPhase.StructuralFracture => Mathf.Max(0f, StructuralFractureZoomRecoverSeconds),
+			StabilityPhase.CollapseCritical => Mathf.Max(0f, CollapseCriticalZoomRecoverSeconds),
+			_ => 0f
+		};
+
+		if (_phaseElapsedSeconds <= hold)
+			return peakZoom;
+
+		if (recover <= 0f)
+			return 1f;
+
+		float t = Mathf.Clamp((_phaseElapsedSeconds - hold) / recover, 0f, 1f);
+		float eased = t * t * (3f - (2f * t)); // smoothstep
+		return Mathf.Lerp(peakZoom, 1f, eased);
 	}
 
 	public float GetObstacleSpawnMultiplier()

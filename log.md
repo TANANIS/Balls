@@ -129,3 +129,35 @@
   - Character select bilingual presentation refresh.
   - Player skill VFX root architecture and shield behavior/display fixes.
   - Cards/architecture documentation updates for new conventions.
+
+## Session Update (2026-02-21, Encoding Recovery)
+- Fixed Traditional Chinese text corruption in character resources:
+  - `Data/Characters/RangedCharacter.tres`
+  - `Data/Characters/MeleeCharacter.tres`
+  - `Data/Characters/TankBurstCharacter.tres`
+- Fixed Chinese labels in character presentation UI builder:
+  - `Scripts/UI/GameFlowUI.State.cs`
+- Added persistent encoding rule to architecture docs:
+  - `docs/ARCHITECTURE.md` -> "Text Encoding Rule (Bilingual UI)"
+  - Rule: localization source files should be stored in UTF-8 to prevent repeated mojibake.
+
+## Session Update (2026-02-21, Runtime Balance + Stability UX)
+- Spawn system data wiring:
+  - `EnemyDefinitions.csv` now applies `hp/speed/contact_damage` at spawn time (not scene-only defaults).
+  - Spawn queue now carries enemy definition metadata to support per-entry runtime stat override.
+- Opening pacing adjustment:
+  - Reduced opening dead-air and long travel delay by tightening spawn margin/ring and softening opening ramp values.
+- Character baseline rebalance:
+  - Blade Core: `MeleeDamage -> 4`, `MeleeCooldown -> 0.68`, `MaxHp -> 2`.
+  - Bulwark Core: primary fire pattern changed from 3-round burst to 2-round burst.
+  - Ranger Core: `RangedDamage -> 2`, `RangedCooldown -> 0.64`.
+  - Added `PrimaryFirePattern.Burst2` support in weapon runtime and character-role presentation labels.
+- Localization + reliability:
+  - Fixed character-select display corruption and zh-TW text fields in character resources.
+  - Added defensive fallback loading path for character definitions in `GameFlowUI` so UI no longer collapses when resource load fails.
+- Card balance:
+  - `SURV_LIFESTEAL_CLOSE_KILL` adjusted from `25%` to `12%` chance to heal `1 HP` on kill.
+  - Synced runtime value + card catalog text + localization text + card docs.
+- Stability camera UX:
+  - Phase zoom-in changed from persistent phase-wide zoom to temporary phase-entry warning zoom with timed smooth recovery to normal.
+  - New tunables added in `StabilitySystem` for hold/recover duration per phase.

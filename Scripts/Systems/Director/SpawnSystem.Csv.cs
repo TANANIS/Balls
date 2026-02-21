@@ -54,6 +54,9 @@ public partial class SpawnSystem
 			string scenePath = cols[1];
 			int cost = ParseInt(cols[3], 1);
 			int minTier = ParseInt(cols[4], 0);
+			int hpOverride = cols.Count > 6 ? ParseInt(cols[6], 0) : 0;
+			float speedOverride = cols.Count > 7 ? ParseFloat(cols[7], 0f) : 0f;
+			int contactDamageOverride = cols.Count > 8 ? ParseInt(cols[8], 0) : 0;
 
 			if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(scenePath))
 				continue;
@@ -71,6 +74,9 @@ public partial class SpawnSystem
 				ScenePath = scenePath,
 				Cost = Mathf.Max(1, cost),
 				MinTier = minTier,
+				HpOverride = Mathf.Max(0, hpOverride),
+				SpeedOverride = Mathf.Max(0f, speedOverride),
+				ContactDamageOverride = Mathf.Max(0, contactDamageOverride),
 				Scene = scene
 			};
 		}

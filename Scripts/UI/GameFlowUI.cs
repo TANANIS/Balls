@@ -265,9 +265,15 @@ public partial class GameFlowUI : Control
 			_startCharacterSelectPanel.Visible = false;
 		RefreshPerfectLeaderboardUi();
 
-		_rangedCharacter = GD.Load<CharacterDefinition>(RangedCharacterResourcePath);
-		_meleeCharacter = GD.Load<CharacterDefinition>(MeleeCharacterResourcePath);
-		_tankCharacter = GD.Load<CharacterDefinition>(TankCharacterResourcePath);
+		_rangedCharacter = LoadCharacterDefinitionOrFallback(
+			RangedCharacterResourcePath,
+			BuildRangerFallbackDefinition());
+		_meleeCharacter = LoadCharacterDefinitionOrFallback(
+			MeleeCharacterResourcePath,
+			BuildBladeFallbackDefinition());
+		_tankCharacter = LoadCharacterDefinitionOrFallback(
+			TankCharacterResourcePath,
+			BuildBulwarkFallbackDefinition());
 		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
 
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
@@ -437,5 +443,74 @@ public partial class GameFlowUI : Control
 		if (!string.IsNullOrWhiteSpace(translated) && translated != key)
 			return translated;
 		return TranslationServer.GetLocale().StartsWith("zh") ? fallbackZhTw : fallbackEn;
+	}
+
+	private CharacterDefinition LoadCharacterDefinitionOrFallback(string path, CharacterDefinition fallback)
+	{
+		CharacterDefinition loaded = GD.Load<CharacterDefinition>(path);
+		if (loaded != null)
+			return loaded;
+
+		Resource raw = ResourceLoader.Load(path);
+		if (raw is CharacterDefinition typed)
+			return typed;
+
+		DebugSystem.Error($"[GameFlowUI] Failed to load CharacterDefinition: {path}. Using fallback.");
+		return fallback;
+	}
+
+	private static CharacterDefinition BuildRangerFallbackDefinition()
+	{
+		return new CharacterDefinition
+		{
+			CharacterId = "ranged",
+			DisplayName = "Ranger Core",
+			DisplayNameZhTw = "遊俠核心",
+			Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire.",
+			DescriptionZhTw = "精準遠程特化，以快速單發維持穩定輸出，適合安全距離作戰。",
+			PrimaryAbility = AttackAbilityKind.Ranged,
+			SecondaryAbility = AttackAbilityKind.None,
+			MobilityAbility = MobilityAbilityKind.None,
+			RangedDamage = 2,
+			RangedCooldown = 0.64f
+		};
+	}
+
+	private static CharacterDefinition BuildBladeFallbackDefinition()
+	{
+		return new CharacterDefinition
+		{
+			CharacterId = "melee",
+			DisplayName = "Blade Core",
+			DisplayNameZhTw = "刃核",
+			Description = "High-mobility melee duelist. Strong close-range bursts and reposition tools, but punish mistakes heavily.",
+			DescriptionZhTw = "高機動近戰決鬥者，近距離爆發強，但失誤懲罰也更高。",
+			PrimaryAbility = AttackAbilityKind.Melee,
+			SecondaryAbility = AttackAbilityKind.None,
+			MobilityAbility = MobilityAbilityKind.Dash,
+			MaxHp = 2,
+			MeleeDamage = 4,
+			MeleeCooldown = 0.68f
+		};
+	}
+
+	private static CharacterDefinition BuildBulwarkFallbackDefinition()
+	{
+		return new CharacterDefinition
+		{
+			CharacterId = "tank_burst",
+			DisplayName = "Bulwark Core",
+			DisplayNameZhTw = "堡壘核心",
+			Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback, trading speed for control.",
+			DescriptionZhTw = "前線錨點型角色，擁有較高耐久；以雙發重射與擊退換取節奏控制。",
+			PrimaryAbility = AttackAbilityKind.Ranged,
+			SecondaryAbility = AttackAbilityKind.None,
+			MobilityAbility = MobilityAbilityKind.None,
+			MaxHp = 5,
+			RegenAmount = 1,
+			RangedDamage = 2,
+			RangedCooldown = 0.72f,
+			RangedFirePattern = PrimaryFirePattern.Burst2
+		};
 	}
 }

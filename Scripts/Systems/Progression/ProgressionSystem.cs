@@ -20,7 +20,7 @@ public partial class ProgressionSystem : Node
 	private float _pickupRadiusMultiplier = 1f;
 	private bool _killChanceLifestealEnabled = false;
 	private int _killChanceLifestealHeal = 1;
-	private float _killChanceLifestealChance = 0.25f;
+	private float _killChanceLifestealChance = 0.12f;
 	private readonly RandomNumberGenerator _rng = new();
 	private Player _player;
 	private PlayerHealth _playerHealth;

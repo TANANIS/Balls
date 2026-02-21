@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using System.Text;
 
 public partial class GameFlowUI
@@ -182,16 +182,18 @@ public partial class GameFlowUI
 		var sb = new StringBuilder();
 		sb.Append(def.GetLocalizedDisplayName()).Append('\n');
 		sb.Append(def.GetLocalizedDescription()).Append("\n\n");
-		sb.Append(zh ? "攻擊型態: " : "Attack: ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
-		sb.Append(zh ? "機動: " : "Mobility: ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
-		sb.Append(zh ? "生存: " : "Survival: ").Append(GetSurvivalRoleLabel(def, zh));
+		sb.Append(zh ? "攻擊：" : "Attack: ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
+		sb.Append(zh ? "機動：" : "Mobility: ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
+		sb.Append(zh ? "生存：" : "Survival: ").Append(GetSurvivalRoleLabel(def, zh));
 		return sb.ToString();
 	}
-
 	private static string GetPrimaryRoleLabel(CharacterDefinition def, bool zh)
 	{
 		if (def.PrimaryAbility == AttackAbilityKind.Melee)
 			return zh ? "近戰" : "Melee";
+
+		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst2)
+			return zh ? "雙發連射" : "2-round burst";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst3)
 			return zh ? "三發連射" : "3-round burst";
@@ -214,15 +216,14 @@ public partial class GameFlowUI
 		if (def.RegenAmount > 0)
 		{
 			if (zh)
-				return $"初始血量較高 ({def.MaxHp})，每 {def.RegenIntervalSeconds:0} 秒回復 {def.RegenAmount}。";
+				return $"較高基礎生命 ({def.MaxHp})，每 {def.RegenIntervalSeconds:0} 秒回復 {def.RegenAmount}。";
 			return $"Higher base HP ({def.MaxHp}), recovers {def.RegenAmount} every {def.RegenIntervalSeconds:0}s.";
 		}
 
 		return zh
-			? $"初始血量 {def.MaxHp}。"
+			? $"基礎生命 {def.MaxHp}。"
 			: $"Base HP {def.MaxHp}.";
 	}
-
 	private void OnCharacterRangedPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
@@ -464,3 +465,6 @@ public partial class GameFlowUI
 		return Tr("UI.COMMON.UNKNOWN");
 	}
 }
+
+
+

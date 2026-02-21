@@ -85,12 +85,13 @@ public partial class PlayerWeapon : Node
 		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
 		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
-		if (FirePattern == PrimaryFirePattern.Burst3)
+		int burstExtraShots = GetBurstExtraShots(FirePattern);
+		if (burstExtraShots > 0)
 		{
 			_burstDir = dir;
 			_burstSpeed = speed;
 			_burstBaseDamage = baseDamage;
-			_burstShotsRemaining = 2;
+			_burstShotsRemaining = burstExtraShots;
 			_burstTimer = Mathf.Max(0.01f, BurstShotInterval);
 			FireVolley(dir, speed, baseDamage);
 			_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
@@ -241,6 +242,16 @@ public partial class PlayerWeapon : Node
 	{
 		FirePattern = pattern;
 		BurstShotInterval = Mathf.Clamp(burstShotInterval, 0.01f, 0.5f);
+	}
+
+	private static int GetBurstExtraShots(PrimaryFirePattern pattern)
+	{
+		return pattern switch
+		{
+			PrimaryFirePattern.Burst2 => 1,
+			PrimaryFirePattern.Burst3 => 2,
+			_ => 0
+		};
 	}
 
 	private void ProcessBurst(float dt)

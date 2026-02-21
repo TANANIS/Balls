@@ -16,7 +16,7 @@ CARD.SURV_MAX_HP_PLUS_1.DESC,Increase max HP by 1.,最大生命值提高 1 點�
 CARD.SURV_SHIELD_COOLDOWN.TITLE,Shield,護盾
 CARD.SURV_SHIELD_COOLDOWN.DESC,Absorb one hit then enter cooldown.,吸收一次傷害後進入冷卻。
 CARD.SURV_LIFESTEAL_CLOSE_KILL.TITLE,Kill-Chance Lifesteal,擊殺機率吸血
-CARD.SURV_LIFESTEAL_CLOSE_KILL.DESC,On kill: 25% chance to heal 1 HP.,擊殺時有 25% 機率回復 1 點生命。
+CARD.SURV_LIFESTEAL_CLOSE_KILL.DESC,On kill: 12% chance to heal 1 HP.,擊殺時有 12% 機率回復 1 點生命。
 CARD.ECO_EXP_GAIN_UP_20.TITLE,EXP Gain +20%,經驗獲取 +20%
 CARD.ECO_EXP_GAIN_UP_20.DESC,Gain 20% more EXP from pickups.,拾取經驗時額外獲得 20% 經驗。
 CARD.ECO_PICKUP_RADIUS_UP_25.TITLE,Pickup Radius +25%,拾取範圍 +25%

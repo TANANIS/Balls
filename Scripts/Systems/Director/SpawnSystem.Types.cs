@@ -22,7 +22,16 @@ public partial class SpawnSystem
 		public string ScenePath;
 		public int Cost;
 		public int MinTier;
+		public int HpOverride;
+		public float SpeedOverride;
+		public int ContactDamageOverride;
 		public PackedScene Scene;
+	}
+
+	private struct PendingSpawnRequest
+	{
+		public EnemyDefinition Definition;
+		public Vector2 Position;
 	}
 
 	private struct WeightedEnemy

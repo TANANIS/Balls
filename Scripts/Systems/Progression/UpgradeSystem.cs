@@ -91,7 +91,7 @@ public partial class UpgradeSystem : Node
 				_playerHealth?.EnableShield(60f);
 				break;
 			case UpgradeId.SurvLifestealCloseKill:
-				_progressionSystem?.EnableKillChanceLifesteal(1, 0.25f);
+				_progressionSystem?.EnableKillChanceLifesteal(1, 0.12f);
 				break;
 			case UpgradeId.EcoExpGainUp20:
 				_progressionSystem?.MultiplyKillProgressGain(GetExpGainMultiplier(nextStack));

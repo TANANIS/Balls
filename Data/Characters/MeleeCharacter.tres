@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BladeCore.png" id="2_blade_core"]
@@ -9,7 +9,7 @@ CharacterId = "melee"
 DisplayName = "Blade Core"
 DisplayNameZhTw = "刃核"
 Description = "High-mobility melee duelist. Strong close-range bursts and reposition tools, but punish mistakes heavily."
-DescriptionZhTw = "高機動近戰決鬥者。近距離爆發與位移能力強，但容錯較低。"
+DescriptionZhTw = "高機動近戰決鬥者，近距離爆發強，但失誤懲罰也更高。"
 CoreSprite = ExtResource("2_blade_core")
 CoreSpriteScaleMultiplier = Vector2(1.6166134, 1.6166134)
 PrimaryAbility = 2
@@ -22,7 +22,7 @@ MoveMaxSpeed = 345.0
 MoveAccel = 2400.0
 MoveFriction = 2700.0
 MoveStopThreshold = 5.0
-MaxHp = 3
+MaxHp = 2
 HurtIFrame = 0.5
 RegenAmount = 0
 RegenIntervalSeconds = 60.0
@@ -31,11 +31,13 @@ RangedCooldown = 0.32
 RangedProjectileSpeed = 760.0
 RangedFirePattern = 0
 RangedBurstShotInterval = 0.08
-MeleeDamage = 3
-MeleeCooldown = 0.55
+MeleeDamage = 4
+MeleeCooldown = 0.68
 MeleeRange = 175.0
 MeleeArcDegrees = 170.0
 DashSpeed = 980.0
 DashDuration = 0.14
 DashCooldown = 0.9
 DashIFrame = 0.06
+
+

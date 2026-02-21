@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BulwarkCore.png" id="2_bulwark_core"]
@@ -8,8 +8,8 @@ script = ExtResource("1_char_def")
 CharacterId = "tank_burst"
 DisplayName = "Bulwark Core"
 DisplayNameZhTw = "堡壘核心"
-Description = "Frontline anchor with high durability. Fires heavy 3-round bursts with strong knockback, trading speed for control."
-DescriptionZhTw = "高耐久前線核心。主武器為高擊退三連發，以機動換取站場與控場能力。"
+Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback, trading speed for control."
+DescriptionZhTw = "前線錨點型角色，擁有較高耐久；以雙發重射與擊退換取節奏控制。"
 CoreSprite = ExtResource("2_bulwark_core")
 PrimaryAbility = 1
 SecondaryAbility = 0
@@ -28,7 +28,7 @@ RegenIntervalSeconds = 60.0
 RangedDamage = 2
 RangedCooldown = 0.72
 RangedProjectileSpeed = 760.0
-RangedFirePattern = 1
+RangedFirePattern = 2
 RangedBurstShotInterval = 0.08
 MeleeDamage = 3
 MeleeCooldown = 0.35
@@ -38,3 +38,5 @@ DashSpeed = 900.0
 DashDuration = 0.12
 DashCooldown = 0.6
 DashIFrame = 0.08
+
+

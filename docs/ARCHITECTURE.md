@@ -69,7 +69,7 @@ Location: `Data/Director/`
 Current runtime usage:
 - `SpawnSystem` reads:
   - `PressureTierRules.csv` for spawn pace and limits,
-  - `EnemyDefinitions.csv` for enemy scene mapping,
+  - `EnemyDefinitions.csv` for enemy scene mapping and spawn-time stat overrides (`hp`, `speed`, `contact_damage`),
   - `TierEnemyWeights.csv` for weighted enemy selection per tier.
   - unlock logic from `AppliedUpgradeCount`:
     - `upgrade_count >= 4`: low-frequency elite injection (10%~15% replace chance),
@@ -80,6 +80,13 @@ Current runtime usage:
 - Do not hard-code tier logic outside director systems.
 - Tune balancing via data tables first, code second.
 - Stability phase + tier data control pacing. Unlock milestones use `upgrade_count`.
+
+## Text Encoding Rule (Bilingual UI)
+- All localization text files must be saved as UTF-8.
+- When editing `.tres`/`.tscn` with Traditional Chinese content, avoid tools that may write legacy code pages.
+- If garbled text appears in UI:
+  - first fix source strings in `Data/Characters/*.tres` and UI composition strings,
+  - then re-save as UTF-8 and rebuild to validate.
 
 ## Skill VFX Asset Contract
 - Skill visual assets are standardized under:

@@ -166,7 +166,7 @@ Note:
 ### Survival
 - `SURV_MAX_HP_PLUS_1` : Max HP +1
 - `SURV_SHIELD_COOLDOWN` : Shield (absorb one hit, cooldown-based)
-- `SURV_LIFESTEAL_CLOSE_KILL` : Conditional Lifesteal (25% chance to heal 1 HP on kill)
+- `SURV_LIFESTEAL_CLOSE_KILL` : Conditional Lifesteal (12% chance to heal 1 HP on kill)
 
 ### Economy
 - `ECO_EXP_GAIN_UP_20` : EXP Gain +20%
@@ -186,7 +186,7 @@ This table is the first practical pass for in-run balancing.
 | `ATK_CRIT_CHANCE_UP_10` | CoreAttack | Crit chance `+10%` | `+8%` (S2), `+6%` (S3) | 3 | 8 |
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
 | `SURV_SHIELD_COOLDOWN` | Survival | 1-hit shield, 60s cooldown | no stack | 1 | 8 |
-| `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 25% chance heal 1 HP | no stack | 1 | 7 |
+| `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 12% chance heal 1 HP | no stack | 1 | 7 |
 | `ECO_EXP_GAIN_UP_20` | Economy | EXP gain x`1.20` | x`1.15` (S2) | 2 | 8 |
 | `ECO_PICKUP_RADIUS_UP_25` | Economy | Pickup radius x`1.25` | x`1.20` (S2) | 2 | 8 |
 

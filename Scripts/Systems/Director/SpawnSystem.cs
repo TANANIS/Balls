@@ -115,7 +115,7 @@ public partial class SpawnSystem : Node
 	private readonly Dictionary<string, EnemyDefinition> _enemyDefinitions = new();
 	private readonly Dictionary<int, List<WeightedEnemy>> _tierWeights = new();
 	private readonly RandomNumberGenerator _rng = new();
-	private readonly Queue<(PackedScene scene, Vector2 pos)> _pendingSpawns = new();
+	private readonly Queue<PendingSpawnRequest> _pendingSpawns = new();
 	private float _spawnStepTimer = 0f;
 	private bool _miniBossScheduled = false;
 	private bool _miniBossSpawned = false;
@@ -263,7 +263,7 @@ public partial class SpawnSystem : Node
 			if (!TryFindPackOffset(usedOffsets, out Vector2 offset))
 				break;
 
-			EnqueueSpawn(def.Scene, center + offset);
+			EnqueueSpawn(def, center + offset);
 			spawned++;
 			remainingBudget -= Mathf.Max(1, def.Cost);
 			usedOffsets.Add(offset);
@@ -272,12 +272,16 @@ public partial class SpawnSystem : Node
 		return spawned;
 	}
 
-	private void EnqueueSpawn(PackedScene scene, Vector2 position)
+	private void EnqueueSpawn(EnemyDefinition definition, Vector2 position)
 	{
-		if (scene == null)
+		if (definition.Scene == null)
 			return;
 
-		_pendingSpawns.Enqueue((scene, position));
+		_pendingSpawns.Enqueue(new PendingSpawnRequest
+		{
+			Definition = definition,
+			Position = position
+		});
 	}
 
 	private void TrySpawnPending(float dt, int maxAlive)
@@ -291,8 +295,8 @@ public partial class SpawnSystem : Node
 		if (_enemiesRoot.GetChildCount() >= maxAlive)
 			return;
 
-		var item = _pendingSpawns.Dequeue();
-		SpawnEnemyAt(item.scene, item.pos);
+		PendingSpawnRequest item = _pendingSpawns.Dequeue();
+		SpawnEnemyAt(item.Definition, item.Position);
 		_spawnStepTimer = GetSpawnStepInterval();
 	}
 
@@ -316,8 +320,9 @@ public partial class SpawnSystem : Node
 		return Mathf.Max(0.01f, interval);
 	}
 
-	private bool SpawnEnemyAt(PackedScene scene, Vector2 position)
+	private bool SpawnEnemyAt(EnemyDefinition definition, Vector2 position)
 	{
+		PackedScene scene = definition.Scene;
 		if (scene == null)
 			return false;
 
@@ -328,8 +333,21 @@ public partial class SpawnSystem : Node
 		}
 
 		enemy.GlobalPosition = position;
+		ApplyEnemyOverrides(enemy, definition);
 		_enemiesRoot.AddChild(enemy);
 		return true;
+	}
+
+	private static void ApplyEnemyOverrides(Node2D enemyNode, EnemyDefinition definition)
+	{
+		if (enemyNode is Enemy enemy && definition.SpeedOverride > 0f)
+			enemy.MaxSpeed = definition.SpeedOverride;
+
+		if (definition.HpOverride > 0 && enemyNode.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health)
+			health.SetMaxHpAndRefill(definition.HpOverride);
+
+		if (definition.ContactDamageOverride > 0 && enemyNode.GetNodeOrNull<EnemyHitbox>("Hitbox") is EnemyHitbox hitbox)
+			hitbox.ContactDamage = definition.ContactDamageOverride;
 	}
 
 	private int RollWaveBudget(int aliveCount, int maxAlive)

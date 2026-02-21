@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3 uid="uid://q81qyvu1b7pv"]
+﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3 uid="uid://q81qyvu1b7pv"]
 
 [ext_resource type="Script" uid="uid://c5ei84bo348f8" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
 [ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="2_ranger_core"]
@@ -8,13 +8,16 @@ script = ExtResource("1_char_def")
 DisplayName = "Ranger Core"
 DisplayNameZhTw = "遊俠核心"
 Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire."
-DescriptionZhTw = "精準遠程特化。以快速單發維持穩定輸出，適合安全距離作戰。"
+DescriptionZhTw = "精準遠程特化，以快速單發維持穩定輸出，適合安全距離作戰。"
 CoreSprite = ExtResource("2_ranger_core")
 SecondaryAbility = 0
 MobilityAbility = 0
-RangedCooldown = 0.32
+RangedDamage = 2
+RangedCooldown = 0.64
 RangedBurstShotInterval = 0.08
 MeleeCooldown = 0.35
 DashDuration = 0.12
 DashCooldown = 0.6
 DashIFrame = 0.08
+
+
