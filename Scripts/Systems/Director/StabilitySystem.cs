@@ -11,33 +11,15 @@ public partial class StabilitySystem : Node
 		CollapseCritical
 	}
 
-	public enum UniverseEventType
-	{
-		None,
-		EnergySurge,
-		GravityInversion
-	}
-
 	[Export] public float StartStability = 100f;
 	[Export] public float BaseDecayPerSecond = 0.35f;
 	[Export] public float EnergyAnomalyDecayMultiplier = 1.25f;
 	[Export] public float StructuralFractureDecayMultiplier = 1.60f;
 	[Export] public float CollapseCriticalDecayMultiplier = 2.10f;
-	[Export] public bool EnableSpecialEvents = false;
 	[Export] public bool UseTimelinePhaseModel = true;
 	[Export] public float StablePhaseEndSeconds = 225f;
 	[Export] public float EnergyAnomalyPhaseEndSeconds = 450f;
 	[Export] public float StructuralFracturePhaseEndSeconds = 675f;
-	[Export] public bool UseFixedEventSchedule = true;
-	[Export] public float EventAt03m = 180f;
-	[Export] public float EventAt06m = 360f;
-	[Export] public float EventAt09m = 540f;
-	[Export] public float EventAt12m = 720f;
-	[Export] public float EventIntervalSeconds = 180f;
-	[Export] public float EventDurationMinSeconds = 30f;
-	[Export] public float EventDurationMaxSeconds = 60f;
-	[Export] public float EventIncomingLeadSeconds = 12f;
-	[Export] public float GravityInversionDecayPauseSeconds = 5f;
 	[Export] public float MatchDurationLimitSeconds = 900f;
 	[Export] public float EnergyAnomalyEnemySpeedMultiplier = 1.18f;
 	[Export] public float StructuralFractureEnemySpeedMultiplier = 1.35f;
@@ -58,41 +40,22 @@ public partial class StabilitySystem : Node
 	[Export] public float CollapseCriticalPressureFluctuationAmplitude = 0.24f;
 	[Export] public bool VerboseLog = false;
 
-	private readonly RandomNumberGenerator _rng = new();
 	private float _stability;
 	private StabilityPhase _phase = StabilityPhase.Stable;
 	private bool _collapsed;
 	private float _elapsedSeconds;
-	private float _nextEventAtSeconds;
-	private int _nextScheduledEventIndex;
-	private float _activeEventRemainingSeconds;
-	private float _decayPauseRemainingSeconds;
-	private float _inputFlipTimer;
-	private bool _incomingAnnounced;
 	private bool _timeLimitReached;
-	private bool _inputSignNegative;
-	private UniverseEventType _activeEvent = UniverseEventType.None;
-	private UniverseEventType _pendingEvent = UniverseEventType.EnergySurge;
 	private float _upgradeDecayMultiplier = 1f;
-	private float _eventDurationMultiplier = 1f;
 	private float _playerPowerBonus = 0f;
 
 	public float CurrentStability => _stability;
 	public StabilityPhase CurrentPhase => _phase;
 	public bool IsCollapsed => _collapsed;
-	public UniverseEventType ActiveEvent => _activeEvent;
-	public UniverseEventType PendingEvent => _pendingEvent;
-	public bool IsUniverseEventActive => _activeEvent != UniverseEventType.None;
-	public float ActiveEventRemainingSeconds => Mathf.Max(0f, _activeEventRemainingSeconds);
-	public float SecondsUntilNextEvent => Mathf.Max(0f, _nextEventAtSeconds - _elapsedSeconds);
 	public float ElapsedSeconds => _elapsedSeconds;
 	public bool IsMovementInversionActive => false;
-	public float InputDirectionSign => IsMovementInversionActive && _inputSignNegative ? -1f : 1f;
+	public float InputDirectionSign => 1f;
 
 	public event Action<StabilityPhase> PhaseChanged;
-	public event Action<float, UniverseEventType> EventIncoming;
-	public event Action<UniverseEventType, float> EventStarted;
-	public event Action<UniverseEventType> EventEnded;
 	public event Action MatchDurationReached;
 	public event Action Collapsed;
 
@@ -103,22 +66,8 @@ public partial class StabilitySystem : Node
 
 	public override void _Ready()
 	{
-		_rng.Randomize();
 		_stability = Mathf.Clamp(StartStability, 0f, 100f);
 		_phase = UseTimelinePhaseModel ? ResolvePhaseByTimeline(0f) : ResolvePhase(_stability);
-		if (EnableSpecialEvents)
-		{
-			_pendingEvent = RollUniverseEvent();
-			_nextScheduledEventIndex = 0;
-			_nextEventAtSeconds = GetNextScheduledEventTime();
-			if (!UseFixedEventSchedule)
-				_nextEventAtSeconds = Mathf.Max(1f, EventIntervalSeconds);
-		}
-		else
-		{
-			_pendingEvent = UniverseEventType.None;
-			_nextEventAtSeconds = -1f;
-		}
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -137,9 +86,6 @@ public partial class StabilitySystem : Node
 		}
 
 		UpdatePhaseAndSignals();
-		if (EnableSpecialEvents)
-			TickUniverseEventRuntime(dt);
-		TickDirectionDistortion(dt);
 		TickStabilityDecay(dt);
 	}
 
@@ -170,101 +116,8 @@ public partial class StabilitySystem : Node
 
 	private void TickStabilityDecay(float dt)
 	{
-		if (_decayPauseRemainingSeconds > 0f)
-		{
-			_decayPauseRemainingSeconds = Mathf.Max(0f, _decayPauseRemainingSeconds - dt);
-			return;
-		}
-
 		float decay = Mathf.Max(0f, BaseDecayPerSecond) * GetPhaseDecayMultiplier(_phase) * _upgradeDecayMultiplier;
 		ApplyDelta(-decay * dt);
-	}
-
-	private void TickUniverseEventRuntime(float dt)
-	{
-		if (!IsUniverseEventActive)
-		{
-			float incomingLead = Mathf.Max(1f, EventIncomingLeadSeconds);
-			float until = _nextEventAtSeconds - _elapsedSeconds;
-			if (!_incomingAnnounced && until <= incomingLead && until > 0f)
-			{
-				_incomingAnnounced = true;
-				EventIncoming?.Invoke(until, _pendingEvent);
-			}
-
-			if (_nextEventAtSeconds > 0f && _elapsedSeconds >= _nextEventAtSeconds)
-			{
-				StartUniverseEvent(_pendingEvent);
-				if (UseFixedEventSchedule)
-				{
-					_nextScheduledEventIndex++;
-					_nextEventAtSeconds = GetNextScheduledEventTime();
-				}
-			}
-		}
-		else
-		{
-			_activeEventRemainingSeconds = Mathf.Max(0f, _activeEventRemainingSeconds - dt);
-			if (_activeEventRemainingSeconds <= 0f)
-				EndUniverseEvent();
-		}
-	}
-
-	private void StartUniverseEvent(UniverseEventType eventType)
-	{
-		float minDur = Mathf.Max(5f, EventDurationMinSeconds);
-		float maxDur = Mathf.Max(minDur, EventDurationMaxSeconds);
-		float duration = _rng.RandfRange(minDur, maxDur) * _eventDurationMultiplier;
-
-		_activeEvent = eventType;
-		_activeEventRemainingSeconds = duration;
-		if (_activeEvent == UniverseEventType.GravityInversion)
-			_decayPauseRemainingSeconds = Mathf.Max(_decayPauseRemainingSeconds, GravityInversionDecayPauseSeconds);
-
-		EventStarted?.Invoke(_activeEvent, duration);
-		if (VerboseLog)
-			DebugSystem.Log($"[StabilitySystem] Event started: {_activeEvent} ({duration:F1}s)");
-
-		if (!UseFixedEventSchedule)
-			_nextEventAtSeconds = _elapsedSeconds + Mathf.Max(1f, EventIntervalSeconds);
-		_pendingEvent = RollUniverseEvent();
-		_incomingAnnounced = false;
-	}
-
-	private void EndUniverseEvent()
-	{
-		UniverseEventType ended = _activeEvent;
-		_activeEvent = UniverseEventType.None;
-		_activeEventRemainingSeconds = 0f;
-		EventEnded?.Invoke(ended);
-		if (VerboseLog)
-			DebugSystem.Log($"[StabilitySystem] Event ended: {ended}");
-	}
-
-	private UniverseEventType RollUniverseEvent()
-	{
-		return _rng.Randf() < 0.5f
-			? UniverseEventType.EnergySurge
-			: UniverseEventType.GravityInversion;
-	}
-
-	private void TickDirectionDistortion(float dt)
-	{
-		if (!IsMovementInversionActive)
-		{
-			_inputSignNegative = false;
-			_inputFlipTimer = 0f;
-			return;
-		}
-
-		_inputFlipTimer -= dt;
-		if (_inputFlipTimer > 0f)
-			return;
-
-		float min = _activeEvent == UniverseEventType.GravityInversion ? 0.45f : 0.9f;
-		float max = _activeEvent == UniverseEventType.GravityInversion ? 1.10f : 2.10f;
-		_inputFlipTimer = _rng.RandfRange(min, max);
-		_inputSignNegative = !_inputSignNegative;
 	}
 
 	private void UpdatePhaseAndSignals()
@@ -287,28 +140,6 @@ public partial class StabilitySystem : Node
 			DebugSystem.Warn("[StabilitySystem] Universe collapse triggered.");
 			Collapsed?.Invoke();
 		}
-	}
-
-	private float GetNextScheduledEventTime()
-	{
-		if (!UseFixedEventSchedule)
-			return Mathf.Max(1f, EventIntervalSeconds);
-
-		float[] schedule =
-		{
-			Mathf.Max(1f, EventAt03m),
-			Mathf.Max(1f, EventAt06m),
-			Mathf.Max(1f, EventAt09m),
-			Mathf.Max(1f, EventAt12m)
-		};
-
-		while (_nextScheduledEventIndex < schedule.Length && _elapsedSeconds >= schedule[_nextScheduledEventIndex])
-			_nextScheduledEventIndex++;
-
-		if (_nextScheduledEventIndex >= schedule.Length)
-			return -1f;
-
-		return schedule[_nextScheduledEventIndex];
 	}
 
 	private static StabilityPhase ResolvePhase(float stability)
@@ -352,16 +183,6 @@ public partial class StabilitySystem : Node
 			StabilityPhase.StructuralFracture => 39.9f,
 			StabilityPhase.CollapseCritical => 14.9f,
 			_ => 95f
-		};
-	}
-
-	public static string GetEventDisplayName(UniverseEventType eventType)
-	{
-		return eventType switch
-		{
-			UniverseEventType.EnergySurge => "Energy Surge",
-			UniverseEventType.GravityInversion => "Gravity Inversion",
-			_ => "None"
 		};
 	}
 
@@ -442,7 +263,7 @@ public partial class StabilitySystem : Node
 
 	public void MultiplyEventDuration(float factor)
 	{
-		_eventDurationMultiplier = Mathf.Clamp(_eventDurationMultiplier * factor, 0.4f, 2.2f);
+		// Universe event system is removed; keep this API as no-op for upgrade compatibility.
 	}
 
 	public void AddPlayerPowerBonus(float amount)

@@ -148,7 +148,8 @@ public partial class SpawnSystem
 		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
 		float tierProgress = GetCurrentTierProgress01();
 		float openingMult = GetOpeningVolumeMultiplier(OpeningMaxAliveStartMultiplier);
-		int max = Mathf.RoundToInt(_baseMaxAlive * mult * Mathf.Lerp(1f, tierTailRamp, tierProgress) * openingMult);
+		float phaseTailMult = IsInPhaseTailPrepWindow() ? Mathf.Clamp(PhaseTailMaxAliveMultiplier, 0.35f, 1f) : 1f;
+		int max = Mathf.RoundToInt(_baseMaxAlive * mult * Mathf.Lerp(1f, tierTailRamp, tierProgress) * openingMult * phaseTailMult);
 		if (MaxAliveCap > 0)
 			max = Mathf.Min(max, MaxAliveCap);
 		return Mathf.Max(1, max);
@@ -173,7 +174,8 @@ public partial class SpawnSystem
 		float tierProgress = GetCurrentTierProgress01();
 		float rampMult = Mathf.Lerp(1f, tierTailRamp, tierProgress);
 		float openingMult = GetOpeningVolumeMultiplier(OpeningBudgetStartMultiplier);
-		return Mathf.Max(1f, baseBudget * phaseMult * rampMult * openingMult);
+		float phaseTailMult = IsInPhaseTailPrepWindow() ? Mathf.Clamp(PhaseTailBudgetMultiplier, 0.35f, 1f) : 1f;
+		return Mathf.Max(1f, baseBudget * phaseMult * rampMult * openingMult * phaseTailMult);
 	}
 
 	private float GetOpeningRamp01()
@@ -334,6 +336,36 @@ public partial class SpawnSystem
 			DebugSystem.Log($"[SpawnSystem] Phase tail MiniBoss scheduled: stage={i + 1}, freeze={_spawnFreezeTimer:F2}s");
 			return;
 		}
+	}
+
+	private bool IsInPhaseTailPrepWindow()
+	{
+		if (!UsePhaseTailMiniBossSchedule)
+			return false;
+		if (_spawnFreezeTimer > 0f)
+			return false;
+
+		float prepSeconds = Mathf.Max(1f, PhaseTailPrepSeconds);
+		float[] schedule =
+		{
+			Mathf.Max(1f, Phase1MiniBossAtSeconds),
+			Mathf.Max(1f, Phase2MiniBossAtSeconds),
+			Mathf.Max(1f, Phase3MiniBossAtSeconds),
+			Mathf.Max(1f, Phase4MiniBossAtSeconds)
+		};
+
+		for (int i = 0; i < schedule.Length; i++)
+		{
+			if (_phaseMiniBossSpawned[i])
+				continue;
+
+			float until = schedule[i] - _survivalSeconds;
+			if (until <= 0f)
+				continue;
+			return until <= prepSeconds;
+		}
+
+		return false;
 	}
 
 	private void SpawnPhaseMiniBoss(int phaseIndex)

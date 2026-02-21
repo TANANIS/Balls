@@ -161,6 +161,16 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Quit"
 
+[node name="ClearLeaderboardButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.62, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Clear Leaderboard Record"
+
 [node name="CharacterSelectPanel" type="Control" parent="Panel"]
 visible = false
 layout_mode = 0
@@ -327,3 +337,10 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Back"
+
+[node name="ClearLeaderboardConfirmDialog" type="ConfirmationDialog" parent="."]
+title = "Clear Leaderboard"
+size = Vector2i(460, 180)
+initial_position = 1
+dialog_text = "Are you sure you want to clear all local perfect-clear records?\nThis action cannot be undone."
+ok_button_text = "Clear"

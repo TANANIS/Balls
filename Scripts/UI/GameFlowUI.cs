@@ -20,6 +20,8 @@ public partial class GameFlowUI : Control
 	private const string StartButtonPath = "Panels/StartPanel/Panel/VBox/StartButton";
 	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/VBox/SettingsButton";
 	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/VBox/QuitButton";
+	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/VBox/ClearLeaderboardButton";
+	private const string StartClearLeaderboardDialogPath = "Panels/StartPanel/ClearLeaderboardConfirmDialog";
 	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/VBox/PerfectLeaderboard";
 	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
 	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
@@ -44,8 +46,6 @@ public partial class GameFlowUI : Control
 	private const string ExperienceBarRootPath = "Overlay/HudOverlay/ExperienceBarRoot";
 	private const string ExperienceBarPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceBar";
 	private const string ExperienceLabelPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceLabel";
-	private const string EventCountdownLabelPath = "Overlay/HudOverlay/EventCountdownLabel";
-	private const string EventNoticeLabelPath = "Overlay/HudOverlay/EventNoticeLabel";
 	private const string MatchCountdownLabelPath = "Overlay/HudOverlay/MatchCountdownLabel";
 	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/VBox/Score";
 	private const string PauseBuildSummaryLabelPath = "Panels/PausePanel/Panel/VBox/BuildSummary";
@@ -79,6 +79,8 @@ public partial class GameFlowUI : Control
 	private Button _startButton;
 	private Button _startSettingsButton;
 	private Button _startQuitButton;
+	private Button _startClearLeaderboardButton;
+	private ConfirmationDialog _startClearLeaderboardDialog;
 	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
 	private Button _startCharacterRangedButton;
@@ -109,8 +111,6 @@ public partial class GameFlowUI : Control
 	private Control _experienceBarRoot;
 	private ProgressBar _experienceBar;
 	private Label _experienceLabel;
-	private Label _eventCountdownLabel;
-	private Label _eventNoticeLabel;
 	private Label _matchCountdownLabel;
 	private Label _finalScoreLabel;
 	private Label _pauseBuildSummaryLabel;
@@ -136,8 +136,8 @@ public partial class GameFlowUI : Control
 	private bool _settingsOpen;
 	private bool _startSettingsOpen;
 	private bool _startCharacterSelectOpen;
+	private bool _pendingFinalBossKillClear;
 	private bool _suppressSettingsSignal;
-	private float _eventNoticeTimer;
 	private CharacterDefinition _rangedCharacter;
 	private CharacterDefinition _meleeCharacter;
 	private CharacterDefinition _tankCharacter;
@@ -158,7 +158,7 @@ public partial class GameFlowUI : Control
 		UpdateLowHealthVignette();
 		UpdateUpgradeProgressUi();
 		UpdateMatchCountdownUi();
-		UpdateUniverseEventUi(delta);
+		TryResolvePendingPerfectClear();
 		HandlePauseInput();
 		if (!_started)
 			FitMenuBackground();
@@ -182,6 +182,8 @@ public partial class GameFlowUI : Control
 		_startButton = GetNodeOrNull<Button>(StartButtonPath);
 		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
+		_startClearLeaderboardButton = GetNodeOrNull<Button>(StartClearLeaderboardButtonPath);
+		_startClearLeaderboardDialog = GetNodeOrNull<ConfirmationDialog>(StartClearLeaderboardDialogPath);
 		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
@@ -212,8 +214,6 @@ public partial class GameFlowUI : Control
 		_experienceBarRoot = GetNodeOrNull<Control>(ExperienceBarRootPath);
 		_experienceBar = GetNodeOrNull<ProgressBar>(ExperienceBarPath);
 		_experienceLabel = GetNodeOrNull<Label>(ExperienceLabelPath);
-		_eventCountdownLabel = GetNodeOrNull<Label>(EventCountdownLabelPath);
-		_eventNoticeLabel = GetNodeOrNull<Label>(EventNoticeLabelPath);
 		_matchCountdownLabel = GetNodeOrNull<Label>(MatchCountdownLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
 		_pauseBuildSummaryLabel = GetNodeOrNull<Label>(PauseBuildSummaryLabelPath);
@@ -284,6 +284,10 @@ public partial class GameFlowUI : Control
 			_startSettingsButton.Pressed += OnStartSettingsPressed;
 		if (_startQuitButton != null)
 			_startQuitButton.Pressed += OnQuitGamePressed;
+		if (_startClearLeaderboardButton != null)
+			_startClearLeaderboardButton.Pressed += OnStartClearLeaderboardPressed;
+		if (_startClearLeaderboardDialog != null)
+			_startClearLeaderboardDialog.Confirmed += OnStartClearLeaderboardConfirmed;
 		if (_startSettingsBackButton != null)
 			_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
 		if (_startCharacterRangedButton != null)

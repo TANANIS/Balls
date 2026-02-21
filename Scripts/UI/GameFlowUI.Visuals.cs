@@ -96,43 +96,6 @@ public partial class GameFlowUI
 		_matchCountdownLabel.Text = $"{mm:D2}:{ss:D2}";
 	}
 
-	private void UpdateUniverseEventUi(double delta)
-	{
-		if (_eventNoticeLabel != null)
-			_eventNoticeLabel.Visible = false;
-		if (_eventCountdownLabel != null)
-			_eventCountdownLabel.Visible = false;
-		_eventNoticeTimer = 0f;
-	}
-
-	private void OnUniverseEventIncoming(float secondsLeft, StabilitySystem.UniverseEventType eventType)
-	{
-		int seconds = Mathf.CeilToInt(secondsLeft);
-		ShowEventNotice($"{StabilitySystem.GetEventDisplayName(eventType)} incoming in {seconds}s");
-	}
-
-	private void OnUniverseEventStarted(StabilitySystem.UniverseEventType eventType, float duration)
-	{
-		ShowEventNotice($"Universe Event: {StabilitySystem.GetEventDisplayName(eventType)}");
-	}
-
-	private void OnUniverseEventEnded(StabilitySystem.UniverseEventType eventType)
-	{
-		ShowEventNotice($"{StabilitySystem.GetEventDisplayName(eventType)} ended");
-	}
-
-	private void ShowEventNotice(string message)
-	{
-		if (_eventNoticeLabel == null)
-			return;
-		if (!_started || _ending)
-			return;
-
-		_eventNoticeLabel.Text = message;
-		_eventNoticeLabel.Visible = true;
-		_eventNoticeTimer = 2.25f;
-	}
-
 	private void OnViewportSizeChanged()
 	{
 		FitMenuBackground();

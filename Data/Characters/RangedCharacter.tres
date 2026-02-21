@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Player.png" id="2_ranger_core"]
 
 [resource]
 script = ExtResource("1_char_def")
 CharacterId = "ranged"
 DisplayName = "Ranger Core"
 Description = "Left click fires projectiles. Melee and dash are disabled."
+CoreSprite = ExtResource("2_ranger_core")
 PrimaryAbility = 1
 SecondaryAbility = 0
 MobilityAbility = 0

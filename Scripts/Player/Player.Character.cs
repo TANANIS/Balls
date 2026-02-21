@@ -24,6 +24,18 @@ public partial class Player
 		_primaryAbility = resolved.PrimaryAbility;
 		_secondaryAbility = resolved.SecondaryAbility;
 		_mobilityAbility = resolved.MobilityAbility;
+		if (_sprite != null)
+		{
+			if (resolved.CoreSprite != null)
+				_sprite.Texture = resolved.CoreSprite;
+
+			Vector2 mult = resolved.CoreSpriteScaleMultiplier;
+			if (Mathf.IsZeroApprox(mult.X))
+				mult.X = 1f;
+			if (Mathf.IsZeroApprox(mult.Y))
+				mult.Y = 1f;
+			_sprite.Scale = _baseSpriteScale * mult;
+		}
 
 		_movement?.SetBaseStats(
 			resolved.MoveMaxSpeed,

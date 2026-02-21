@@ -61,8 +61,8 @@ Location: `Data/Director/`
 - `PressureTierRules.csv`
 - `EnemyDefinitions.csv`
 - `TierEnemyWeights.csv`
-- `PackTemplates.csv`
-- `BossSchedule.csv`
+- `_planned/PackTemplates.csv` (planned, not used by runtime)
+- `_planned/BossSchedule.csv` (planned, not used by runtime)
 
 Current runtime usage:
 - `PressureSystem` reads `PressureTierRules.csv` and applies progression parameters by pressure tier.

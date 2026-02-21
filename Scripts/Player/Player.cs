@@ -12,6 +12,8 @@ public partial class Player : CharacterBody2D
 	private PlayerDash _dash;
 	private PlayerWeapon _primaryAttack;
 	private PlayerMelee _secondaryAttack;
+	private Sprite2D _sprite;
+	private Vector2 _baseSpriteScale = Vector2.One;
 	private Camera2D _camera;
 	private StabilitySystem _stabilitySystem;
 	private Vector2 _cameraBaseZoom = Vector2.One;

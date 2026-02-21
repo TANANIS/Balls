@@ -8,6 +8,10 @@ public partial class EnemyMiniBossBehavior : EnemyBehaviorModule
 	[Export] public float WindupDuration = 0.55f;
 	[Export] public float RushDuration = 0.35f;
 	[Export] public float RecoveryDuration = 1.25f;
+	[Export] public float RushCooldown = 1.6f;
+	[Export] public float AimPredictionSeconds = 0.20f;
+	[Export] public float RushSteerStrength = 4.6f;
+	[Export] public float MinAimDistance = 14f;
 
 	private enum State
 	{
@@ -19,6 +23,7 @@ public partial class EnemyMiniBossBehavior : EnemyBehaviorModule
 
 	private State _state = State.Patrol;
 	private float _timer;
+	private float _cooldownTimer;
 	private Vector2 _rushDirection = Vector2.Right;
 
 	public override Vector2 GetDesiredVelocity(Enemy enemy, Node2D player, double delta)
@@ -27,14 +32,21 @@ public partial class EnemyMiniBossBehavior : EnemyBehaviorModule
 			return Vector2.Zero;
 
 		float dt = (float)delta;
-		Vector2 toPlayer = player.GlobalPosition - enemy.GlobalPosition;
+		if (_cooldownTimer > 0f)
+			_cooldownTimer = Mathf.Max(0f, _cooldownTimer - dt);
+
+		Vector2 targetPos = player.GlobalPosition;
+		if (player is CharacterBody2D movingPlayer)
+			targetPos += movingPlayer.Velocity * Mathf.Max(0f, AimPredictionSeconds);
+
+		Vector2 toPlayer = targetPos - enemy.GlobalPosition;
 		float distance = toPlayer.Length();
 		Vector2 forward = distance > 0.001f ? toPlayer / distance : Vector2.Right;
 
 		switch (_state)
 		{
 			case State.Patrol:
-				if (distance <= TriggerDistance)
+				if (_cooldownTimer <= 0f && distance <= TriggerDistance)
 				{
 					_state = State.Windup;
 					_timer = WindupDuration;
@@ -54,10 +66,16 @@ public partial class EnemyMiniBossBehavior : EnemyBehaviorModule
 
 			case State.Rush:
 				_timer -= dt;
+				if (distance > MinAimDistance)
+				{
+					Vector2 targetDir = toPlayer / distance;
+					_rushDirection = _rushDirection.Slerp(targetDir, Mathf.Max(0f, RushSteerStrength) * dt).Normalized();
+				}
 				if (_timer <= 0f)
 				{
 					_state = State.Recover;
 					_timer = RecoveryDuration;
+					_cooldownTimer = RushCooldown;
 				}
 				return _rushDirection * enemy.MaxSpeed * RushSpeedMultiplier;
 

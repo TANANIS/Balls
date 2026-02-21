@@ -79,6 +79,13 @@ public partial class SpawnSystem : Node
 	[Export] public int PhaseMiniBossHpStep = 50;
 	[Export] public int PhaseMiniBossContactDamageBase = 3;
 	[Export] public int PhaseMiniBossContactDamageStep = 1;
+	[Export] public float PhaseTailPrepSeconds = 26f;
+	[Export] public float PhaseTailBudgetMultiplier = 0.82f;
+	[Export] public float PhaseTailMaxAliveMultiplier = 0.86f;
+	[Export] public float PhaseTailSwarmWeightMultiplier = 0.55f;
+	[Export] public float PhaseTailChargerWeightMultiplier = 1.35f;
+	[Export] public float PhaseTailTankWeightMultiplier = 1.35f;
+	[Export] public float PhaseTailEliteWeightMultiplier = 1.20f;
 
 	[Export] public float ChaosWeightSwarm = 40f;
 	[Export] public float ChaosWeightCharger = 30f;

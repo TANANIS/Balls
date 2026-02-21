@@ -93,8 +93,8 @@ All under `Data/Director/`:
 - `EnemyDefinitions.csv`
 - `PressureTierRules.csv`
 - `TierEnemyWeights.csv`
-- `PackTemplates.csv` (planned usage)
-- `BossSchedule.csv` (planned/partial usage)
+- `_planned/PackTemplates.csv` (planned usage)
+- `_planned/BossSchedule.csv` (planned/partial usage)
 
 ## PressureTierRules Contract
 Used fields now include:

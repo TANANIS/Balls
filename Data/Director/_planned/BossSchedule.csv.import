@@ -2,12 +2,12 @@
 
 importer="csv_translation"
 type="Translation"
-uid="uid://dus0w8q0fanje"
+uid="uid://b077u6kneupux"
 valid=false
 
 [deps]
 
-source_file="res://Data/Director/PackTemplates.csv"
+source_file="res://Data/Director/_planned/BossSchedule.csv"
 
 [params]
 

@@ -7,6 +7,10 @@ public partial class CharacterDefinition : Resource
 	[Export] public string DisplayName = "Ranger";
 	[Export(PropertyHint.MultilineText)] public string Description = "";
 
+	[ExportGroup("Visual")]
+	[Export] public Texture2D CoreSprite;
+	[Export] public Vector2 CoreSpriteScaleMultiplier = Vector2.One;
+
 	[ExportGroup("Ability Slots")]
 	[Export] public AttackAbilityKind PrimaryAbility = AttackAbilityKind.Ranged;
 	[Export] public AttackAbilityKind SecondaryAbility = AttackAbilityKind.Melee;

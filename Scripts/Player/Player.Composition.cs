@@ -10,6 +10,9 @@ public partial class Player
 		_dash = GetNode<PlayerDash>("Dash");
 		_primaryAttack = GetNode<PlayerWeapon>("PrimaryAttack");
 		_secondaryAttack = GetNode<PlayerMelee>("SecondaryAttack");
+		_sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+		if (_sprite != null)
+			_baseSpriteScale = _sprite.Scale;
 		_camera = GetNodeOrNull<Camera2D>("Camera2D");
 		if (_camera != null)
 			_cameraBaseZoom = _camera.Zoom;

@@ -29,6 +29,27 @@ PlayerPath = NodePath("../../Player")
 SpawnInterval = 2.0
 MaxAliveEnemies = 100
 SpawnRadiusMax = 1060.0
+HordeTargetAliveRatio = 0.62
+HordeCatchUpBudgetFactor = 0.1
+StablePacksPerWave = 2
+EnergyAnomalyPacksPerWave = 2
+StructuralFracturePacksPerWave = 3
+CollapseCriticalPacksPerWave = 3
+OpeningRampSeconds = 58.0
+OpeningSpawnIntervalStartMultiplier = 3.1
+OpeningBudgetStartMultiplier = 0.18
+OpeningMaxAliveStartMultiplier = 0.24
+PhaseTailPrepSeconds = 26.0
+PhaseTailBudgetMultiplier = 0.82
+PhaseTailMaxAliveMultiplier = 0.86
+PhaseTailSwarmWeightMultiplier = 0.55
+PhaseTailChargerWeightMultiplier = 1.35
+PhaseTailTankWeightMultiplier = 1.35
+PhaseTailEliteWeightMultiplier = 1.2
+ChaosWeightSwarm = 20.0
+ChaosWeightCharger = 34.0
+ChaosWeightTank = 30.0
+ChaosWeightElite = 16.0
 EliteUnlockUpgradeCount = 6
 
 [node name="DebugSystem" type="Node" parent="."]
@@ -37,6 +58,7 @@ EnableF3DebugToggle = true
 
 [node name="PerfProbe" type="Node" parent="."]
 script = ExtResource("6_perf")
+StartOnReady = false
 
 [node name="UpgradeSystem" type="Node" parent="."]
 script = ExtResource("7_upgrade")
@@ -48,7 +70,7 @@ script = ExtResource("8_score")
 script = ExtResource("11_exp_drop")
 ExperiencePickupScene = ExtResource("12_exp_pickup")
 
-[node name="TimeSystem" type="Node" parent="."]
+[node name="PressureSystem" type="Node" parent="."]
 script = ExtResource("9_pressure")
 
 [node name="StabilitySystem" type="Node" parent="."]

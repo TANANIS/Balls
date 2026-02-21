@@ -102,16 +102,20 @@ public partial class SpawnSystem
 
 	private List<WeightedEnemy> GetWeightsForTier(int tier)
 	{
+		List<WeightedEnemy> weights;
 		if (IsChaosPhase())
-			return BuildPhaseChaosWeights(tier);
+		{
+			weights = BuildPhaseChaosWeights(tier);
+			return ApplyPhaseTailPrepWeights(weights);
+		}
 
-		if (_tierWeights.TryGetValue(tier, out List<WeightedEnemy> weights))
-			return weights;
+		if (_tierWeights.TryGetValue(tier, out weights))
+			return ApplyPhaseTailPrepWeights(weights);
 
 		for (int t = tier - 1; t >= 0; t--)
 		{
 			if (_tierWeights.TryGetValue(t, out weights))
-				return weights;
+				return ApplyPhaseTailPrepWeights(weights);
 		}
 
 		return null;
@@ -183,5 +187,40 @@ public partial class SpawnSystem
 			return eliteDef;
 
 		return picked;
+	}
+
+	private List<WeightedEnemy> ApplyPhaseTailPrepWeights(List<WeightedEnemy> source)
+	{
+		if (source == null || source.Count == 0)
+			return source;
+		if (!IsInPhaseTailPrepWindow())
+			return source;
+
+		var adjusted = new List<WeightedEnemy>(source.Count);
+		foreach (var item in source)
+		{
+			float mult = GetPhaseTailWeightMultiplier(item.EnemyId);
+			float weight = Mathf.Max(0.01f, item.Weight * Mathf.Max(0.05f, mult));
+			adjusted.Add(new WeightedEnemy { EnemyId = item.EnemyId, Weight = weight });
+		}
+
+		return adjusted;
+	}
+
+	private float GetPhaseTailWeightMultiplier(string enemyId)
+	{
+		if (string.IsNullOrWhiteSpace(enemyId))
+			return 1f;
+
+		if (string.Equals(enemyId, "swarm_circle", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailSwarmWeightMultiplier;
+		if (string.Equals(enemyId, "charger_triangle", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailChargerWeightMultiplier;
+		if (string.Equals(enemyId, "tank_square", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailTankWeightMultiplier;
+		if (string.Equals(enemyId, EliteEnemyId, StringComparison.OrdinalIgnoreCase))
+			return PhaseTailEliteWeightMultiplier;
+
+		return 1f;
 	}
 }

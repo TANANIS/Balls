@@ -20,8 +20,6 @@ public partial class GameFlowUI
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = false;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = false;
-		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
-		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = false;
 		if (_pausePanel != null) _pausePanel.Visible = false;
 		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
@@ -41,6 +39,18 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		EnterCharacterSelect();
+	}
+
+	private void OnStartClearLeaderboardPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startClearLeaderboardDialog?.PopupCentered(new Vector2I(460, 180));
+	}
+
+	private void OnStartClearLeaderboardConfirmed()
+	{
+		ClearPerfectLeaderboard();
+		RefreshPerfectLeaderboardUi();
 	}
 
 	private void OnPlayerDied()
@@ -169,6 +179,7 @@ public partial class GameFlowUI
 
 		_started = true;
 		_ending = false;
+		_pendingFinalBossKillClear = false;
 		_pauseMenuOpen = false;
 		_settingsOpen = false;
 		_startSettingsOpen = false;
@@ -182,13 +193,10 @@ public partial class GameFlowUI
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = true;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = true;
-		if (_eventCountdownLabel != null) _eventCountdownLabel.Visible = false;
-		if (_eventNoticeLabel != null) _eventNoticeLabel.Visible = false;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = true;
 		if (_pausePanel != null) _pausePanel.Visible = false;
 		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
 		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
-		_eventNoticeTimer = 0f;
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
@@ -263,7 +271,51 @@ public partial class GameFlowUI
 	{
 		if (!_started || _ending)
 			return;
+
+		if (HasAliveMiniBoss())
+		{
+			_pendingFinalBossKillClear = true;
+			DebugSystem.Log("[GameFlowUI] Match timer reached 00:00. Waiting for final boss kill.");
+			return;
+		}
+
 		EnterEndState("Perfect 15:00 Clear", false);
+	}
+
+	private void TryResolvePendingPerfectClear()
+	{
+		if (!_pendingFinalBossKillClear || _ending || !_started)
+			return;
+		if (HasAliveMiniBoss())
+			return;
+
+		_pendingFinalBossKillClear = false;
+		EnterEndState("Perfect 15:00 Clear", false);
+	}
+
+	private bool HasAliveMiniBoss()
+	{
+		if (_enemiesRoot is not Node enemiesNode)
+			return false;
+
+		foreach (Node child in enemiesNode.GetChildren())
+		{
+			if (child is not Enemy enemy)
+				continue;
+
+			string name = enemy.Name.ToString().ToLowerInvariant();
+			string path = enemy.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
+			bool isMiniBoss = name.Contains("miniboss") || path.Contains("minibosshex");
+			if (!isMiniBoss)
+				continue;
+
+			if (enemy.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health && health.IsDead)
+				continue;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void EnterEndState(string reason, bool isFailure)
@@ -296,10 +348,6 @@ public partial class GameFlowUI
 
 		if (_lowHealthMaterial != null)
 			_lowHealthMaterial.SetShaderParameter("intensity", 0f);
-		if (_eventCountdownLabel != null)
-			_eventCountdownLabel.Visible = false;
-		if (_eventNoticeLabel != null)
-			_eventNoticeLabel.Visible = false;
 		if (_matchCountdownLabel != null)
 			_matchCountdownLabel.Visible = false;
 		if (_playerHealthBar != null)

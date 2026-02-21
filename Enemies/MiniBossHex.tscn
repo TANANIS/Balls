@@ -21,9 +21,10 @@ radius = 46.0
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_enemy")
-MaxSpeed = 54.0
-Accel = 700.0
-Friction = 650.0
+MaxSpeed = 72.0
+Accel = 980.0
+Friction = 720.0
+KnockbackResistance = 0.88
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_tex")
@@ -36,12 +37,15 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-PatrolSpeedMultiplier = 0.55
-RushSpeedMultiplier = 1.6
-TriggerDistance = 340.0
-WindupDuration = 0.5
-RushDuration = 0.34
-RecoveryDuration = 1.2
+PatrolSpeedMultiplier = 0.78
+RushSpeedMultiplier = 3.25
+TriggerDistance = 430.0
+WindupDuration = 0.24
+RushDuration = 0.48
+RecoveryDuration = 0.62
+RushCooldown = 1.1
+AimPredictionSeconds = 0.30
+RushSteerStrength = 6.8
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
@@ -73,3 +77,4 @@ debug_color = Color(0.778, 0.314, 0.772, 0.42)
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")
 MaxHp = 120
+HurtKnockbackStrength = 36.0

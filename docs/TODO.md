@@ -49,3 +49,4 @@
 - [ ] Stage 3 random global major event
 - [ ] Stage 4 random major boss
 - [ ] Melee build branch: `DASH + MELEE COMBO`
+- [ ] Universe event framework return pass (postponed until 4-stage pacing is stable)

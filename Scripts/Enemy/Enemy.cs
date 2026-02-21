@@ -11,6 +11,7 @@ public partial class Enemy : CharacterBody2D
 	[Export] public float MaxSpeed = 160f;
 	[Export] public float Accel = 1200f;
 	[Export] public float Friction = 900f;
+	[Export(PropertyHint.Range, "0,1,0.01")] public float KnockbackResistance = 0f;
 	[Export] public NodePath PlayerPath = new NodePath("../../Player");
 	[Export] public NodePath BehaviorPath = new NodePath("Behavior");
 	[Export] public NodePath SeparationPath = new NodePath("Separation");
@@ -63,7 +64,12 @@ public partial class Enemy : CharacterBody2D
 
 	public void ApplySeparation(Vector2 pushDir, float strength, float duration)
 	{
-		_separation?.ApplyImpulse(pushDir, strength, duration);
+		float resistance = Mathf.Clamp(KnockbackResistance, 0f, 1f);
+		float adjustedStrength = strength * (1f - resistance);
+		if (adjustedStrength <= 0.01f)
+			return;
+
+		_separation?.ApplyImpulse(pushDir, adjustedStrength, duration);
 	}
 
 	public void NotifyDamaged(int amount, object source)

@@ -51,3 +51,27 @@
 - Director:
   - Per-minute micro pacing within each phase.
   - Stage 1/2/3/4 random event-boss framework (future milestone).
+
+## Session Update (2026-02-21)
+- Director and pacing:
+  - Moved legacy planning CSVs to `Data/Director/_planned/`.
+  - Rebalanced stage pressure and enemy mix to bring special enemies online earlier and more often in phases 2/3/4.
+- Boss and run flow:
+  - MiniBossHex mobility/combat pass (less knockback abuse, faster engage behavior, dash attack support).
+  - Added boss arena limiter (visible shrinking circle + player boundary while boss alive).
+  - 15:00 clear flow updated: if final boss is alive at timer end, game holds at `00:00` until boss is defeated.
+- Player/testing utilities:
+  - Added invincibility toggle on `I` key for test runs.
+  - Added XP auto-collect radius behavior for nearby pickups.
+  - Enemy XP rewards now vary by enemy tier/type instead of all being level-1 value.
+- Character and visuals:
+  - Bulwark move speed increased by ~1/3 (`160 -> 213.3`).
+  - Added per-character sprite override pipeline via `CharacterDefinition.CoreSprite`.
+  - Added per-character sprite scale multiplier support.
+  - Wired new art:
+    - `BladeCore.png` and `BulwarkCore.png` moved to `Assets/Sprites/Player/`.
+    - Melee/Tank definitions updated to use new textures.
+  - Blade visual scaling fixed to keep original aspect ratio while matching intended effective short-edge target.
+- UI/leaderboard:
+  - Added start-menu leaderboard clear feature with confirmation dialog.
+  - Local perfect-clear leaderboard can now be explicitly reset from title UI.

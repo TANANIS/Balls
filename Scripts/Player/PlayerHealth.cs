@@ -17,15 +17,20 @@ public partial class PlayerHealth : Node
 	[Export] public float HurtIFrame = 0.5f;
 	[Export] public int RegenAmount = 0;
 	[Export] public float RegenIntervalSeconds = 60f;
+	[Export] public bool EnableDebugInvincibleToggle = true;
+	[Export] public Key DebugInvincibleToggleKey = Key.I;
 
 	private int _hp;
 	private bool _isDead = false;
 	private float _invincibleTimer = 0f;
 	private float _regenTimer = 0f;
+	private bool _debugInvincible = false;
+	private bool _togglePressedLastFrame = false;
 
 	public int Hp => _hp;
 	public bool IsDead => _isDead;
-	public bool IsInvincible => _invincibleTimer > 0f;
+	public bool IsInvincible => _debugInvincible || _invincibleTimer > 0f;
+	public bool IsDebugInvincible => _debugInvincible;
 
 	public override void _Ready()
 	{
@@ -39,7 +44,28 @@ public partial class PlayerHealth : Node
 
 		if (_invincibleTimer > 0f)
 			_invincibleTimer -= dt;
+		TickDebugInvincibleToggle();
 		TickRegen(dt);
+	}
+
+	private void TickDebugInvincibleToggle()
+	{
+		if (!EnableDebugInvincibleToggle)
+		{
+			_togglePressedLastFrame = false;
+			return;
+		}
+
+		bool pressed = Input.IsPhysicalKeyPressed(DebugInvincibleToggleKey);
+		if (pressed && !_togglePressedLastFrame)
+		{
+			_debugInvincible = !_debugInvincible;
+			DebugSystem.Log(_debugInvincible
+				? "[PlayerHealth] Debug invincible ON."
+				: "[PlayerHealth] Debug invincible OFF.");
+		}
+
+		_togglePressedLastFrame = pressed;
 	}
 
 	public void SetInvincible(float duration)

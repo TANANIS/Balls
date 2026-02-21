@@ -103,6 +103,20 @@ public partial class GameFlowUI
 		cfg.Save(PerfectLeaderboardPath);
 	}
 
+	private void ClearPerfectLeaderboard()
+	{
+		if (!FileAccess.FileExists(PerfectLeaderboardPath))
+			return;
+
+		Error removeError = DirAccess.RemoveAbsolute(PerfectLeaderboardPath);
+		if (removeError != Error.Ok)
+		{
+			// Fallback to writing an empty board if file delete fails for any reason.
+			SavePerfectLeaderboard(new List<PerfectLeaderboardEntry>());
+			DebugSystem.Warn($"[GameFlowUI] Failed to delete leaderboard file ({removeError}), wrote empty leaderboard instead.");
+		}
+	}
+
 	private static int ComparePerfectEntries(PerfectLeaderboardEntry a, PerfectLeaderboardEntry b)
 	{
 		int byScore = b.Score.CompareTo(a.Score);

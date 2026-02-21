@@ -1,19 +1,21 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BulwarkCore.png" id="2_bulwark_core"]
 
 [resource]
 script = ExtResource("1_char_def")
 CharacterId = "tank_burst"
 DisplayName = "Bulwark Core"
-Description = "5 HP. Recovers 1 HP every 60s. Half move speed. Primary attack fires a heavy 3-round burst with strong knockback."
+Description = "5 HP. Recovers 1 HP every 60s. Reduced move speed. Primary attack fires a heavy 3-round burst with strong knockback."
+CoreSprite = ExtResource("2_bulwark_core")
 PrimaryAbility = 1
 SecondaryAbility = 0
 MobilityAbility = 0
 PrimaryAction = "attack_primary"
 SecondaryAction = "attack_secondary"
 MobilityAction = "dash"
-MoveMaxSpeed = 160.0
+MoveMaxSpeed = 213.3
 MoveAccel = 1200.0
 MoveFriction = 1400.0
 MoveStopThreshold = 5.0

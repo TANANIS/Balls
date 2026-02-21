@@ -1,12 +1,15 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BladeCore.png" id="2_blade_core"]
 
 [resource]
 script = ExtResource("1_char_def")
 CharacterId = "melee"
 DisplayName = "Blade Core"
 Description = "Left click performs melee. Dash remains on Space. Ranged attack is disabled."
+CoreSprite = ExtResource("2_blade_core")
+CoreSpriteScaleMultiplier = Vector2(1.6166134, 1.6166134)
 PrimaryAbility = 2
 SecondaryAbility = 0
 MobilityAbility = 1
