@@ -4,7 +4,9 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 
 ### SpawnSystem
 - `Scripts/Systems/Director/SpawnSystem.cs`: node lifecycle and spawn loop.
-- `Scripts/Systems/Director/SpawnSystem.Runtime.cs`: runtime state orchestration, late-game scaling, upgrade-driven events.
+- `Scripts/Systems/Director/SpawnSystem.Runtime.cs`: runtime state orchestration, tier/runtime snapshot updates, and system dependency resolution.
+- `Scripts/Systems/Director/SpawnSystem.Pacing.cs`: phase multipliers, opening-ramp math, and tier-tail pacing helpers.
+- `Scripts/Systems/Director/SpawnSystem.MiniBossSchedule.cs`: phase-tail miniboss scheduling and spawn execution.
 - `Scripts/Systems/Director/SpawnSystem.Selection.cs`: weighted enemy selection and elite injection.
 - `Scripts/Systems/Director/SpawnSystem.Csv.cs`: CSV loading and parsing helpers.
 - `Scripts/Systems/Director/SpawnSystem.Types.cs`: internal data structs.
@@ -22,8 +24,14 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Systems/Core/DebugSystem.Overlay.cs`: in-game overlay UI rendering.
 
 ### GameFlowUI
-- `Scripts/UI/GameFlowUI.cs`: setup, references, and signal wiring.
-- `Scripts/UI/GameFlowUI.State.cs`: start/game over/restart state transitions.
+- `Scripts/UI/GameFlowUI.cs`: startup flow and shared helper utilities.
+- `Scripts/UI/GameFlowUI.References.cs`: node-path constants, node references, scene resolution, signal wiring.
+- `Scripts/UI/GameFlowUI.State.cs`: start/menu flow and run-start transitions.
+- `Scripts/UI/GameFlowUI.CharacterSelect.cs`: character selection panel flow and role presentation helpers.
+- `Scripts/UI/GameFlowUI.EndState.cs`: death/perfect-clear end-state flow and finalization.
+- `Scripts/UI/GameFlowUI.PauseSettings.cs`: pause menu open/close and pause navigation.
+- `Scripts/UI/GameFlowUI.SettingsUI.cs`: settings widgets setup and user-change handlers.
+- `Scripts/UI/GameFlowUI.SettingsPersistence.cs`: settings save/load from `user://settings.cfg`.
 - `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, XP-bar refresh, 15:00 countdown refresh, responsive background scaling.
 - `Scripts/UI/PlayerHealthBarDemo.cs`: runtime HP segment HUD binding.
 - `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`: local Perfect 15:00 leaderboard persistence + start-menu rendering.
@@ -53,6 +61,10 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Player/Player.Character.cs`: character-definition application, slot routing, and ability compatibility helpers.
 - `Scripts/Player/PlayerDash.cs`: dash state machine tick and movement ownership.
 - `Scripts/Player/PlayerDash.Runtime.cs`: dash start/stop and stat mutations.
+- `Scripts/Player/PlayerHealth.cs`: health/shield state fields, exported tuning, and public status properties.
+- `Scripts/Player/PlayerHealth.Core.cs`: HP lifecycle, invincibility, regen, and damage/death handling.
+- `Scripts/Player/PlayerHealth.Shield.cs`: shield enablement and cooldown policy updates.
+- `Scripts/Player/PlayerHealth.Vfx.cs`: shield visuals, hit flash, and damage flash material flow.
 - `Scripts/Player/PlayerMelee.cs`: melee setup/input/cooldown flow.
 - `Scripts/Player/PlayerMelee.Attack.cs`: melee hit query, filtering, and damage request emission.
 - `Scripts/Player/PlayerMelee.Stats.cs`: melee stat mutation methods for upgrades.
@@ -69,6 +81,7 @@ Rule update: upgrades target logical slots (primary/secondary/mobility compatibi
 - `Scripts/Enemy/Enemy.cs`: enemy frame loop and external notifications.
 - `Scripts/Enemy/Enemy.Resolve.cs`: dependency/module resolution.
 - `Scripts/Enemy/Enemy.Behavior.cs`: desired-velocity logic and event dispatch helpers.
+- `Scripts/Enemy/EnemyDebugEventModule.cs`: removed as orphan (not attached/referenced in runtime scenes).
 
 ### Projectile
 - `Scripts/Projectiles/Bullet.cs`: lifetime and movement.

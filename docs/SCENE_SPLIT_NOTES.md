@@ -1,17 +1,19 @@
 # Scene Split Notes (MainScence.tscn)
 
-`MainScence.tscn` is now around 565 lines with many node sections. It is still workable, but should be split by ownership to reduce editor cognitive load.
+Current composition is already split and in use:
 
-## Recommended split order
-1. Extract `Player` subtree into `Scenes/Player.tscn`. (Done)
-2. Extract `Systems` subtree into `Scenes/SystemsRoot.tscn`.
-3. Extract `CanvasLayer` subtree into `Scenes/HudAndMenus.tscn`.
-4. Keep `Game` as composition root that instances the three scenes above.
+1. `Scenes/Player.tscn`
+2. `Scenes/Systems/SystemsRoot.tscn`
+3. `Scenes/UI/GameFlowUIRoot.tscn` (instanced under `CanvasLayer/UI`)
+4. `Scenes/World/WorldRoot.tscn`
 
-## Why this split
-- Faster navigation in scene tree and fewer accidental edits.
-- Per-feature scene ownership (player/system/ui) aligns with current script boundaries.
-- Lower merge conflicts when gameplay and UI are edited in parallel.
+`MainScence.tscn` now acts as composition root and wires these runtime roots together.
 
-## Do not split yet
-- `World` background nodes can stay in main scene unless multiple maps/themes are planned.
+## Why This Is Good Enough For Now
+- Ownership is separated by domain (Player / Systems / UI / World).
+- Merge conflicts are lower than a single giant scene layout.
+- Runtime script boundaries now align with scene boundaries.
+
+## Optional Future Split (Only If Needed)
+- Extract `CanvasLayer` into an additional wrapper scene only when UI root count grows significantly.
+- Keep `World` in current root unless multiple map themes or runtime map swaps are introduced.

@@ -34,7 +34,7 @@
 - [x] HP UI only shows after run starts
 - [x] XP bar visible at top during active run
 - [ ] Upgrade-ready HUD polish (icon/animation/sfx sync)
-- [ ] EXP value differentiation by enemy type (normal/elite/boss)
+- [x] EXP value differentiation by enemy type (normal/elite/boss)
 - [ ] Replace HP/XP placeholder visuals with final art
 - [ ] Leaderboard UX polish (clear/reset button, rank animation)
 

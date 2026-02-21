@@ -168,3 +168,23 @@
   - Confirmed root cause: UTF-8 BOM (`EF BB BF`) at file head.
   - Fix: convert affected `.tres` files to UTF-8 without BOM.
 - Added this as an explicit rule and troubleshooting note in `docs/ARCHITECTURE.md`.
+
+## Session Update (2026-02-21, Structural Refactor + Docs Sync)
+- Orphan cleanup:
+  - Removed unused `Scripts/Enemy/EnemyDebugEventModule.cs` (+ `.uid`).
+- GameFlowUI refactor pass:
+  - Added `GameFlowUI.References.cs`, `GameFlowUI.CharacterSelect.cs`, `GameFlowUI.EndState.cs`,
+    `GameFlowUI.SettingsUI.cs`, `GameFlowUI.SettingsPersistence.cs`.
+  - Slimmed `GameFlowUI.cs`, `GameFlowUI.State.cs`, `GameFlowUI.PauseSettings.cs`.
+- PlayerHealth refactor pass:
+  - Split into `PlayerHealth.Core.cs`, `PlayerHealth.Shield.cs`, `PlayerHealth.Vfx.cs`.
+  - `PlayerHealth.cs` now holds exported config, shared state, and public status properties.
+- SpawnSystem refactor pass:
+  - Added `SpawnSystem.Pacing.cs` and `SpawnSystem.MiniBossSchedule.cs`.
+  - Slimmed `SpawnSystem.Runtime.cs` to runtime orchestration concerns.
+- Documentation sync:
+  - Updated `docs/SCRIPT_REFACTOR_PLAN.md`.
+  - Updated `docs/CODE_STRUCTURE_AUDIT_2026-02-21.md`.
+  - Updated `docs/TODO.md` completed status for EXP value differentiation.
+  - Refreshed `README.md` to current architecture (removed legacy `PressureSystem` wording and encoding artifacts).
+  - Refreshed `docs/SCENE_SPLIT_NOTES.md` to current scene composition.

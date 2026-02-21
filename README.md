@@ -1,116 +1,38 @@
-# Balls  
-A 2D Top-Down Real-Time Survival Action Game (System-Driven Prototype)
+# Balls
+A 2D top-down real-time survival action prototype (Godot 4 + C#).
 
-This repository contains a playable and actively evolving prototype of a 2D top-down real-time survival action game built with Godot Engine 4 (C# / Mono).
+## Overview
+This project is a system-driven prototype focused on:
+- phase-based pacing (`StabilitySystem` + director data tables),
+- centralized combat resolution (`CombatSystem`),
+- pickup-driven progression (`ProgressionSystem` + `UpgradeSystem`).
 
-The project is not focused on content scale or visual polish.
-Its primary goal is to explore system-driven game architecture, especially pressure-based pacing, centralized combat arbitration, and strictly controlled data flow.
+Each run is a fixed 15:00 session:
+- start from title menu,
+- pick a character,
+- survive escalating waves,
+- clear at 15:00 (or fail on death),
+- restart quickly.
 
----
+## Current Runtime Flow
+1. Enemy dies -> `ExperienceDropSystem` spawns `ExperiencePickup`.
+2. Player picks up EXP -> `ProgressionSystem` fills upgrade progress.
+3. Progress reaches requirement -> level-up charge queued.
+4. `UpgradeMenu` opens and applies one upgrade through `UpgradeSystem`.
+5. `SpawnSystem` scales pressure by stability phase and director CSV weights.
 
-## Game Overview
+## Core Rules
+- Only `CombatSystem` finalizes damage.
+- Hitboxes/bullets submit requests; they do not deduct HP directly.
+- UI reads runtime state; gameplay systems do not depend on UI.
 
-Genre:
-2D Top-Down · Real-Time · Survival Action
+## Key Data
+Under `Data/Director/`:
+- `PressureTierRules.csv`
+- `EnemyDefinitions.csv`
+- `TierEnemyWeights.csv`
 
-Player Experience:
-- Enemies continuously spawn and close in on the player
-- Screen density and tactical pressure increase over time
-- The player survives via movement, positioning, ranged and melee attacks
-- At critical moments, the game pauses and presents upgrade choices
-- Death immediately restarts the run — no stages, no checkpoints
-
-Each run is short, intense, and fully restartable.
-
----
-
-## Core Design Goals
-
-1. Predictable and controllable pacing
-2. Strict responsibility boundaries between systems
-3. Architecture that survives iteration
-
----
-
-## High-Level Data Flow
-
-PressureSystem
-  ↓
-Director
-  ↓
-SpawnSystem
-  ↓
-EnemyFactory
-  ↓
-Enemy
-
-Critical rule:
-Enemies never read pressure values directly.
-
----
-
-## System Responsibilities
-
-PressureSystem:
-- Maintains global pressure state (0–100)
-- Outputs immutable PressureState (value, tier, intensity)
-- Has no knowledge of enemies or spawning
-
-Director:
-- Translates PressureState into SpawnPlan
-- Owns all pacing and difficulty mapping logic
-
-SpawnSystem:
-- Executes SpawnPlan timing and positioning
-- Emits SpawnRequest objects
-- Does not read raw pressure
-
-EnemyDistributor:
-- Selects enemy groups using budget + weight rules
-- Avoids repetitive RNG patterns
-- Enables designed compositions
-
-EnemyFactory:
-- Instantiates enemies from enemyTypeId
-- Applies initial parameters only
-
-Enemy:
-- Owns local behavior and state
-- Emits EnemyDied events only
-
----
-
-## Combat System Philosophy
-
-- All attacks emit DamageRequest
-- Only CombatSystem resolves damage
-- No entity directly modifies another entity’s HP
-- Centralized arbitration avoids race conditions
-
----
-
-## Data-Driven Design
-
-CSV-driven configuration:
-- PressureTierRules.csv
-- EnemyDefinitions.csv
-- TierEnemyWeights.csv
-
-Allows tuning without recompilation and enforces clean separation between data and logic.
-
----
-
-## Technology Stack
-
-Engine: Godot Engine 4.x
-Language: C# (Mono)
-Platform: PC (prototype)
-
----
-
-## Project Status
-
-Active prototype under heavy iteration.
-Focus is on architecture, pacing control, and combat reliability.
-
----
+## Tech
+- Engine: Godot 4.x (Mono)
+- Language: C#
+- Platform: PC (prototype)
