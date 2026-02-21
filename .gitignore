@@ -1,3 +1,10 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Godot export artifacts (do not commit)
+*.exe
+*.pck
+data_*_windows_*/
+data_*_linuxbsd_*/
+data_*_macos_*/
