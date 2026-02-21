@@ -13,6 +13,7 @@ public partial class Player : CharacterBody2D
 	private PlayerWeapon _primaryAttack;
 	private PlayerMelee _secondaryAttack;
 	private Sprite2D _sprite;
+	private Node2D _skillVfxRoot;
 	private Vector2 _baseSpriteScale = Vector2.One;
 	private Camera2D _camera;
 	private StabilitySystem _stabilitySystem;
@@ -27,6 +28,7 @@ public partial class Player : CharacterBody2D
 	public Vector2 LastMoveDir => _lastMoveDir;
 	public bool IsDead => _health != null && _health.IsDead;
 	public bool IsInvincible => _health != null && _health.IsInvincible;
+	public Node2D SkillVfxRoot => _skillVfxRoot;
 
 	public override void _Ready()
 	{

@@ -47,7 +47,7 @@ public partial class GameFlowUI
 		var entries = LoadPerfectLeaderboard();
 		if (entries.Count == 0)
 		{
-			_startPerfectLeaderboardLabel.Text = "No perfect clears yet.\nSurvive the full 15:00 to enter local leaderboard.";
+			_startPerfectLeaderboardLabel.Text = Tr("UI.START.PERFECT_BOARD_EMPTY");
 			return;
 		}
 
@@ -56,7 +56,7 @@ public partial class GameFlowUI
 		for (int i = 0; i < count; i++)
 		{
 			PerfectLeaderboardEntry e = entries[i];
-			text += $"{i + 1}. {e.CharacterName}  |  Score {e.Score}  |  {e.DateText}";
+			text += $"{i + 1}. {e.CharacterName}  |  {Tr("UI.HUD.SCORE")} {e.Score}  |  {e.DateText}";
 			if (i < count - 1)
 				text += "\n";
 		}

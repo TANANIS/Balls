@@ -11,12 +11,28 @@ public partial class Player
 		_primaryAttack = GetNode<PlayerWeapon>("PrimaryAttack");
 		_secondaryAttack = GetNode<PlayerMelee>("SecondaryAttack");
 		_sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+		_skillVfxRoot = GetNodeOrNull<Node2D>("SkillVfxRoot");
+		if (_skillVfxRoot == null)
+		{
+			_skillVfxRoot = this;
+			DebugSystem.Warn("[Player] SkillVfxRoot missing. Falling back to Player root.");
+		}
 		if (_sprite != null)
 			_baseSpriteScale = _sprite.Scale;
 		_camera = GetNodeOrNull<Camera2D>("Camera2D");
 		if (_camera != null)
 			_cameraBaseZoom = _camera.Zoom;
 		ResolveStabilitySystem();
+	}
+
+	public Node2D GetSkillVfxRoot()
+	{
+		if (_skillVfxRoot == null || !IsInstanceValid(_skillVfxRoot))
+		{
+			_skillVfxRoot = GetNodeOrNull<Node2D>("SkillVfxRoot") ?? this;
+		}
+
+		return _skillVfxRoot;
 	}
 
 	private void BindSignals()

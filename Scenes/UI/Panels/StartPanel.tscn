@@ -25,8 +25,7 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0, 0.6, 0.8, 0.25)
-shadow_size = 6
+shadow_size = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
 bg_color = Color(0.06, 0.1, 0.16, 1)
@@ -39,8 +38,7 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0, 0.4, 0.6, 0.2)
-shadow_size = 3
+shadow_size = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
 bg_color = Color(0.1, 0.18, 0.3, 1)
@@ -53,8 +51,7 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0, 0.8, 1, 0.35)
-shadow_size = 8
+shadow_size = 0
 
 [node name="StartPanel" type="Control"]
 layout_mode = 1
@@ -66,7 +63,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(700, 620)
+custom_minimum_size = Vector2(700, 660)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -74,38 +71,61 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -350.0
-offset_top = -310.0
+offset_top = -330.0
 offset_right = 350.0
-offset_bottom = 310.0
+offset_bottom = 330.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
+[node name="MainScroll" type="ScrollContainer" parent="Panel"]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 30.0
 offset_right = 668.0
-offset_bottom = 590.0
-theme_override_constants/separation = 10
+offset_bottom = 630.0
+horizontal_scroll_mode = 0
 
-[node name="Title" type="Label" parent="Panel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Panel/MainScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="Header" type="VBoxContainer" parent="Panel/MainScroll/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Panel/MainScroll/VBox/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 46
 text = "PROJECT GENESIS"
 horizontal_alignment = 1
 
-[node name="SubTitle" type="Label" parent="Panel/VBox"]
+[node name="SubTitle" type="Label" parent="Panel/MainScroll/VBox/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.85, 0.95, 0.95)
 theme_override_font_sizes/font_size = 18
 text = "Survive the collapsing universe and build your strategy."
 horizontal_alignment = 1
 
-[node name="Desc" type="Label" parent="Panel/VBox"]
-custom_minimum_size = Vector2(0, 210)
+[node name="MainBody" type="HBoxContainer" parent="Panel/MainScroll/VBox"]
+custom_minimum_size = Vector2(0, 460)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+
+[node name="LeftColumn" type="VBoxContainer" parent="Panel/MainScroll/VBox/MainBody"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Desc" type="Label" parent="Panel/MainScroll/VBox/MainBody/LeftColumn"]
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
@@ -115,14 +135,14 @@ horizontal_alignment = 0
 vertical_alignment = 0
 autowrap_mode = 3
 
-[node name="PerfectBoardTitle" type="Label" parent="Panel/VBox"]
+[node name="PerfectBoardTitle" type="Label" parent="Panel/MainScroll/VBox/MainBody/LeftColumn"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.95, 0.45, 0.95)
 theme_override_font_sizes/font_size = 18
 text = "Perfect 15:00 Leaderboard (Local)"
 horizontal_alignment = 0
 
-[node name="PerfectLeaderboard" type="Label" parent="Panel/VBox"]
+[node name="PerfectLeaderboard" type="Label" parent="Panel/MainScroll/VBox/MainBody/LeftColumn"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 1
@@ -131,7 +151,31 @@ theme_override_font_sizes/font_size = 15
 text = "No perfect clears yet."
 autowrap_mode = 3
 
-[node name="StartButton" type="Button" parent="Panel/VBox"]
+[node name="RightColumnPanel" type="Panel" parent="Panel/MainScroll/VBox/MainBody"]
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 14
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="StartButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
@@ -141,7 +185,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Start"
 
-[node name="SettingsButton" type="Button" parent="Panel/VBox"]
+[node name="SettingsButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
@@ -151,7 +195,17 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Settings"
 
-[node name="QuitButton" type="Button" parent="Panel/VBox"]
+[node name="CardsButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Cards"
+
+[node name="QuitButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
@@ -161,7 +215,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Quit"
 
-[node name="ClearLeaderboardButton" type="Button" parent="Panel/VBox"]
+[node name="ClearLeaderboardButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.88, 0.62, 1)
@@ -330,7 +384,64 @@ text = "Window Size"
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
+[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Language"
+
+[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
 [node name="BackButton" type="Button" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"
+
+[node name="CardsPanel" type="Control" parent="Panel"]
+visible = false
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 648.0
+offset_bottom = 620.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/CardsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/CardsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 34
+text = "UPGRADE CARDS"
+horizontal_alignment = 1
+
+[node name="CardsScroll" type="ScrollContainer" parent="Panel/CardsPanel/VBox"]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="CardsContent" type="Label" parent="Panel/CardsPanel/VBox/CardsScroll"]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.82, 0.9, 0.97, 0.95)
+theme_override_font_sizes/font_size = 16
+text = ""
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="Panel/CardsPanel/VBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")

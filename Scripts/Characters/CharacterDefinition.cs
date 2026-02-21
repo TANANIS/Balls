@@ -5,7 +5,9 @@ public partial class CharacterDefinition : Resource
 {
 	[Export] public string CharacterId = "ranged";
 	[Export] public string DisplayName = "Ranger";
+	[Export] public string DisplayNameZhTw = "";
 	[Export(PropertyHint.MultilineText)] public string Description = "";
+	[Export(PropertyHint.MultilineText)] public string DescriptionZhTw = "";
 
 	[ExportGroup("Visual")]
 	[Export] public Texture2D CoreSprite;
@@ -50,4 +52,18 @@ public partial class CharacterDefinition : Resource
 	[Export] public float DashDuration = 0.12f;
 	[Export] public float DashCooldown = 0.6f;
 	[Export] public float DashIFrame = 0.08f;
+
+	public string GetLocalizedDisplayName()
+	{
+		if (TranslationServer.GetLocale().StartsWith("zh"))
+			return string.IsNullOrWhiteSpace(DisplayNameZhTw) ? DisplayName : DisplayNameZhTw;
+		return DisplayName;
+	}
+
+	public string GetLocalizedDescription()
+	{
+		if (TranslationServer.GetLocale().StartsWith("zh"))
+			return string.IsNullOrWhiteSpace(DescriptionZhTw) ? Description : DescriptionZhTw;
+		return Description;
+	}
 }

@@ -7,12 +7,12 @@ public partial class GameFlowUI
 
 		if (_upgradeSystem == null || _upgradeSystem.AppliedUpgradeCount <= 0)
 		{
-			_pauseBuildSummaryLabel.Text = "Current Build\nNo upgrades selected yet.";
+			_pauseBuildSummaryLabel.Text = $"{Tr("UI.BUILD.CURRENT")}\n{Tr("UI.BUILD.NONE_YET")}";
 			return;
 		}
 
 		_pauseBuildSummaryLabel.Text =
-			"Current Build\n" +
+			Tr("UI.BUILD.CURRENT") + "\n" +
 			_upgradeSystem.GetCategoryShareSummary() + "\n" +
 			_upgradeSystem.GetKeyUpgradeSummary(6);
 	}
@@ -24,12 +24,12 @@ public partial class GameFlowUI
 
 		if (_upgradeSystem == null || _upgradeSystem.AppliedUpgradeCount <= 0)
 		{
-			_finalBuildSummaryLabel.Text = "Build Summary\nNo upgrades selected in this run.";
+			_finalBuildSummaryLabel.Text = $"{Tr("UI.BUILD.SUMMARY")}\n{Tr("UI.BUILD.NONE_IN_RUN")}";
 			return;
 		}
 
 		_finalBuildSummaryLabel.Text =
-			"Build Summary\n" +
+			Tr("UI.BUILD.SUMMARY") + "\n" +
 			_upgradeSystem.GetCategoryShareSummary() + "\n" +
 			_upgradeSystem.GetKeyUpgradeSummary(8);
 	}
@@ -37,8 +37,8 @@ public partial class GameFlowUI
 	private void ResetBuildSummaryLabels()
 	{
 		if (_pauseBuildSummaryLabel != null)
-			_pauseBuildSummaryLabel.Text = "Current Build\nNo upgrades selected yet.";
+			_pauseBuildSummaryLabel.Text = $"{Tr("UI.BUILD.CURRENT")}\n{Tr("UI.BUILD.NONE_YET")}";
 		if (_finalBuildSummaryLabel != null)
-			_finalBuildSummaryLabel.Text = "Build Summary";
+			_finalBuildSummaryLabel.Text = Tr("UI.BUILD.SUMMARY");
 	}
 }

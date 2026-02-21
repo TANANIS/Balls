@@ -93,6 +93,10 @@ Esc={
 2d_physics/layer_7="(EnemyHitbox)敵人攻擊"
 2d_physics/layer_8="8"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://Data/Localization/Cards.en.translation", "res://Data/Localization/Cards.zh_TW.translation", "res://Data/Localization/UI.en.translation", "res://Data/Localization/UI.zh_TW.translation")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

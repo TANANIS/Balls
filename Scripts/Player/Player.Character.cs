@@ -184,6 +184,32 @@ public partial class Player
 			_primaryAttack?.AddProjectileSpeed(amount);
 	}
 
+	public void AddPrimaryProjectileCount(int amount)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.AddProjectileCount(amount);
+	}
+
+	public void AddPrimarySplitShot(int amount)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.AddSplitShotLevel(amount);
+	}
+
+	public void AddPrimaryCritChance(float amount)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.AddCritChance(amount);
+	}
+
+	public void MultiplyPrimaryDamage(float factor)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.MultiplyDamage(factor);
+		else if (PrimarySupportsMelee())
+			_secondaryAttack?.MultiplyDamage(factor);
+	}
+
 	public void AddSecondaryDamage(int amount)
 	{
 		if (SecondarySupportsRanged())

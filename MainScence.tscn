@@ -1,34 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bxen3q3hvcxk"]
+[gd_scene load_steps=6 format=3 uid="uid://bxen3q3hvcxk"]
 
 [ext_resource type="Script" uid="uid://bqyuxaxwk71we" path="res://Scripts/UI/CursorRing.cs" id="21_cursor_ring"]
 [ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="22_player_scene"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/GameFlowUIRoot.tscn" id="26_ui_root"]
 [ext_resource type="PackedScene" path="res://Scenes/World/WorldRoot.tscn" id="27_world_root"]
 [ext_resource type="PackedScene" path="res://Scenes/Systems/SystemsRoot.tscn" id="28_systems_root"]
-
-[sub_resource type="Shader" id="Shader_low_hp_vignette"]
-code = "shader_type canvas_item;
-uniform float intensity : hint_range(0.0, 1.0) = 0.0;
-uniform float radius : hint_range(0.2, 1.0) = 0.7;
-uniform float softness : hint_range(0.01, 1.0) = 0.25;
-uniform vec4 tint : source_color = vec4(0.85, 0.08, 0.08, 1.0);
-
-void fragment() {
-	vec2 uv = SCREEN_UV;
-	vec2 centered = uv * 2.0 - 1.0;
-	float dist = length(centered);
-	float edge = smoothstep(radius, radius + softness, dist);
-	float alpha = edge * intensity;
-	COLOR = vec4(tint.rgb, tint.a * alpha);
-}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_low_hp_vignette"]
-shader = SubResource("Shader_low_hp_vignette")
-shader_parameter/intensity = 0.0
-shader_parameter/radius = 0.7
-shader_parameter/softness = 0.25
-shader_parameter/tint = Color(0.85, 0.08, 0.08, 1)
 
 [node name="Game" type="Node2D"]
 
@@ -43,15 +19,6 @@ shader_parameter/tint = Color(0.85, 0.08, 0.08, 1)
 [node name="Systems" parent="." instance=ExtResource("28_systems_root")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="LowHealthVignette" type="ColorRect" parent="CanvasLayer"]
-material = SubResource("ShaderMaterial_low_hp_vignette")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 
 [node name="UI" parent="CanvasLayer" instance=ExtResource("26_ui_root")]
 

@@ -1,38 +1,20 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3 uid="uid://q81qyvu1b7pv"]
 
-[ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Player.png" id="2_ranger_core"]
+[ext_resource type="Script" uid="uid://c5ei84bo348f8" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+[ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="2_ranger_core"]
 
 [resource]
 script = ExtResource("1_char_def")
-CharacterId = "ranged"
 DisplayName = "Ranger Core"
-Description = "Left click fires projectiles. Melee and dash are disabled."
+DisplayNameZhTw = "遊俠核心"
+Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire."
+DescriptionZhTw = "精準遠程特化。以快速單發維持穩定輸出，適合安全距離作戰。"
 CoreSprite = ExtResource("2_ranger_core")
-PrimaryAbility = 1
 SecondaryAbility = 0
 MobilityAbility = 0
-PrimaryAction = "attack_primary"
-SecondaryAction = "attack_secondary"
-MobilityAction = "dash"
-MoveMaxSpeed = 320.0
-MoveAccel = 2200.0
-MoveFriction = 2600.0
-MoveStopThreshold = 5.0
-MaxHp = 3
-HurtIFrame = 0.5
-RegenAmount = 0
-RegenIntervalSeconds = 60.0
-RangedDamage = 1
 RangedCooldown = 0.32
-RangedProjectileSpeed = 760.0
-RangedFirePattern = 0
 RangedBurstShotInterval = 0.08
-MeleeDamage = 3
 MeleeCooldown = 0.35
-MeleeRange = 160.0
-MeleeArcDegrees = 180.0
-DashSpeed = 900.0
 DashDuration = 0.12
 DashCooldown = 0.6
 DashIFrame = 0.08

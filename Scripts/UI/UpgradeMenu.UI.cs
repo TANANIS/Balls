@@ -24,6 +24,8 @@ public partial class UpgradeMenu
 
 	private void RefreshButtons()
 	{
+		if (_title != null)
+			_title.Text = Tr("UI.UPGRADE.TITLE");
 		_leftButton.Text = FormatOptionText(_leftOption);
 		_middleButton.Text = FormatOptionText(_middleOption);
 		_rightButton.Text = FormatOptionText(_rightOption);

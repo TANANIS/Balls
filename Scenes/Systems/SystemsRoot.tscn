@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="1_enemy_scene"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="2_combat"]
@@ -8,10 +8,11 @@
 [ext_resource type="Script" path="res://Scripts/Systems/Core/PerfProbe.cs" id="6_perf"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="7_upgrade"]
 [ext_resource type="Script" uid="uid://csx6eukc73bnk" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="8_score"]
-[ext_resource type="Script" uid="uid://bb4uld1y53xfq" path="res://Scripts/Systems/Director/PressureSystem.cs" id="9_pressure"]
 [ext_resource type="Script" path="res://Scripts/Systems/Director/StabilitySystem.cs" id="10_stability"]
 [ext_resource type="Script" path="res://Scripts/Systems/Progression/ExperienceDropSystem.cs" id="11_exp_drop"]
 [ext_resource type="PackedScene" path="res://Prefabs/ExperiencePickup.tscn" id="12_exp_pickup"]
+[ext_resource type="Script" path="res://Scripts/Systems/Progression/ProgressionSystem.cs" id="13_progression"]
+[ext_resource type="Resource" path="res://Data/Upgrades/DefaultUpgradeCatalog.tres" id="14_upgrade_catalog"]
 
 [node name="Systems" type="Node"]
 
@@ -62,6 +63,10 @@ StartOnReady = false
 
 [node name="UpgradeSystem" type="Node" parent="."]
 script = ExtResource("7_upgrade")
+Catalog = ExtResource("14_upgrade_catalog")
+
+[node name="ProgressionSystem" type="Node" parent="."]
+script = ExtResource("13_progression")
 
 [node name="ScoreSystem" type="Node" parent="."]
 script = ExtResource("8_score")
@@ -69,9 +74,6 @@ script = ExtResource("8_score")
 [node name="ExperienceDropSystem" type="Node" parent="."]
 script = ExtResource("11_exp_drop")
 ExperiencePickupScene = ExtResource("12_exp_pickup")
-
-[node name="PressureSystem" type="Node" parent="."]
-script = ExtResource("9_pressure")
 
 [node name="StabilitySystem" type="Node" parent="."]
 script = ExtResource("10_stability")

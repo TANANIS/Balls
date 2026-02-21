@@ -94,7 +94,6 @@ public partial class SpawnSystem : Node
 
 	private Node2D _enemiesRoot;
 	private Node2D _player;
-	private PressureSystem _pressureSystem;
 	private UpgradeSystem _upgradeSystem;
 	private StabilitySystem _stabilitySystem;
 	private float _timer;
@@ -168,7 +167,6 @@ public partial class SpawnSystem : Node
 		if (_player == null)
 			DebugSystem.Error("[SpawnSystem] Player not found. Check PlayerPath.");
 
-		EnsurePressureSystem();
 		EnsureUpgradeSystem();
 		ApplyFallbackRuntimeSettings();
 
@@ -189,7 +187,6 @@ public partial class SpawnSystem : Node
 
 		_survivalSeconds += (float)delta;
 
-		EnsurePressureSystem();
 		EnsureUpgradeSystem();
 		EnsureStabilitySystem();
 		UpdateTierRuntimeSettings();

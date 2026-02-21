@@ -4,5 +4,6 @@ public enum UpgradeCategory
 	PressureModifier,
 	AnomalySpecialist,
 	SpatialControl,
-	RiskAmplifier
+	RiskAmplifier,
+	EconomyModifier
 }

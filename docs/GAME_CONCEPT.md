@@ -11,7 +11,7 @@ Survive to 15:00 to complete the run.
 1. Enemies continuously spawn and approach.
 2. Screen density and pressure rise by phase.
 3. Player survives via movement, attack, and dodge.
-4. At high pressure, game pauses for one growth choice.
+4. Enemy kills drop EXP pickups; collecting enough EXP pauses game for one growth choice.
 5. Pick one, then continue at faster tempo.
 6. Reach 15:00 or die -> restart flow.
 
@@ -53,20 +53,16 @@ Design goal:
 - Geometric enemies, readable behavior.
 - Pressure comes from count, proximity, and reduced movement space.
 
-## 7. Pressure Upgrade Moment
+## 7. Upgrade Moment (Current Runtime)
 
-Hidden pressure rises from:
-- Enemy count
-- Low HP
-- Long no-kill windows
-- Space compression
+Level-up happens via survivor-style EXP:
+1. Enemy death drops EXP pickup.
+2. Player collects pickup to gain EXP.
+3. EXP reaches requirement -> level-up charge queued.
+4. Upgrade menu opens with three choices.
+5. Pick one (or random fallback on cancel), then resume.
 
-At threshold:
-1. Full pause
-2. Clean screen
-3. Three choices
-4. Pick one (or random fallback)
-5. Resume at faster tempo
+Pressure remains a pacing signal for spawn intensity, not the primary leveling trigger in default mode.
 
 ## 8. Growth Rules
 

@@ -2,40 +2,10 @@ using Godot;
 
 public partial class GameFlowUI
 {
-	private void UpdateLowHealthVignette()
-	{
-		// Drive vignette intensity from HP ratio, then layer collapse interference.
-		if (_lowHealthMaterial == null)
-			return;
-
-		float hpIntensity = 0f;
-		if (_playerHealth != null && _playerHealth.MaxHp > 0)
-		{
-			float hpRatio = Mathf.Clamp((float)_playerHealth.Hp / _playerHealth.MaxHp, 0f, 1f);
-			float raw = 1f - hpRatio;
-			hpIntensity = Mathf.Clamp(Mathf.Pow(raw, LowHealthPower) * LowHealthMaxIntensity, 0f, 1f);
-		}
-
-		float phaseInterference = 0f;
-		if (_stabilitySystem != null && _started && !_ending)
-		{
-			if (_stabilitySystem.CurrentPhase == StabilitySystem.StabilityPhase.StructuralFracture)
-				phaseInterference = 0.14f;
-			else if (_stabilitySystem.CurrentPhase == StabilitySystem.StabilityPhase.CollapseCritical)
-			{
-				float wobble = (Mathf.Sin((float)_stabilitySystem.ElapsedSeconds * 7.8f) + 1f) * 0.5f;
-				phaseInterference = Mathf.Lerp(0.20f, 0.44f, wobble);
-			}
-		}
-
-		float intensity = Mathf.Clamp(Mathf.Max(hpIntensity, phaseInterference), 0f, 1f);
-		_lowHealthMaterial.SetShaderParameter("intensity", intensity);
-	}
-
 	private void OnScoreChanged(int score)
 	{
 		if (_scoreLabel != null)
-			_scoreLabel.Text = $"Score: {score}";
+			_scoreLabel.Text = $"{Tr("UI.HUD.SCORE")}: {score}";
 	}
 
 	private void UpdateUpgradeProgressUi()
@@ -51,29 +21,29 @@ public partial class GameFlowUI
 
 		_experienceBarRoot.Visible = true;
 
-		if (!IsInstanceValid(_pressureSystem))
+		if (!IsInstanceValid(_progressionSystem))
 		{
-			var pressureList = GetTree().GetNodesInGroup("PressureSystem");
-			if (pressureList.Count > 0)
-				_pressureSystem = pressureList[0] as PressureSystem;
+			var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+			if (progressionList.Count > 0)
+				_progressionSystem = progressionList[0] as ProgressionSystem;
 		}
 
-		if (!IsInstanceValid(_pressureSystem))
+		if (!IsInstanceValid(_progressionSystem))
 		{
 			_experienceBar.MaxValue = 1f;
 			_experienceBar.Value = 0f;
-			_experienceLabel.Text = "XP --/--";
+			_experienceLabel.Text = $"{Tr("UI.HUD.XP")} --/--";
 			return;
 		}
 
-		float required = Mathf.Max(1f, _pressureSystem.GetCurrentUpgradeRequirement());
-		float progress = Mathf.Clamp(_pressureSystem.CurrentUpgradeProgress, 0f, required);
+		float required = Mathf.Max(1f, _progressionSystem.GetCurrentUpgradeRequirement());
+		float progress = Mathf.Clamp(_progressionSystem.CurrentUpgradeProgress, 0f, required);
 
 		_experienceBar.MaxValue = required;
 		_experienceBar.Value = progress;
-		_experienceLabel.Text = _pressureSystem.IsUpgradeReady
-			? $"LV {_pressureSystem.CurrentUpgradeLevel}  READY x{Mathf.Max(1, _pressureSystem.PendingUpgradeCount)}"
-			: $"LV {_pressureSystem.CurrentUpgradeLevel}  XP {Mathf.FloorToInt(progress)}/{Mathf.CeilToInt(required)}";
+		_experienceLabel.Text = _progressionSystem.IsUpgradeReady
+			? $"{Tr("UI.HUD.LEVEL")} {_progressionSystem.CurrentUpgradeLevel}  {Tr("UI.HUD.READY")} x{Mathf.Max(1, _progressionSystem.PendingUpgradeCount)}"
+			: $"{Tr("UI.HUD.LEVEL")} {_progressionSystem.CurrentUpgradeLevel}  {Tr("UI.HUD.XP")} {Mathf.FloorToInt(progress)}/{Mathf.CeilToInt(required)}";
 	}
 
 	private void UpdateMatchCountdownUi()

@@ -1,38 +1,35 @@
-﻿# Game Director And Pressure Design
+# Game Director And Progression Design
 
 This document defines pacing logic for spawn orchestration and upgrade timing.
 
 ## Intent
 - Keep early game readable.
-- Escalate pressure via spawn tempo and enemy composition.
+- Escalate threat via spawn tempo and enemy composition.
 - Guarantee upgrade cadence without punishing strong play.
-- Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`, not pressure.
-- Lock run duration to 15 minutes and shape pacing by four pressure phases.
+- Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`.
+- Lock run duration to 15 minutes and shape pacing by four stability phases.
 
 ## Match Timeline Contract (15:00)
 - `00:00 - 03:45` Stage 1 (Ramp-In)
-  - Low baseline pressure.
-  - Tail-end pressure peak.
+  - Low baseline threat.
+  - Tail-end threat peak.
   - Stage boss: `MiniBossHex_Stage1` at `03:45`.
 - `03:45 - 07:30` Stage 2 (First Stress Cycle)
-  - Pressure resets lower than peak, then ramps again.
+  - Threat resets lower than peak, then ramps again.
   - Stage boss: `MiniBossHex_Stage2` at `07:30`.
 - `07:30 - 11:15` Stage 3 (Build Check)
   - Faster spawn tempo and denser packs near tail.
   - Stage boss: `MiniBossHex_Stage3` at `11:15`.
 - `11:15 - 15:00` Stage 4 (Final Climb)
-  - Highest sustained pressure with final tail peak.
+  - Highest sustained threat with final tail peak.
   - Stage boss: `MiniBossHex_Stage4` near run tail (`14:30~15:00` window).
 
 Special universe events are removed in this model. Stage-tail miniboss is the only phase-special spike marker.
 
-## Dual-Meter Model
-- `CurrentPressure` (volatile): reflects immediate danger from enemy density, low HP, and elapsed time.
-- `UpgradeProgress` (progress meter): mainly increased by kills, with pressure bonus and small time drip.
-
-Why this model:
-- Pressure-only triggers can be delayed forever by highly efficient clearing.
-- Kill-led progression preserves player agency while pressure still influences speed.
+## Runtime Model
+- `ProgressionSystem` owns `UpgradeProgress` (EXP meter), requirement curve, and queued level-up charges.
+- `SpawnSystem` pacing is selected by current `StabilitySystem` phase and tier CSV rows.
+- `UpgradeSystem` applies selected upgrade effects and increments `AppliedUpgradeCount`.
 
 ## Upgrade Trigger Rule (Survivor-Style)
 1. Player kills enemies to generate `ExperiencePickup` drops.
@@ -42,13 +39,13 @@ Why this model:
 5. EXP overflow is preserved; multiple charges can queue for chain level-up.
 
 System notes:
-- Pressure no longer auto-drops when opening upgrade from EXP.
-- Time-based passive EXP drip is disabled in EXP-pickup mode.
-- Pressure curve remains a director signal for spawning, not player leveling.
+- EXP overflow is preserved.
+- Time-based passive EXP drip is not used in current pickup-driven runtime.
+- Upgrade menu consume rule remains one queued charge per open.
 
 ## HUD Contract (Run-Time)
 - HP UI is hidden in menu/title and only shown after `StartRun()`.
-- XP bar is shown at top of screen during active run and reads from `PressureSystem`:
+- XP bar is shown at top of screen during active run and reads from `ProgressionSystem`:
   - Value = `CurrentUpgradeProgress`
   - Max = `GetCurrentUpgradeRequirement()`
   - Ready state = `IsUpgradeReady`
@@ -73,7 +70,7 @@ System notes:
 
 ## Spawn Director Rule
 `SpawnSystem` is tier-driven and data-driven:
-1. Read pressure tier from `PressureSystem.CurrentPressure`.
+1. Read phase tier from `StabilitySystem.CurrentPhase`.
 2. Apply tier runtime settings from `PressureTierRules.csv`.
 3. Roll wave budget and split into packed group spawns.
 4. Pick enemies by weighted roll from `TierEnemyWeights.csv` under budget/cost constraints.
@@ -81,7 +78,7 @@ System notes:
 6. Spawn around player with tier radius plus pack scatter.
 
 Unlock milestone rule:
-- Pressure/tier controls pacing.
+- Stability phase + tier controls pacing.
 - Stage-tail miniboss schedule controls boss pacing (4 fixed spawns per run).
 - Optional elite injection can remain upgrade-count gated.
 
@@ -96,21 +93,16 @@ All under `Data/Director/`:
 - `_planned/PackTemplates.csv` (planned usage)
 - `_planned/BossSchedule.csv` (planned/partial usage)
 
-## PressureTierRules Contract
+## Tier Rules Contract
 Used fields now include:
 - `pressure_min`, `pressure_max`
 - `spawn_interval_min`, `spawn_interval_max`
 - `budget_min`, `budget_max`
 - `max_alive`
 - `spawn_radius_min`, `spawn_radius_max`
-- `kill_progress_base`
-- `kill_pressure_bonus_factor`
-- `time_progress_per_sec`
-- `upgrade_threshold`
-- `first_upgrade_threshold`
 
 ## Contributor Guardrails
-- Do not access pressure directly in enemy behavior scripts.
+- Do not access progression state directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.
 - Tune balance in CSV first, then patch code only when needed.
 - Keep stage-tail boss pacing time-based, not random-event based.

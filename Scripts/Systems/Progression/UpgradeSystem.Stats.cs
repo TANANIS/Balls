@@ -1,3 +1,4 @@
+using Godot;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ public partial class UpgradeSystem
 	public string GetCategoryShareSummary()
 	{
 		if (_appliedUpgradeCount <= 0)
-			return "Category Share: none";
+			return Tr("UI.BUILD.CATEGORY_SHARE_NONE");
 
 		var order = new[]
 		{
@@ -14,7 +15,8 @@ public partial class UpgradeSystem
 			UpgradeCategory.PressureModifier,
 			UpgradeCategory.AnomalySpecialist,
 			UpgradeCategory.SpatialControl,
-			UpgradeCategory.RiskAmplifier
+			UpgradeCategory.RiskAmplifier,
+			UpgradeCategory.EconomyModifier
 		};
 
 		var parts = new List<string>();
@@ -29,14 +31,14 @@ public partial class UpgradeSystem
 		}
 
 		return parts.Count > 0
-			? "Category Share: " + string.Join(" | ", parts)
-			: "Category Share: none";
+			? Tr("UI.BUILD.CATEGORY_SHARE_PREFIX") + " " + string.Join(" | ", parts)
+			: Tr("UI.BUILD.CATEGORY_SHARE_NONE");
 	}
 
 	public string GetKeyUpgradeSummary(int maxEntries = 5)
 	{
 		if (_stacks.Count == 0)
-			return "Key Upgrades: none";
+			return Tr("UI.BUILD.KEY_UPGRADES_NONE");
 
 		if (_definitions.Count == 0)
 			RebuildDefinitionIndex();
@@ -62,13 +64,17 @@ public partial class UpgradeSystem
 		});
 
 		int take = System.Math.Clamp(maxEntries, 1, items.Count);
-		var sb = new StringBuilder("Key Upgrades:");
+		var sb = new StringBuilder(Tr("UI.BUILD.KEY_UPGRADES_PREFIX"));
 		for (int i = 0; i < take; i++)
 		{
 			var item = items[i];
 			string title = item.Id.ToString();
-			if (_definitions.TryGetValue(item.Id, out var def) && !string.IsNullOrWhiteSpace(def.Title))
-				title = def.Title;
+			if (_definitions.TryGetValue(item.Id, out var def))
+			{
+				string localized = def.GetLocalizedTitle();
+				if (!string.IsNullOrWhiteSpace(localized))
+					title = localized;
+			}
 			sb.Append("\n- ").Append(title).Append(" x").Append(item.Stack);
 		}
 
@@ -79,11 +85,12 @@ public partial class UpgradeSystem
 	{
 		return category switch
 		{
-			UpgradeCategory.WeaponModifier => "武器改造",
-			UpgradeCategory.PressureModifier => "壓力規則",
-			UpgradeCategory.AnomalySpecialist => "異常專精",
-			UpgradeCategory.SpatialControl => "空間控制",
-			UpgradeCategory.RiskAmplifier => "風險放大",
+			UpgradeCategory.WeaponModifier => TranslationServer.Translate("UI.CATEGORY.CORE_ATTACK"),
+			UpgradeCategory.PressureModifier => TranslationServer.Translate("UI.CATEGORY.DIRECTOR"),
+			UpgradeCategory.AnomalySpecialist => TranslationServer.Translate("UI.CATEGORY.ANOMALY"),
+			UpgradeCategory.SpatialControl => TranslationServer.Translate("UI.CATEGORY.SPATIAL"),
+			UpgradeCategory.RiskAmplifier => TranslationServer.Translate("UI.CATEGORY.SURVIVAL"),
+			UpgradeCategory.EconomyModifier => TranslationServer.Translate("UI.CATEGORY.ECONOMY"),
 			_ => category.ToString()
 		};
 	}

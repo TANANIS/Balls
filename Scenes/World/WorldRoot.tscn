@@ -65,9 +65,10 @@ ObstacleSpacingMultiplier = 2.65
 
 [node name="BossArenaLimiter" type="Node2D" parent="."]
 script = ExtResource("5_boss_arena")
-InitialRadius = 900.0
-FinalRadius = 360.0
+InitialRadius = 1800.0
+FinalRadius = 1440.0
 ShrinkDurationSeconds = 24.0
 BorderWidth = 16.0
 BorderColor = Color(1, 0.22, 0.22, 0.95)
-FillColor = Color(1, 0.2, 0.2, 0.12)
+EdgeRepelDistance = 64.0
+EdgeRepelSpeed = 700.0

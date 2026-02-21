@@ -28,5 +28,11 @@ public partial class PlayerMelee
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		Range = Mathf.Max(4f, range);
 		ArcDegrees = Mathf.Clamp(arcDegrees, 5f, 180f);
+		DamageMultiplier = 1f;
+	}
+
+	public void MultiplyDamage(float factor)
+	{
+		DamageMultiplier = Mathf.Clamp(DamageMultiplier * Mathf.Max(0.1f, factor), 0.2f, 8f);
 	}
 }

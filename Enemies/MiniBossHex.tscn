@@ -37,15 +37,15 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-PatrolSpeedMultiplier = 0.78
-RushSpeedMultiplier = 3.25
-TriggerDistance = 430.0
-WindupDuration = 0.24
-RushDuration = 0.48
-RecoveryDuration = 0.62
-RushCooldown = 1.1
-AimPredictionSeconds = 0.30
-RushSteerStrength = 6.8
+PatrolSpeedMultiplier = 1.05
+RushSpeedMultiplier = 5.2
+TriggerDistance = 680.0
+WindupDuration = 0.12
+RushDuration = 0.62
+RecoveryDuration = 0.28
+RushCooldown = 0.55
+AimPredictionSeconds = 0.34
+RushSteerStrength = 9.8
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")

@@ -7,7 +7,9 @@
 script = ExtResource("1_char_def")
 CharacterId = "melee"
 DisplayName = "Blade Core"
-Description = "Left click performs melee. Dash remains on Space. Ranged attack is disabled."
+DisplayNameZhTw = "刃核"
+Description = "High-mobility melee duelist. Strong close-range bursts and reposition tools, but punish mistakes heavily."
+DescriptionZhTw = "高機動近戰決鬥者。近距離爆發與位移能力強，但容錯較低。"
 CoreSprite = ExtResource("2_blade_core")
 CoreSpriteScaleMultiplier = Vector2(1.6166134, 1.6166134)
 PrimaryAbility = 2

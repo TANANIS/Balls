@@ -8,6 +8,7 @@ public partial class PlayerMelee : Node
 	[Export] public float Range = 140f;
 	[Export] public float ArcDegrees = 220f;
 	[Export] public int Damage = 3;
+	[Export] public float DamageMultiplier = 1f;
 	[Export] public uint TargetMask = 1u << 5; // Layer 6: EnemyHurtbox
 
 	[Export] public PackedScene MeleeVfxScene;

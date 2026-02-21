@@ -152,7 +152,7 @@ layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 536.0
-offset_bottom = 396.0
+offset_bottom = 452.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel"]
 layout_mode = 1
@@ -205,6 +205,14 @@ layout_mode = 2
 text = "Window Size"
 
 [node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+layout_mode = 2
+text = "Language"
+
+[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 

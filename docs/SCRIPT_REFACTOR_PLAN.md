@@ -9,9 +9,8 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Systems/Director/SpawnSystem.Csv.cs`: CSV loading and parsing helpers.
 - `Scripts/Systems/Director/SpawnSystem.Types.cs`: internal data structs.
 
-### PressureSystem
-- `Scripts/Systems/Director/PressureSystem.cs`: pressure/progress loop and trigger flow.
-- `Scripts/Systems/Director/PressureSystem.TiersCsv.cs`: tier rule loading/parsing and runtime tier application.
+### ProgressionSystem
+- `Scripts/Systems/Progression/ProgressionSystem.cs`: EXP meter, requirement curve, queued level-up flow, and upgrade-menu trigger ownership.
 
 ### UpgradeSystem
 - `Scripts/Systems/Progression/UpgradeSystem.cs`: lifecycle and upgrade application entry.
@@ -39,7 +38,7 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 
 ### Experience Progression
 - `Scripts/Systems/Progression/ExperienceDropSystem.cs`: listens to kill events and drops pickups.
-- `Scripts/Systems/Progression/ExperiencePickup.cs`: pickup collision + trigger upgrade flow.
+- `Scripts/Systems/Progression/ExperiencePickup.cs`: pickup collision + EXP grant into `ProgressionSystem`.
 
 ### AudioManager
 - `Scripts/Audio/AudioManager.cs`: singleton and public playback API surface.

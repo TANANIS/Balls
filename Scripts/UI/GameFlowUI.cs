@@ -1,11 +1,13 @@
 using Godot;
+using System.Text;
 
 public partial class GameFlowUI : Control
 {
 	private const string PlayerPath = "../../Player";
 	private const string StartPanelPath = "Panels/StartPanel";
-	private const string StartMainVBoxPath = "Panels/StartPanel/Panel/VBox";
+	private const string StartMainVBoxPath = "Panels/StartPanel/Panel/MainScroll/VBox";
 	private const string StartSettingsPanelPath = "Panels/StartPanel/Panel/SettingsPanel";
+	private const string StartCardsPanelPath = "Panels/StartPanel/Panel/CardsPanel";
 	private const string StartCharacterSelectPanelPath = "Panels/StartPanel/Panel/CharacterSelectPanel";
 	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/RangedButton";
 	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/MeleeButton";
@@ -17,17 +19,21 @@ public partial class GameFlowUI : Control
 	private const string PausePanelPath = "Panels/PausePanel";
 	private const string PauseMainVBoxPath = "Panels/PausePanel/Panel/VBox";
 	private const string PauseSettingsPanelPath = "Panels/PausePanel/Panel/SettingsPanel";
-	private const string StartButtonPath = "Panels/StartPanel/Panel/VBox/StartButton";
-	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/VBox/SettingsButton";
-	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/VBox/QuitButton";
-	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/VBox/ClearLeaderboardButton";
+	private const string StartButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/StartButton";
+	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/SettingsButton";
+	private const string StartCardsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/CardsButton";
+	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/QuitButton";
+	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/ClearLeaderboardButton";
 	private const string StartClearLeaderboardDialogPath = "Panels/StartPanel/ClearLeaderboardConfirmDialog";
-	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/VBox/PerfectLeaderboard";
+	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectLeaderboard";
 	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
+	private const string StartCardsBackButtonPath = "Panels/StartPanel/Panel/CardsPanel/VBox/BackButton";
+	private const string StartCardsContentPath = "Panels/StartPanel/Panel/CardsPanel/VBox/CardsScroll/CardsContent";
 	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
 	private const string StartSettingsSfxSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/SfxSlider";
 	private const string StartSettingsWindowSizePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowSizeOption";
 	private const string StartSettingsWindowModePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowModeOption";
+	private const string StartSettingsLanguagePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/LanguageOption";
 	private const string RestartButtonPath = "Panels/RestartPanel/Panel/VBox/RestartButton";
 	private const string PauseResumeButtonPath = "Panels/PausePanel/Panel/VBox/ResumeButton";
 	private const string PauseSettingsButtonPath = "Panels/PausePanel/Panel/VBox/SettingsButton";
@@ -39,8 +45,8 @@ public partial class GameFlowUI : Control
 	private const string SettingsSfxSliderPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/SfxSlider";
 	private const string SettingsWindowSizePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowSizeOption";
 	private const string SettingsWindowModePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowModeOption";
+	private const string SettingsLanguagePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/LanguageOption";
 	private const string UpgradeMenuPath = "UpgradeLayer/UpgradeMenu";
-	private const string LowHealthVignettePath = "../LowHealthVignette";
 	private const string ScoreLabelPath = "Overlay/HudOverlay/ScoreLabel";
 	private const string PlayerHealthBarPath = "Overlay/HudOverlay/PlayerHealthBarDemo";
 	private const string ExperienceBarRootPath = "Overlay/HudOverlay/ExperienceBarRoot";
@@ -63,14 +69,13 @@ public partial class GameFlowUI : Control
 	private const string RangedCharacterResourcePath = "res://Data/Characters/RangedCharacter.tres";
 	private const string MeleeCharacterResourcePath = "res://Data/Characters/MeleeCharacter.tres";
 	private const string TankCharacterResourcePath = "res://Data/Characters/TankBurstCharacter.tres";
-	[Export] public float LowHealthMaxIntensity = 0.9f;
-	[Export] public float LowHealthPower = 1.6f;
 
 	private Player _player;
 	private PlayerHealth _playerHealth;
 	private Control _startPanel;
 	private Control _startMainVBox;
 	private Control _startSettingsPanel;
+	private Control _startCardsPanel;
 	private Control _startCharacterSelectPanel;
 	private Control _restartPanel;
 	private Control _pausePanel;
@@ -78,11 +83,14 @@ public partial class GameFlowUI : Control
 	private Control _pauseSettingsPanel;
 	private Button _startButton;
 	private Button _startSettingsButton;
+	private Button _startCardsButton;
 	private Button _startQuitButton;
 	private Button _startClearLeaderboardButton;
 	private ConfirmationDialog _startClearLeaderboardDialog;
 	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
+	private Button _startCardsBackButton;
+	private Label _startCardsContentLabel;
 	private Button _startCharacterRangedButton;
 	private Button _startCharacterMeleeButton;
 	private Button _startCharacterTankButton;
@@ -103,9 +111,9 @@ public partial class GameFlowUI : Control
 	private HSlider _startSettingsSfxSlider;
 	private OptionButton _startSettingsWindowSizeOption;
 	private OptionButton _startSettingsWindowModeOption;
+	private OptionButton _startSettingsLanguageOption;
+	private OptionButton _settingsLanguageOption;
 	private UpgradeMenu _upgradeMenu;
-	private ColorRect _lowHealthVignette;
-	private ShaderMaterial _lowHealthMaterial;
 	private Label _scoreLabel;
 	private Control _playerHealthBar;
 	private Control _experienceBarRoot;
@@ -122,7 +130,7 @@ public partial class GameFlowUI : Control
 	private UpgradeSystem _upgradeSystem;
 	private ScoreSystem _scoreSystem;
 	private StabilitySystem _stabilitySystem;
-	private PressureSystem _pressureSystem;
+	private ProgressionSystem _progressionSystem;
 	private CanvasItem _background;
 	private ColorRect _backgroundDimmer;
 	private Sprite2D _menuBackground;
@@ -135,6 +143,7 @@ public partial class GameFlowUI : Control
 	private bool _pauseMenuOpen;
 	private bool _settingsOpen;
 	private bool _startSettingsOpen;
+	private bool _startCardsOpen;
 	private bool _startCharacterSelectOpen;
 	private bool _pendingFinalBossKillClear;
 	private bool _suppressSettingsSignal;
@@ -155,7 +164,6 @@ public partial class GameFlowUI : Control
 
 	public override void _Process(double delta)
 	{
-		UpdateLowHealthVignette();
 		UpdateUpgradeProgressUi();
 		UpdateMatchCountdownUi();
 		TryResolvePendingPerfectClear();
@@ -174,6 +182,7 @@ public partial class GameFlowUI : Control
 		_startPanel = GetNodeOrNull<Control>(StartPanelPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
+		_startCardsPanel = GetNodeOrNull<Control>(StartCardsPanelPath);
 		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
 		_restartPanel = GetNodeOrNull<Control>(RestartPanelPath);
 		_pausePanel = GetNodeOrNull<Control>(PausePanelPath);
@@ -181,11 +190,14 @@ public partial class GameFlowUI : Control
 		_pauseSettingsPanel = GetNodeOrNull<Control>(PauseSettingsPanelPath);
 		_startButton = GetNodeOrNull<Button>(StartButtonPath);
 		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
+		_startCardsButton = GetNodeOrNull<Button>(StartCardsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
 		_startClearLeaderboardButton = GetNodeOrNull<Button>(StartClearLeaderboardButtonPath);
 		_startClearLeaderboardDialog = GetNodeOrNull<ConfirmationDialog>(StartClearLeaderboardDialogPath);
 		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
+		_startCardsBackButton = GetNodeOrNull<Button>(StartCardsBackButtonPath);
+		_startCardsContentLabel = GetNodeOrNull<Label>(StartCardsContentPath);
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
 		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
 		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
@@ -206,9 +218,9 @@ public partial class GameFlowUI : Control
 		_startSettingsSfxSlider = GetNodeOrNull<HSlider>(StartSettingsSfxSliderPath);
 		_startSettingsWindowSizeOption = GetNodeOrNull<OptionButton>(StartSettingsWindowSizePath);
 		_startSettingsWindowModeOption = GetNodeOrNull<OptionButton>(StartSettingsWindowModePath);
+		_startSettingsLanguageOption = GetNodeOrNull<OptionButton>(StartSettingsLanguagePath);
+		_settingsLanguageOption = GetNodeOrNull<OptionButton>(SettingsLanguagePath);
 		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
-		_lowHealthVignette = GetNodeOrNull<ColorRect>(LowHealthVignettePath);
-		_lowHealthMaterial = _lowHealthVignette?.Material as ShaderMaterial;
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
 		_playerHealthBar = GetNodeOrNull<Control>(PlayerHealthBarPath);
 		_experienceBarRoot = GetNodeOrNull<Control>(ExperienceBarRootPath);
@@ -247,6 +259,8 @@ public partial class GameFlowUI : Control
 			_startMainVBox.Visible = true;
 		if (_startSettingsPanel != null)
 			_startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = false;
 		RefreshPerfectLeaderboardUi();
@@ -264,9 +278,9 @@ public partial class GameFlowUI : Control
 		if (stabilityList.Count > 0)
 			_stabilitySystem = stabilityList[0] as StabilitySystem;
 
-		var pressureList = GetTree().GetNodesInGroup("PressureSystem");
-		if (pressureList.Count > 0)
-			_pressureSystem = pressureList[0] as PressureSystem;
+		var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+		if (progressionList.Count > 0)
+			_progressionSystem = progressionList[0] as ProgressionSystem;
 
 		var upgradeList = GetTree().GetNodesInGroup("UpgradeSystem");
 		if (upgradeList.Count > 0)
@@ -282,6 +296,8 @@ public partial class GameFlowUI : Control
 			_startButton.Pressed += OnStartPressed;
 		if (_startSettingsButton != null)
 			_startSettingsButton.Pressed += OnStartSettingsPressed;
+		if (_startCardsButton != null)
+			_startCardsButton.Pressed += OnStartCardsPressed;
 		if (_startQuitButton != null)
 			_startQuitButton.Pressed += OnQuitGamePressed;
 		if (_startClearLeaderboardButton != null)
@@ -290,6 +306,8 @@ public partial class GameFlowUI : Control
 			_startClearLeaderboardDialog.Confirmed += OnStartClearLeaderboardConfirmed;
 		if (_startSettingsBackButton != null)
 			_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
+		if (_startCardsBackButton != null)
+			_startCardsBackButton.Pressed += OnStartCardsBackPressed;
 		if (_startCharacterRangedButton != null)
 			_startCharacterRangedButton.Pressed += OnCharacterRangedPressed;
 		if (_startCharacterMeleeButton != null)
@@ -334,6 +352,10 @@ public partial class GameFlowUI : Control
 			_settingsWindowModeOption.ItemSelected += OnSettingsWindowModeSelected;
 		if (_startSettingsWindowModeOption != null)
 			_startSettingsWindowModeOption.ItemSelected += OnSettingsWindowModeSelected;
+		if (_settingsLanguageOption != null)
+			_settingsLanguageOption.ItemSelected += OnSettingsLanguageSelected;
+		if (_startSettingsLanguageOption != null)
+			_startSettingsLanguageOption.ItemSelected += OnSettingsLanguageSelected;
 		if (_stabilitySystem != null)
 		{
 			_stabilitySystem.Collapsed += OnUniverseCollapsed;
@@ -342,5 +364,78 @@ public partial class GameFlowUI : Control
 
 		InitializeSettingsUi();
 		LoadSettingsFromDisk();
+		ApplyLocalizedTexts();
+	}
+
+	private void RefreshStartCardsCompendium()
+	{
+		if (_startCardsContentLabel == null)
+			return;
+
+		UpgradeCatalog catalog = _upgradeSystem?.Catalog;
+		if (catalog == null)
+			catalog = GD.Load<UpgradeCatalog>("res://Data/Upgrades/DefaultUpgradeCatalog.tres");
+		if (catalog?.Entries == null || catalog.Entries.Count == 0)
+		{
+			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "No upgrade cards configured.");
+			return;
+		}
+
+		var sb = new StringBuilder();
+		int index = 1;
+		foreach (var entry in catalog.Entries)
+		{
+			if (entry == null)
+				continue;
+
+			string title = entry.GetLocalizedTitle();
+			if (string.IsNullOrWhiteSpace(title))
+				title = entry.Id.ToString();
+
+			string description = entry.GetLocalizedDescription();
+			string category = GetLocalizedUpgradeCategory(entry.Category);
+			sb.Append(index++).Append(". ").Append(title).Append('\n');
+			if (!string.IsNullOrWhiteSpace(description))
+				sb.Append(description).Append('\n');
+			sb.Append('[').Append(category).Append("] ")
+				.Append(TrOrDefault("UI.START.CARDS_MAX_STACK", "MaxStack", "MaxStack")).Append(": ")
+				.Append(Mathf.Max(1, entry.MaxStack)).Append("\n\n");
+		}
+
+		if (sb.Length == 0)
+		{
+			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "No upgrade cards configured.");
+			return;
+		}
+
+		_startCardsContentLabel.Text = sb.ToString().TrimEnd();
+	}
+
+	private string GetLocalizedUpgradeCategory(UpgradeCategory category)
+	{
+		return category switch
+		{
+			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Core Attack", "Core Attack"),
+			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Director", "Director"),
+			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Anomaly", "Anomaly"),
+			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Spatial", "Spatial"),
+			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival", "Survival"),
+			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Economy", "Economy"),
+			_ => category.ToString()
+		};
+	}
+
+	private string TrOrDefault(string key, string fallback)
+	{
+		string translated = Tr(key);
+		return string.IsNullOrWhiteSpace(translated) || translated == key ? fallback : translated;
+	}
+
+	private string TrOrDefault(string key, string fallbackEn, string fallbackZhTw)
+	{
+		string translated = Tr(key);
+		if (!string.IsNullOrWhiteSpace(translated) && translated != key)
+			return translated;
+		return TranslationServer.GetLocale().StartsWith("zh") ? fallbackZhTw : fallbackEn;
 	}
 }

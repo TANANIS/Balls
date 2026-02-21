@@ -1,4 +1,4 @@
-# TODO (2026-02-20)
+# TODO (2026-02-21)
 
 ## Current Build Status
 - [x] Character split to three roles (Ranged / Melee / TankBurst)
@@ -13,6 +13,7 @@
 - [x] 15:00 match countdown shown on top-right during run
 - [x] Perfect 15:00 dedicated end-state UI
 - [x] Start menu local leaderboard for Perfect 15:00 (score + date + character)
+- [x] Documentation sync: upgrade flow unified to EXP pickup canonical path
 
 ## Balance - Immediate
 - [x] Melee nerf pass #1
@@ -50,3 +51,10 @@
 - [ ] Stage 4 random major boss
 - [ ] Melee build branch: `DASH + MELEE COMBO`
 - [ ] Universe event framework return pass (postponed until 4-stage pacing is stable)
+
+## Skill Layer - Next Focus
+- [ ] Finalize skill-layer scope and naming contract (`SkillId`, category, rarity, stack policy)
+- [ ] Define skill data source and authoring format (Resource/CSV) and migration plan
+- [ ] Implement runtime skill application entry and compatibility gates
+- [ ] Integrate skill-layer choices into upgrade menu presentation
+- [ ] Add debug/dev cheats for rapid skill-layer validation (grant/clear/list)

@@ -1,0 +1,58 @@
+keys,en,zh_TW
+UI.COMMON.SETTINGS,Settings,設定
+UI.COMMON.BACK,Back,返回
+UI.COMMON.QUIT,Quit,離開
+UI.COMMON.QUIT_GAME,Quit Game,離開遊戲
+UI.COMMON.UNKNOWN,Unknown,未知
+UI.COMMON.NONE,none,無
+UI.START.TITLE,PROJECT GENESIS,PROJECT GENESIS
+UI.START.SUBTITLE,Survive the collapsing universe and build your strategy.,在崩壞宇宙中生存並建立你的戰術。
+UI.START.DESC,"Controls:\nMove: W A S D\nConfirm / Menu: Left Mouse\nPause: Esc\n\nAfter pressing Start, choose your operator loadout.\n\nGoal:\nSurvive for 15 minutes before the universe collapses.","操作：\n移動：W A S D\n確認 / 選單：滑鼠左鍵\n暫停：Esc\n\n按下開始後，先選擇你的角色配置。\n\n目標：\n在宇宙崩壞前生存 15 分鐘。"
+UI.START.BUTTON_START,Start,開始
+UI.START.CONFIRM_START_RUN,Start Run,開始戰局
+UI.START.PERFECT_BOARD_TITLE,Perfect 15:00 Leaderboard (Local),完美 15:00 排行榜（本機）
+UI.START.PERFECT_BOARD_EMPTY,"No perfect clears yet.\nSurvive the full 15:00 to enter local leaderboard.","目前還沒有完美通關紀錄。\n完整生存 15:00 即可進入本機排行榜。"
+UI.START.CLEAR_LEADERBOARD,Clear Leaderboard Record,清除排行榜紀錄
+UI.START.CLEAR_DIALOG_TITLE,Clear Leaderboard,清除排行榜
+UI.START.CLEAR_DIALOG_TEXT,"Are you sure you want to clear all local perfect-clear records?\nThis action cannot be undone.","確定要清除所有本機完美通關紀錄嗎？\n此動作無法復原。"
+UI.START.CLEAR_DIALOG_OK,Clear,清除
+UI.START.NO_CHARACTER_DEF,No character definition loaded.,尚未載入角色定義。
+UI.PAUSE.TITLE,PAUSED,已暫停
+UI.PAUSE.RESUME,Resume,繼續
+UI.PAUSE.RESTART_RUN,Restart Run,重新開始
+UI.PAUSE.BACK_TO_MENU,Back To Menu,返回主選單
+UI.END.TITLE_FAILURE,SYSTEM FAILURE,系統失效
+UI.END.TITLE_PERFECT,PERFECT CLEAR,完美通關
+UI.END.PERFECT_BANNER,PERFECT SURVIVAL,完美生存
+UI.END.HINT_RESTART,Press the button to restart this run.,按下按鈕重新開始本局。
+UI.END.HINT_PERFECT,"You survived the full 15:00. Press to start another perfect run.","你已完整生存 15:00。按下可開始下一局挑戰。"
+UI.END.SURVIVAL,Survival,生存時間
+UI.END.REASON_PLAYER_DOWN,Player Down,玩家倒下
+UI.END.REASON_UNIVERSE_COLLAPSED,Universe Collapsed,宇宙崩壞
+UI.END.REASON_PERFECT_CLEAR,Perfect 15:00 Clear,完美 15:00 通關
+UI.HUD.SCORE,Score,分數
+UI.HUD.XP,XP,經驗
+UI.HUD.LEVEL,LV,等級
+UI.HUD.READY,READY,可升級
+UI.SETTINGS.BGM,BGM Volume,BGM 音量
+UI.SETTINGS.SFX,SFX Volume,SFX 音量
+UI.SETTINGS.WINDOW_MODE,Window Mode,視窗模式
+UI.SETTINGS.WINDOW_SIZE,Window Size,視窗大小
+UI.SETTINGS.LANGUAGE,Language,語言
+UI.SETTINGS.OPTION_WINDOWED,Windowed,視窗化
+UI.SETTINGS.OPTION_FULLSCREEN,Fullscreen,全螢幕
+UI.UPGRADE.TITLE,CHOOSE UPGRADE,選擇升級
+UI.BUILD.CURRENT,Current Build,目前構築
+UI.BUILD.SUMMARY,Build Summary,構築摘要
+UI.BUILD.NONE_YET,No upgrades selected yet.,尚未選擇任何升級。
+UI.BUILD.NONE_IN_RUN,No upgrades selected in this run.,本局尚未選擇任何升級。
+UI.BUILD.CATEGORY_SHARE_PREFIX,Category Share:,類別占比：
+UI.BUILD.CATEGORY_SHARE_NONE,Category Share: none,類別占比：無
+UI.BUILD.KEY_UPGRADES_PREFIX,Key Upgrades:,關鍵升級：
+UI.BUILD.KEY_UPGRADES_NONE,Key Upgrades: none,關鍵升級：無
+UI.CATEGORY.CORE_ATTACK,Core Attack,主武器
+UI.CATEGORY.DIRECTOR,Director,節奏
+UI.CATEGORY.ANOMALY,Anomaly,異常
+UI.CATEGORY.SPATIAL,Spatial,空間
+UI.CATEGORY.SURVIVAL,Survival,生存
+UI.CATEGORY.ECONOMY,Economy,經濟

@@ -75,3 +75,57 @@
 - UI/leaderboard:
   - Added start-menu leaderboard clear feature with confirmation dialog.
   - Local perfect-clear leaderboard can now be explicitly reset from title UI.
+- Docs and handoff readiness:
+  - Unified markdown docs to current canonical progression flow:
+    - `ExperiencePickup -> ProgressionSystem EXP -> queued level-up -> UpgradeMenu`.
+    - Clarified pressure is pacing signal; EXP is default leveling trigger.
+  - Added "Skill Layer - Next Focus" checklist in `docs/TODO.md` for upcoming implementation phase.
+- Pressure retirement pass:
+  - Added `ProgressionSystem` and moved XP progress/level-up queue ownership out of `PressureSystem`.
+  - Updated `ExperiencePickup`, `GameFlowUI`, and `UpgradeSystem` to consume `ProgressionSystem` directly.
+  - Refactored `SpawnSystem` tier selection to use stability phase mapping only.
+  - Removed `PressureSystem` scripts and node from `SystemsRoot`.
+
+## Session Update (2026-02-21, Skill VFX Standardization)
+- Standardized skill effect sprite path contract:
+  - `Assets/Sprites/Skills/<SkillName>/`
+- Added docs for current runtime practice and fallback binding:
+  - `docs/CARDS.md` (card + skill VFX authoring note)
+  - `docs/ARCHITECTURE.md` (system-level asset contract)
+  - `Assets/Sprites/Skills/README.md` (asset folder rules)
+- Current live reference remains shield cooldown skill:
+  - runtime: `Scripts/Player/PlayerHealth.cs`
+  - fallback asset: `res://Assets/Sprites/Skills/Shield/shield.png`
+  - scene anchor: `Scenes/Player.tscn` -> `SkillVfxRoot`
+  - accessor standard: `Player.GetSkillVfxRoot()` for future player-side skill VFX
+
+## Session Update (2026-02-21, UI + Character Select + Shield Visibility)
+- Start menu UI layout pass:
+  - Redesigned to two-column composition.
+  - Left side focuses on game text/leaderboard.
+  - Right-side action rail hosts primary buttons for cleaner navigation.
+- Main menu secondary cards panel:
+  - Added "Cards" button and secondary panel for in-run card compendium preview.
+  - Card list is populated dynamically from active upgrade catalog.
+- Character select presentation upgrade:
+  - Added localized character copy (`en` / `zh_TW`) in character definitions.
+  - Character panel now shows structured gameplay summary:
+    - attack profile (single/melee/burst),
+    - mobility (dash/base),
+    - survival baseline (HP/regen).
+- Damage feedback adjustment:
+  - Removed camera zoom-in on player hit.
+  - Kept player sprite white-flash feedback only.
+- Shield visibility reliability pass:
+  - Introduced dedicated `SkillVfxRoot` under player scene.
+  - Shield visuals now resolve to `Player.GetSkillVfxRoot()` first.
+  - Added fallback ring + scaling/transparency tuning to ensure readable visibility.
+  - Reduced default shield size and opacity to lower screen obstruction.
+
+## Git Sync Note (2026-02-21)
+- Synced latest gameplay/UI polish and VFX-node architecture updates.
+- Commit includes:
+  - Start menu structure + localization path updates.
+  - Character select bilingual presentation refresh.
+  - Player skill VFX root architecture and shield behavior/display fixes.
+  - Cards/architecture documentation updates for new conventions.

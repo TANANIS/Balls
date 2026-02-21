@@ -17,7 +17,8 @@ public partial class PlayerMelee
 
 		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
 		float runtimeRange = Range * (1f + ((powerMult - 1f) * 0.25f));
-		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
+		float dmgMult = Mathf.Max(0.1f, DamageMultiplier);
+		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * dmgMult * powerMult));
 
 		SpawnVfx(attackDir, runtimeRange);
 		QueryAndApplyMeleeDamage(attackDir, runtimeRange, runtimeDamage);

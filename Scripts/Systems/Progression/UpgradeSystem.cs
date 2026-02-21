@@ -12,10 +12,8 @@ public partial class UpgradeSystem : Node
 
 	// Cached runtime dependencies.
 	private Player _player;
-	private PlayerDash _dash;
 	private PlayerHealth _playerHealth;
-	private PressureSystem _pressureSystem;
-	private StabilitySystem _stabilitySystem;
+	private ProgressionSystem _progressionSystem;
 	private int _appliedUpgradeCount = 0;
 	private readonly Dictionary<UpgradeId, UpgradeDefinition> _definitions = new();
 	private readonly Dictionary<UpgradeId, int> _stacks = new();
@@ -40,16 +38,11 @@ public partial class UpgradeSystem : Node
 			return;
 		}
 
-		_dash = _player.GetNodeOrNull<PlayerDash>("Dash");
 		_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
-		var pressureList = GetTree().GetNodesInGroup("PressureSystem");
-		if (pressureList.Count > 0)
-			_pressureSystem = pressureList[0] as PressureSystem;
-
-		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
-		if (stabilityList.Count > 0)
-			_stabilitySystem = stabilityList[0] as StabilitySystem;
+		var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+		if (progressionList.Count > 0)
+			_progressionSystem = progressionList[0] as ProgressionSystem;
 
 		RebuildDefinitionIndex();
 	}
@@ -70,68 +63,41 @@ public partial class UpgradeSystem : Node
 		}
 
 		// One place where all numeric gameplay mutations are applied.
+		int nextStack = GetStack(id) + 1;
 		switch (id)
 		{
-			case UpgradeId.PrimaryDamageUp:
-				_player?.AddPrimaryDamage(1);
+			case UpgradeId.AtkSpeedUp15:
+				_player?.MultiplyPrimaryCooldown(GetAttackSpeedCooldownFactor(nextStack));
 				break;
-			case UpgradeId.PrimaryFasterFire:
-				_player?.MultiplyPrimaryCooldown(0.88f);
+			case UpgradeId.AtkCooldownDown10:
+				_player?.MultiplyPrimaryCooldown(GetCooldownReductionFactor(nextStack));
 				break;
-			case UpgradeId.PrimaryProjectileSpeedUp:
-				_player?.AddPrimaryProjectileSpeed(120f);
+			case UpgradeId.AtkProjectilePlus1:
+				_player?.AddPrimaryProjectileCount(1);
 				break;
-			case UpgradeId.SecondaryDamageUp:
-				_player?.AddSecondaryDamage(1);
+			case UpgradeId.AtkSplitShot:
+				_player?.AddPrimarySplitShot(1);
 				break;
-			case UpgradeId.SecondaryRangeUp:
-				_player?.AddSecondaryRange(10f);
+			case UpgradeId.AtkDamageUp20:
+				_player?.MultiplyPrimaryDamage(GetDamageMultiplier(nextStack));
 				break;
-			case UpgradeId.SecondaryWiderArc:
-				_player?.AddSecondaryArc(15f);
+			case UpgradeId.AtkCritChanceUp10:
+				_player?.AddPrimaryCritChance(GetCritChanceAdd(nextStack));
 				break;
-			case UpgradeId.PressureKillProgressUp:
-				_pressureSystem?.MultiplyKillProgressGain(1.18f);
-				break;
-			case UpgradeId.PressureThresholdDown:
-				_pressureSystem?.AddTriggerThresholdOffset(-6f);
-				break;
-			case UpgradeId.PressureTriggerReliefUp:
-				_pressureSystem?.AddPressureDropOnTrigger(6f);
-				break;
-			case UpgradeId.PressureTimeProgressUp:
-				_pressureSystem?.MultiplyTimeProgressGain(1.15f);
-				break;
-			case UpgradeId.StabilityDecayDown:
-				_stabilitySystem?.MultiplyDecayRate(0.90f);
-				break;
-			case UpgradeId.StabilityRecoveryPulse:
-				_stabilitySystem?.TryRecover(8f, "upgrade pulse");
-				break;
-			case UpgradeId.AnomalyLongerEvents:
-				_stabilitySystem?.MultiplyEventDuration(1.15f);
-				break;
-			case UpgradeId.AnomalyPowerResonance:
-				_stabilitySystem?.AddPlayerPowerBonus(0.04f);
-				break;
-			case UpgradeId.DashFasterCooldown:
-				_dash?.MultiplyCooldown(0.88f);
-				break;
-			case UpgradeId.DashSpeedUp:
-				_dash?.AddSpeed(90f);
-				break;
-			case UpgradeId.DashLonger:
-				_dash?.AddDuration(0.03f);
-				break;
-			case UpgradeId.DashIFrameUp:
-				_dash?.AddIFrame(0.015f);
-				break;
-			case UpgradeId.MaxHpUp:
+			case UpgradeId.SurvMaxHpPlus1:
 				_playerHealth?.AddMaxHp(1);
 				break;
-			case UpgradeId.RiskVolatileArms:
-				_player?.AddAllAttackDamage(2);
-				_pressureSystem?.AddTriggerThresholdOffset(5f);
+			case UpgradeId.SurvShieldCooldown:
+				_playerHealth?.EnableShield(60f);
+				break;
+			case UpgradeId.SurvLifestealCloseKill:
+				_progressionSystem?.EnableKillChanceLifesteal(1, 0.25f);
+				break;
+			case UpgradeId.EcoExpGainUp20:
+				_progressionSystem?.MultiplyKillProgressGain(GetExpGainMultiplier(nextStack));
+				break;
+			case UpgradeId.EcoPickupRadiusUp25:
+				_progressionSystem?.MultiplyPickupRadius(GetPickupRadiusMultiplier(nextStack));
 				break;
 		}
 
@@ -186,5 +152,63 @@ public partial class UpgradeSystem : Node
 		int count = 0;
 		_categoryPickCounts.TryGetValue(category, out count);
 		_categoryPickCounts[category] = count + 1;
+	}
+
+	private static float GetAttackSpeedCooldownFactor(int stack)
+	{
+		return stack switch
+		{
+			1 => 1f / 1.15f,
+			2 => 1f / 1.12f,
+			_ => 1f / 1.08f
+		};
+	}
+
+	private static float GetCooldownReductionFactor(int stack)
+	{
+		return stack switch
+		{
+			1 => 0.90f,
+			2 => 0.92f,
+			_ => 0.94f
+		};
+	}
+
+	private static float GetDamageMultiplier(int stack)
+	{
+		return stack switch
+		{
+			1 => 1.20f,
+			2 => 1.15f,
+			_ => 1.10f
+		};
+	}
+
+	private static float GetCritChanceAdd(int stack)
+	{
+		return stack switch
+		{
+			1 => 0.10f,
+			2 => 0.08f,
+			_ => 0.06f
+		};
+	}
+
+	private static float GetExpGainMultiplier(int stack)
+	{
+		return stack switch
+		{
+			1 => 1.20f,
+			_ => 1.15f
+		};
+	}
+
+	private static float GetPickupRadiusMultiplier(int stack)
+	{
+		return stack switch
+		{
+			1 => 1.25f,
+			_ => 1.20f
+		};
 	}
 }

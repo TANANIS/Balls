@@ -3,16 +3,6 @@ using System;
 
 public partial class SpawnSystem
 {
-	private void EnsurePressureSystem()
-	{
-		if (IsInstanceValid(_pressureSystem))
-			return;
-
-		var list = GetTree().GetNodesInGroup("PressureSystem");
-		if (list.Count > 0)
-			_pressureSystem = list[0] as PressureSystem;
-	}
-
 	private void EnsureUpgradeSystem()
 	{
 		if (IsInstanceValid(_upgradeSystem))
@@ -66,8 +56,7 @@ public partial class SpawnSystem
 		if (!UseTierRulesCsv || _tierRules.Count == 0)
 			return;
 
-		float pressure = _pressureSystem?.CurrentPressure ?? 0f;
-		int idx = FindTierRuleIndex(pressure);
+		int idx = FindTierRuleIndex();
 		if (idx < 0)
 			return;
 		if (idx == _activeTierRuleIndex)
@@ -92,7 +81,7 @@ public partial class SpawnSystem
 		if (VerboseLog)
 		{
 			DebugSystem.Log(
-				$"[SpawnSystem] Tier={active.Tier} pressure={pressure:F1} " +
+				$"[SpawnSystem] Tier={active.Tier} " +
 				$"spawn={_activeSpawnIntervalMin:F2}-{_activeSpawnIntervalMax:F2}s " +
 				$"budget={_activeBudgetMin}-{_activeBudgetMax} maxAlive={_activeMaxAlive} " +
 				$"radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0} phase={GetCurrentPhase()}");
@@ -217,7 +206,7 @@ public partial class SpawnSystem
 	private float GetCurrentTierProgress01()
 	{
 		if (!IsInstanceValid(_stabilitySystem))
-			return GetPressureDrivenTierProgressFallback();
+			return 0f;
 
 		float elapsed = _stabilitySystem.ElapsedSeconds;
 		float stableEnd = Mathf.Max(1f, _stabilitySystem.StablePhaseEndSeconds);
@@ -249,21 +238,6 @@ public partial class SpawnSystem
 
 		float duration = Mathf.Max(1f, phaseEnd - phaseStart);
 		return Mathf.Clamp((elapsed - phaseStart) / duration, 0f, 1f);
-	}
-
-	private float GetPressureDrivenTierProgressFallback()
-	{
-		if (_activeTierRuleIndex < 0 || _activeTierRuleIndex >= _tierRules.Count)
-			return 0f;
-
-		TierRule rule = _tierRules[_activeTierRuleIndex];
-		float span = rule.PressureMax - rule.PressureMin;
-		if (span <= 0.01f)
-			return 0f;
-
-		float pressure = _pressureSystem?.CurrentPressure ?? rule.PressureMin;
-		float normalized = (pressure - rule.PressureMin) / span;
-		return Mathf.Clamp(normalized, 0f, 1f);
 	}
 
 	private int GetPhasePackCount()
@@ -411,33 +385,27 @@ public partial class SpawnSystem
 		return Mathf.Max(0, _upgradeSystem.AppliedUpgradeCount);
 	}
 
-	private int FindTierRuleIndex(float pressure)
+	private int FindTierRuleIndex()
 	{
-		if (IsInstanceValid(_stabilitySystem) && _tierRules.Count > 0)
-		{
-			int phaseTier = GetCurrentPhase() switch
-			{
-				StabilitySystem.StabilityPhase.Stable => 0,
-				StabilitySystem.StabilityPhase.EnergyAnomaly => 1,
-				StabilitySystem.StabilityPhase.StructuralFracture => 2,
-				StabilitySystem.StabilityPhase.CollapseCritical => 3,
-				_ => 0
-			};
+		if (_tierRules.Count <= 0)
+			return -1;
 
-			for (int i = 0; i < _tierRules.Count; i++)
-			{
-				if (_tierRules[i].Tier == phaseTier)
-					return i;
-			}
-		}
+		int phaseTier = GetCurrentPhase() switch
+		{
+			StabilitySystem.StabilityPhase.Stable => 0,
+			StabilitySystem.StabilityPhase.EnergyAnomaly => 1,
+			StabilitySystem.StabilityPhase.StructuralFracture => 2,
+			StabilitySystem.StabilityPhase.CollapseCritical => 3,
+			_ => 0
+		};
 
 		for (int i = 0; i < _tierRules.Count; i++)
 		{
-			TierRule rule = _tierRules[i];
-			if (pressure >= rule.PressureMin && pressure < rule.PressureMax)
+			if (_tierRules[i].Tier == phaseTier)
 				return i;
 		}
 
-		return _tierRules.Count > 0 ? _tierRules.Count - 1 : -1;
+		// If CSV tier ids are unexpected/missing, keep runtime stable by falling back to first row.
+		return 0;
 	}
 }

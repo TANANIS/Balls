@@ -47,6 +47,7 @@ public partial class AudioManager
 		// Centralized asset mapping so call sites only call Play* APIs.
 		_bgmMenu = GD.Load<AudioStream>("res://Assets/Sound/bgm_menu.mp3");
 		_bgmGameplay = GD.Load<AudioStream>("res://Assets/Sound/bgm_gameplay.mp3");
+		ApplyBgmLoopSettings();
 
 		_sfxUiButton = GD.Load<AudioStream>("res://Assets/Sound/sfx_ui_button.wav");
 		_sfxUiExit = GD.Load<AudioStream>("res://Assets/Sound/sfx_ui_exit.wav");
@@ -72,5 +73,13 @@ public partial class AudioManager
 		var list = GetTree().GetNodesInGroup("CombatSystem");
 		if (list.Count > 0 && list[0] is CombatSystem combat)
 			combat.EnemyKilled += OnEnemyKilled;
+	}
+
+	private void ApplyBgmLoopSettings()
+	{
+		if (_bgmMenu is AudioStreamMP3 menuMp3)
+			menuMp3.Loop = true;
+		if (_bgmGameplay is AudioStreamMP3 gameplayMp3)
+			gameplayMp3.Loop = true;
 	}
 }

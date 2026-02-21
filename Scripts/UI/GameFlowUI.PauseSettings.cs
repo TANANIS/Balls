@@ -16,6 +16,11 @@ public partial class GameFlowUI
 			OnCharacterSelectBackPressed();
 			return;
 		}
+		if (!_started && _startCardsOpen && Input.IsActionJustPressed("ui_cancel"))
+		{
+			OnStartCardsBackPressed();
+			return;
+		}
 
 		if (!_started || _ending)
 			return;
@@ -169,18 +174,33 @@ public partial class GameFlowUI
 		if (_settingsWindowModeOption != null)
 		{
 			_settingsWindowModeOption.Clear();
-			_settingsWindowModeOption.AddItem("Windowed");
-			_settingsWindowModeOption.AddItem("Fullscreen");
+			_settingsWindowModeOption.AddItem(Tr("UI.SETTINGS.OPTION_WINDOWED"));
+			_settingsWindowModeOption.AddItem(Tr("UI.SETTINGS.OPTION_FULLSCREEN"));
 			var mode = DisplayServer.WindowGetMode();
 			_settingsWindowModeOption.Select(mode == DisplayServer.WindowMode.Fullscreen ? 1 : 0);
 		}
 		if (_startSettingsWindowModeOption != null)
 		{
 			_startSettingsWindowModeOption.Clear();
-			_startSettingsWindowModeOption.AddItem("Windowed");
-			_startSettingsWindowModeOption.AddItem("Fullscreen");
+			_startSettingsWindowModeOption.AddItem(Tr("UI.SETTINGS.OPTION_WINDOWED"));
+			_startSettingsWindowModeOption.AddItem(Tr("UI.SETTINGS.OPTION_FULLSCREEN"));
 			var mode = DisplayServer.WindowGetMode();
 			_startSettingsWindowModeOption.Select(mode == DisplayServer.WindowMode.Fullscreen ? 1 : 0);
+		}
+
+		if (_settingsLanguageOption != null)
+		{
+			_settingsLanguageOption.Clear();
+			_settingsLanguageOption.AddItem("English");
+			_settingsLanguageOption.AddItem("繁體中文");
+			_settingsLanguageOption.Select(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
+		}
+		if (_startSettingsLanguageOption != null)
+		{
+			_startSettingsLanguageOption.Clear();
+			_startSettingsLanguageOption.AddItem("English");
+			_startSettingsLanguageOption.AddItem("繁體中文");
+			_startSettingsLanguageOption.Select(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
 		}
 
 		SyncWindowSizeOptionWithCurrent();
@@ -243,6 +263,21 @@ public partial class GameFlowUI
 		SaveSettingsToDisk();
 	}
 
+	private void OnSettingsLanguageSelected(long index)
+	{
+		if (_suppressSettingsSignal)
+			return;
+		_suppressSettingsSignal = true;
+		if (_settingsLanguageOption != null && _settingsLanguageOption.Selected != (int)index)
+			_settingsLanguageOption.Select((int)index);
+		if (_startSettingsLanguageOption != null && _startSettingsLanguageOption.Selected != (int)index)
+			_startSettingsLanguageOption.Select((int)index);
+		_suppressSettingsSignal = false;
+		ApplyLocale(GetLocaleByIndex((int)index));
+		InitializeSettingsUi();
+		SaveSettingsToDisk();
+	}
+
 	private void ApplyWindowSizeByIndex(int index)
 	{
 		Vector2I size = index switch
@@ -279,6 +314,7 @@ public partial class GameFlowUI
 		cfg.SetValue("audio", "sfx", _settingsSfxSlider != null ? _settingsSfxSlider.Value : 100.0);
 		cfg.SetValue("window", "mode", _settingsWindowModeOption != null ? _settingsWindowModeOption.Selected : 0);
 		cfg.SetValue("window", "size", _settingsWindowSizeOption != null ? _settingsWindowSizeOption.Selected : 0);
+		cfg.SetValue("locale", "language", _settingsLanguageOption != null ? _settingsLanguageOption.Selected : 0);
 		cfg.Save(SettingsPath);
 	}
 
@@ -286,7 +322,16 @@ public partial class GameFlowUI
 	{
 		var cfg = new ConfigFile();
 		if (cfg.Load(SettingsPath) != Error.Ok)
+		{
+			_suppressSettingsSignal = true;
+			if (_settingsLanguageOption != null)
+				_settingsLanguageOption.Select(0);
+			if (_startSettingsLanguageOption != null)
+				_startSettingsLanguageOption.Select(0);
+			_suppressSettingsSignal = false;
+			ApplyLocale(LocaleEnglish);
 			return;
+		}
 
 		_suppressSettingsSignal = true;
 
@@ -294,6 +339,7 @@ public partial class GameFlowUI
 		float sfx = Mathf.Clamp((float)(double)cfg.GetValue("audio", "sfx", 100.0), 0f, 100f);
 		int mode = (int)(long)cfg.GetValue("window", "mode", 0L);
 		int size = (int)(long)cfg.GetValue("window", "size", 0L);
+		int language = (int)(long)cfg.GetValue("locale", "language", 0L);
 
 		if (_settingsBgmSlider != null)
 			_settingsBgmSlider.Value = bgm;
@@ -318,6 +364,13 @@ public partial class GameFlowUI
 			_startSettingsWindowSizeOption.Select(Mathf.Clamp(size, 0, 2));
 		if (mode == 0)
 			ApplyWindowSizeByIndex(size);
+
+		int clampedLanguage = Mathf.Clamp(language, 0, 1);
+		if (_settingsLanguageOption != null)
+			_settingsLanguageOption.Select(clampedLanguage);
+		if (_startSettingsLanguageOption != null)
+			_startSettingsLanguageOption.Select(clampedLanguage);
+		ApplyLocale(GetLocaleByIndex(clampedLanguage));
 
 		_suppressSettingsSignal = false;
 	}

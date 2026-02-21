@@ -1,4 +1,5 @@
 using Godot;
+using System.Text;
 
 public partial class GameFlowUI
 {
@@ -10,11 +11,13 @@ public partial class GameFlowUI
 		_pauseMenuOpen = false;
 		_settingsOpen = false;
 		_startSettingsOpen = false;
+		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
 		if (_startMainVBox != null) _startMainVBox.Visible = true;
 		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null) _startCardsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
@@ -58,7 +61,7 @@ public partial class GameFlowUI
 		// Present restart state only if the run was actually started.
 		if (!_started || _ending)
 			return;
-		EnterEndState("Player Down", true);
+		EnterEndState(Tr("UI.END.REASON_PLAYER_DOWN"), true);
 	}
 
 	private void OnRestartPressed()
@@ -75,14 +78,35 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_startSettingsOpen = true;
+		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
 		if (_startMainVBox != null)
 			_startMainVBox.Visible = false;
 		if (_startSettingsPanel != null)
 			_startSettingsPanel.Visible = true;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = false;
 		_startSettingsBackButton?.GrabFocus();
+	}
+
+	private void OnStartCardsPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startSettingsOpen = false;
+		_startCardsOpen = true;
+		_startCharacterSelectOpen = false;
+		if (_startMainVBox != null)
+			_startMainVBox.Visible = false;
+		if (_startSettingsPanel != null)
+			_startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = true;
+		if (_startCharacterSelectPanel != null)
+			_startCharacterSelectPanel.Visible = false;
+		RefreshStartCardsCompendium();
+		_startCardsBackButton?.GrabFocus();
 	}
 
 	private void OnStartSettingsBackPressed()
@@ -98,14 +122,32 @@ public partial class GameFlowUI
 		_startSettingsButton?.GrabFocus();
 	}
 
+	private void OnStartCardsBackPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiExit();
+		_startCardsOpen = false;
+		if (_startMainVBox != null)
+			_startMainVBox.Visible = true;
+		if (_startSettingsPanel != null)
+			_startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = false;
+		if (_startCharacterSelectPanel != null)
+			_startCharacterSelectPanel.Visible = false;
+		_startCardsButton?.GrabFocus();
+	}
+
 	private void EnterCharacterSelect()
 	{
 		_startSettingsOpen = false;
+		_startCardsOpen = false;
 		_startCharacterSelectOpen = true;
 		if (_startMainVBox != null)
 			_startMainVBox.Visible = false;
 		if (_startSettingsPanel != null)
 			_startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = true;
 
@@ -121,17 +163,64 @@ public partial class GameFlowUI
 		if (_startCharacterDescriptionLabel != null)
 		{
 			if (_selectedCharacterDefinition != null)
-				_startCharacterDescriptionLabel.Text = $"{_selectedCharacterDefinition.DisplayName}\n{_selectedCharacterDefinition.Description}";
+				_startCharacterDescriptionLabel.Text = BuildCharacterPresentation(_selectedCharacterDefinition);
 			else
-				_startCharacterDescriptionLabel.Text = "No character definition loaded.";
+				_startCharacterDescriptionLabel.Text = Tr("UI.START.NO_CHARACTER_DEF");
 		}
 
 		if (_startCharacterRangedButton != null && _rangedCharacter != null)
-			_startCharacterRangedButton.Text = _rangedCharacter.DisplayName;
+			_startCharacterRangedButton.Text = _rangedCharacter.GetLocalizedDisplayName();
 		if (_startCharacterMeleeButton != null && _meleeCharacter != null)
-			_startCharacterMeleeButton.Text = _meleeCharacter.DisplayName;
+			_startCharacterMeleeButton.Text = _meleeCharacter.GetLocalizedDisplayName();
 		if (_startCharacterTankButton != null && _tankCharacter != null)
-			_startCharacterTankButton.Text = _tankCharacter.DisplayName;
+			_startCharacterTankButton.Text = _tankCharacter.GetLocalizedDisplayName();
+	}
+
+	private string BuildCharacterPresentation(CharacterDefinition def)
+	{
+		bool zh = TranslationServer.GetLocale().StartsWith("zh");
+		var sb = new StringBuilder();
+		sb.Append(def.GetLocalizedDisplayName()).Append('\n');
+		sb.Append(def.GetLocalizedDescription()).Append("\n\n");
+		sb.Append(zh ? "攻擊型態: " : "Attack: ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
+		sb.Append(zh ? "機動: " : "Mobility: ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
+		sb.Append(zh ? "生存: " : "Survival: ").Append(GetSurvivalRoleLabel(def, zh));
+		return sb.ToString();
+	}
+
+	private static string GetPrimaryRoleLabel(CharacterDefinition def, bool zh)
+	{
+		if (def.PrimaryAbility == AttackAbilityKind.Melee)
+			return zh ? "近戰" : "Melee";
+
+		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst3)
+			return zh ? "三發連射" : "3-round burst";
+
+		if (def.PrimaryAbility == AttackAbilityKind.Ranged)
+			return zh ? "單發射擊" : "Single shot";
+
+		return zh ? "基礎" : "Basic";
+	}
+
+	private static string GetMobilityRoleLabel(CharacterDefinition def, bool zh)
+	{
+		if (def.MobilityAbility == MobilityAbilityKind.Dash)
+			return zh ? "空白鍵 Dash" : "Spacebar Dash";
+		return zh ? "基礎移動" : "Base movement";
+	}
+
+	private static string GetSurvivalRoleLabel(CharacterDefinition def, bool zh)
+	{
+		if (def.RegenAmount > 0)
+		{
+			if (zh)
+				return $"初始血量較高 ({def.MaxHp})，每 {def.RegenIntervalSeconds:0} 秒回復 {def.RegenAmount}。";
+			return $"Higher base HP ({def.MaxHp}), recovers {def.RegenAmount} every {def.RegenIntervalSeconds:0}s.";
+		}
+
+		return zh
+			? $"初始血量 {def.MaxHp}。"
+			: $"Base HP {def.MaxHp}.";
 	}
 
 	private void OnCharacterRangedPressed()
@@ -183,11 +272,13 @@ public partial class GameFlowUI
 		_pauseMenuOpen = false;
 		_settingsOpen = false;
 		_startSettingsOpen = false;
+		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
 		if (_startMainVBox != null) _startMainVBox.Visible = true;
 		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
+		if (_startCardsPanel != null) _startCardsPanel.Visible = false;
 		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
@@ -260,11 +351,8 @@ public partial class GameFlowUI
 			node.SetPhysicsProcess(false);
 		}
 
-		if (_lowHealthMaterial != null)
-			_lowHealthMaterial.SetShaderParameter("intensity", 1f);
-
 		await ToSignal(GetTree().CreateTimer(1.35f), SceneTreeTimer.SignalName.Timeout);
-		EnterEndState("Universe Collapsed", true);
+		EnterEndState(Tr("UI.END.REASON_UNIVERSE_COLLAPSED"), true);
 	}
 
 	private void OnMatchDurationReached()
@@ -279,7 +367,7 @@ public partial class GameFlowUI
 			return;
 		}
 
-		EnterEndState("Perfect 15:00 Clear", false);
+		EnterEndState(Tr("UI.END.REASON_PERFECT_CLEAR"), false);
 	}
 
 	private void TryResolvePendingPerfectClear()
@@ -290,7 +378,7 @@ public partial class GameFlowUI
 			return;
 
 		_pendingFinalBossKillClear = false;
-		EnterEndState("Perfect 15:00 Clear", false);
+		EnterEndState(Tr("UI.END.REASON_PERFECT_CLEAR"), false);
 	}
 
 	private bool HasAliveMiniBoss()
@@ -327,13 +415,13 @@ public partial class GameFlowUI
 
 		bool isPerfectClear = !isFailure;
 		if (_restartTitleLabel != null)
-			_restartTitleLabel.Text = isFailure ? "SYSTEM FAILURE" : "PERFECT CLEAR";
+			_restartTitleLabel.Text = isFailure ? Tr("UI.END.TITLE_FAILURE") : Tr("UI.END.TITLE_PERFECT");
 		if (_restartPerfectBannerLabel != null)
 			_restartPerfectBannerLabel.Visible = isPerfectClear;
 		if (_restartHintLabel != null)
 			_restartHintLabel.Text = isFailure
-				? "Press the button to restart this run."
-				: "You survived the full 15:00. Press to start another perfect run.";
+				? Tr("UI.END.HINT_RESTART")
+				: Tr("UI.END.HINT_PERFECT");
 
 		int score = _scoreSystem != null ? _scoreSystem.Score : 0;
 		int seconds = _stabilitySystem != null ? Mathf.FloorToInt(_stabilitySystem.ElapsedSeconds) : 0;
@@ -342,12 +430,10 @@ public partial class GameFlowUI
 			RecordPerfectClear(score, ResolvePerfectCharacterName());
 
 		if (_finalScoreLabel != null)
-			_finalScoreLabel.Text = $"{reason}\nSurvival: {survival}\nScore: {score}";
+			_finalScoreLabel.Text = $"{reason}\n{Tr("UI.END.SURVIVAL")}: {survival}\n{Tr("UI.HUD.SCORE")}: {score}";
 
 		RefreshFinalBuildSummary();
 
-		if (_lowHealthMaterial != null)
-			_lowHealthMaterial.SetShaderParameter("intensity", 0f);
 		if (_matchCountdownLabel != null)
 			_matchCountdownLabel.Visible = false;
 		if (_playerHealthBar != null)
@@ -375,6 +461,6 @@ public partial class GameFlowUI
 		if (!string.IsNullOrWhiteSpace(name))
 			return name;
 
-		return "Unknown";
+		return Tr("UI.COMMON.UNKNOWN");
 	}
 }

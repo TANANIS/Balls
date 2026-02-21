@@ -7,7 +7,9 @@
 script = ExtResource("1_char_def")
 CharacterId = "tank_burst"
 DisplayName = "Bulwark Core"
-Description = "5 HP. Recovers 1 HP every 60s. Reduced move speed. Primary attack fires a heavy 3-round burst with strong knockback."
+DisplayNameZhTw = "堡壘核心"
+Description = "Frontline anchor with high durability. Fires heavy 3-round bursts with strong knockback, trading speed for control."
+DescriptionZhTw = "高耐久前線核心。主武器為高擊退三連發，以機動換取站場與控場能力。"
 CoreSprite = ExtResource("2_bulwark_core")
 PrimaryAbility = 1
 SecondaryAbility = 0

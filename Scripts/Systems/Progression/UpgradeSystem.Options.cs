@@ -4,16 +4,7 @@ using System.Collections.Generic;
 public partial class UpgradeSystem
 {
 	// Fallback list used when catalog data is missing.
-	private static readonly List<UpgradeOptionData> FallbackOptions = new()
-	{
-		new UpgradeOptionData(UpgradeId.PrimaryDamageUp, "主武器傷害提升", "遠距射擊傷害 +1", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
-		new UpgradeOptionData(UpgradeId.PrimaryFasterFire, "主武器加速", "遠距射擊冷卻 -12%", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
-		new UpgradeOptionData(UpgradeId.SecondaryDamageUp, "近戰傷害提升", "近戰傷害 +1", UpgradeCategory.WeaponModifier, UpgradeRarity.Common, 0, 4),
-		new UpgradeOptionData(UpgradeId.PressureKillProgressUp, "壓力收斂演算", "擊殺升級進度 +18%", UpgradeCategory.PressureModifier, UpgradeRarity.Common, 0, 3),
-		new UpgradeOptionData(UpgradeId.StabilityDecayDown, "宇宙穩定調諧", "穩定度衰減 -10%", UpgradeCategory.AnomalySpecialist, UpgradeRarity.Rare, 0, 2),
-		new UpgradeOptionData(UpgradeId.DashFasterCooldown, "衝刺加速", "衝刺冷卻 -12%", UpgradeCategory.SpatialControl, UpgradeRarity.Common, 0, 4),
-		new UpgradeOptionData(UpgradeId.MaxHpUp, "最大生命值提升", "最大生命值 +1", UpgradeCategory.RiskAmplifier, UpgradeRarity.Common, 0, 3)
-	};
+	private static readonly List<UpgradeOptionData> FallbackOptions = new();
 
 	public bool TryPickOptions(RandomNumberGenerator rng, int count, out List<UpgradeOptionData> picks)
 	{
@@ -64,8 +55,8 @@ public partial class UpgradeSystem
 				int stack = GetStack(entry.Id);
 				pool.Add(new UpgradeOptionData(
 					entry.Id,
-					entry.Title,
-					entry.Description,
+					entry.GetLocalizedTitle(),
+					entry.GetLocalizedDescription(),
 					entry.Category,
 					entry.Rarity,
 					stack,
@@ -77,7 +68,7 @@ public partial class UpgradeSystem
 		// Fallback source: hardcoded options for editor/runtime safety.
 		if (pool.Count == 0)
 		{
-			DebugSystem.Warn("[UpgradeSystem] Catalog missing/empty. Using fallback options.");
+			DebugSystem.Warn("[UpgradeSystem] Catalog missing/empty. Fallback options are empty.");
 			foreach (var option in FallbackOptions)
 			{
 				if (IsUpgradeCompatibleWithCurrentCharacter(option.Id))
@@ -95,16 +86,12 @@ public partial class UpgradeSystem
 
 		return id switch
 		{
-			UpgradeId.PrimaryDamageUp => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
-			UpgradeId.PrimaryFasterFire => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
-			UpgradeId.PrimaryProjectileSpeedUp => _player.PrimarySupportsRanged(),
-			UpgradeId.SecondaryDamageUp => _player.SecondarySupportsRanged() || _player.SecondarySupportsMelee(),
-			UpgradeId.SecondaryRangeUp => _player.SecondarySupportsMelee(),
-			UpgradeId.SecondaryWiderArc => _player.SecondarySupportsMelee(),
-			UpgradeId.DashFasterCooldown => _player.HasDashAbility(),
-			UpgradeId.DashSpeedUp => _player.HasDashAbility(),
-			UpgradeId.DashLonger => _player.HasDashAbility(),
-			UpgradeId.DashIFrameUp => _player.HasDashAbility(),
+			UpgradeId.AtkSpeedUp15 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
+			UpgradeId.AtkCooldownDown10 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
+			UpgradeId.AtkDamageUp20 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
+			UpgradeId.AtkProjectilePlus1 => _player.PrimarySupportsRanged(),
+			UpgradeId.AtkSplitShot => _player.PrimarySupportsRanged(),
+			UpgradeId.AtkCritChanceUp10 => _player.PrimarySupportsRanged(),
 			_ => true
 		};
 	}

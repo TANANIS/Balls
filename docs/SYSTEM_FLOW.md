@@ -7,18 +7,15 @@ flowchart TD
     C --> C1[Match Timer\n15:00]
     C1 --> C2[Phase Router\n0-3:45 / 3:45-7:30 / 7:30-11:15 / 11:15-15:00]
     C --> D[SpawnSystem]
-    C --> E[PressureSystem]
+    C --> E[ProgressionSystem]
     C --> N[StabilitySystem\nPhase Timeline Only]
     C --> F[Player/Combat Loop]
     C --> U[HUD Overlay\nHP + XP Bar + Countdown]
 
     C2 --> D
-    C2 --> E
     C2 --> N
     D -->|Spawn Enemies| F
-    E -->|Pressure Target| E
     F -->|Enemy Killed| G[CombatSystem]
-    G -->|EnemyKilled Event| E
     G -->|EnemyKilled Event| X[ExperienceDropSystem]
     X -->|Spawn Pickup| Y[ExperiencePickup]
     Y -->|Player Collects| E

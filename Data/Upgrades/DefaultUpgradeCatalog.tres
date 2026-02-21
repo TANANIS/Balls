@@ -1,212 +1,124 @@
-[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=23 format=3 uid="uid://bm8r67lsfg5sw"]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=14 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
 
-[sub_resource type="Resource" id="Upgrade_PrimaryDamage"]
+[sub_resource type="Resource" id="Upgrade_AtkSpeedUp15"]
 script = ExtResource("2_definition_script")
-Title = "主武器傷害提升"
-Description = "遠距射擊傷害 +1"
-Category = 0
-Rarity = 0
-Weight = 18
-MaxStack = 4
+Title = "Attack Speed +15%"
+Description = "Primary attack speed +15%."
+TitleKey = "CARD.ATK_SPEED_UP_15.TITLE"
+DescriptionKey = "CARD.ATK_SPEED_UP_15.DESC"
+Weight = 14
+MaxStack = 3
 
-[sub_resource type="Resource" id="Upgrade_PrimaryFaster"]
+[sub_resource type="Resource" id="Upgrade_AtkCooldownDown10"]
 script = ExtResource("2_definition_script")
 Id = 1
-Title = "主武器加速"
-Description = "遠距射擊冷卻 -12%"
-Category = 0
-Rarity = 0
-Weight = 16
-MaxStack = 4
-
-[sub_resource type="Resource" id="Upgrade_PrimarySpeed"]
-script = ExtResource("2_definition_script")
-Id = 2
-Title = "主武器彈速提升"
-Description = "子彈速度 +120"
-Category = 0
-Rarity = 0
-Weight = 14
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_SecondaryDamage"]
-script = ExtResource("2_definition_script")
-Id = 3
-Title = "近戰傷害提升"
-Description = "近戰傷害 +1"
-Category = 0
-Rarity = 0
-Weight = 16
-MaxStack = 4
-
-[sub_resource type="Resource" id="Upgrade_SecondaryRange"]
-script = ExtResource("2_definition_script")
-Id = 4
-Title = "近戰範圍提升"
-Description = "近戰範圍 +10"
-Category = 0
-Rarity = 0
-Weight = 14
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_SecondaryArc"]
-script = ExtResource("2_definition_script")
-Id = 5
-Title = "近戰角度擴張"
-Description = "近戰扇形角度 +15°"
-Category = 0
-Rarity = 1
-Weight = 10
-MaxStack = 2
-
-[sub_resource type="Resource" id="Upgrade_PressureKillGain"]
-script = ExtResource("2_definition_script")
-Id = 6
-Title = "壓力收斂演算"
-Description = "擊殺升級進度 +18%"
-Category = 1
-Rarity = 0
-Weight = 14
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_PressureThresholdDown"]
-script = ExtResource("2_definition_script")
-Id = 7
-Title = "壓力觸發前移"
-Description = "升級觸發門檻 -6"
-Category = 1
-Rarity = 1
-Weight = 10
-MaxStack = 2
-
-[sub_resource type="Resource" id="Upgrade_PressureRelief"]
-script = ExtResource("2_definition_script")
-Id = 8
-Title = "壓力洩放閥"
-Description = "升級觸發時額外壓力減少 +6"
-Category = 1
-Rarity = 1
-Weight = 9
-MaxStack = 3
-Prerequisites = Array[int]([6])
-
-[sub_resource type="Resource" id="Upgrade_PressureTimeGain"]
-script = ExtResource("2_definition_script")
-Id = 9
-Title = "時間驅動增幅"
-Description = "每秒升級進度 +15%"
-Category = 1
-Rarity = 0
-Weight = 12
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_StabilityDecayDown"]
-script = ExtResource("2_definition_script")
-Id = 10
-Title = "宇宙穩定調諧"
-Description = "穩定度衰減 -10%"
-Category = 2
-Rarity = 1
-Weight = 11
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_StabilityPulse"]
-script = ExtResource("2_definition_script")
-Id = 11
-Title = "異常回穩脈衝"
-Description = "立即回復穩定度 +8"
-Category = 2
-Rarity = 0
-Weight = 10
-MaxStack = 2
-
-[sub_resource type="Resource" id="Upgrade_AnomalyLonger"]
-script = ExtResource("2_definition_script")
-Id = 12
-Title = "宇宙事件延展"
-Description = "事件持續時間 +15%"
-Category = 2
-Rarity = 1
-Weight = 9
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_AnomalyResonance"]
-script = ExtResource("2_definition_script")
-Id = 13
-Title = "異常共振輸出"
-Description = "玩家相位輸出係數 +4%"
-Category = 2
-Rarity = 2
-Weight = 5
-MaxStack = 3
-Prerequisites = Array[int]([10])
-
-[sub_resource type="Resource" id="Upgrade_DashCooldown"]
-script = ExtResource("2_definition_script")
-Id = 14
-Title = "衝刺加速"
-Description = "衝刺冷卻 -12%"
-Category = 3
-Rarity = 0
-Weight = 14
-MaxStack = 4
-
-[sub_resource type="Resource" id="Upgrade_DashSpeed"]
-script = ExtResource("2_definition_script")
-Id = 15
-Title = "衝刺速度提升"
-Description = "衝刺速度 +90"
-Category = 3
-Rarity = 0
+Title = "Cooldown -10%"
+Description = "Primary cooldown -10%."
+TitleKey = "CARD.ATK_COOLDOWN_DOWN_10.TITLE"
+DescriptionKey = "CARD.ATK_COOLDOWN_DOWN_10.DESC"
 Weight = 13
 MaxStack = 3
 
-[sub_resource type="Resource" id="Upgrade_DashLonger"]
+[sub_resource type="Resource" id="Upgrade_AtkProjectilePlus1"]
 script = ExtResource("2_definition_script")
-Id = 16
-Title = "衝刺延長"
-Description = "衝刺持續時間 +0.03 秒"
-Category = 3
-Rarity = 0
+Id = 2
+Title = "+1 Projectile"
+Description = "Primary volley gains +1 projectile."
+TitleKey = "CARD.ATK_PROJECTILE_PLUS_1.TITLE"
+DescriptionKey = "CARD.ATK_PROJECTILE_PLUS_1.DESC"
+Weight = 9
+MaxStack = 2
+
+[sub_resource type="Resource" id="Upgrade_AtkSplitShot"]
+script = ExtResource("2_definition_script")
+Id = 3
+Title = "Split Shot"
+Description = "Primary shots split to side angles."
+TitleKey = "CARD.ATK_SPLIT_SHOT.TITLE"
+DescriptionKey = "CARD.ATK_SPLIT_SHOT.DESC"
+Rarity = 1
+Weight = 7
+MaxStack = 2
+
+[sub_resource type="Resource" id="Upgrade_AtkDamageUp20"]
+script = ExtResource("2_definition_script")
+Id = 4
+Title = "Damage +20%"
+Description = "Primary damage +20%."
+TitleKey = "CARD.ATK_DAMAGE_UP_20.TITLE"
+DescriptionKey = "CARD.ATK_DAMAGE_UP_20.DESC"
 Weight = 12
 MaxStack = 3
 
-[sub_resource type="Resource" id="Upgrade_DashIFrame"]
+[sub_resource type="Resource" id="Upgrade_AtkCritChanceUp10"]
 script = ExtResource("2_definition_script")
-Id = 17
-Title = "相位無敵延展"
-Description = "衝刺無敵時間 +0.015 秒"
-Category = 3
+Id = 5
+Title = "Crit Chance +10%"
+Description = "Primary crit chance +10%."
+TitleKey = "CARD.ATK_CRIT_CHANCE_UP_10.TITLE"
+DescriptionKey = "CARD.ATK_CRIT_CHANCE_UP_10.DESC"
 Rarity = 1
 Weight = 8
 MaxStack = 3
-Prerequisites = Array[int]([16])
 
-[sub_resource type="Resource" id="Upgrade_MaxHp"]
+[sub_resource type="Resource" id="Upgrade_SurvMaxHpPlus1"]
 script = ExtResource("2_definition_script")
-Id = 18
-Title = "最大生命值提升"
-Description = "最大生命值 +1"
+Id = 6
+Title = "Max HP +1"
+Description = "Increase max HP by 1."
+TitleKey = "CARD.SURV_MAX_HP_PLUS_1.TITLE"
+DescriptionKey = "CARD.SURV_MAX_HP_PLUS_1.DESC"
 Category = 4
-Rarity = 0
-Weight = 11
-MaxStack = 3
-ExclusiveWith = Array[int]([19])
+Weight = 12
+MaxStack = 4
 
-[sub_resource type="Resource" id="Upgrade_RiskArms"]
+[sub_resource type="Resource" id="Upgrade_SurvShieldCooldown"]
 script = ExtResource("2_definition_script")
-Id = 19
-Title = "高壓武裝"
-Description = "主武器與近戰傷害 +2；升級門檻 +5"
+Id = 7
+Title = "Shield"
+Description = "Absorb one hit, then enters cooldown."
+TitleKey = "CARD.SURV_SHIELD_COOLDOWN.TITLE"
+DescriptionKey = "CARD.SURV_SHIELD_COOLDOWN.DESC"
 Category = 4
-Rarity = 2
-Weight = 5
+Rarity = 1
+Weight = 8
+
+[sub_resource type="Resource" id="Upgrade_SurvLifestealCloseKill"]
+script = ExtResource("2_definition_script")
+Id = 8
+Title = "Kill-Chance Lifesteal"
+Description = "On kill: 25% chance to heal 1 HP."
+TitleKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.TITLE"
+DescriptionKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.DESC"
+Category = 4
+Rarity = 1
+Weight = 7
+
+[sub_resource type="Resource" id="Upgrade_EcoExpGainUp20"]
+script = ExtResource("2_definition_script")
+Id = 9
+Title = "EXP Gain +20%"
+Description = "Gain 20% more EXP from pickups."
+TitleKey = "CARD.ECO_EXP_GAIN_UP_20.TITLE"
+DescriptionKey = "CARD.ECO_EXP_GAIN_UP_20.DESC"
+Category = 5
+Weight = 8
 MaxStack = 2
-ExclusiveWith = Array[int]([18])
+
+[sub_resource type="Resource" id="Upgrade_EcoPickupRadiusUp25"]
+script = ExtResource("2_definition_script")
+Id = 10
+Title = "Pickup Radius +25%"
+Description = "Increase EXP pickup radius by 25%."
+TitleKey = "CARD.ECO_PICKUP_RADIUS_UP_25.TITLE"
+DescriptionKey = "CARD.ECO_PICKUP_RADIUS_UP_25.DESC"
+Category = 5
+Weight = 8
+MaxStack = 2
 
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_PrimaryDamage"), SubResource("Upgrade_PrimaryFaster"), SubResource("Upgrade_PrimarySpeed"), SubResource("Upgrade_SecondaryDamage"), SubResource("Upgrade_SecondaryRange"), SubResource("Upgrade_SecondaryArc"), SubResource("Upgrade_PressureKillGain"), SubResource("Upgrade_PressureThresholdDown"), SubResource("Upgrade_PressureRelief"), SubResource("Upgrade_PressureTimeGain"), SubResource("Upgrade_StabilityDecayDown"), SubResource("Upgrade_StabilityPulse"), SubResource("Upgrade_AnomalyLonger"), SubResource("Upgrade_AnomalyResonance"), SubResource("Upgrade_DashCooldown"), SubResource("Upgrade_DashSpeed"), SubResource("Upgrade_DashLonger"), SubResource("Upgrade_DashIFrame"), SubResource("Upgrade_MaxHp"), SubResource("Upgrade_RiskArms")])
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkCooldownDown10"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25")])

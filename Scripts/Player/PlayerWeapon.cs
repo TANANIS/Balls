@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 public partial class PlayerWeapon : Node
 {
@@ -11,6 +12,10 @@ public partial class PlayerWeapon : Node
 	[Export] public float Cooldown = 0.12f;
 	[Export] public float ProjectileSpeed = 900f;
 	[Export] public int Damage = 1;
+	[Export] public float CritChance = 0f;
+	[Export] public float CritDamageMultiplier = 1.5f;
+	[Export] public int ExtraProjectiles = 0;
+	[Export] public int SplitShotLevel = 0;
 	[Export] public PrimaryFirePattern FirePattern = PrimaryFirePattern.Single;
 	[Export] public float BurstShotInterval = 0.08f;
 
@@ -22,9 +27,10 @@ public partial class PlayerWeapon : Node
 	private int _burstShotsRemaining = 0;
 	private Vector2 _burstDir = Vector2.Right;
 	private float _burstSpeed = 0f;
-	private int _burstDamage = 1;
+	private int _burstBaseDamage = 1;
 	private string _resolvedAction = InputActions.AttackPrimary;
 	private bool _isEnabled = true;
+	private readonly RandomNumberGenerator _rng = new();
 
 	public float CurrentCooldown => Cooldown;
 	public int CurrentDamage => Damage;
@@ -34,6 +40,7 @@ public partial class PlayerWeapon : Node
 	{
 		_player = player;
 		ResolveStabilitySystem();
+		_rng.Randomize();
 
 		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
 			_projectileContainer = GetNode(ProjectileContainerPath);
@@ -68,8 +75,6 @@ public partial class PlayerWeapon : Node
 		if (ProjectileScene == null || _projectileContainer == null || _player == null)
 			return;
 
-		AudioManager.Instance?.PlaySfxPlayerFire();
-
 		Vector2 mouseWorld = _player.GetGlobalMousePosition();
 		Vector2 dir = mouseWorld - _player.GlobalPosition;
 		if (dir.LengthSquared() < 0.0001f)
@@ -77,33 +82,81 @@ public partial class PlayerWeapon : Node
 		else
 			dir = dir.Normalized();
 
-		Node bullet = ProjectileScene.Instantiate();
-		if (bullet is Node2D bullet2D)
-			bullet2D.GlobalPosition = _player.GlobalPosition;
-
 		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
-		int damage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
+		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
 		if (FirePattern == PrimaryFirePattern.Burst3)
 		{
 			_burstDir = dir;
 			_burstSpeed = speed;
-			_burstDamage = damage;
+			_burstBaseDamage = baseDamage;
 			_burstShotsRemaining = 2;
 			_burstTimer = Mathf.Max(0.01f, BurstShotInterval);
-			SpawnProjectile(dir, speed, damage, bullet);
+			FireVolley(dir, speed, baseDamage);
 			_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 			return;
 		}
 
-		bullet.Call("InitFromPlayer", _player, dir, speed, damage);
-		_projectileContainer.AddChild(bullet);
+		FireVolley(dir, speed, baseDamage);
 		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
-	private void SpawnProjectile(Vector2 dir, float speed, int damage, Node preInstanced = null)
+	private void FireVolley(Vector2 baseDir, float speed, int baseDamage)
 	{
-		Node bullet = preInstanced ?? ProjectileScene.Instantiate();
+		if (ProjectileScene == null || _projectileContainer == null || _player == null)
+			return;
+
+		AudioManager.Instance?.PlaySfxPlayerFire();
+
+		foreach (float angleDeg in BuildVolleyAngles())
+		{
+			Vector2 dir = baseDir.Rotated(Mathf.DegToRad(angleDeg)).Normalized();
+			int damage = RollDamage(baseDamage);
+			SpawnProjectile(dir, speed, damage);
+		}
+	}
+
+	private List<float> BuildVolleyAngles()
+	{
+		var angles = new List<float> { 0f };
+		int count = Mathf.Max(1, 1 + ExtraProjectiles);
+		angles.Clear();
+		if (count == 1)
+		{
+			angles.Add(0f);
+		}
+		else
+		{
+			float spacing = 7f;
+			float start = -spacing * (count - 1) * 0.5f;
+			for (int i = 0; i < count; i++)
+				angles.Add(start + (spacing * i));
+		}
+
+		for (int level = 1; level <= Mathf.Clamp(SplitShotLevel, 0, 2); level++)
+		{
+			float offset = 12f + ((level - 1) * 10f);
+			angles.Add(offset);
+			angles.Add(-offset);
+		}
+
+		return angles;
+	}
+
+	private int RollDamage(int baseDamage)
+	{
+		float chance = Mathf.Clamp(CritChance, 0f, 0.95f);
+		bool crit = _rng.Randf() < chance;
+		if (!crit)
+			return baseDamage;
+
+		float mult = Mathf.Max(1f, CritDamageMultiplier);
+		return Mathf.Max(baseDamage, Mathf.RoundToInt(baseDamage * mult));
+	}
+
+	private void SpawnProjectile(Vector2 dir, float speed, int damage)
+	{
+		Node bullet = ProjectileScene.Instantiate();
 		if (bullet is Node2D bullet2D)
 			bullet2D.GlobalPosition = _player.GlobalPosition;
 		bullet.Call("InitFromPlayer", _player, dir.Normalized(), speed, damage);
@@ -158,6 +211,11 @@ public partial class PlayerWeapon : Node
 		Damage = Mathf.Max(1, Damage + amount);
 	}
 
+	public void MultiplyDamage(float factor)
+	{
+		Damage = Mathf.Max(1, Mathf.RoundToInt(Damage * Mathf.Max(0.1f, factor)));
+	}
+
 	public void AddProjectileSpeed(float amount)
 	{
 		ProjectileSpeed = Mathf.Max(50f, ProjectileSpeed + amount);
@@ -173,6 +231,10 @@ public partial class PlayerWeapon : Node
 		Damage = Mathf.Max(1, damage);
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		ProjectileSpeed = Mathf.Max(50f, projectileSpeed);
+		CritChance = 0f;
+		CritDamageMultiplier = 1.5f;
+		ExtraProjectiles = 0;
+		SplitShotLevel = 0;
 	}
 
 	public void SetFirePattern(PrimaryFirePattern pattern, float burstShotInterval)
@@ -195,9 +257,24 @@ public partial class PlayerWeapon : Node
 		if (_burstTimer > 0f)
 			return;
 
-		SpawnProjectile(_burstDir, _burstSpeed, _burstDamage);
+		FireVolley(_burstDir, _burstSpeed, _burstBaseDamage);
 		_burstShotsRemaining--;
 		if (_burstShotsRemaining > 0)
 			_burstTimer = Mathf.Max(0.01f, BurstShotInterval);
+	}
+
+	public void AddProjectileCount(int amount)
+	{
+		ExtraProjectiles = Mathf.Clamp(ExtraProjectiles + amount, 0, 10);
+	}
+
+	public void AddSplitShotLevel(int amount)
+	{
+		SplitShotLevel = Mathf.Clamp(SplitShotLevel + amount, 0, 2);
+	}
+
+	public void AddCritChance(float amount)
+	{
+		CritChance = Mathf.Clamp(CritChance + amount, 0f, 0.95f);
 	}
 }
