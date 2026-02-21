@@ -82,6 +82,10 @@ Esc={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://Data/Localization/Cards.en.translation", "res://Data/Localization/Cards.zh_TW.translation", "res://Data/Localization/UI.en.translation", "res://Data/Localization/UI.zh_TW.translation")
+
 [layer_names]
 
 2d_physics/layer_1="(World)環境、地形、障礙物"
@@ -92,10 +96,6 @@ Esc={
 2d_physics/layer_6="(EnemyHurtbox)敵人受傷"
 2d_physics/layer_7="(EnemyHitbox)敵人攻擊"
 2d_physics/layer_8="8"
-
-[internationalization]
-
-locale/translations=PackedStringArray("res://Data/Localization/Cards.en.translation", "res://Data/Localization/Cards.zh_TW.translation", "res://Data/Localization/UI.en.translation", "res://Data/Localization/UI.zh_TW.translation")
 
 [rendering]
 

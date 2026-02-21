@@ -1,11 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://db8hqo8jk22l"]
 
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="1_flow_ui"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
+[ext_resource type="PackedScene" uid="uid://5viel85sis2s" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
-[ext_resource type="PackedScene" path="res://Prefabs/UpgradeMenu.tscn" id="6_upgrade_menu"]
+[ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Prefabs/UpgradeMenu.tscn" id="6_upgrade_menu"]
 
 [node name="UI" type="Control"]
 layout_mode = 3

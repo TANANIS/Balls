@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://5viel85sis2s"]
 
 [ext_resource type="PackedScene" path="res://Scenes/UI/PlayerHealthBarDemo.tscn" id="1_health_demo"]
 
 [node name="HudOverlay" type="Control"]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,9 +22,8 @@ theme_override_font_sizes/font_size = 18
 text = "Score: 0"
 
 [node name="ExperienceBarRoot" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -220.0
@@ -45,11 +44,10 @@ horizontal_alignment = 1
 [node name="ExperienceBar" type="ProgressBar" parent="ExperienceBarRoot"]
 custom_minimum_size = Vector2(440, 14)
 layout_mode = 2
-value = 0.0
 show_percentage = false
 
 [node name="PlayerHealthBarDemo" parent="." instance=ExtResource("1_health_demo")]
-layout_mode = 0
+anchors_preset = 0
 offset_left = 16.0
 offset_top = 46.0
 offset_right = 336.0
