@@ -87,6 +87,10 @@ Current runtime usage:
 - If garbled text appears in UI:
   - first fix source strings in `Data/Characters/*.tres` and UI composition strings,
   - then re-save as UTF-8 and rebuild to validate.
+- For Godot text resources (`.tres` / `.tscn`), use UTF-8 **without BOM**.
+  - Symptom: parser error at line 1, e.g. `Parse Error: Expected '['`.
+  - Root cause: file starts with BOM bytes `EF BB BF`, so first token is not recognized as `[` by parser.
+  - Quick fix: re-save as UTF-8 no BOM (or strip BOM bytes) and reload/export again.
 
 ## Skill VFX Asset Contract
 - Skill visual assets are standardized under:

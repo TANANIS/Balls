@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BulwarkCore.png" id="2_bulwark_core"]

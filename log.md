@@ -161,3 +161,10 @@
 - Stability camera UX:
   - Phase zoom-in changed from persistent phase-wide zoom to temporary phase-entry warning zoom with timed smooth recovery to normal.
   - New tunables added in `StabilitySystem` for hold/recover duration per phase.
+
+## Session Update (2026-02-21, High-Frequency Encoding Incident Note)
+- Documented recurring Godot resource parse failure pattern:
+  - Error signature: `Parse Error: Expected '['` at line 1 for `.tres` files.
+  - Confirmed root cause: UTF-8 BOM (`EF BB BF`) at file head.
+  - Fix: convert affected `.tres` files to UTF-8 without BOM.
+- Added this as an explicit rule and troubleshooting note in `docs/ARCHITECTURE.md`.
