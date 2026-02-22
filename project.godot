@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="20260120"
+config/name="ProjectGenesis"
 run/main_scene="uid://bxen3q3hvcxk"
 config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -27,7 +27,7 @@ window/stretch/mode="canvas_items"
 
 [dotnet]
 
-project/assembly_name="20260120"
+project/assembly_name="ProjectGenesis"
 
 [input]
 

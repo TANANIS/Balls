@@ -188,3 +188,38 @@
   - Updated `docs/TODO.md` completed status for EXP value differentiation.
   - Refreshed `README.md` to current architecture (removed legacy `PressureSystem` wording and encoding artifacts).
   - Refreshed `docs/SCENE_SPLIT_NOTES.md` to current scene composition.
+
+## Session Update (2026-02-22, Repo Hygiene + Naming Migration)
+- README and repo docs:
+  - Reworked `README.md` into a maintenance-oriented index:
+    - architecture summary,
+    - runtime flow,
+    - folder purpose map,
+    - docs usage/location index (including `log.md`),
+    - git/export artifact guardrails.
+- Git history cleanup for accidental export uploads:
+  - Purged exported artifacts from commit history and remote:
+    - `Project Genesis.pck`
+    - `Project Genesis.exe`
+    - `Project Genesis.console.exe`
+    - `data_20260120_windows_x86_64/*`
+    - `data_20260120_windows_x86_64/Project Genesis.console.console/*`
+  - Added/expanded ignore rules in `.gitignore`:
+    - `*.exe`, `*.pck`
+    - `data_*_windows_*/`, `data_*_linuxbsd_*/`, `data_*_macos_*/`
+    - `Project Genesis.console*`
+    - `**/Project Genesis.console.console/`
+  - Completed force-push sync after history rewrite.
+- Project naming migration (`20260120` -> `ProjectGenesis`):
+  - Renamed:
+    - `20260120.csproj` -> `ProjectGenesis.csproj`
+    - `20260120.sln` -> `ProjectGenesis.sln`
+  - Updated references:
+    - `ProjectGenesis.sln` project display name/path
+    - `project.godot`:
+      - `config/name="ProjectGenesis"`
+      - `project/assembly_name="ProjectGenesis"`
+    - `ProjectGenesis.csproj` root namespace -> `ProjectGenesis`
+    - `docs/CODE_STRUCTURE_AUDIT_2026-02-21.md` build command reference
+  - Validation:
+    - `dotnet build ProjectGenesis.csproj` succeeded (0 errors; only NU1900 network-source warnings).

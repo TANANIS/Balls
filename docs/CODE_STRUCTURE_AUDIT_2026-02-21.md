@@ -51,7 +51,7 @@
 - Folder naming mismatch remains (`Enemies/` scenes vs `Scripts/Enemy/` scripts).
 
 ## Verification
-- `dotnet build 20260120.csproj`
+- `dotnet build ProjectGenesis.csproj`
   - result: success
   - warnings: 0
   - errors: 0
