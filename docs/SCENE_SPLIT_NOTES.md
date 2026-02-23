@@ -1,5 +1,7 @@
 # Scene Split Notes (MainScence.tscn)
 
+> Status: Maintained guidance. Re-validate when introducing additional world themes or UI root-level wrappers.
+
 Current composition is already split and in use:
 
 1. `Scenes/Player.tscn`

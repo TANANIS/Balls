@@ -43,12 +43,7 @@ public partial class GameFlowUI
 		_pauseMenuOpen = true;
 		_settingsOpen = false;
 		RefreshPauseBuildSummary();
-		if (_pausePanel != null)
-			_pausePanel.Visible = true;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: true, showMain: true, showSettings: false);
 		GetTree().Paused = true;
 		_pauseResumeButton?.GrabFocus();
 	}
@@ -57,12 +52,7 @@ public partial class GameFlowUI
 	{
 		_pauseMenuOpen = false;
 		_settingsOpen = false;
-		if (_pausePanel != null)
-			_pausePanel.Visible = false;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		GetTree().Paused = false;
 	}
 
@@ -76,10 +66,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_settingsOpen = true;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = false;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = true;
+		SetPausePanels(showPausePanel: true, showMain: false, showSettings: true);
 		_settingsBackButton?.GrabFocus();
 	}
 
@@ -87,10 +74,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_settingsOpen = false;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: true, showMain: true, showSettings: false);
 		_pauseSettingsButton?.GrabFocus();
 	}
 

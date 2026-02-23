@@ -30,7 +30,7 @@
   - Universe special events disabled in current model.
 
 ## Files Worth Monitoring
-- `Scripts/Systems/Director/PressureSystem.cs`
+- `Scripts/Systems/Director/PressureSystem.cs` (legacy removed on 2026-02-21; kept for historical context)
 - `Scripts/Systems/Core/CombatSystem.cs`
 - `Scripts/UI/GameFlowUI.cs`
 - `Scripts/UI/GameFlowUI.State.cs`
@@ -223,3 +223,68 @@
     - `docs/CODE_STRUCTURE_AUDIT_2026-02-21.md` build command reference
   - Validation:
     - `dotnet build ProjectGenesis.csproj` succeeded (0 errors; only NU1900 network-source warnings).
+
+## Session Update (2026-02-23, Duplication Refactor Pass #1)
+- Cross-module service lookup consolidation:
+  - Added shared utility: `Scripts/Shared/GroupServiceResolver.cs`.
+  - Standardized `StabilitySystem` resolution via `GroupServiceResolver.ResolveFirstInGroup(...)` in:
+    - `Scripts/Player/PlayerWeapon.cs`
+    - `Scripts/Player/PlayerMelee.cs`
+    - `Scripts/Player/PlayerDash.cs`
+    - `Scripts/Player/PlayerMovement.cs`
+    - `Scripts/Player/Player.Composition.cs`
+    - `Scripts/Enemy/Enemy.Resolve.cs`
+    - `Scripts/Systems/Director/SpawnSystem.Runtime.cs`
+    - `Scripts/World/ObstacleFieldGenerator.cs`
+- GameFlowUI duplication reduction:
+  - Added centralized panel state helpers in `Scripts/UI/GameFlowUI.State.cs`:
+    - `SetStartSubPanels(...)`
+    - `SetPausePanels(...)`
+  - Replaced repeated start/pause/end panel `Visible` toggles with helper calls in:
+    - `Scripts/UI/GameFlowUI.State.cs`
+    - `Scripts/UI/GameFlowUI.PauseSettings.cs`
+    - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+    - `Scripts/UI/GameFlowUI.EndState.cs`
+    - `Scripts/UI/GameFlowUI.References.cs`
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - Warning note: NU1900 source-access warning remained due to `https://api.nuget.org/v3/index.json` connectivity, not logic regression.
+
+## Session Update (2026-02-23, Duplication Refactor Pass #2 - Player Ability Base)
+- Player ability module consolidation:
+  - Added shared base class: `Scripts/Player/PlayerAbilityModule.cs`.
+  - Centralized common behavior for player ability modules:
+    - player/stability references
+    - enabled-state setup and toggling
+    - stability resolve/refresh
+    - cooldown ticking helper
+    - power multiplier helper
+    - input-action fallback resolver with standardized warning/error flow
+- Applied inheritance migration:
+  - `Scripts/Player/PlayerDash.cs`
+  - `Scripts/Player/PlayerMelee.cs`
+  - `Scripts/Player/PlayerWeapon.cs`
+- Removed duplicated local implementations in above modules:
+  - repeated `ResolveStabilitySystem()`
+  - repeated setup boilerplate (`_player`, `_isEnabled`, stability resolve)
+  - repeated cooldown decrement pattern
+  - duplicated melee/weapon input fallback resolution branches
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - Warning note: NU1900 source-access warning remained due to `https://api.nuget.org/v3/index.json` connectivity, not logic regression.
+
+## Session Update (2026-02-23, Docs Hygiene + Risk Surfacing)
+- Corrected stale path in `README.md`:
+  - `Scripts/Systems/UpgradeSystem.cs` -> `Scripts/Systems/Progression/UpgradeSystem.cs`.
+- Added explicit status labeling to historical/snapshot docs:
+  - `docs/CODE_STRUCTURE_AUDIT_2026-02-21.md` marked as archived point-in-time audit.
+  - `docs/SCRIPT_REFACTOR_PLAN.md` marked as archived snapshot.
+  - `docs/SCENE_SPLIT_NOTES.md` clarified as maintained guidance with re-validation trigger.
+- Added architecture risk checklist in `docs/ARCHITECTURE.md`:
+  - group-name string discovery fragility,
+  - UI multi-boolean state drift risk,
+  - partial-class cross-file coupling risk,
+  - data schema/version validation risk,
+  - low automated gameplay regression coverage risk.
+- Log cleanup:
+  - Marked `PressureSystem` monitor entry as legacy removed (2026-02-21) to avoid confusion.

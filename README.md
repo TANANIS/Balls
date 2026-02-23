@@ -3,7 +3,7 @@
 
 ## Core Architecture
 - Combat resolution single entry: `Scripts/Systems/Core/CombatSystem.cs`
-- Progression and upgrades: `Scripts/Systems/Progression/ProgressionSystem.cs` and `Scripts/Systems/UpgradeSystem.cs`
+- Progression and upgrades: `Scripts/Systems/Progression/ProgressionSystem.cs` and `Scripts/Systems/Progression/UpgradeSystem.cs`
 - Spawn pacing and pressure shaping: `Scripts/Systems/Director/SpawnSystem.cs` with `Data/Director/*.csv`
 - UI is presentation-only and reads runtime state: `Scripts/UI/*`
 

@@ -81,6 +81,13 @@ Current runtime usage:
 - Tune balancing via data tables first, code second.
 - Stability phase + tier data control pacing. Unlock milestones use `upgrade_count`.
 
+## Known Architecture Risks (Current)
+- Group-name service discovery is string-based (`GetNodesInGroup`), so typo/rename regressions are compile-time invisible.
+- `GameFlowUI` state currently combines multiple booleans (`_started`, `_ending`, `_pauseMenuOpen`, `_settingsOpen`, `_start*Open`), which can drift into invalid combinations as flows grow.
+- Large partial-class families (`SpawnSystem`, `GameFlowUI`, `Player*`) are easier to read now but can hide cross-file coupling; behavior changes should always be traced across sibling partial files.
+- Runtime depends on CSV/resource schema consistency (`Data/Director/*.csv`, character `.tres`); missing schema/version checks can fail late at runtime.
+- Automated gameplay regression tests are minimal; most validation is still build + manual run, which increases risk for flow-level regressions.
+
 ## Text Encoding Rule (Bilingual UI)
 - All localization text files must be saved as UTF-8.
 - When editing `.tres`/`.tscn` with Traditional Chinese content, avoid tools that may write legacy code pages.

@@ -142,12 +142,7 @@ public partial class ObstacleFieldGenerator : Node2D
 
 	private void EnsureStabilitySystem()
 	{
-		if (IsInstanceValid(_stabilitySystem))
-			return;
-
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
 	}
 
 	private void CreateObstacle(Vector2 globalPos, float scale)

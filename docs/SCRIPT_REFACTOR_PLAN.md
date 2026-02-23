@@ -1,5 +1,7 @@
 ## Script Refactor Layout (2026-02)
 
+> Status: Archived snapshot of refactor outcomes in 2026-02. Current architecture should be validated against live scripts first.
+
 Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were split into partial files to make responsibilities explicit while keeping runtime behavior intact.
 
 ### SpawnSystem

@@ -1,5 +1,7 @@
 # Code Structure Audit (2026-02-21)
 
+> Status: Archived point-in-time audit. Keep for history/reference; do not treat every item as current runtime state.
+
 ## Scope
 - Script size and responsibility boundaries under `Scripts/`
 - Scene/script attachment under `Scenes/`, `Prefabs/`, `Enemies/`, `MainScence.tscn`

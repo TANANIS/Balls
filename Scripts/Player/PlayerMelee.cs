@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class PlayerMelee : Node
+public partial class PlayerMelee : PlayerAbilityModule
 {
 	[Export] public string AttackAction = InputActions.AttackSecondary;
 	[Export] public bool EnabledInCurrentCharacter = true;
@@ -18,12 +18,9 @@ public partial class PlayerMelee : Node
 	[Export] public float VfxForwardOffset = 36f;
 	[Export] public float VfxSideOffset = 0f;
 
-	private Player _player;
 	private CombatSystem _combat;
-	private StabilitySystem _stabilitySystem;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
-	private bool _isEnabled = true;
 
 	public float CurrentCooldown => Cooldown;
 	public int CurrentDamage => Damage;
@@ -32,9 +29,7 @@ public partial class PlayerMelee : Node
 
 	public void Setup(Player player)
 	{
-		_player = player;
-		ResolveStabilitySystem();
-		_isEnabled = EnabledInCurrentCharacter;
+		SetupAbility(player, EnabledInCurrentCharacter);
 
 		// Resolve combat service from group to keep scene wiring flexible.
 		var list = GetTree().GetNodesInGroup("CombatSystem");
@@ -52,11 +47,8 @@ public partial class PlayerMelee : Node
 		if (!_isEnabled)
 			return;
 
-		if (!IsInstanceValid(_stabilitySystem))
-			ResolveStabilitySystem();
-
-		if (_cooldownTimer > 0f)
-			_cooldownTimer -= dt;
+		EnsureStabilitySystem();
+		TickCooldown(ref _cooldownTimer, dt);
 		if (_cooldownTimer > 0f)
 			return;
 
@@ -64,37 +56,23 @@ public partial class PlayerMelee : Node
 			return;
 
 		ExecuteAttack();
-		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float powerMult = GetPowerMultiplier();
 		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
 	private void ResolveInputAction()
 	{
-		if (InputMap.HasAction(AttackAction))
-		{
-			_resolvedAction = AttackAction;
-		}
-		else if (InputMap.HasAction(InputActions.LegacyAttackSecondary))
-		{
-			_resolvedAction = InputActions.LegacyAttackSecondary;
-			DebugSystem.Warn("[PlayerMelee] attack_secondary not found. Fallback to legacy action 'RightClick'.");
-		}
-		else
-		{
-			DebugSystem.Error("[PlayerMelee] No valid secondary attack action found.");
-		}
-	}
-
-	private void ResolveStabilitySystem()
-	{
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
+		_resolvedAction = ResolveInputActionOrFallback(
+			AttackAction,
+			InputActions.LegacyAttackSecondary,
+			"PlayerMelee",
+			"attack_secondary",
+			"RightClick");
 	}
 
 	public void SetEnabled(bool enabled)
 	{
-		_isEnabled = enabled;
+		SetEnabledState(enabled);
 		EnabledInCurrentCharacter = enabled;
 	}
 

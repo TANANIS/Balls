@@ -60,9 +60,7 @@ public partial class Player
 
 	private void ResolveStabilitySystem()
 	{
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
 	}
 
 	private void UpdatePhaseCamera(float dt)

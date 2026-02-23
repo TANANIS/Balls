@@ -119,12 +119,7 @@ public partial class GameFlowUI
 			_playerHealthBar.Visible = false;
 		if (_experienceBarRoot != null)
 			_experienceBarRoot.Visible = false;
-		if (_pausePanel != null)
-			_pausePanel.Visible = false;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 
 		GetTree().Paused = true;
 		_restartButton?.GrabFocus();

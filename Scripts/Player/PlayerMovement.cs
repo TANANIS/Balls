@@ -39,9 +39,7 @@ public partial class PlayerMovement : Node
 
 	private void ResolveStabilitySystem()
 	{
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
 	}
 
 	public void SetBaseStats(float maxSpeed, float accel, float friction, float stopThreshold)

@@ -5,7 +5,7 @@ using Godot;
  * - Handles dash input, cooldown gate, dash motion, and iframe window.
  * - Returns true while dash owns movement for current frame.
  */
-public partial class PlayerDash : Node
+public partial class PlayerDash : PlayerAbilityModule
 {
 	[Export] public string DashAction = "dash";
 	[Export] public bool EnabledInCurrentCharacter = true;
@@ -14,13 +14,10 @@ public partial class PlayerDash : Node
 	[Export] public float DashCooldown = 0.6f;
 	[Export] public float DashIFrame = 0.08f;
 
-	private Player _player;
-	private StabilitySystem _stabilitySystem;
 	private bool _isDashing = false;
 	private float _dashTimer = 0f;
 	private float _cooldownTimer = 0f;
 	private Vector2 _dashDir = Vector2.Right;
-	private bool _isEnabled = true;
 
 	public float CurrentCooldown => DashCooldown;
 	public float CurrentSpeed => DashSpeed;
@@ -28,9 +25,7 @@ public partial class PlayerDash : Node
 
 	public void Setup(Player player)
 	{
-		_player = player;
-		ResolveStabilitySystem();
-		_isEnabled = EnabledInCurrentCharacter;
+		SetupAbility(player, EnabledInCurrentCharacter);
 	}
 
 	public bool Tick(float dt, Vector2 inputDir)
@@ -38,11 +33,8 @@ public partial class PlayerDash : Node
 		if (!_isEnabled)
 			return false;
 
-		if (!IsInstanceValid(_stabilitySystem))
-			ResolveStabilitySystem();
-
-		if (_cooldownTimer > 0f)
-			_cooldownTimer -= dt;
+		EnsureStabilitySystem();
+		TickCooldown(ref _cooldownTimer, dt);
 
 		if (!_isDashing && _cooldownTimer <= 0f && Input.IsActionJustPressed(DashAction))
 			StartDash(inputDir);
@@ -51,7 +43,7 @@ public partial class PlayerDash : Node
 			return false;
 
 		_dashTimer -= dt;
-		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float powerMult = GetPowerMultiplier();
 		_player.Velocity = _dashDir * DashSpeed * (1f + ((powerMult - 1f) * 0.5f));
 
 		if (DashIFrame > 0f)
@@ -65,16 +57,9 @@ public partial class PlayerDash : Node
 		return true;
 	}
 
-	private void ResolveStabilitySystem()
-	{
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
-	}
-
 	public void SetEnabled(bool enabled)
 	{
-		_isEnabled = enabled;
+		SetEnabledState(enabled);
 		EnabledInCurrentCharacter = enabled;
 		if (!enabled && _isDashing)
 		{

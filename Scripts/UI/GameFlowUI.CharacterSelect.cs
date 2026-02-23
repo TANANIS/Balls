@@ -8,14 +8,7 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = true;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = false;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null)
-			_startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = true;
+		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true);
 
 		if (_selectedCharacterDefinition == null)
 			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
@@ -117,10 +110,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startCharacterSelectOpen = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = true;
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		_startButton?.GrabFocus();
 	}
 

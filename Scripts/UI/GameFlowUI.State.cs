@@ -14,18 +14,13 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
-		if (_startMainVBox != null) _startMainVBox.Visible = true;
-		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null) _startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = false;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = false;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = false;
-		if (_pausePanel != null) _pausePanel.Visible = false;
-		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = true;
@@ -71,14 +66,7 @@ public partial class GameFlowUI
 		_startSettingsOpen = true;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = false;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = true;
-		if (_startCardsPanel != null)
-			_startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: false, showSettings: true, showCards: false, showCharacterSelect: false);
 		_startSettingsBackButton?.GrabFocus();
 	}
 
@@ -88,14 +76,7 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = true;
 		_startCharacterSelectOpen = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = false;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null)
-			_startCardsPanel.Visible = true;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: false, showSettings: false, showCards: true, showCharacterSelect: false);
 		RefreshStartCardsCompendium();
 		_startCardsBackButton?.GrabFocus();
 	}
@@ -104,12 +85,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startSettingsOpen = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = true;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		_startSettingsButton?.GrabFocus();
 	}
 
@@ -117,14 +93,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startCardsOpen = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = true;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null)
-			_startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		_startCardsButton?.GrabFocus();
 	}
 
@@ -142,18 +111,13 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
-		if (_startMainVBox != null) _startMainVBox.Visible = true;
-		if (_startSettingsPanel != null) _startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null) _startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null) _startCharacterSelectPanel.Visible = false;
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = true;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = true;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = true;
-		if (_pausePanel != null) _pausePanel.Visible = false;
-		if (_pauseMainVBox != null) _pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null) _pauseSettingsPanel.Visible = false;
+		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
@@ -195,5 +159,27 @@ public partial class GameFlowUI
 			_projectilesRoot.Visible = visible;
 		if (_obstaclesRoot != null)
 			_obstaclesRoot.Visible = visible;
+	}
+
+	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect)
+	{
+		if (_startMainVBox != null)
+			_startMainVBox.Visible = showMain;
+		if (_startSettingsPanel != null)
+			_startSettingsPanel.Visible = showSettings;
+		if (_startCardsPanel != null)
+			_startCardsPanel.Visible = showCards;
+		if (_startCharacterSelectPanel != null)
+			_startCharacterSelectPanel.Visible = showCharacterSelect;
+	}
+
+	private void SetPausePanels(bool showPausePanel, bool showMain, bool showSettings)
+	{
+		if (_pausePanel != null)
+			_pausePanel.Visible = showPausePanel;
+		if (_pauseMainVBox != null)
+			_pauseMainVBox.Visible = showMain;
+		if (_pauseSettingsPanel != null)
+			_pauseSettingsPanel.Visible = showSettings;
 	}
 }

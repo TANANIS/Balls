@@ -228,20 +228,8 @@ public partial class GameFlowUI
 		}
 		if (_menuDimmer != null)
 			_menuDimmer.TopLevel = true;
-		if (_pausePanel != null)
-			_pausePanel.Visible = false;
-		if (_pauseMainVBox != null)
-			_pauseMainVBox.Visible = true;
-		if (_pauseSettingsPanel != null)
-			_pauseSettingsPanel.Visible = false;
-		if (_startMainVBox != null)
-			_startMainVBox.Visible = true;
-		if (_startSettingsPanel != null)
-			_startSettingsPanel.Visible = false;
-		if (_startCardsPanel != null)
-			_startCardsPanel.Visible = false;
-		if (_startCharacterSelectPanel != null)
-			_startCharacterSelectPanel.Visible = false;
+		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
+		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		RefreshPerfectLeaderboardUi();
 
 		_rangedCharacter = LoadCharacterDefinitionOrFallback(

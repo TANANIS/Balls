@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class PlayerWeapon : Node
+public partial class PlayerWeapon : PlayerAbilityModule
 {
 	[Export] public string AttackAction = InputActions.AttackPrimary;
 	[Export] public bool EnabledInCurrentCharacter = true;
@@ -19,9 +19,7 @@ public partial class PlayerWeapon : Node
 	[Export] public PrimaryFirePattern FirePattern = PrimaryFirePattern.Single;
 	[Export] public float BurstShotInterval = 0.08f;
 
-	private Player _player;
 	private Node _projectileContainer;
-	private StabilitySystem _stabilitySystem;
 	private float _cooldownTimer = 0f;
 	private float _burstTimer = 0f;
 	private int _burstShotsRemaining = 0;
@@ -29,7 +27,6 @@ public partial class PlayerWeapon : Node
 	private float _burstSpeed = 0f;
 	private int _burstBaseDamage = 1;
 	private string _resolvedAction = InputActions.AttackPrimary;
-	private bool _isEnabled = true;
 	private readonly RandomNumberGenerator _rng = new();
 
 	public float CurrentCooldown => Cooldown;
@@ -38,14 +35,12 @@ public partial class PlayerWeapon : Node
 
 	public void Setup(Player player)
 	{
-		_player = player;
-		ResolveStabilitySystem();
+		SetupAbility(player, EnabledInCurrentCharacter);
 		_rng.Randomize();
 
 		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
 			_projectileContainer = GetNode(ProjectileContainerPath);
 
-		_isEnabled = EnabledInCurrentCharacter;
 		ResolveInputAction();
 	}
 
@@ -54,11 +49,8 @@ public partial class PlayerWeapon : Node
 		if (!_isEnabled)
 			return;
 
-		if (!IsInstanceValid(_stabilitySystem))
-			ResolveStabilitySystem();
-
-		if (_cooldownTimer > 0f)
-			_cooldownTimer -= dt;
+		EnsureStabilitySystem();
+		TickCooldown(ref _cooldownTimer, dt);
 
 		ProcessBurst(dt);
 		if (_cooldownTimer > 0f || _burstShotsRemaining > 0)
@@ -82,7 +74,7 @@ public partial class PlayerWeapon : Node
 		else
 			dir = dir.Normalized();
 
-		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float powerMult = GetPowerMultiplier();
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
 		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
 		int burstExtraShots = GetBurstExtraShots(FirePattern);
@@ -164,33 +156,19 @@ public partial class PlayerWeapon : Node
 		_projectileContainer.AddChild(bullet);
 	}
 
-	private void ResolveStabilitySystem()
-	{
-		var list = GetTree().GetNodesInGroup("StabilitySystem");
-		if (list.Count > 0)
-			_stabilitySystem = list[0] as StabilitySystem;
-	}
-
 	private void ResolveInputAction()
 	{
-		if (InputMap.HasAction(AttackAction))
-		{
-			_resolvedAction = AttackAction;
-		}
-		else if (InputMap.HasAction(InputActions.LegacyAttackPrimary))
-		{
-			_resolvedAction = InputActions.LegacyAttackPrimary;
-			DebugSystem.Warn("[PlayerWeapon] attack_primary not found. Fallback to legacy action 'fire'.");
-		}
-		else
-		{
-			DebugSystem.Error("[PlayerWeapon] No valid primary attack action found.");
-		}
+		_resolvedAction = ResolveInputActionOrFallback(
+			AttackAction,
+			InputActions.LegacyAttackPrimary,
+			"PlayerWeapon",
+			"attack_primary",
+			"fire");
 	}
 
 	public void SetEnabled(bool enabled)
 	{
-		_isEnabled = enabled;
+		SetEnabledState(enabled);
 		EnabledInCurrentCharacter = enabled;
 		if (!enabled)
 		{
