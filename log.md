@@ -682,3 +682,11 @@
     - removed clear-leaderboard button/dialog localization wiring.
 - Logic consequence:
   - deleting profile save now clears leaderboard implicitly because leaderboard and meta progression now share the same save file.
+
+## Session Update (2026-02-23, TODO Sync - God File Risk Plan)
+- Updated `docs/TODO.md` with dedicated "Refactor - God File Risk" backlog.
+- Added actionable decomposition items focused on preventing future script blow-up:
+  - `GameFlowUI` boundary split (`UIStateController` / `UIBinding` / `UIPresenter`),
+  - extraction targets for `MetaProgressionPanelController` and `EndStateController`,
+  - start/pause settings logic consolidation into shared `SettingsPresenter`,
+  - lightweight script-size/split guardrail documentation tasks.

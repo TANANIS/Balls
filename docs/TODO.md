@@ -68,3 +68,23 @@
 - [x] Phase 4 (framework): Character level + ability tree domain/defs/transaction gate
 - [x] Save isolation + delete-save UX (profile-partitioned save path and in-menu delete flow)
 - [ ] Phase 4 (content): Assign real node effects and bind to runtime gameplay systems
+
+## Refactor - God File Risk
+- [ ] God file risk audit pass (top-10 largest scripts by responsibility, not just LOC)
+- [ ] Split `GameFlowUI` into explicit boundaries:
+  - [ ] `UIStateController` (panel transitions + flow state only)
+  - [ ] `UIBinding` (node refs + signal wiring only)
+  - [ ] `UIPresenter` (text/data rendering only)
+- [ ] Extract `MetaProgressionPanelController` from `GameFlowUI`:
+  - [ ] character select/unlock/confirm flow
+  - [ ] Flux/level/tree framework rendering
+- [ ] Extract `EndStateController` from `GameFlowUI`:
+  - [ ] settlement summary rendering
+  - [ ] restart/back-to-meta actions
+  - [ ] perfect-clear leaderboard refresh trigger
+- [ ] Consolidate duplicated settings logic into shared `SettingsPresenter`:
+  - [ ] start-menu settings panel
+  - [ ] in-run pause settings panel
+- [ ] Add simple script-size guardrail doc:
+  - [ ] target max LOC per behavior script
+  - [ ] rule for when to split by responsibility
