@@ -36,6 +36,8 @@
 - `docs/SCENE_SPLIT_NOTES.md`: Scene split notes.
 - `docs/META_PROGRESSION_ARCHITECTURE.md`: Out-of-run progression architecture (currency, soft-cap economy, character progression).
 - `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`: Phase-based implementation checklist for meta progression.
+- `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md`: Fantasy pixel art differentiation scope, sequencing, and acceptance criteria.
+- `docs/FANTASY_PIXEL_STYLE_SPEC.md`: Fantasy pixel visual tokens, import profile, and sprite size baseline.
 - `docs/TODO.md`: Current next-step checklist.
 - `Assets/Sprites/Skills/README.md`: Skill VFX asset path/naming contract.
 - `log.md`: Ongoing dev log and handoff notes.

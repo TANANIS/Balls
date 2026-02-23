@@ -77,4 +77,5 @@ HurtIFrame = 0.1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
+zoom = Vector2(0.85, 0.85)
 position_smoothing_enabled = false

@@ -690,3 +690,52 @@
   - extraction targets for `MetaProgressionPanelController` and `EndStateController`,
   - start/pause settings logic consolidation into shared `SettingsPresenter`,
   - lightweight script-size/split guardrail documentation tasks.
+
+## Session Update (2026-02-23, Fantasy Pixel Art Branch Kickoff + World Pass)
+- Branching and planning:
+  - created art-experiment branch: `feature/art-fantasy-pixel-style`.
+  - added art execution plan: `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md`.
+  - added style/spec baseline: `docs/FANTASY_PIXEL_STYLE_SPEC.md`.
+  - synced `README.md` documentation index to include both new docs.
+- Clarified sizing intent after requirement correction:
+  - fixed misunderstanding where `480x270` had been applied to viewport.
+  - restored runtime viewport in `project.godot` to `1280x720`.
+  - kept `480x270` and `32x32` as asset-canvas standards in spec docs.
+- Obstacle asset pipeline migration:
+  - migrated new obstacle assets to standardized English naming:
+    - `Assets/Sprites/Environment/obstacle_big_rock.png`
+    - `Assets/Sprites/Environment/obstacle_small_tree.png`
+  - removed legacy obstacle runtime assets/references (`ObstacleRock*`, `ForestObstacle_*` usage).
+  - added prefab-based obstacle nodes with explicit colliders:
+    - `Prefabs/Obstacles/ObstacleBigRock.tscn`
+    - `Prefabs/Obstacles/ObstacleSmallTree.tscn`
+- Obstacle generation refactor:
+  - rewrote `Scripts/World/ObstacleFieldGenerator.cs` from texture-only runtime generation to scene-prefab spawning.
+  - removed runtime random rotation/scale behavior.
+  - added higher-density configuration and alternating-type control.
+  - later upgraded to natural-cluster placement:
+    - weighted type selection (tree-biased),
+    - cluster center + stickiness + lifetime controls,
+    - spacing bias per obstacle type for less mechanical patterns.
+- In-run world background architecture update:
+  - added new in-run tile asset:
+    - `Assets/Sprites/Environment/bg_run_forest_tile.png` (from new game background source).
+  - introduced infinite tiled background system:
+    - `Scripts/World/InfiniteTiledBackground.cs`
+    - supports seamless infinite tiling + deterministic per-tile horizontal flip.
+  - removed old temporary starfield/mask system:
+    - deleted `Scripts/World/SpaceBackdrop.cs` (+ `.uid`),
+    - removed old starfield/dimmer nodes from `Scenes/World/WorldRoot.tscn`.
+- Menu background reliability fixes:
+  - reworked `GameFlowUI` menu background fitting in `Scripts/UI/GameFlowUI.Visuals.cs`:
+    - adaptive cover scaling,
+    - center alignment stabilization,
+    - overscan guard against edge exposure on different zoom/window conditions.
+- Run/start visual flow sync:
+  - updated `Scripts/UI/GameFlowUI.State.cs` so run mode shows in-run background while menu mode keeps menu background.
+- Camera + readability tuning pass for transition to future `32x32` player art:
+  - adjusted `Scenes/Player.tscn` camera zoom baseline.
+  - increased in-run tile scale and margins in `Scenes/World/WorldRoot.tscn`.
+- Validation:
+  - repeated `dotnet build ProjectGenesis.sln` checks passed (0 errors).
+  - only external NU1900 warnings remained (NuGet index connectivity).

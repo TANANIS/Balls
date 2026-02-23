@@ -82,16 +82,31 @@ public partial class GameFlowUI
 			return;
 
 		Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
-		float scale = Mathf.Max(viewportSize.X / texSize.X, viewportSize.Y / texSize.Y) * 1.03f;
+		Camera2D camera = GetViewport().GetCamera2D();
+		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
+		// Adaptive cover rule:
+		// - never shrink because of zoom-in (zoom < 1)
+		// - only enlarge when camera zooms out (zoom > 1)
+		float zoomComp = Mathf.Max(1f, Mathf.Max(zoom.X, zoom.Y));
+		Vector2 coverTarget = new Vector2(
+			(viewportSize.X + 96f) * zoomComp,
+			(viewportSize.Y + 96f) * zoomComp);
+		float coverScale = Mathf.Max(coverTarget.X / texSize.X, coverTarget.Y / texSize.Y);
+		float scale = Mathf.Max(1f, Mathf.Ceil(coverScale * 1.03f));
 		Vector2 center = GetMenuWorldCenter();
+		center = new Vector2(Mathf.Round(center.X), Mathf.Round(center.Y));
 
+		_menuBackground.Centered = true;
 		_menuBackground.Scale = new Vector2(scale, scale);
 		_menuBackground.GlobalPosition = center;
 
 		if (_menuDimmer != null)
 		{
-			_menuDimmer.Size = viewportSize;
-			_menuDimmer.GlobalPosition = center - (viewportSize * 0.5f);
+			Vector2 dimSize = new Vector2(
+				(viewportSize.X + 96f) * zoomComp,
+				(viewportSize.Y + 96f) * zoomComp);
+			_menuDimmer.Size = dimSize;
+			_menuDimmer.GlobalPosition = center - (dimSize * 0.5f);
 		}
 	}
 
