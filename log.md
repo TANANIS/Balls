@@ -288,3 +288,238 @@
   - low automated gameplay regression coverage risk.
 - Log cleanup:
   - Marked `PressureSystem` monitor entry as legacy removed (2026-02-21) to avoid confusion.
+
+## Session Update (2026-02-23, Meta Progression Architecture Spec)
+- Added new architecture spec:
+  - `docs/META_PROGRESSION_ARCHITECTURE.md`
+- Spec scope:
+  - full out-of-run progression design (not MVP-only),
+  - lean module layout with clear responsibilities,
+  - soft-cap reward curve (`score/100` baseline + smooth diminishing returns + bonus + first-clear bonus),
+  - unlock targets A/B/C:
+    - new characters,
+    - character levels,
+    - character-specific ability tree.
+- Integration points documented:
+  - settlement trigger in end-state flow,
+  - score source from `ScoreSystem`,
+  - unlock gating in character-select and `RunContext`.
+- Documentation index synced:
+  - `README.md` now includes `docs/META_PROGRESSION_ARCHITECTURE.md`.
+- Planning checklist synced:
+  - `docs/TODO.md` now includes a dedicated "Meta Progression - Out-Of-Run" section.
+
+## Session Update (2026-02-23, Meta Progression Phase Plan)
+- Added phase-based implementation plan:
+  - `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`
+- Plan structure:
+  - Phase 1: domain + persistence foundation
+  - Phase 2: soft-cap economy + settlement
+  - Phase 3: transaction service + character unlock gate
+  - Phase 4: character level + character-specific ability tree
+- Documentation index synced:
+  - `README.md` now includes `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`.
+- Task tracker synced:
+  - `docs/TODO.md` updated to phase checklist format for Meta progression delivery.
+
+## Session Update (2026-02-23, Meta Progression Phase 1 Foundation)
+- Implemented Phase 1 domain + persistence foundation.
+- Added domain model files:
+  - `Scripts/Meta/MetaProgressionState.cs`
+  - `Scripts/Meta/CharacterProgress.cs`
+  - `Scripts/Meta/MetaFlags.cs`
+- Added save pipeline files:
+  - `Scripts/Save/MetaSaveDto.cs`
+  - `Scripts/Save/SaveMigrator.cs`
+  - `Scripts/Save/JsonSaveStore.cs`
+- Key behaviors:
+  - runtime state and DTO are separated,
+  - save versioning + migration hook established (`Version`, `CurrentVersion`),
+  - default-safe load path on missing/corrupt save,
+  - currency/unlock/character-progress/settled-run-id containers are persistable.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet index connectivity), not logic regression.
+- Planning sync:
+  - `docs/TODO.md` marks "Phase 1: Domain + persistence foundation" as completed.
+
+## Session Update (2026-02-23, Meta Progression Phase 2 Economy)
+- Implemented Phase 2 economy and settlement calculation building blocks.
+- Added files:
+  - `Scripts/Meta/RunResult.cs`
+  - `Scripts/Meta/RewardBreakdown.cs`
+  - `Scripts/Meta/EconomyTuning.cs`
+  - `Scripts/Meta/PowerCurve.cs`
+  - `Scripts/Meta/RewardCalculator.cs`
+- Reward model implemented:
+  - baseline `base = floor(score / scoreDivisor)`,
+  - smooth soft-cap curve with optional linear tail,
+  - bonus composition:
+    - flat bonus,
+    - perfect clear bonus,
+    - first-clear bonuses (character/global),
+  - breakdown output with duplicate-run detection flag.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+- Planning sync:
+  - `docs/TODO.md` marks "Phase 2: Economy + settlement (soft cap curve)" as completed.
+
+## Session Update (2026-02-23, Meta Progression Phase 3 Service + Gate)
+- Implemented transaction entry service:
+  - `Scripts/Meta/MetaProgressionService.cs`
+  - singleton access + baseline unlock (`ranged`) bootstrap
+  - settlement transaction with duplicate-run protection
+  - character unlock / character level / ability-node transaction stubs with spending persistence
+- Integrated run settlement trigger:
+  - `Scripts/UI/GameFlowUI.EndState.cs`
+  - end-state now submits `RunResult` (runId, score, characterId, perfect flag) and logs reward breakdown.
+- Integrated run id lifecycle:
+  - `Scripts/UI/GameFlowUI.State.cs` sets a new per-run id on `StartRun()`.
+  - `Scripts/UI/GameFlowUI.References.cs` stores `_currentRunId`.
+- Integrated unlock gate:
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+    - locked characters are shown as `[Locked]`,
+    - locked selection and confirm are blocked,
+    - confirm button disabled when selection is locked.
+  - `Scripts/Runtime/RunContext.cs`
+    - guards selected character assignment through unlock validation.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+- Planning sync:
+  - `docs/TODO.md` marks "Phase 3: Transaction service + character unlock gate" as completed.
+
+## Session Update (2026-02-23, Meta Progression Phase 4 Framework)
+- Implemented Phase 4 framework (without gameplay effect binding).
+- Added progression definition layer:
+  - `Scripts/Defs/ProgressionDefs.cs`
+  - `Scripts/Defs/Models/CharacterDef.cs`
+  - `Scripts/Defs/Models/AbilityNodeDef.cs`
+- Added level/tree model support:
+  - `Scripts/Meta/MetaProgressionState.cs` adds `TryGetCharacterProgress(...)` for side-effect free queries.
+- Upgraded service transaction logic to def-driven rules:
+  - `Scripts/Meta/MetaProgressionService.cs`
+  - character unlock cost now resolved from defs (`TryUnlockCharacter(string)`),
+  - character level-up uses per-character growth cost model (`Can/TryUpgradeCharacterLevel`),
+  - ability tree unlock checks:
+    - node existence,
+    - unlock state,
+    - min character level,
+    - prerequisite node chain,
+    - currency affordability.
+- Intentional placeholder scope:
+  - character ability trees are structurally ready, but node lists are currently empty placeholders pending design content.
+  - no runtime stat/effect hooks are applied yet for ability-node unlocks.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+- Planning sync:
+  - `docs/TODO.md` marks Phase 4 framework complete and leaves content/effect binding as next task.
+
+## Session Update (2026-02-23, Flux UX + Meta Panel Polish)
+- Naming and UX detail update:
+  - Out-of-run currency is now presented as `Flux` in run-end and meta-selection UI.
+- End-state reward visibility:
+  - `Scripts/UI/GameFlowUI.EndState.cs`
+  - both failure and perfect-clear now display:
+    - run-earned Flux (`+X`),
+    - current Flux wallet total.
+  - meta settlement debug output wording updated from generic currency to Flux.
+- Character select upgraded toward meta-progression panel:
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+  - panel now presents:
+    - current Flux,
+    - selected character level,
+    - character lock status and unlock cost,
+    - ability-tree framework status (node content pending design).
+  - locked characters remain blocked and labeled as locked.
+- Start panel visual/style pass:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+  - `CharacterSelectPanel` title changed to `META PROGRESSION`.
+  - `RightColumnPanel` now uses same-color flat background with no edge glow/border.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+
+## Session Update (2026-02-23, Flux Feature Localization Sync)
+- Synced newly added Flux/meta-progression UI to bilingual flow (`en` / `zh_TW`).
+- Updated dynamic text to use localization fallback pattern (`TrOrDefault`) in:
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+  - `Scripts/UI/GameFlowUI.EndState.cs`
+  - including lock labels, Flux labels, unlock cost, character level, and ability-tree framework text.
+- Updated static title localization hookup:
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+  - `CharacterSelectPanel` title now resolved through localization key `UI.META.TITLE` with bilingual fallback.
+- Added localization keys for meta-progression section:
+  - `Data/Localization/UI.csv`
+  - keys include `UI.META.*` (title, Flux labels, lock states, level labels, ability-tree status, etc.).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+
+## Session Update (2026-02-23, Chinese Mojibake Root-Cause Fix)
+- Root cause identified:
+  - newly added `UI.META.*` zh entries in `Data/Localization/UI.csv` were written with wrong encoding path and became mojibake.
+  - several zh fallback literals in `GameFlowUI` scripts were also mojibake.
+  - because `Tr(...)` returned corrupted translated strings, UI displayed unreadable Chinese.
+- Fix applied:
+  - removed corrupted `UI.META.*` lines from `Data/Localization/UI.csv` to force clean fallback path.
+  - rewrote `Scripts/UI/GameFlowUI.CharacterSelect.cs` with clean UTF-8 content and Unicode-escape zh fallback literals.
+  - fixed `Scripts/UI/GameFlowUI.Localization.cs` character-select title localization line and switched to Unicode-escape zh fallback.
+  - preserved bilingual behavior through `TrOrDefault(key, en, zh)` without relying on corrupted entries.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+
+## Session Update (2026-02-23, Save Isolation + Delete Save Feature)
+- Save isolation (for debug/production separation):
+  - `Scripts/Save/JsonSaveStore.cs`
+  - save path now uses profile partition:
+    - `user://saves/<profile>/meta_progression.json`
+  - added profile API:
+    - `SetProfile(profileId)`
+    - `ProfileId`
+    - `SavePath`
+  - added delete API:
+    - `DeleteSaveFile()`
+- Meta progression service controls:
+  - `Scripts/Meta/MetaProgressionService.cs`
+  - added:
+    - `CurrentProfileId`
+    - `CurrentSavePath`
+    - `SetProfile(profileId)` (reloads state with baseline unlock checks)
+    - `DeleteCurrentProfileSave()` (deletes file + resets in-memory state)
+- UI delete-save entry (with confirmation):
+  - `Scenes/UI/Panels/StartPanel.tscn`
+    - added `DeleteSaveButton`
+    - added `DeleteSaveConfirmDialog`
+  - `Scripts/UI/GameFlowUI.References.cs`
+    - node paths, node refs, signal binding for delete-save flow
+  - `Scripts/UI/GameFlowUI.State.cs`
+    - `OnStartDeleteSavePressed()`
+    - `OnStartDeleteSaveConfirmed()`
+    - after deletion: refresh selection and meta panel data
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+    - bilingual fallback text for delete-save button/dialog
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).
+
+## Session Update (2026-02-23, Start Menu Action Relocation)
+- UX structure adjustment:
+  - moved both actions from start-menu first layer into Start Settings panel:
+    - `Clear Leaderboard Record`
+    - `Delete Save Data`
+- Scene updates:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+  - removed the two buttons from `RightColumnPanel/Margin/ButtonsVBox`
+  - re-added them under `Panel/SettingsPanel/VBox` (before settings back button)
+- Script path binding updates:
+  - `Scripts/UI/GameFlowUI.References.cs`
+  - updated node paths:
+    - `StartClearLeaderboardButtonPath`
+    - `StartDeleteSaveButtonPath`
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
+  - NU1900 warning remains external (NuGet source connectivity).

@@ -58,3 +58,13 @@
 - [ ] Implement runtime skill application entry and compatibility gates
 - [ ] Integrate skill-layer choices into upgrade menu presentation
 - [ ] Add debug/dev cheats for rapid skill-layer validation (grant/clear/list)
+
+## Meta Progression - Out-Of-Run
+- [x] Architecture spec created: `docs/META_PROGRESSION_ARCHITECTURE.md`
+- [x] Phase implementation plan created: `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`
+- [x] Phase 1: Domain + persistence foundation
+- [x] Phase 2: Economy + settlement (soft cap curve)
+- [x] Phase 3: Transaction service + character unlock gate
+- [x] Phase 4 (framework): Character level + ability tree domain/defs/transaction gate
+- [x] Save isolation + delete-save UX (profile-partitioned save path and in-menu delete flow)
+- [ ] Phase 4 (content): Assign real node effects and bind to runtime gameplay systems

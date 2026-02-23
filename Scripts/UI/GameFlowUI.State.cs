@@ -12,6 +12,7 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
+		_currentRunId = string.Empty;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
@@ -48,6 +49,25 @@ public partial class GameFlowUI
 	{
 		ClearPerfectLeaderboard();
 		RefreshPerfectLeaderboardUi();
+	}
+
+	private void OnStartDeleteSavePressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startDeleteSaveDialog?.PopupCentered(new Vector2I(520, 220));
+	}
+
+	private void OnStartDeleteSaveConfirmed()
+	{
+		bool deleted = MetaProgressionService.Instance.DeleteCurrentProfileSave();
+		if (deleted)
+			DebugSystem.Log($"[MetaProgression] Save deleted for profile '{MetaProgressionService.Instance.CurrentProfileId}'.");
+		else
+			DebugSystem.Warn($"[MetaProgression] Save deletion failed for profile '{MetaProgressionService.Instance.CurrentProfileId}'.");
+
+		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
+		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
+		RefreshCharacterSelectUi();
 	}
 
 	private void OnRestartPressed()
@@ -109,6 +129,7 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
+		_currentRunId = System.Guid.NewGuid().ToString("N");
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);

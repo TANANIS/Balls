@@ -43,6 +43,7 @@ public partial class GameFlowUI
 		if (_startCardsButton != null) _startCardsButton.Text = TrOrDefault("UI.START.BUTTON_CARDS", "Cards", "Cards");
 		if (_startQuitButton != null) _startQuitButton.Text = Tr("UI.COMMON.QUIT");
 		if (_startClearLeaderboardButton != null) _startClearLeaderboardButton.Text = Tr("UI.START.CLEAR_LEADERBOARD");
+		if (_startDeleteSaveButton != null) _startDeleteSaveButton.Text = TrOrDefault("UI.META.DELETE_SAVE_BUTTON", "Delete Save Data", "\u522a\u9664\u5b58\u6a94\u8cc7\u6599");
 		if (_startCharacterBackButton != null) _startCharacterBackButton.Text = Tr("UI.COMMON.BACK");
 		if (_startCharacterConfirmButton != null) _startCharacterConfirmButton.Text = Tr("UI.START.CONFIRM_START_RUN");
 		if (_startSettingsBackButton != null) _startSettingsBackButton.Text = Tr("UI.COMMON.BACK");
@@ -67,6 +68,9 @@ public partial class GameFlowUI
 		if (startDesc != null) startDesc.Text = Tr("UI.START.DESC");
 		var boardTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectBoardTitle");
 		if (boardTitle != null) boardTitle.Text = Tr("UI.START.PERFECT_BOARD_TITLE");
+		var characterSelectTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/Title");
+		if (characterSelectTitle != null)
+			characterSelectTitle.Text = TrOrDefault("UI.META.TITLE", "META PROGRESSION", "\u5c40\u5916\u990a\u6210");
 		var startSettingsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/Title");
 		if (startSettingsTitle != null) startSettingsTitle.Text = Tr("UI.COMMON.SETTINGS");
 		var startCardsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CardsPanel/VBox/Title");
@@ -104,6 +108,17 @@ public partial class GameFlowUI
 			clearDialog.Title = Tr("UI.START.CLEAR_DIALOG_TITLE");
 			clearDialog.DialogText = Tr("UI.START.CLEAR_DIALOG_TEXT");
 			clearDialog.OkButtonText = Tr("UI.START.CLEAR_DIALOG_OK");
+		}
+
+		var deleteSaveDialog = GetNodeOrNull<ConfirmationDialog>("Panels/StartPanel/DeleteSaveConfirmDialog");
+		if (deleteSaveDialog != null)
+		{
+			deleteSaveDialog.Title = TrOrDefault("UI.META.DELETE_SAVE_TITLE", "Delete Save Data", "\u522a\u9664\u5b58\u6a94\u8cc7\u6599");
+			deleteSaveDialog.DialogText = TrOrDefault(
+				"UI.META.DELETE_SAVE_TEXT",
+				"Delete current profile save data?\nThis will reset Flux, unlocks, levels, and ability tree progression.",
+				"\u78ba\u5b9a\u522a\u9664\u76ee\u524d profile \u5b58\u6a94\u8cc7\u6599\uff1f\n\u9019\u6703\u91cd\u7f6e Flux\u3001\u89e3\u9396\u3001\u7b49\u7d1a\u8207\u80fd\u529b\u6a39\u9032\u5ea6\u3002");
+			deleteSaveDialog.OkButtonText = TrOrDefault("UI.META.DELETE_SAVE_OK", "Delete", "\u522a\u9664");
 		}
 
 		if (_startCardsOpen)

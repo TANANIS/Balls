@@ -105,11 +105,18 @@ public partial class GameFlowUI
 		int score = _scoreSystem != null ? _scoreSystem.Score : 0;
 		int seconds = _stabilitySystem != null ? Mathf.FloorToInt(_stabilitySystem.ElapsedSeconds) : 0;
 		string survival = $"{seconds / 60:D2}:{seconds % 60:D2}";
+		RewardBreakdown flux = SettleMetaProgression(score, isPerfectClear);
 		if (isPerfectClear)
 			RecordPerfectClear(score, ResolvePerfectCharacterName());
 
 		if (_finalScoreLabel != null)
-			_finalScoreLabel.Text = $"{reason}\n{Tr("UI.END.SURVIVAL")}: {survival}\n{Tr("UI.HUD.SCORE")}: {score}";
+		{
+			int wallet = MetaProgressionService.Instance.CurrencyWallet;
+			string fluxLabel = TrOrDefault("UI.META.FLUX", "Flux", "Flux");
+			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Flux Wallet", "Flux 餘額");
+			_finalScoreLabel.Text =
+				$"{reason}\n{Tr("UI.END.SURVIVAL")}: {survival}\n{Tr("UI.HUD.SCORE")}: {score}\n{fluxLabel}: +{flux.TotalCurrency}\n{walletLabel}: {wallet}";
+		}
 
 		RefreshFinalBuildSummary();
 
@@ -136,5 +143,39 @@ public partial class GameFlowUI
 			return name;
 
 		return Tr("UI.COMMON.UNKNOWN");
+	}
+
+	private RewardBreakdown SettleMetaProgression(int score, bool isPerfectClear)
+	{
+		var result = new RunResult
+		{
+			RunId = _currentRunId,
+			Score = score,
+			CharacterId = ResolvePerfectCharacterId(),
+			IsPerfectClear = isPerfectClear
+		};
+
+		RewardBreakdown breakdown = MetaProgressionService.Instance.SettleRun(result);
+		if (!breakdown.IsDuplicateRun)
+		{
+			DebugSystem.Log(
+				$"[MetaProgression] +{breakdown.TotalCurrency} Flux " +
+				$"(base={breakdown.BaseCurrency}, soft={breakdown.SoftCappedCurrency}, bonus={breakdown.BonusCurrency}, first={breakdown.FirstClearBonus})");
+		}
+
+		return breakdown;
+	}
+
+	private string ResolvePerfectCharacterId()
+	{
+		string id = _player?.ActiveCharacter?.CharacterId;
+		if (!string.IsNullOrWhiteSpace(id))
+			return id;
+
+		id = _selectedCharacterDefinition?.CharacterId;
+		if (!string.IsNullOrWhiteSpace(id))
+			return id;
+
+		return "ranged";
 	}
 }

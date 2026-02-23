@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="1_flow_ui"]
 [ext_resource type="PackedScene" uid="uid://5viel85sis2s" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
+[ext_resource type="PackedScene" uid="uid://buvl65c46k2su" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
 [ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Prefabs/UpgradeMenu.tscn" id="6_upgrade_menu"]
@@ -27,6 +27,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="HudOverlay" parent="Overlay" instance=ExtResource("2_hud_overlay")]
+layout_mode = 1
 
 [node name="Panels" type="Control" parent="."]
 layout_mode = 1

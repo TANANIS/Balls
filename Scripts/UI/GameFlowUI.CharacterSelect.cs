@@ -1,4 +1,5 @@
 using Godot;
+using System.Linq;
 using System.Text;
 
 public partial class GameFlowUI
@@ -12,6 +13,7 @@ public partial class GameFlowUI
 
 		if (_selectedCharacterDefinition == null)
 			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
+		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
 
 		RefreshCharacterSelectUi();
 		_startCharacterConfirmButton?.GrabFocus();
@@ -22,53 +24,124 @@ public partial class GameFlowUI
 		if (_startCharacterDescriptionLabel != null)
 		{
 			if (_selectedCharacterDefinition != null)
-				_startCharacterDescriptionLabel.Text = BuildCharacterPresentation(_selectedCharacterDefinition);
+				_startCharacterDescriptionLabel.Text = BuildMetaProgressionPresentation(_selectedCharacterDefinition);
 			else
 				_startCharacterDescriptionLabel.Text = Tr("UI.START.NO_CHARACTER_DEF");
 		}
 
 		if (_startCharacterRangedButton != null && _rangedCharacter != null)
-			_startCharacterRangedButton.Text = _rangedCharacter.GetLocalizedDisplayName();
+		{
+			bool unlocked = IsCharacterUnlocked(_rangedCharacter);
+			_startCharacterRangedButton.Text = unlocked
+				? _rangedCharacter.GetLocalizedDisplayName()
+				: $"{_rangedCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterRangedButton.Disabled = !unlocked;
+		}
 		if (_startCharacterMeleeButton != null && _meleeCharacter != null)
-			_startCharacterMeleeButton.Text = _meleeCharacter.GetLocalizedDisplayName();
+		{
+			bool unlocked = IsCharacterUnlocked(_meleeCharacter);
+			_startCharacterMeleeButton.Text = unlocked
+				? _meleeCharacter.GetLocalizedDisplayName()
+				: $"{_meleeCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterMeleeButton.Disabled = !unlocked;
+		}
 		if (_startCharacterTankButton != null && _tankCharacter != null)
-			_startCharacterTankButton.Text = _tankCharacter.GetLocalizedDisplayName();
+		{
+			bool unlocked = IsCharacterUnlocked(_tankCharacter);
+			_startCharacterTankButton.Text = unlocked
+				? _tankCharacter.GetLocalizedDisplayName()
+				: $"{_tankCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterTankButton.Disabled = !unlocked;
+		}
+
+		if (_startCharacterConfirmButton != null)
+			_startCharacterConfirmButton.Disabled = _selectedCharacterDefinition == null || !IsCharacterUnlocked(_selectedCharacterDefinition);
 	}
 
-	private string BuildCharacterPresentation(CharacterDefinition def)
+	private string BuildMetaProgressionPresentation(CharacterDefinition def)
 	{
-		bool zh = TranslationServer.GetLocale().StartsWith("zh");
+		bool unlocked = IsCharacterUnlocked(def);
+		var meta = MetaProgressionService.Instance;
 		var sb = new StringBuilder();
 		sb.Append(def.GetLocalizedDisplayName()).Append('\n');
+		sb.Append($"{TrOrDefault("UI.META.FLUX", "Flux", "Flux")}: {meta.CurrencyWallet}").Append('\n');
+
+		if (!unlocked)
+		{
+			int cost = 0;
+			if (ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
+				cost = defMeta.UnlockCost;
+			sb.Append($"{TrOrDefault("UI.META.STATUS", "Status", "\u72c0\u614b")}: {TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396")}").Append('\n');
+			sb.Append($"{TrOrDefault("UI.META.UNLOCK_COST", "Unlock Cost", "\u89e3\u9396\u9700\u6c42")}: {cost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")}").Append('\n');
+			sb.Append('\n').Append(TrOrDefault("UI.META.CHAR_LOCKED_DESC", "This character is not unlocked yet.", "\u6b64\u89d2\u8272\u5c1a\u672a\u89e3\u9396\u3002"));
+			return sb.ToString();
+		}
+
+		int level = meta.GetCharacterLevel(def.CharacterId);
+		bool zh = TranslationServer.GetLocale().StartsWith("zh");
+		sb.Append($"{TrOrDefault("UI.META.CHAR_LEVEL", "Character Level", "\u89d2\u8272\u7b49\u7d1a")}: Lv.{level}").Append("\n\n");
 		sb.Append(def.GetLocalizedDescription()).Append("\n\n");
-		sb.Append(zh ? "攻擊：" : "Attack: ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
-		sb.Append(zh ? "機動：" : "Mobility: ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
-		sb.Append(zh ? "生存：" : "Survival: ").Append(GetSurvivalRoleLabel(def, zh));
+		sb.Append(TrOrDefault("UI.META.ATTACK", "Attack", "\u653b\u64ca")).Append(": ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
+		sb.Append(TrOrDefault("UI.META.MOBILITY", "Mobility", "\u6a5f\u52d5")).Append(": ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
+		sb.Append(TrOrDefault("UI.META.SURVIVAL", "Survival", "\u751f\u5b58")).Append(": ").Append(GetSurvivalRoleLabel(def, zh)).Append("\n\n");
+		sb.Append(TrOrDefault("UI.META.ABILITY_TREE", "Character Ability Tree", "\u89d2\u8272\u80fd\u529b\u6a39")).Append(':').Append('\n');
+		sb.Append(BuildAbilityTreeFrameworkText(def));
 		return sb.ToString();
+	}
+
+	private string BuildAbilityTreeFrameworkText(CharacterDefinition def)
+	{
+		if (!ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
+			return TrOrDefault("UI.META.ABILITY_TREE_MISSING", "(Ability tree definition missing)", "\uff08\u80fd\u529b\u6a39\u5b9a\u7fa9\u907a\u5931\uff09");
+
+		if (defMeta.AbilityNodes == null || defMeta.AbilityNodes.Count == 0)
+			return TrOrDefault("UI.META.ABILITY_TREE_PENDING", "Framework ready. Node content pending design.", "\u6846\u67b6\u5df2\u5efa\u7acb\uff0c\u7bc0\u9ede\u5167\u5bb9\u5f85\u8a2d\u8a08\u3002");
+
+		var unlockedNodes = MetaProgressionService.Instance.GetUnlockedAbilityNodes(def.CharacterId);
+		var sb = new StringBuilder();
+		for (int i = 0; i < defMeta.AbilityNodes.Count; i++)
+		{
+			AbilityNodeDef node = defMeta.AbilityNodes[i];
+			if (node == null)
+				continue;
+
+			bool unlocked = unlockedNodes.Contains(node.NodeId);
+			string status = unlocked
+				? TrOrDefault("UI.META.UNLOCKED", "Unlocked", "\u5df2\u89e3\u9396")
+				: TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396");
+			sb.Append("- ").Append(node.NodeId).Append(" [").Append(status).Append("] ");
+			sb.Append($"(Lv.{node.MinCharacterLevel} / {node.UnlockCost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")})");
+			if (i < defMeta.AbilityNodes.Count - 1)
+				sb.Append('\n');
+		}
+
+		return sb.Length == 0
+			? TrOrDefault("UI.META.ABILITY_TREE_PENDING", "Framework ready. Node content pending design.", "\u6846\u67b6\u5df2\u5efa\u7acb\uff0c\u7bc0\u9ede\u5167\u5bb9\u5f85\u8a2d\u8a08\u3002")
+			: sb.ToString();
 	}
 
 	private static string GetPrimaryRoleLabel(CharacterDefinition def, bool zh)
 	{
 		if (def.PrimaryAbility == AttackAbilityKind.Melee)
-			return zh ? "近戰" : "Melee";
+			return zh ? "\u8fd1\u6230" : "Melee";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst2)
-			return zh ? "雙發連射" : "2-round burst";
+			return zh ? "\u4e8c\u9023\u767c" : "2-round burst";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst3)
-			return zh ? "三發連射" : "3-round burst";
+			return zh ? "\u4e09\u9023\u767c" : "3-round burst";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged)
-			return zh ? "單發射擊" : "Single shot";
+			return zh ? "\u55ae\u767c\u5c04\u64ca" : "Single shot";
 
-		return zh ? "基礎" : "Basic";
+		return zh ? "\u57fa\u790e" : "Basic";
 	}
 
 	private static string GetMobilityRoleLabel(CharacterDefinition def, bool zh)
 	{
 		if (def.MobilityAbility == MobilityAbilityKind.Dash)
-			return zh ? "空白鍵 Dash" : "Spacebar Dash";
-		return zh ? "基礎移動" : "Base movement";
+			return zh ? "\u7a7a\u767d\u9375\u885d\u523a" : "Spacebar Dash";
+		return zh ? "\u57fa\u790e\u79fb\u52d5" : "Base movement";
 	}
 
 	private static string GetSurvivalRoleLabel(CharacterDefinition def, bool zh)
@@ -76,17 +149,23 @@ public partial class GameFlowUI
 		if (def.RegenAmount > 0)
 		{
 			if (zh)
-				return $"較高基礎生命 ({def.MaxHp})，每 {def.RegenIntervalSeconds:0} 秒回復 {def.RegenAmount}。";
+				return $"\u8f03\u9ad8\u57fa\u790e\u751f\u547d ({def.MaxHp})\uff0c\u6bcf {def.RegenIntervalSeconds:0} \u79d2\u56de\u5fa9 {def.RegenAmount}\u3002";
 			return $"Higher base HP ({def.MaxHp}), recovers {def.RegenAmount} every {def.RegenIntervalSeconds:0}s.";
 		}
 
 		return zh
-			? $"基礎生命 {def.MaxHp}。"
+			? $"\u57fa\u790e\u751f\u547d {def.MaxHp}\u3002"
 			: $"Base HP {def.MaxHp}.";
 	}
 
 	private void OnCharacterRangedPressed()
 	{
+		if (!IsCharacterUnlocked(_rangedCharacter))
+		{
+			AudioManager.Instance?.PlaySfxUiExit();
+			return;
+		}
+
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _rangedCharacter;
 		RefreshCharacterSelectUi();
@@ -94,6 +173,12 @@ public partial class GameFlowUI
 
 	private void OnCharacterMeleePressed()
 	{
+		if (!IsCharacterUnlocked(_meleeCharacter))
+		{
+			AudioManager.Instance?.PlaySfxUiExit();
+			return;
+		}
+
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _meleeCharacter;
 		RefreshCharacterSelectUi();
@@ -101,6 +186,12 @@ public partial class GameFlowUI
 
 	private void OnCharacterTankPressed()
 	{
+		if (!IsCharacterUnlocked(_tankCharacter))
+		{
+			AudioManager.Instance?.PlaySfxUiExit();
+			return;
+		}
+
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _tankCharacter;
 		RefreshCharacterSelectUi();
@@ -116,8 +207,36 @@ public partial class GameFlowUI
 
 	private void OnCharacterSelectConfirmPressed()
 	{
+		if (_selectedCharacterDefinition == null || !IsCharacterUnlocked(_selectedCharacterDefinition))
+		{
+			AudioManager.Instance?.PlaySfxUiExit();
+			RefreshCharacterSelectUi();
+			return;
+		}
+
 		AudioManager.Instance?.PlaySfxUiButton();
 		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
 		StartRun();
+	}
+
+	private static bool IsCharacterUnlocked(CharacterDefinition def)
+	{
+		if (def == null)
+			return false;
+
+		return MetaProgressionService.Instance.IsCharacterUnlocked(def.CharacterId);
+	}
+
+	private CharacterDefinition ResolveFirstUnlockedCharacterDefinition(CharacterDefinition preferred)
+	{
+		if (IsCharacterUnlocked(preferred))
+			return preferred;
+		if (IsCharacterUnlocked(_rangedCharacter))
+			return _rangedCharacter;
+		if (IsCharacterUnlocked(_meleeCharacter))
+			return _meleeCharacter;
+		if (IsCharacterUnlocked(_tankCharacter))
+			return _tankCharacter;
+		return preferred ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
 	}
 }

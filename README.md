@@ -34,6 +34,8 @@
 - `docs/SCRIPT_REFACTOR_PLAN.md`: Script split/refactor plan.
 - `docs/CODE_STRUCTURE_AUDIT_2026-02-21.md`: Structure audit and risks.
 - `docs/SCENE_SPLIT_NOTES.md`: Scene split notes.
+- `docs/META_PROGRESSION_ARCHITECTURE.md`: Out-of-run progression architecture (currency, soft-cap economy, character progression).
+- `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`: Phase-based implementation checklist for meta progression.
 - `docs/TODO.md`: Current next-step checklist.
 - `Assets/Sprites/Skills/README.md`: Skill VFX asset path/naming contract.
 - `log.md`: Ongoing dev log and handoff notes.

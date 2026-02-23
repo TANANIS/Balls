@@ -17,15 +17,27 @@ public partial class RunContext : Node
 			DefaultCharacter = GD.Load<CharacterDefinition>(FallbackCharacterPath);
 		if (SelectedCharacter == null)
 			SelectedCharacter = DefaultCharacter;
+
+		SelectedCharacter = ResolveSelectableCharacterOrDefault(SelectedCharacter);
 	}
 
 	public void SetSelectedCharacter(CharacterDefinition character)
 	{
-		SelectedCharacter = character ?? DefaultCharacter;
+		SelectedCharacter = ResolveSelectableCharacterOrDefault(character);
 	}
 
 	public CharacterDefinition GetSelectedOrDefault()
 	{
 		return SelectedCharacter ?? DefaultCharacter;
+	}
+
+	private CharacterDefinition ResolveSelectableCharacterOrDefault(CharacterDefinition candidate)
+	{
+		CharacterDefinition fallback = DefaultCharacter ?? candidate;
+		if (candidate != null && MetaProgressionService.Instance.IsCharacterUnlocked(candidate.CharacterId))
+			return candidate;
+		if (fallback != null && MetaProgressionService.Instance.IsCharacterUnlocked(fallback.CharacterId))
+			return fallback;
+		return fallback;
 	}
 }

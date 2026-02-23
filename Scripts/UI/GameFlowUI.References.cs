@@ -22,8 +22,10 @@ public partial class GameFlowUI
 	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/SettingsButton";
 	private const string StartCardsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/CardsButton";
 	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/QuitButton";
-	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/ClearLeaderboardButton";
+	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/ClearLeaderboardButton";
+	private const string StartDeleteSaveButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/DeleteSaveButton";
 	private const string StartClearLeaderboardDialogPath = "Panels/StartPanel/ClearLeaderboardConfirmDialog";
+	private const string StartDeleteSaveDialogPath = "Panels/StartPanel/DeleteSaveConfirmDialog";
 	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectLeaderboard";
 	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
 	private const string StartCardsBackButtonPath = "Panels/StartPanel/Panel/CardsPanel/VBox/BackButton";
@@ -85,7 +87,9 @@ public partial class GameFlowUI
 	private Button _startCardsButton;
 	private Button _startQuitButton;
 	private Button _startClearLeaderboardButton;
+	private Button _startDeleteSaveButton;
 	private ConfirmationDialog _startClearLeaderboardDialog;
+	private ConfirmationDialog _startDeleteSaveDialog;
 	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
 	private Button _startCardsBackButton;
@@ -146,6 +150,7 @@ public partial class GameFlowUI
 	private bool _startCharacterSelectOpen;
 	private bool _pendingFinalBossKillClear;
 	private bool _suppressSettingsSignal;
+	private string _currentRunId = string.Empty;
 	private CharacterDefinition _rangedCharacter;
 	private CharacterDefinition _meleeCharacter;
 	private CharacterDefinition _tankCharacter;
@@ -172,7 +177,9 @@ public partial class GameFlowUI
 		_startCardsButton = GetNodeOrNull<Button>(StartCardsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
 		_startClearLeaderboardButton = GetNodeOrNull<Button>(StartClearLeaderboardButtonPath);
+		_startDeleteSaveButton = GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
 		_startClearLeaderboardDialog = GetNodeOrNull<ConfirmationDialog>(StartClearLeaderboardDialogPath);
+		_startDeleteSaveDialog = GetNodeOrNull<ConfirmationDialog>(StartDeleteSaveDialogPath);
 		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
 		_startCardsBackButton = GetNodeOrNull<Button>(StartCardsBackButtonPath);
@@ -275,8 +282,12 @@ public partial class GameFlowUI
 			_startQuitButton.Pressed += OnQuitGamePressed;
 		if (_startClearLeaderboardButton != null)
 			_startClearLeaderboardButton.Pressed += OnStartClearLeaderboardPressed;
+		if (_startDeleteSaveButton != null)
+			_startDeleteSaveButton.Pressed += OnStartDeleteSavePressed;
 		if (_startClearLeaderboardDialog != null)
 			_startClearLeaderboardDialog.Confirmed += OnStartClearLeaderboardConfirmed;
+		if (_startDeleteSaveDialog != null)
+			_startDeleteSaveDialog.Confirmed += OnStartDeleteSaveConfirmed;
 		if (_startSettingsBackButton != null)
 			_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
 		if (_startCardsBackButton != null)
