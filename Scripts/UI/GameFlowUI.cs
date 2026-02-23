@@ -3,11 +3,16 @@ using System.Text;
 
 public partial class GameFlowUI : Control
 {
+	[ExportGroup("Debug/Meta")]
+	[Export] public bool EditorOverrideFluxWalletOnReady = false;
+	[Export(PropertyHint.Range, "0,999999,1")] public int EditorFluxWallet = 0;
+
 	public override void _Ready()
 	{
 		ProcessMode = ProcessModeEnum.Always;
 
 		ResolveNodeReferences();
+		ApplyEditorDebugMetaOverrides();
 		BindSignals();
 		ShowStartPanel();
 		AudioManager.Instance?.PlayBgmMenu();
@@ -107,6 +112,17 @@ public partial class GameFlowUI : Control
 
 		DebugSystem.Error($"[GameFlowUI] Failed to load CharacterDefinition: {path}. Using fallback.");
 		return fallback;
+	}
+
+	private void ApplyEditorDebugMetaOverrides()
+	{
+		if (!OS.IsDebugBuild())
+			return;
+		if (!EditorOverrideFluxWalletOnReady)
+			return;
+
+		int wallet = MetaProgressionService.Instance.DebugSetCurrencyWallet(EditorFluxWallet);
+		DebugSystem.Warn($"[MetaProgression] Inspector debug wallet override applied: {wallet} Flux");
 	}
 
 	private static CharacterDefinition BuildRangerFallbackDefinition()

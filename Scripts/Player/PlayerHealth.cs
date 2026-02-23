@@ -15,6 +15,7 @@ public partial class PlayerHealth : Node
 
 	[Export] public int MaxHp = 3;
 	[Export] public float HurtIFrame = 0.5f;
+	[Export(PropertyHint.Range, "0,0.20,0.005")] public float DamageMoveFreezeSeconds = 0.06f;
 	[Export] public int RegenAmount = 0;
 	[Export] public float RegenIntervalSeconds = 60f;
 	[Export] public bool EnableDamageFeedback = true;

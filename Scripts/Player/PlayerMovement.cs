@@ -9,6 +9,7 @@ public partial class PlayerMovement : Node
 
 	private Player _player;
 	private StabilitySystem _stabilitySystem;
+	private float _movementFreezeTimer = 0f;
 
 	public void Setup(Player player)
 	{
@@ -20,6 +21,14 @@ public partial class PlayerMovement : Node
 	{
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
+
+		if (_movementFreezeTimer > 0f)
+		{
+			_movementFreezeTimer = Mathf.Max(0f, _movementFreezeTimer - dt);
+			_player.Velocity = Vector2.Zero;
+			_player.MoveAndSlide();
+			return;
+		}
 
 		float inertiaMult = _stabilitySystem?.GetPlayerInertiaMultiplier() ?? 1f;
 		float inputSign = _stabilitySystem?.InputDirectionSign ?? 1f;
@@ -35,6 +44,13 @@ public partial class PlayerMovement : Node
 			_player.Velocity = Vector2.Zero;
 
 		_player.MoveAndSlide();
+	}
+
+	public void ApplyMovementFreeze(float duration)
+	{
+		if (duration <= 0f)
+			return;
+		_movementFreezeTimer = Mathf.Max(_movementFreezeTimer, duration);
 	}
 
 	private void ResolveStabilitySystem()

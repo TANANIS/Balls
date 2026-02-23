@@ -63,6 +63,7 @@ public partial class PlayerHealth
 			return;
 		}
 
+		GetParentOrNull<Player>()?.ApplyHitMovementFreeze(DamageMoveFreezeSeconds);
 		_hp -= amount;
 		TriggerDamageFeedback();
 		AudioManager.Instance?.PlaySfxPlayerGetHit();

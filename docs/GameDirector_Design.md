@@ -63,10 +63,10 @@ System notes:
   - tank bullet applies extra knockback and bonus damage on hit
 - Ranged compensation pass is pending and should be tuned with playtest data.
 
-## End-State And Local Record
+## End-State And Record
 - Death path uses failure end-state UI (`SYSTEM FAILURE`).
 - Reaching full `15:00` uses dedicated perfect-clear end-state UI (`PERFECT CLEAR`).
-- Perfect clear writes local leaderboard record (score, datetime, character display name).
+- Perfect clear writes leaderboard record into the current meta-save profile (score, datetime, character display name).
 
 ## Spawn Director Rule
 `SpawnSystem` is tier-driven and data-driven:

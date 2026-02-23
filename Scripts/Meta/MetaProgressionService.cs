@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public sealed class MetaProgressionService
 {
@@ -194,6 +195,36 @@ public sealed class MetaProgressionService
 		_state = new MetaProgressionState();
 		EnsureBaselineUnlocks();
 		return deleted;
+	}
+
+	public void RecordPerfectClear(int score, string characterName)
+	{
+		long unixTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+		_state.AddPerfectClearRecord(score, characterName, unixTime);
+		_saveStore.SaveState(_state);
+	}
+
+	public IReadOnlyList<PerfectClearRecord> GetPerfectLeaderboard(int maxCount)
+	{
+		if (maxCount <= 0)
+			return Array.Empty<PerfectClearRecord>();
+		return _state.GetPerfectClearRecords(maxCount).ToList();
+	}
+
+	public int DebugSetCurrencyWallet(int targetWallet)
+	{
+		targetWallet = Math.Max(0, targetWallet);
+		int current = _state.CurrencyWallet;
+		if (targetWallet == current)
+			return current;
+
+		if (targetWallet > current)
+			_state.AddCurrency(targetWallet - current);
+		else
+			_state.TrySpendCurrency(current - targetWallet);
+
+		_saveStore.SaveState(_state);
+		return _state.CurrencyWallet;
 	}
 
 	private bool EnsureBaselineUnlocks()

@@ -21,6 +21,9 @@ public partial class GameFlowUI
 
 	private void RefreshCharacterSelectUi()
 	{
+		if (_startCharacterFluxValueLabel != null)
+			_startCharacterFluxValueLabel.Text = MetaProgressionService.Instance.CurrencyWallet.ToString();
+
 		if (_startCharacterDescriptionLabel != null)
 		{
 			if (_selectedCharacterDefinition != null)
@@ -35,7 +38,7 @@ public partial class GameFlowUI
 			_startCharacterRangedButton.Text = unlocked
 				? _rangedCharacter.GetLocalizedDisplayName()
 				: $"{_rangedCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
-			_startCharacterRangedButton.Disabled = !unlocked;
+			_startCharacterRangedButton.Disabled = false;
 		}
 		if (_startCharacterMeleeButton != null && _meleeCharacter != null)
 		{
@@ -43,7 +46,7 @@ public partial class GameFlowUI
 			_startCharacterMeleeButton.Text = unlocked
 				? _meleeCharacter.GetLocalizedDisplayName()
 				: $"{_meleeCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
-			_startCharacterMeleeButton.Disabled = !unlocked;
+			_startCharacterMeleeButton.Disabled = false;
 		}
 		if (_startCharacterTankButton != null && _tankCharacter != null)
 		{
@@ -51,11 +54,28 @@ public partial class GameFlowUI
 			_startCharacterTankButton.Text = unlocked
 				? _tankCharacter.GetLocalizedDisplayName()
 				: $"{_tankCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
-			_startCharacterTankButton.Disabled = !unlocked;
+			_startCharacterTankButton.Disabled = false;
 		}
 
 		if (_startCharacterConfirmButton != null)
-			_startCharacterConfirmButton.Disabled = _selectedCharacterDefinition == null || !IsCharacterUnlocked(_selectedCharacterDefinition);
+		{
+			if (_selectedCharacterDefinition == null)
+			{
+				_startCharacterConfirmButton.Disabled = true;
+			}
+			else if (IsCharacterUnlocked(_selectedCharacterDefinition))
+			{
+				_startCharacterConfirmButton.Disabled = false;
+				_startCharacterConfirmButton.Text = Tr("UI.START.CONFIRM_START_RUN");
+			}
+			else
+			{
+				int unlockCost = GetCharacterUnlockCost(_selectedCharacterDefinition);
+				bool canUnlock = MetaProgressionService.Instance.CanUnlockCharacter(_selectedCharacterDefinition.CharacterId, out _);
+				_startCharacterConfirmButton.Disabled = !canUnlock;
+				_startCharacterConfirmButton.Text = $"{TrOrDefault("UI.META.UNLOCK", "Unlock", "\u89e3\u9396")} ({unlockCost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")})";
+			}
+		}
 	}
 
 	private string BuildMetaProgressionPresentation(CharacterDefinition def)
@@ -92,10 +112,10 @@ public partial class GameFlowUI
 	private string BuildAbilityTreeFrameworkText(CharacterDefinition def)
 	{
 		if (!ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
-			return TrOrDefault("UI.META.ABILITY_TREE_MISSING", "(Ability tree definition missing)", "\uff08\u80fd\u529b\u6a39\u5b9a\u7fa9\u907a\u5931\uff09");
+			return TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
 
 		if (defMeta.AbilityNodes == null || defMeta.AbilityNodes.Count == 0)
-			return TrOrDefault("UI.META.ABILITY_TREE_PENDING", "Framework ready. Node content pending design.", "\u6846\u67b6\u5df2\u5efa\u7acb\uff0c\u7bc0\u9ede\u5167\u5bb9\u5f85\u8a2d\u8a08\u3002");
+			return TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
 
 		var unlockedNodes = MetaProgressionService.Instance.GetUnlockedAbilityNodes(def.CharacterId);
 		var sb = new StringBuilder();
@@ -116,7 +136,7 @@ public partial class GameFlowUI
 		}
 
 		return sb.Length == 0
-			? TrOrDefault("UI.META.ABILITY_TREE_PENDING", "Framework ready. Node content pending design.", "\u6846\u67b6\u5df2\u5efa\u7acb\uff0c\u7bc0\u9ede\u5167\u5bb9\u5f85\u8a2d\u8a08\u3002")
+			? TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e")
 			: sb.ToString();
 	}
 
@@ -160,12 +180,6 @@ public partial class GameFlowUI
 
 	private void OnCharacterRangedPressed()
 	{
-		if (!IsCharacterUnlocked(_rangedCharacter))
-		{
-			AudioManager.Instance?.PlaySfxUiExit();
-			return;
-		}
-
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _rangedCharacter;
 		RefreshCharacterSelectUi();
@@ -173,12 +187,6 @@ public partial class GameFlowUI
 
 	private void OnCharacterMeleePressed()
 	{
-		if (!IsCharacterUnlocked(_meleeCharacter))
-		{
-			AudioManager.Instance?.PlaySfxUiExit();
-			return;
-		}
-
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _meleeCharacter;
 		RefreshCharacterSelectUi();
@@ -186,12 +194,6 @@ public partial class GameFlowUI
 
 	private void OnCharacterTankPressed()
 	{
-		if (!IsCharacterUnlocked(_tankCharacter))
-		{
-			AudioManager.Instance?.PlaySfxUiExit();
-			return;
-		}
-
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _tankCharacter;
 		RefreshCharacterSelectUi();
@@ -207,9 +209,23 @@ public partial class GameFlowUI
 
 	private void OnCharacterSelectConfirmPressed()
 	{
-		if (_selectedCharacterDefinition == null || !IsCharacterUnlocked(_selectedCharacterDefinition))
+		if (_selectedCharacterDefinition == null)
 		{
 			AudioManager.Instance?.PlaySfxUiExit();
+			return;
+		}
+
+		if (!IsCharacterUnlocked(_selectedCharacterDefinition))
+		{
+			bool unlocked = MetaProgressionService.Instance.TryUnlockCharacter(_selectedCharacterDefinition.CharacterId);
+			if (!unlocked)
+			{
+				AudioManager.Instance?.PlaySfxUiExit();
+				RefreshCharacterSelectUi();
+				return;
+			}
+
+			AudioManager.Instance?.PlaySfxUiButton();
 			RefreshCharacterSelectUi();
 			return;
 		}
@@ -238,5 +254,14 @@ public partial class GameFlowUI
 		if (IsCharacterUnlocked(_tankCharacter))
 			return _tankCharacter;
 		return preferred ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
+	}
+
+	private static int GetCharacterUnlockCost(CharacterDefinition def)
+	{
+		if (def == null)
+			return 0;
+		if (!ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
+			return 0;
+		return Mathf.Max(0, defMeta.UnlockCost);
 	}
 }

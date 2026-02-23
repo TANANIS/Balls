@@ -9,7 +9,7 @@ public static class ProgressionDefs
 		{
 			CharacterId = "ranged",
 			IsDefaultUnlocked = true,
-			UnlockCost = 0,
+			UnlockCost = 70,
 			MinLevel = 1,
 			MaxLevel = 20,
 			BaseLevelUpCost = 18,
@@ -20,7 +20,7 @@ public static class ProgressionDefs
 		{
 			CharacterId = "melee",
 			IsDefaultUnlocked = false,
-			UnlockCost = 120,
+			UnlockCost = 70,
 			MinLevel = 1,
 			MaxLevel = 20,
 			BaseLevelUpCost = 22,
@@ -31,7 +31,7 @@ public static class ProgressionDefs
 		{
 			CharacterId = "tank_burst",
 			IsDefaultUnlocked = false,
-			UnlockCost = 160,
+			UnlockCost = 70,
 			MinLevel = 1,
 			MaxLevel = 20,
 			BaseLevelUpCost = 24,

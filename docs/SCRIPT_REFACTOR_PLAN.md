@@ -36,7 +36,7 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/UI/GameFlowUI.SettingsPersistence.cs`: settings save/load from `user://settings.cfg`.
 - `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, XP-bar refresh, 15:00 countdown refresh, responsive background scaling.
 - `Scripts/UI/PlayerHealthBarDemo.cs`: runtime HP segment HUD binding.
-- `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`: local Perfect 15:00 leaderboard persistence + start-menu rendering.
+- `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`: meta-save-backed Perfect 15:00 leaderboard query/rendering for start-menu.
 
 ### Combat
 - `Scripts/Systems/Core/CombatSystem.cs`: centralized damage processing and tank bullet bonus knockback/damage hook.

@@ -21,6 +21,17 @@ public static class SaveMigrator
 		dto.CharacterProgressById ??= new Dictionary<string, CharacterProgressDto>(StringComparer.Ordinal);
 		dto.MetaFlags ??= new List<string>();
 		dto.SettledRunIds ??= new List<string>();
+		dto.PerfectClearRecords ??= new List<PerfectClearRecord>();
+		for (int i = dto.PerfectClearRecords.Count - 1; i >= 0; i--)
+		{
+			PerfectClearRecord record = dto.PerfectClearRecords[i];
+			if (record == null)
+			{
+				dto.PerfectClearRecords.RemoveAt(i);
+				continue;
+			}
+			record.Normalize();
+		}
 
 		var normalized = new Dictionary<string, CharacterProgressDto>(StringComparer.Ordinal);
 		foreach (KeyValuePair<string, CharacterProgressDto> pair in dto.CharacterProgressById)
@@ -66,6 +77,12 @@ public static class SaveMigrator
 		state.Flags.ReplaceAll(dto.MetaFlags);
 		foreach (string runId in dto.SettledRunIds)
 			state.MarkRunSettled(runId);
+		foreach (PerfectClearRecord record in dto.PerfectClearRecords)
+		{
+			if (record == null)
+				continue;
+			state.AddPerfectClearRecord(record.Score, record.CharacterName, record.UnixTime);
+		}
 
 		return state;
 	}
@@ -84,6 +101,7 @@ public static class SaveMigrator
 		dto.UnlockedCharacterIds.AddRange(state.UnlockedCharacterIds);
 		dto.MetaFlags.AddRange(state.Flags.Values);
 		dto.SettledRunIds.AddRange(state.SettledRunIds);
+		dto.PerfectClearRecords.AddRange(state.PerfectClearRecords);
 
 		foreach (KeyValuePair<string, CharacterProgress> pair in state.CharacterProgressById)
 		{

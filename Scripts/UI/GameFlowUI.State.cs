@@ -39,18 +39,6 @@ public partial class GameFlowUI
 		EnterCharacterSelect();
 	}
 
-	private void OnStartClearLeaderboardPressed()
-	{
-		AudioManager.Instance?.PlaySfxUiButton();
-		_startClearLeaderboardDialog?.PopupCentered(new Vector2I(460, 180));
-	}
-
-	private void OnStartClearLeaderboardConfirmed()
-	{
-		ClearPerfectLeaderboard();
-		RefreshPerfectLeaderboardUi();
-	}
-
 	private void OnStartDeleteSavePressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
@@ -78,6 +66,13 @@ public partial class GameFlowUI
 
 		GetTree().Paused = false;
 		GetTree().ReloadCurrentScene();
+	}
+
+	private void OnRestartBackToMetaPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiExit();
+		ShowStartPanel();
+		AudioManager.Instance?.PlayBgmMenu();
 	}
 
 	private void OnStartSettingsPressed()

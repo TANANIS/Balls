@@ -42,10 +42,8 @@ public partial class GameFlowUI
 		if (_startSettingsButton != null) _startSettingsButton.Text = Tr("UI.COMMON.SETTINGS");
 		if (_startCardsButton != null) _startCardsButton.Text = TrOrDefault("UI.START.BUTTON_CARDS", "Cards", "Cards");
 		if (_startQuitButton != null) _startQuitButton.Text = Tr("UI.COMMON.QUIT");
-		if (_startClearLeaderboardButton != null) _startClearLeaderboardButton.Text = Tr("UI.START.CLEAR_LEADERBOARD");
 		if (_startDeleteSaveButton != null) _startDeleteSaveButton.Text = TrOrDefault("UI.META.DELETE_SAVE_BUTTON", "Delete Save Data", "\u522a\u9664\u5b58\u6a94\u8cc7\u6599");
 		if (_startCharacterBackButton != null) _startCharacterBackButton.Text = Tr("UI.COMMON.BACK");
-		if (_startCharacterConfirmButton != null) _startCharacterConfirmButton.Text = Tr("UI.START.CONFIRM_START_RUN");
 		if (_startSettingsBackButton != null) _startSettingsBackButton.Text = Tr("UI.COMMON.BACK");
 		if (_startCardsBackButton != null) _startCardsBackButton.Text = Tr("UI.COMMON.BACK");
 
@@ -55,6 +53,7 @@ public partial class GameFlowUI
 		if (_pauseToTitleButton != null) _pauseToTitleButton.Text = Tr("UI.PAUSE.BACK_TO_MENU");
 		if (_pauseQuitButton != null) _pauseQuitButton.Text = Tr("UI.COMMON.QUIT_GAME");
 		if (_settingsBackButton != null) _settingsBackButton.Text = Tr("UI.COMMON.BACK");
+		if (_restartBackToMetaButton != null) _restartBackToMetaButton.Text = TrOrDefault("UI.END.BACK_TO_META", "Back To Meta", "\u8fd4\u56de\u5c40\u5916\u990a\u6210");
 		if (_restartButton != null) _restartButton.Text = Tr("UI.PAUSE.RESTART_RUN");
 
 		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Text = Tr("UI.END.PERFECT_BANNER");
@@ -68,47 +67,48 @@ public partial class GameFlowUI
 		if (startDesc != null) startDesc.Text = Tr("UI.START.DESC");
 		var boardTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectBoardTitle");
 		if (boardTitle != null) boardTitle.Text = Tr("UI.START.PERFECT_BOARD_TITLE");
-		var characterSelectTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/Title");
+		var characterSelectTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/Title");
 		if (characterSelectTitle != null)
 			characterSelectTitle.Text = TrOrDefault("UI.META.TITLE", "META PROGRESSION", "\u5c40\u5916\u990a\u6210");
-		var startSettingsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/Title");
+		var characterSelectFluxLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader/FluxLabel");
+		if (characterSelectFluxLabel != null)
+			characterSelectFluxLabel.Text = $"{TrOrDefault("UI.META.FLUX", "Flux", "Flux")}:";
+		var characterComingSoonButton = GetNodeOrNull<Button>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/LockedButton");
+		if (characterComingSoonButton != null)
+			characterComingSoonButton.Text = TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
+		var abilityTreeGraph = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel/Margin/AbilityTreeVBox/AbilityTreeGraph");
+		if (abilityTreeGraph != null)
+			abilityTreeGraph.Text = TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
+		var startSettingsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/Title");
 		if (startSettingsTitle != null) startSettingsTitle.Text = Tr("UI.COMMON.SETTINGS");
 		var startCardsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CardsPanel/VBox/Title");
 		if (startCardsTitle != null) startCardsTitle.Text = TrOrDefault("UI.START.CARDS_TITLE", "Upgrade Cards", "Upgrade Cards");
 		var pauseTitle = GetNodeOrNull<Label>("Panels/PausePanel/Panel/VBox/Title");
 		if (pauseTitle != null) pauseTitle.Text = Tr("UI.PAUSE.TITLE");
-		var pauseSettingsTitle = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/Title");
+		var pauseSettingsTitle = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/Title");
 		if (pauseSettingsTitle != null) pauseSettingsTitle.Text = Tr("UI.COMMON.SETTINGS");
 
-		var startBgmLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/BgmLabel");
+		var startBgmLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/BgmLabel");
 		if (startBgmLabel != null) startBgmLabel.Text = Tr("UI.SETTINGS.BGM");
-		var startSfxLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/SfxLabel");
+		var startSfxLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/SfxLabel");
 		if (startSfxLabel != null) startSfxLabel.Text = Tr("UI.SETTINGS.SFX");
-		var startWindowModeLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/WindowModeLabel");
+		var startWindowModeLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeLabel");
 		if (startWindowModeLabel != null) startWindowModeLabel.Text = Tr("UI.SETTINGS.WINDOW_MODE");
-		var startWindowSizeLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/WindowSizeLabel");
+		var startWindowSizeLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowSizeLabel");
 		if (startWindowSizeLabel != null) startWindowSizeLabel.Text = Tr("UI.SETTINGS.WINDOW_SIZE");
-		var startLanguageLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/VBox/LanguageLabel");
+		var startLanguageLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/LanguageLabel");
 		if (startLanguageLabel != null) startLanguageLabel.Text = Tr("UI.SETTINGS.LANGUAGE");
 
-		var pauseBgmLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/BgmLabel");
+		var pauseBgmLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/BgmLabel");
 		if (pauseBgmLabel != null) pauseBgmLabel.Text = Tr("UI.SETTINGS.BGM");
-		var pauseSfxLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/SfxLabel");
+		var pauseSfxLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/SfxLabel");
 		if (pauseSfxLabel != null) pauseSfxLabel.Text = Tr("UI.SETTINGS.SFX");
-		var pauseWindowModeLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/WindowModeLabel");
+		var pauseWindowModeLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeLabel");
 		if (pauseWindowModeLabel != null) pauseWindowModeLabel.Text = Tr("UI.SETTINGS.WINDOW_MODE");
-		var pauseWindowSizeLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/WindowSizeLabel");
+		var pauseWindowSizeLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowSizeLabel");
 		if (pauseWindowSizeLabel != null) pauseWindowSizeLabel.Text = Tr("UI.SETTINGS.WINDOW_SIZE");
-		var pauseLanguageLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/VBox/LanguageLabel");
+		var pauseLanguageLabel = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/LanguageLabel");
 		if (pauseLanguageLabel != null) pauseLanguageLabel.Text = Tr("UI.SETTINGS.LANGUAGE");
-
-		var clearDialog = GetNodeOrNull<ConfirmationDialog>("Panels/StartPanel/ClearLeaderboardConfirmDialog");
-		if (clearDialog != null)
-		{
-			clearDialog.Title = Tr("UI.START.CLEAR_DIALOG_TITLE");
-			clearDialog.DialogText = Tr("UI.START.CLEAR_DIALOG_TEXT");
-			clearDialog.OkButtonText = Tr("UI.START.CLEAR_DIALOG_OK");
-		}
 
 		var deleteSaveDialog = GetNodeOrNull<ConfirmationDialog>("Panels/StartPanel/DeleteSaveConfirmDialog");
 		if (deleteSaveDialog != null)
@@ -123,5 +123,7 @@ public partial class GameFlowUI
 
 		if (_startCardsOpen)
 			RefreshStartCardsCompendium();
+
+		RefreshCharacterSelectUi();
 	}
 }

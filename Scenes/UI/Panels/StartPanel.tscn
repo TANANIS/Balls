@@ -228,8 +228,8 @@ visible = false
 anchors_preset = 0
 offset_left = 32.0
 offset_top = 30.0
-offset_right = 648.0
-offset_bottom = 470.0
+offset_right = 668.0
+offset_bottom = 620.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel/CharacterSelectPanel"]
 layout_mode = 1
@@ -238,58 +238,188 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Panel/CharacterSelectPanel/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 38
-text = "META PROGRESSION"
-horizontal_alignment = 1
-
-[node name="CharacterButtons" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RangedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
-custom_minimum_size = Vector2(0, 52)
+[node name="Title" type="Label" parent="Panel/CharacterSelectPanel/VBox/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "META PROGRESSION"
+horizontal_alignment = 0
+
+[node name="FluxHeader" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox/HeaderRow"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 2
+
+[node name="FluxLabel" type="Label" parent="Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.88, 0.96, 1)
+theme_override_font_sizes/font_size = 22
+text = "Flux:"
+
+[node name="FluxValue" type="Label" parent="Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 1, 0.88, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="ContentRow" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="LeftColumn" type="VBoxContainer" parent="Panel/CharacterSelectPanel/VBox/ContentRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="CharacterButtons" type="GridContainer" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+theme_override_constants/separation = 10
+
+[node name="RangedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_text = true
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Ranger Core"
 
-[node name="MeleeButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
-custom_minimum_size = Vector2(0, 52)
+[node name="MeleeButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_text = true
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Blade Core"
 
-[node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/CharacterButtons"]
-custom_minimum_size = Vector2(0, 52)
+[node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_text = true
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Bulwark Core"
 
-[node name="SelectedCharacterDesc" type="Label" parent="Panel/CharacterSelectPanel/VBox"]
-custom_minimum_size = Vector2(0, 160)
+[node name="LockedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+disabled = true
+clip_text = true
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.6)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Coming Soon"
+
+[node name="AbilityTreePanel" type="Panel" parent="Panel/CharacterSelectPanel/VBox/ContentRow"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AbilityTreeVBox" type="VBoxContainer" parent="Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="AbilityTreeTitle" type="Label" parent="Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel/Margin/AbilityTreeVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "ABILITY TREE"
+horizontal_alignment = 1
+
+[node name="AbilityTreeGraph" type="Label" parent="Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel/Margin/AbilityTreeVBox"]
+custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.68, 0.9, 0.98, 0.95)
+theme_override_font_sizes/font_size = 18
+text = "Coming Soon"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomRow" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="DetailPanel" type="Panel" parent="Panel/CharacterSelectPanel/VBox/BottomRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="DescScroll" type="ScrollContainer" parent="Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SelectedCharacterDesc" type="Label" parent="Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel/Margin/DescScroll"]
+custom_minimum_size = Vector2(560, 160)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.95)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 text = "Select a character."
 autowrap_mode = 3
 
@@ -320,86 +450,81 @@ visible = false
 anchors_preset = 0
 offset_left = 32.0
 offset_top = 30.0
-offset_right = 648.0
-offset_bottom = 470.0
+offset_right = 668.0
+offset_bottom = 620.0
 
-[node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel"]
+[node name="SettingsScroll" type="ScrollContainer" parent="Panel/SettingsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 8
+horizontal_scroll_mode = 0
 
-[node name="Title" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel/SettingsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 34
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="BgmLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="BgmLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "BGM Volume"
 
-[node name="BgmSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+[node name="BgmSlider" type="HSlider" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 value = 100.0
 
-[node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "SFX Volume"
 
-[node name="SfxSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+[node name="SfxSlider" type="HSlider" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 value = 100.0
 
-[node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "Window Mode"
 
-[node name="WindowModeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowModeOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="WindowSizeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowSizeLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "Window Size"
 
-[node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "Language"
 
-[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="ClearLeaderboardButton" type="Button" parent="Panel/SettingsPanel/VBox"]
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.62, 1)
-theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxFlat_button")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Clear Leaderboard Record"
-
-[node name="DeleteSaveButton" type="Button" parent="Panel/SettingsPanel/VBox"]
+[node name="DeleteSaveButton" type="Button" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.75, 0.75, 1)
@@ -409,7 +534,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Delete Save Data"
 
-[node name="BackButton" type="Button" parent="Panel/SettingsPanel/VBox"]
+[node name="BackButton" type="Button" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
@@ -462,14 +587,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Back"
-
-[node name="ClearLeaderboardConfirmDialog" type="ConfirmationDialog" parent="."]
-title = "Clear Leaderboard"
-initial_position = 1
-size = Vector2i(460, 180)
-ok_button_text = "Clear"
-dialog_text = "Are you sure you want to clear all local perfect-clear records?
-This action cannot be undone."
 
 [node name="DeleteSaveConfirmDialog" type="ConfirmationDialog" parent="."]
 title = "Delete Save Data"

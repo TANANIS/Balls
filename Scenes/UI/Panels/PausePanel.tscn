@@ -151,72 +151,84 @@ visible = false
 layout_mode = 0
 offset_left = 24.0
 offset_top = 24.0
-offset_right = 536.0
-offset_bottom = 452.0
+offset_right = 676.0
+offset_bottom = 496.0
 
-[node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel"]
+[node name="SettingsScroll" type="ScrollContainer" parent="Panel/SettingsPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+horizontal_scroll_mode = 0
 
-[node name="Title" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Panel/SettingsPanel/SettingsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 26
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="BgmLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="BgmLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "BGM Volume"
 
-[node name="BgmSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+[node name="BgmSlider" type="HSlider" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 100.0
 value = 100.0
 
-[node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "SFX Volume"
 
-[node name="SfxSlider" type="HSlider" parent="Panel/SettingsPanel/VBox"]
+[node name="SfxSlider" type="HSlider" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 100.0
 value = 100.0
 
-[node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "Window Mode"
 
-[node name="WindowModeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowModeOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="WindowSizeLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowSizeLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "Window Size"
 
-[node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="WindowSizeOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/VBox"]
+[node name="LanguageLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 17
 text = "Language"
 
-[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/VBox"]
+[node name="LanguageOption" type="OptionButton" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="Panel/SettingsPanel/VBox"]
+[node name="BackButton" type="Button" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")

@@ -98,9 +98,7 @@ public partial class GameFlowUI
 		if (_restartPerfectBannerLabel != null)
 			_restartPerfectBannerLabel.Visible = isPerfectClear;
 		if (_restartHintLabel != null)
-			_restartHintLabel.Text = isFailure
-				? Tr("UI.END.HINT_RESTART")
-				: Tr("UI.END.HINT_PERFECT");
+			_restartHintLabel.Text = reason;
 
 		int score = _scoreSystem != null ? _scoreSystem.Score : 0;
 		int seconds = _stabilitySystem != null ? Mathf.FloorToInt(_stabilitySystem.ElapsedSeconds) : 0;
@@ -110,12 +108,19 @@ public partial class GameFlowUI
 			RecordPerfectClear(score, ResolvePerfectCharacterName());
 
 		if (_finalScoreLabel != null)
+			_finalScoreLabel.Text = $"{Tr("UI.HUD.SCORE")}: {score}";
+		if (_finalSurvivalLabel != null)
+			_finalSurvivalLabel.Text = $"{Tr("UI.END.SURVIVAL")}: {survival}";
+		if (_finalFluxGainLabel != null)
+		{
+			string fluxLabel = TrOrDefault("UI.META.FLUX", "Flux", "Flux");
+			_finalFluxGainLabel.Text = $"{fluxLabel}: +{flux.TotalCurrency}";
+		}
+		if (_finalFluxWalletLabel != null)
 		{
 			int wallet = MetaProgressionService.Instance.CurrencyWallet;
-			string fluxLabel = TrOrDefault("UI.META.FLUX", "Flux", "Flux");
-			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Flux Wallet", "Flux 餘額");
-			_finalScoreLabel.Text =
-				$"{reason}\n{Tr("UI.END.SURVIVAL")}: {survival}\n{Tr("UI.HUD.SCORE")}: {score}\n{fluxLabel}: +{flux.TotalCurrency}\n{walletLabel}: {wallet}";
+			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Flux Wallet", "Flux \u9918\u984d");
+			_finalFluxWalletLabel.Text = $"{walletLabel}: {wallet}";
 		}
 
 		RefreshFinalBuildSummary();

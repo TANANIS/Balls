@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public sealed class MetaSaveDto
 {
-	public const int CurrentVersion = 1;
+	public const int CurrentVersion = 2;
 
 	public int Version { get; set; } = CurrentVersion;
 	public int CurrencyWallet { get; set; }
@@ -13,6 +13,7 @@ public sealed class MetaSaveDto
 	public Dictionary<string, CharacterProgressDto> CharacterProgressById { get; set; } = new();
 	public List<string> MetaFlags { get; set; } = new();
 	public List<string> SettledRunIds { get; set; } = new();
+	public List<PerfectClearRecord> PerfectClearRecords { get; set; } = new();
 }
 
 public sealed class CharacterProgressDto

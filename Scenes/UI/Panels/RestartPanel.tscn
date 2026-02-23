@@ -1,5 +1,4 @@
-[gd_scene load_steps=5 format=3]
-
+[gd_scene load_steps=6 format=3]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.05, 0.07, 0.12, 0.95)
@@ -57,6 +56,13 @@ corner_radius_bottom_left = 10
 shadow_color = Color(0, 0.8, 1, 0.35)
 shadow_size = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_section"]
+bg_color = Color(0.07, 0.1, 0.17, 0.92)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="RestartPanel" type="Control"]
 visible = false
 layout_mode = 1
@@ -68,37 +74,52 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(760, 430)
+custom_minimum_size = Vector2(820, 520)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -380.0
-offset_top = -215.0
-offset_right = 380.0
-offset_bottom = 215.0
+offset_left = -410.0
+offset_top = -260.0
+offset_right = 410.0
+offset_bottom = 260.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
-[node name="VBox" type="VBoxContainer" parent="Panel"]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 736.0
-offset_bottom = 406.0
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
 
-[node name="Title" type="Label" parent="Panel/VBox"]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="Header" type="VBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 text = "SYSTEM FAILURE"
 horizontal_alignment = 1
 
-[node name="PerfectBanner" type="Label" parent="Panel/VBox"]
+[node name="PerfectBanner" type="Label" parent="Panel/Margin/VBox/Header"]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.95, 0.45, 1)
@@ -106,38 +127,127 @@ theme_override_font_sizes/font_size = 24
 text = "PERFECT SURVIVAL"
 horizontal_alignment = 1
 
-[node name="Hint" type="Label" parent="Panel/VBox"]
+[node name="Hint" type="Label" parent="Panel/Margin/VBox/Header"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.6, 0.85, 0.9, 0.9)
+theme_override_colors/font_color = Color(0.62, 0.88, 0.94, 0.95)
+theme_override_font_sizes/font_size = 16
 text = "Press the button to restart this run."
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Score" type="Label" parent="Panel/VBox"]
+[node name="StatsPanel" type="Panel" parent="Panel/Margin/VBox"]
 layout_mode = 2
-size_flags_vertical = 1
-theme_override_colors/font_color = Color(0.3, 1, 0.9, 1)
-theme_override_font_sizes/font_size = 18
-text = "Score: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
 
-[node name="BuildSummary" type="Label" parent="Panel/VBox"]
+[node name="StatsMargin" type="MarginContainer" parent="Panel/Margin/VBox/StatsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 10
+
+[node name="StatsRow" type="HBoxContainer" parent="Panel/Margin/VBox/StatsPanel/StatsMargin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Survival" type="Label" parent="Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.66, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "Survival: 00:00"
+
+[node name="Score" type="Label" parent="Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.34, 1, 0.92, 1)
+theme_override_font_sizes/font_size = 22
+text = "Score: 0"
+
+[node name="FluxGain" type="Label" parent="Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.58, 1)
+theme_override_font_sizes/font_size = 17
+text = "Flux: +0"
+
+[node name="FluxWallet" type="Label" parent="Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.84, 0.97, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "Wallet: 0"
+
+[node name="BuildSection" type="Panel" parent="Panel/Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.6, 0.9, 1, 0.95)
+theme_override_styles/panel = SubResource("StyleBoxFlat_section")
+
+[node name="BuildMargin" type="MarginContainer" parent="Panel/Margin/VBox/BuildSection"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="BuildVBox" type="VBoxContainer" parent="Panel/Margin/VBox/BuildSection/BuildMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="BuildTitle" type="Label" parent="Panel/Margin/VBox/BuildSection/BuildMargin/BuildVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Run Build Summary"
+
+[node name="BuildScroll" type="ScrollContainer" parent="Panel/Margin/VBox/BuildSection/BuildMargin/BuildVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="BuildSummary" type="Label" parent="Panel/Margin/VBox/BuildSection/BuildMargin/BuildVBox/BuildScroll"]
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.65, 0.9, 1, 0.95)
 theme_override_font_sizes/font_size = 15
 text = "Build Summary"
 autowrap_mode = 3
 
-[node name="RestartButton" type="Button" parent="Panel/VBox"]
-custom_minimum_size = Vector2(0, 48)
+[node name="ActionButtons" type="HBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackToMetaButton" type="Button" parent="Panel/Margin/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back To Meta"
+
+[node name="RestartButton" type="Button" parent="Panel/Margin/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.8, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Restart Run"
-

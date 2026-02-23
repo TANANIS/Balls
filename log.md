@@ -523,3 +523,162 @@
 - Validation:
   - `dotnet build ProjectGenesis.sln` succeeded (0 errors).
   - NU1900 warning remains external (NuGet source connectivity).
+
+## Session Update (2026-02-23, Meta Progression UI Layout Pass)
+- Reworked start-menu meta progression panel layout to match requested reference composition:
+  - top header row (`META PROGRESSION` + right-side Flux value),
+  - middle split area (left character card grid + right ability-tree visual panel),
+  - lower detail panel with character/meta description,
+  - bottom dual action buttons (`Back`, `Start Run`).
+- Scene changes:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+  - resized `CharacterSelectPanel` to use near-full menu canvas height and rebuilt child layout containers.
+- Script wiring updates:
+  - `Scripts/UI/GameFlowUI.References.cs`
+    - updated character-select node paths after layout refactor,
+    - added `FluxValue` node reference.
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+    - `RefreshCharacterSelectUi()` now refreshes top-right Flux wallet text.
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+  - updated meta title path after header-row move,
+  - added localized label update for `Flux:`.
+
+## Session Update (2026-02-23, Character Unlock Cost + Meta Unlock Flow)
+- Character unlock pricing update:
+  - `Scripts/Defs/ProgressionDefs.cs`
+  - unified all character unlock costs to `70 Flux` (`ranged`, `melee`, `tank_burst`).
+- Meta panel unlock interaction:
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+  - character cards are now selectable even when locked (kept lock label in button text),
+  - confirm button behavior is now state-driven:
+    - unlocked character => `Start Run`,
+    - locked character => `Unlock (70 Flux)` (dynamic by def cost),
+  - pressing confirm on a locked character now attempts `MetaProgressionService.TryUnlockCharacter(...)`,
+  - on successful unlock, panel refreshes in-place with updated Flux and button state.
+- Localization interaction fix:
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+  - removed fixed overwrite of character-confirm button text,
+  - refreshes character-select UI at end of localization pass so dynamic confirm text stays correct per state.
+
+## Session Update (2026-02-23, Meta UI Overflow + Expectation Guard)
+- Fixed layout overflow risk in meta progression panel:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+  - reduced heavy vertical min-heights (`ContentRow`, `BottomRow`),
+  - reduced character card font sizes and enabled `clip_text` to prevent long `[Locked]` labels overflowing,
+  - moved detail description into `ScrollContainer` to prevent bottom button overlap/cutoff on dense text.
+- Updated node path after scroll-container insertion:
+  - `Scripts/UI/GameFlowUI.References.cs`
+  - `StartCharacterDescriptionPath` now points to `.../DescScroll/SelectedCharacterDesc`.
+- Marked not-yet-implemented features as explicitly unavailable:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+    - placeholder 4th character card text changed to `Coming Soon`.
+    - ability-tree graphic placeholder text changed to `Coming Soon`.
+  - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
+    - ability-tree fallback text now uses `UI.META.NOT_AVAILABLE` fallback (`Coming Soon` / `尚未開放`) instead of "framework pending design" wording.
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+    - localized both "Coming Soon" placeholders for character slot and ability-tree area.
+
+## Session Update (2026-02-23, Description Visibility Fix + End-State UI Polish)
+- Fixed meta character description disappearing:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+  - increased `SelectedCharacterDesc` minimum width inside `DescScroll` to prevent zero-width collapse in `ScrollContainer`.
+- End-state (run settlement) UI layout pass:
+  - `Scenes/UI/Panels/RestartPanel.tscn` rebuilt into structured sections:
+    - header (`Title`, `PerfectBanner`, reason/hint),
+    - stats row (`Survival`, `Score`, `Flux gain`, `Flux wallet`),
+    - scrollable build-summary section,
+    - clear bottom action button.
+- End-state data binding updates:
+  - `Scripts/UI/GameFlowUI.References.cs`
+    - updated restart-panel node paths after layout rebuild,
+    - added references for new labels:
+      - `_finalSurvivalLabel`
+      - `_finalFluxGainLabel`
+      - `_finalFluxWalletLabel`
+  - `Scripts/UI/GameFlowUI.EndState.cs`
+    - rewired output to structured labels instead of single multiline score block,
+    - restart hint now displays actual run-end reason,
+    - fixed Flux wallet zh fallback string to Unicode-safe literal.
+
+## Session Update (2026-02-23, Player Hit Movement Freeze)
+- Added short movement-freeze window when player takes real HP damage to reduce contact-slide artifacts.
+- Implementation:
+  - `Scripts/Player/PlayerHealth.cs`
+    - new tunable: `DamageMoveFreezeSeconds` (default `0.06`).
+  - `Scripts/Player/PlayerHealth.Core.cs`
+    - on successful damage (after shield check), calls player movement freeze trigger.
+  - `Scripts/Player/Player.State.cs`
+    - added `ApplyHitMovementFreeze(float duration)` bridge method.
+  - `Scripts/Player/PlayerMovement.cs`
+    - added internal freeze timer and `ApplyMovementFreeze(float duration)`.
+    - while freeze is active: velocity forced to zero for the short window.
+- Behavior note:
+  - shield-absorbed hits do not trigger movement freeze (only actual HP loss does).
+
+## Session Update (2026-02-23, Editor Inspector Flux Debug Override)
+- Adjusted debug-currency approach per request to Godot editor workflow (not in-game UI controls).
+- Added inspector-driven debug override on `GameFlowUI`:
+  - `Scripts/UI/GameFlowUI.cs`
+  - new exported fields under `Debug/Meta`:
+    - `EditorOverrideFluxWalletOnReady` (bool)
+    - `EditorFluxWallet` (int)
+  - on `_Ready()`, in debug build and when enabled, applies wallet override to target Flux value.
+- Added service-side setter for wallet override:
+  - `Scripts/Meta/MetaProgressionService.cs`
+  - `DebugSetCurrencyWallet(int targetWallet)`:
+    - clamps to non-negative,
+    - adjusts via add/spend path,
+    - persists save immediately.
+- Removed previously added in-game Settings debug buttons from:
+  - `Scenes/UI/Panels/StartPanel.tscn`
+
+## Session Update (2026-02-23, Settings Layout Stabilization + End-State Actions)
+- Settings layout stabilization (menu + in-run):
+  - `Scenes/UI/Panels/StartPanel.tscn`
+    - Start Settings panel expanded to full content area height.
+    - wrapped settings content with `SettingsScroll` to avoid text/control overflow in bilingual strings.
+  - `Scenes/UI/Panels/PausePanel.tscn`
+    - Pause Settings width/height aligned with pause panel content area.
+    - wrapped settings content with `SettingsScroll` for consistent spacing and no clipping.
+- Restart/end-state UX action update:
+  - `Scenes/UI/Panels/RestartPanel.tscn`
+    - bottom action changed to two buttons:
+      - `BackToMetaButton`
+      - `RestartButton`
+- UI path + signal/localization sync:
+  - `Scripts/UI/GameFlowUI.References.cs`
+    - updated start/pause settings node paths to `.../SettingsScroll/VBox/...`.
+    - added restart back-to-meta button reference/binding.
+  - `Scripts/UI/GameFlowUI.State.cs`
+    - added `OnRestartBackToMetaPressed()` -> returns to out-of-run menu/meta view.
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+    - updated settings label path lookups to new scroll-based hierarchy.
+    - added localized fallback text for end-state back-to-meta button.
+
+## Session Update (2026-02-23, Leaderboard Merged Into Meta Save)
+- Integrated perfect-clear leaderboard into meta save domain/persistence:
+  - added model: `Scripts/Meta/PerfectClearRecord.cs`
+  - `Scripts/Meta/MetaProgressionState.cs`
+    - added `PerfectClearRecords` collection and sorted/trimmed record helpers.
+  - `Scripts/Save/MetaSaveDto.cs`
+    - schema version bumped to `2`,
+    - added `PerfectClearRecords` payload.
+  - `Scripts/Save/SaveMigrator.cs`
+    - migration/default normalization for `PerfectClearRecords`,
+    - DTO <-> domain conversion wired.
+  - `Scripts/Meta/MetaProgressionService.cs`
+    - added `RecordPerfectClear(...)` and `GetPerfectLeaderboard(...)`.
+- UI leaderboard source switched from separate local cfg file to meta service:
+  - replaced implementation: `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`
+  - removed standalone file persistence (`user://perfect_1500_leaderboard.cfg`) path logic.
+- Removed clear-leaderboard UI/action (now merged with save lifecycle):
+  - `Scenes/UI/Panels/StartPanel.tscn`
+    - removed `ClearLeaderboardButton` and `ClearLeaderboardConfirmDialog`.
+  - `Scripts/UI/GameFlowUI.References.cs`
+    - removed clear-leaderboard node refs and signal bindings.
+  - `Scripts/UI/GameFlowUI.State.cs`
+    - removed clear-leaderboard handlers.
+  - `Scripts/UI/GameFlowUI.Localization.cs`
+    - removed clear-leaderboard button/dialog localization wiring.
+- Logic consequence:
+  - deleting profile save now clears leaderboard implicitly because leaderboard and meta progression now share the same save file.

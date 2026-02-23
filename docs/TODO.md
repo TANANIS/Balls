@@ -12,7 +12,7 @@
 - [x] Top XP progress bar enabled (shows next-upgrade readiness)
 - [x] 15:00 match countdown shown on top-right during run
 - [x] Perfect 15:00 dedicated end-state UI
-- [x] Start menu local leaderboard for Perfect 15:00 (score + date + character)
+- [x] Start menu Perfect 15:00 leaderboard (stored in meta save profile)
 - [x] Documentation sync: upgrade flow unified to EXP pickup canonical path
 
 ## Balance - Immediate
@@ -36,7 +36,7 @@
 - [ ] Upgrade-ready HUD polish (icon/animation/sfx sync)
 - [x] EXP value differentiation by enemy type (normal/elite/boss)
 - [ ] Replace HP/XP placeholder visuals with final art
-- [ ] Leaderboard UX polish (clear/reset button, rank animation)
+- [ ] Leaderboard UX polish (rank animation / presentation)
 
 ## Combat Feedback
 - [x] Enemy white flash on hit

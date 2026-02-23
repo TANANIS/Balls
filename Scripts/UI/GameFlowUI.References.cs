@@ -8,10 +8,11 @@ public partial class GameFlowUI
 	private const string StartSettingsPanelPath = "Panels/StartPanel/Panel/SettingsPanel";
 	private const string StartCardsPanelPath = "Panels/StartPanel/Panel/CardsPanel";
 	private const string StartCharacterSelectPanelPath = "Panels/StartPanel/Panel/CharacterSelectPanel";
-	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/RangedButton";
-	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/MeleeButton";
-	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/CharacterButtons/TankButton";
-	private const string StartCharacterDescriptionPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/SelectedCharacterDesc";
+	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/RangedButton";
+	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/MeleeButton";
+	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/TankButton";
+	private const string StartCharacterDescriptionPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel/Margin/DescScroll/SelectedCharacterDesc";
+	private const string StartCharacterFluxValuePath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader/FluxValue";
 	private const string StartCharacterBackButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ActionButtons/BackButton";
 	private const string StartCharacterConfirmButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ActionButtons/ConfirmButton";
 	private const string RestartPanelPath = "Panels/RestartPanel";
@@ -22,31 +23,30 @@ public partial class GameFlowUI
 	private const string StartSettingsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/SettingsButton";
 	private const string StartCardsButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/CardsButton";
 	private const string StartQuitButtonPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/QuitButton";
-	private const string StartClearLeaderboardButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/ClearLeaderboardButton";
-	private const string StartDeleteSaveButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/DeleteSaveButton";
-	private const string StartClearLeaderboardDialogPath = "Panels/StartPanel/ClearLeaderboardConfirmDialog";
+	private const string StartDeleteSaveButtonPath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/DeleteSaveButton";
 	private const string StartDeleteSaveDialogPath = "Panels/StartPanel/DeleteSaveConfirmDialog";
 	private const string StartPerfectLeaderboardPath = "Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectLeaderboard";
-	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BackButton";
+	private const string StartSettingsBackButtonPath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/BackButton";
 	private const string StartCardsBackButtonPath = "Panels/StartPanel/Panel/CardsPanel/VBox/BackButton";
 	private const string StartCardsContentPath = "Panels/StartPanel/Panel/CardsPanel/VBox/CardsScroll/CardsContent";
-	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/BgmSlider";
-	private const string StartSettingsSfxSliderPath = "Panels/StartPanel/Panel/SettingsPanel/VBox/SfxSlider";
-	private const string StartSettingsWindowSizePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowSizeOption";
-	private const string StartSettingsWindowModePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/WindowModeOption";
-	private const string StartSettingsLanguagePath = "Panels/StartPanel/Panel/SettingsPanel/VBox/LanguageOption";
-	private const string RestartButtonPath = "Panels/RestartPanel/Panel/VBox/RestartButton";
+	private const string StartSettingsBgmSliderPath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/BgmSlider";
+	private const string StartSettingsSfxSliderPath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/SfxSlider";
+	private const string StartSettingsWindowSizePath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowSizeOption";
+	private const string StartSettingsWindowModePath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeOption";
+	private const string StartSettingsLanguagePath = "Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/LanguageOption";
+	private const string RestartBackToMetaButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/BackToMetaButton";
+	private const string RestartButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/RestartButton";
 	private const string PauseResumeButtonPath = "Panels/PausePanel/Panel/VBox/ResumeButton";
 	private const string PauseSettingsButtonPath = "Panels/PausePanel/Panel/VBox/SettingsButton";
 	private const string PauseRestartButtonPath = "Panels/PausePanel/Panel/VBox/RestartButton";
 	private const string PauseToTitleButtonPath = "Panels/PausePanel/Panel/VBox/ToTitleButton";
 	private const string PauseQuitButtonPath = "Panels/PausePanel/Panel/VBox/QuitButton";
-	private const string SettingsBackButtonPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/BackButton";
-	private const string SettingsBgmSliderPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/BgmSlider";
-	private const string SettingsSfxSliderPath = "Panels/PausePanel/Panel/SettingsPanel/VBox/SfxSlider";
-	private const string SettingsWindowSizePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowSizeOption";
-	private const string SettingsWindowModePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/WindowModeOption";
-	private const string SettingsLanguagePath = "Panels/PausePanel/Panel/SettingsPanel/VBox/LanguageOption";
+	private const string SettingsBackButtonPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/BackButton";
+	private const string SettingsBgmSliderPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/BgmSlider";
+	private const string SettingsSfxSliderPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/SfxSlider";
+	private const string SettingsWindowSizePath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowSizeOption";
+	private const string SettingsWindowModePath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeOption";
+	private const string SettingsLanguagePath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/LanguageOption";
 	private const string UpgradeMenuPath = "UpgradeLayer/UpgradeMenu";
 	private const string ScoreLabelPath = "Overlay/HudOverlay/ScoreLabel";
 	private const string PlayerHealthBarPath = "Overlay/HudOverlay/PlayerHealthBarDemo";
@@ -54,12 +54,15 @@ public partial class GameFlowUI
 	private const string ExperienceBarPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceBar";
 	private const string ExperienceLabelPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceLabel";
 	private const string MatchCountdownLabelPath = "Overlay/HudOverlay/MatchCountdownLabel";
-	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/VBox/Score";
+	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/Score";
+	private const string FinalSurvivalLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/Survival";
+	private const string FinalFluxGainLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/FluxGain";
+	private const string FinalFluxWalletLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/FluxWallet";
 	private const string PauseBuildSummaryLabelPath = "Panels/PausePanel/Panel/VBox/BuildSummary";
-	private const string FinalBuildSummaryLabelPath = "Panels/RestartPanel/Panel/VBox/BuildSummary";
-	private const string RestartTitleLabelPath = "Panels/RestartPanel/Panel/VBox/Title";
-	private const string RestartPerfectBannerPath = "Panels/RestartPanel/Panel/VBox/PerfectBanner";
-	private const string RestartHintLabelPath = "Panels/RestartPanel/Panel/VBox/Hint";
+	private const string FinalBuildSummaryLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/BuildSection/BuildMargin/BuildVBox/BuildScroll/BuildSummary";
+	private const string RestartTitleLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/Header/Title";
+	private const string RestartPerfectBannerPath = "Panels/RestartPanel/Panel/Margin/VBox/Header/PerfectBanner";
+	private const string RestartHintLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/Header/Hint";
 	private const string BackgroundPath = "../../World/Background";
 	private const string BackgroundDimmerPath = "../../World/BackgroundDimmer";
 	private const string MenuBackgroundPath = "../../World/MenuBackground";
@@ -86,9 +89,7 @@ public partial class GameFlowUI
 	private Button _startSettingsButton;
 	private Button _startCardsButton;
 	private Button _startQuitButton;
-	private Button _startClearLeaderboardButton;
 	private Button _startDeleteSaveButton;
-	private ConfirmationDialog _startClearLeaderboardDialog;
 	private ConfirmationDialog _startDeleteSaveDialog;
 	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
@@ -97,8 +98,10 @@ public partial class GameFlowUI
 	private Button _startCharacterRangedButton;
 	private Button _startCharacterMeleeButton;
 	private Button _startCharacterTankButton;
+	private Label _startCharacterFluxValueLabel;
 	private Button _startCharacterBackButton;
 	private Button _startCharacterConfirmButton;
+	private Button _restartBackToMetaButton;
 	private Button _restartButton;
 	private Button _pauseResumeButton;
 	private Button _pauseSettingsButton;
@@ -124,6 +127,9 @@ public partial class GameFlowUI
 	private Label _experienceLabel;
 	private Label _matchCountdownLabel;
 	private Label _finalScoreLabel;
+	private Label _finalSurvivalLabel;
+	private Label _finalFluxGainLabel;
+	private Label _finalFluxWalletLabel;
 	private Label _pauseBuildSummaryLabel;
 	private Label _finalBuildSummaryLabel;
 	private Label _restartTitleLabel;
@@ -176,9 +182,7 @@ public partial class GameFlowUI
 		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startCardsButton = GetNodeOrNull<Button>(StartCardsButtonPath);
 		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
-		_startClearLeaderboardButton = GetNodeOrNull<Button>(StartClearLeaderboardButtonPath);
 		_startDeleteSaveButton = GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
-		_startClearLeaderboardDialog = GetNodeOrNull<ConfirmationDialog>(StartClearLeaderboardDialogPath);
 		_startDeleteSaveDialog = GetNodeOrNull<ConfirmationDialog>(StartDeleteSaveDialogPath);
 		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
@@ -187,8 +191,10 @@ public partial class GameFlowUI
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
 		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
 		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
+		_startCharacterFluxValueLabel = GetNodeOrNull<Label>(StartCharacterFluxValuePath);
 		_startCharacterBackButton = GetNodeOrNull<Button>(StartCharacterBackButtonPath);
 		_startCharacterConfirmButton = GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
+		_restartBackToMetaButton = GetNodeOrNull<Button>(RestartBackToMetaButtonPath);
 		_restartButton = GetNodeOrNull<Button>(RestartButtonPath);
 		_pauseResumeButton = GetNodeOrNull<Button>(PauseResumeButtonPath);
 		_pauseSettingsButton = GetNodeOrNull<Button>(PauseSettingsButtonPath);
@@ -214,6 +220,9 @@ public partial class GameFlowUI
 		_experienceLabel = GetNodeOrNull<Label>(ExperienceLabelPath);
 		_matchCountdownLabel = GetNodeOrNull<Label>(MatchCountdownLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
+		_finalSurvivalLabel = GetNodeOrNull<Label>(FinalSurvivalLabelPath);
+		_finalFluxGainLabel = GetNodeOrNull<Label>(FinalFluxGainLabelPath);
+		_finalFluxWalletLabel = GetNodeOrNull<Label>(FinalFluxWalletLabelPath);
 		_pauseBuildSummaryLabel = GetNodeOrNull<Label>(PauseBuildSummaryLabelPath);
 		_finalBuildSummaryLabel = GetNodeOrNull<Label>(FinalBuildSummaryLabelPath);
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
@@ -280,12 +289,8 @@ public partial class GameFlowUI
 			_startCardsButton.Pressed += OnStartCardsPressed;
 		if (_startQuitButton != null)
 			_startQuitButton.Pressed += OnQuitGamePressed;
-		if (_startClearLeaderboardButton != null)
-			_startClearLeaderboardButton.Pressed += OnStartClearLeaderboardPressed;
 		if (_startDeleteSaveButton != null)
 			_startDeleteSaveButton.Pressed += OnStartDeleteSavePressed;
-		if (_startClearLeaderboardDialog != null)
-			_startClearLeaderboardDialog.Confirmed += OnStartClearLeaderboardConfirmed;
 		if (_startDeleteSaveDialog != null)
 			_startDeleteSaveDialog.Confirmed += OnStartDeleteSaveConfirmed;
 		if (_startSettingsBackButton != null)
@@ -302,6 +307,8 @@ public partial class GameFlowUI
 			_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
 		if (_startCharacterConfirmButton != null)
 			_startCharacterConfirmButton.Pressed += OnCharacterSelectConfirmPressed;
+		if (_restartBackToMetaButton != null)
+			_restartBackToMetaButton.Pressed += OnRestartBackToMetaPressed;
 		if (_restartButton != null)
 			_restartButton.Pressed += OnRestartPressed;
 		if (_playerHealth != null)

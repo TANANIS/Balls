@@ -16,6 +16,11 @@ public partial class Player
 		_health.TakeDamage(amount, source);
 	}
 
+	public void ApplyHitMovementFreeze(float duration)
+	{
+		_movement?.ApplyMovementFreeze(duration);
+	}
+
 	public void EnterDashCollisionMode()
 	{
 		// Reserved hook for dash-specific collision layer/mask changes.
