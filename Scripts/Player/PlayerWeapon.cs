@@ -119,12 +119,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	private List<float> BuildVolleyAngles()
 	{
-		if (PrecisionSingleLine)
-			return new List<float> { 0f };
-
-		var angles = new List<float> { 0f };
+		var angles = new List<float>();
 		int count = Mathf.Max(1, 1 + ExtraProjectiles);
-		angles.Clear();
 		if (count == 1)
 		{
 			angles.Add(0f);
