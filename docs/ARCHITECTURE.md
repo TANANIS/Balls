@@ -43,6 +43,22 @@ Game
 - `Director/*`: pacing and encounter orchestration.
 - `Progression/*`: upgrade application and progression effects.
 - `UI/*`: presentation and input only. UI may call systems; systems do not depend on UI.
+- `Audio/*`: centralized BGM/SFX routing and runtime playback policy.
+
+## Audio Runtime Contract
+- `Scripts/Audio/AudioManager*.cs` is the single runtime entry for audio playback APIs.
+- BGM is playlist-based, state-driven:
+  - `Menu`: title/out-of-run.
+  - `Gameplay`: in-run combat.
+  - `Result`: run settlement screen (success/failure).
+- Playlist behavior:
+  - each track is non-loop,
+  - when a track finishes, the manager picks another random track from the active playlist,
+  - immediate repeat is avoided when possible.
+- SFX routing remains event-based (`UI`, `Player`, `Enemies`) through explicit `PlaySfx*()` methods; gameplay systems should not hardcode asset paths.
+- Default audio levels (when no user settings file exists):
+  - BGM: `50%`
+  - SFX: `80%`
 
 ## Progression + Upgrade Model
 - `UpgradeProgress`: XP/upgrade meter.

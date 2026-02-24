@@ -16,16 +16,77 @@ public partial class AudioManager
 			PlaySfx(stream);
 	}
 
-	private void PlayBgm(AudioStream stream)
+	private void StartBgmPlaylist(BgmPlaylist playlist)
 	{
-		if (_bgmPlayer == null || stream == null)
+		if (_bgmPlayer == null)
 			return;
 
-		if (_bgmPlayer.Stream != stream)
-			_bgmPlayer.Stream = stream;
+		if (_currentBgmPlaylist != playlist)
+		{
+			_currentBgmPlaylist = playlist;
+			_currentBgmTrack = null;
+			PlayRandomBgmFromCurrentPlaylist();
+			return;
+		}
 
 		if (!_bgmPlayer.Playing)
-			_bgmPlayer.Play();
+			PlayRandomBgmFromCurrentPlaylist();
+	}
+
+	private void OnBgmFinished()
+	{
+		PlayRandomBgmFromCurrentPlaylist();
+	}
+
+	private void PlayRandomBgmFromCurrentPlaylist()
+	{
+		if (_bgmPlayer == null)
+			return;
+
+		var tracks = GetTracksForPlaylist(_currentBgmPlaylist);
+		if (tracks == null || tracks.Count == 0)
+			return;
+
+		AudioStream next = PickRandomTrack(tracks, _currentBgmTrack);
+		if (next == null)
+			return;
+
+		_currentBgmTrack = next;
+		_bgmPlayer.Stream = next;
+		_bgmPlayer.Play();
+	}
+
+	private System.Collections.Generic.List<AudioStream> GetTracksForPlaylist(BgmPlaylist playlist)
+	{
+		return playlist switch
+		{
+			BgmPlaylist.Menu => _bgmMenuTracks,
+			BgmPlaylist.Gameplay => _bgmGameplayTracks,
+			BgmPlaylist.Result => _bgmResultTracks,
+			_ => null
+		};
+	}
+
+	private AudioStream PickRandomTrack(System.Collections.Generic.List<AudioStream> tracks, AudioStream previous)
+	{
+		if (tracks == null || tracks.Count == 0)
+			return null;
+
+		if (tracks.Count == 1)
+			return tracks[0];
+
+		int fallbackIndex = Mathf.Clamp((int)_bgmRng.RandiRange(0, tracks.Count - 1), 0, tracks.Count - 1);
+		AudioStream fallback = tracks[fallbackIndex];
+
+		for (int i = 0; i < 8; i++)
+		{
+			int idx = Mathf.Clamp((int)_bgmRng.RandiRange(0, tracks.Count - 1), 0, tracks.Count - 1);
+			AudioStream candidate = tracks[idx];
+			if (candidate != previous)
+				return candidate;
+		}
+
+		return fallback;
 	}
 
 	private void PlaySfx(AudioStream stream, float volumeDbOffset = 0f)

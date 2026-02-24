@@ -92,6 +92,7 @@ public partial class GameFlowUI
 	private void EnterEndState(string reason, bool isFailure)
 	{
 		_ending = true;
+		AudioManager.Instance?.PlayBgmResult();
 
 		if (_restartPanel != null)
 			_restartPanel.Visible = true;

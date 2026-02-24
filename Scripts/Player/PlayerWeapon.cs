@@ -107,7 +107,10 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		if (ProjectileScene == null || _projectileContainer == null || _player == null)
 			return;
 
-		AudioManager.Instance?.PlaySfxPlayerFire();
+		if (PriestProjectileScene != null && ProjectileScene == PriestProjectileScene)
+			AudioManager.Instance?.PlaySfxPlayerFirePriest();
+		else
+			AudioManager.Instance?.PlaySfxPlayerFire();
 
 		foreach (float angleDeg in BuildVolleyAngles())
 		{

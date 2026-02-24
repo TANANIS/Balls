@@ -42,6 +42,7 @@ public partial class Bullet
 		);
 
 		_combat.RequestDamage(req);
+		AudioManager.Instance?.PlaySfxPlayerHitEnemy();
 		_hasHit = true;
 		BeginImpact();
 	}

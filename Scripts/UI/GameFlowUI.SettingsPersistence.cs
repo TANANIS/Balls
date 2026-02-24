@@ -3,6 +3,8 @@ using Godot;
 public partial class GameFlowUI
 {
 	private const string SettingsPath = "user://settings.cfg";
+	private const float DefaultBgmPercent = 50f;
+	private const float DefaultSfxPercent = 80f;
 
 	private void SaveSettingsToDisk()
 	{
@@ -21,19 +23,29 @@ public partial class GameFlowUI
 		if (cfg.Load(SettingsPath) != Error.Ok)
 		{
 			_suppressSettingsSignal = true;
+			if (_settingsBgmSlider != null)
+				_settingsBgmSlider.Value = DefaultBgmPercent;
+			if (_startSettingsBgmSlider != null)
+				_startSettingsBgmSlider.Value = DefaultBgmPercent;
+			if (_settingsSfxSlider != null)
+				_settingsSfxSlider.Value = DefaultSfxPercent;
+			if (_startSettingsSfxSlider != null)
+				_startSettingsSfxSlider.Value = DefaultSfxPercent;
 			if (_settingsLanguageOption != null)
 				_settingsLanguageOption.Select(0);
 			if (_startSettingsLanguageOption != null)
 				_startSettingsLanguageOption.Select(0);
 			_suppressSettingsSignal = false;
+			AudioManager.Instance?.SetBgmVolumeLinear(DefaultBgmPercent / 100f);
+			AudioManager.Instance?.SetSfxVolumeLinear(DefaultSfxPercent / 100f);
 			ApplyLocale(LocaleEnglish);
 			return;
 		}
 
 		_suppressSettingsSignal = true;
 
-		float bgm = Mathf.Clamp((float)(double)cfg.GetValue("audio", "bgm", 100.0), 0f, 100f);
-		float sfx = Mathf.Clamp((float)(double)cfg.GetValue("audio", "sfx", 100.0), 0f, 100f);
+		float bgm = Mathf.Clamp((float)(double)cfg.GetValue("audio", "bgm", (double)DefaultBgmPercent), 0f, 100f);
+		float sfx = Mathf.Clamp((float)(double)cfg.GetValue("audio", "sfx", (double)DefaultSfxPercent), 0f, 100f);
 		int mode = (int)(long)cfg.GetValue("window", "mode", 0L);
 		int size = (int)(long)cfg.GetValue("window", "size", 0L);
 		int language = (int)(long)cfg.GetValue("locale", "language", 0L);

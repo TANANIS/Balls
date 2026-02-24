@@ -854,3 +854,65 @@
 - Validation:
   - `dotnet build ProjectGenesis.sln` succeeded (0 compile errors).
   - only external `NU1900` warnings remain (NuGet service index connectivity).
+
+## Session Update (2026-02-24, Audio Pack Migration + BGM Playlist Upgrade)
+- Sound asset pipeline migration to standardized structure:
+  - moved runtime audio into categorized folders:
+    - `Assets/Sound/Bgm`
+    - `Assets/Sound/UI`
+    - `Assets/Sound/Player`
+    - `Assets/Sound/Enemies`
+  - normalized naming to lowercase snake_case for runtime-bound assets.
+  - replaced active runtime paths with newly provided sound pack assets.
+- Runtime audio bindings updated:
+  - `Scripts/Audio/AudioManager.Setup.cs`
+    - all stream load paths migrated to new folder structure,
+    - enemy death SFX map moved from legacy `EnemiesDies/` to `Enemies/`,
+    - added dedicated player streams:
+      - priest fire (`sfx_player_fire_priest.wav`)
+      - exp pickup (`sfx_player_exp_pickup.wav`)
+      - projectile hit enemy (`sfx_player_hit_enemy.wav`)
+  - `Scripts/Audio/AudioManager.cs`
+    - added playback APIs:
+      - `PlaySfxPlayerFirePriest()`
+      - `PlaySfxPlayerExpPickup()`
+      - `PlaySfxPlayerHitEnemy()`
+  - gameplay callsite wiring:
+    - `Scripts/Player/PlayerWeapon.cs`:
+      - priest projectile now uses priest-specific fire SFX.
+    - `Scripts/Systems/Progression/ExperiencePickup.cs`:
+      - pickup now plays exp-pickup SFX (instead of upgrade SFX).
+    - `Scripts/Projectiles/Bullet.Collision.cs`:
+      - successful hit now triggers hit-enemy SFX.
+- BGM system upgraded from single-track to playlist mode:
+  - `Scripts/Audio/AudioManager.cs` + `AudioManager.Playback.cs` + `AudioManager.Setup.cs`
+  - introduced playlist states:
+    - `Menu`
+    - `Gameplay`
+    - `Result`
+  - selection behavior:
+    - random next-track on `AudioStreamPlayer.Finished`,
+    - best-effort non-repeat against previous track.
+  - active pools:
+    - Menu: `bgm_menu_alt_01..03.mp3`
+    - Gameplay: `bgm_gameplay.mp3` + `bgm_gameplay_alt_01..04.mp3`
+    - Result: `bgm_result.mp3`
+- End-state audio flow:
+  - `Scripts/UI/GameFlowUI.EndState.cs`
+  - both win/loss settlement now switch to `PlayBgmResult()`.
+- Default audio volume policy updated:
+  - `Scripts/UI/GameFlowUI.SettingsPersistence.cs`
+  - if `user://settings.cfg` does not exist:
+    - BGM defaults to `50%`
+    - SFX defaults to `80%`
+  - existing saved user values remain respected.
+- Legacy sound assets:
+  - legacy in-repo runtime paths were retired from active use.
+  - backup copy moved outside repo for safety:
+    - `C:\Users\JSrad\Desktop\Godot\audio_legacy_backup_20260224\_Legacy`
+- Docs sync:
+  - updated `README.md` runtime flow + sound folder map.
+  - updated `docs/ARCHITECTURE.md` with audio runtime contract and defaults.
+- Validation:
+  - `dotnet build ProjectGenesis.csproj` succeeded (0 compile errors).
+  - only external `NU1900` warnings remain (NuGet service index connectivity).

@@ -13,12 +13,17 @@
 3. EXP reaches requirement, then a level-up charge is queued.
 4. `UpgradeMenu` opens, then `UpgradeSystem` applies one upgrade.
 5. `SpawnSystem` scales pressure by phase and director tables.
+6. `AudioManager` switches BGM playlist by game state (`Menu` / `Gameplay` / `Result`) and chains random tracks on finish.
 
 ## Folder Map (Purpose + Location)
 - `Scenes/`: Scene composition (player, world, systems root, UI).
 - `Scripts/`: C# gameplay logic (Player, Enemy, Systems, UI, Audio).
 - `Data/`: Runtime data and balancing tables.
 - `Assets/`: Art and audio assets (including `.import` metadata).
+  - `Assets/Sound/Bgm`: BGM tracks and alternates.
+  - `Assets/Sound/UI`: UI SFX.
+  - `Assets/Sound/Player`: player/combat/pickup SFX.
+  - `Assets/Sound/Enemies`: enemy-specific SFX.
 - `Prefabs/`: Reusable scene prefabs (projectile, pickup, menu, etc.).
 - `Enemies/`: Enemy scenes.
 - `docs/`: Design, architecture, flow, refactor, and planning docs.

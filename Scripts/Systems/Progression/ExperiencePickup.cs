@@ -101,7 +101,7 @@ public partial class ExperiencePickup : Area2D
 
 		TryResolveProgressionSystem();
 		_progressionSystem?.AddExperienceFromPickup(Mathf.Max(1, ExperienceValue));
-		AudioManager.Instance?.PlaySfxPlayerUpgrade();
+		AudioManager.Instance?.PlaySfxPlayerExpPickup();
 		QueueFree();
 	}
 
