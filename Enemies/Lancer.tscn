@@ -167,7 +167,6 @@ sprite_frames = SubResource("SpriteFrames_lancer")
 animation = &"walk"
 autoplay = "walk"
 scale = Vector2(4, 4)
-modulate = Color(1, 0.65, 0.65, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)

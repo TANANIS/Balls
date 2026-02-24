@@ -833,3 +833,24 @@
 - Validation:
   - repeated `dotnet build ProjectGenesis.sln` passes succeeded (0 compile errors).
   - external `NU1900` warnings remain environmental (NuGet index connectivity), not gameplay-logic regressions.
+
+## Session Update (2026-02-24, Lancer Color Fix + EXP Replacement Stabilization)
+- Fixed incorrect Lancer in-game color tint:
+  - root cause: `Enemies/Lancer.tscn` had a hard-coded sprite `modulate` (`Color(1, 0.65, 0.65, 1)`).
+  - action: removed tint override so Lancer now renders with source texture colors.
+
+- Replaced EXP pickup visual with the newly provided art while keeping load reliability:
+  - initial direct path swap to `Assets/Sprites/EXP.png` triggered editor load failure.
+  - diagnosed PNG metadata incompatibility risk (`iTXt` chunk-heavy export) and normalized file content.
+  - final stable integration strategy:
+    - overwrite `Assets/Sprites/Items/ExpPickup.png` with the new 24x32 art,
+    - keep prefab path on the established import pipeline (`res://Assets/Sprites/Items/ExpPickup.png`).
+  - updated runtime visual scale in `Prefabs/ExperiencePickup.tscn` to `Vector2(1, 1)` for the new source size.
+
+- Collision/scene sanity pass notes:
+  - verified active projectile/enemy/player collision shapes against new pixel visuals.
+  - legacy compatibility prefabs were already migrated previously (`Prefabs/Bullet.tscn` and `Prefabs/enemy.tscn` point to new scenes).
+
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 compile errors).
+  - only external `NU1900` warnings remain (NuGet service index connectivity).
