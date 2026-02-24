@@ -916,3 +916,24 @@
 - Validation:
   - `dotnet build ProjectGenesis.csproj` succeeded (0 compile errors).
   - only external `NU1900` warnings remain (NuGet service index connectivity).
+
+## Session Update (2026-02-24, Layered Grass Background Pipeline Refresh)
+- Reworked in-run background art pipeline from single tile to layered composition:
+  - base layer (always present): `bg_run_grass_base.png`
+  - random overlays: `bg_run_grass_overlay_01/02/03.png`
+  - optional shadow overlay prepared: `bg_run_grass_overlay_shadow.png` (disabled in current runtime)
+- Runtime generator upgrade:
+  - `Scripts/World/InfiniteTiledBackground.cs`
+  - new model:
+    - `BaseTexture` + `OverlayTextures[]`
+    - deterministic per-tile signature (stable random results while moving camera)
+    - configurable overlay density/count/flip behavior.
+- Scene wiring update:
+  - `Scenes/World/WorldRoot.tscn` now uses new layered grass assets.
+  - current active overlays: 01/02/03 (shadow layer removed from live reference per latest art direction).
+- Asset organization:
+  - new background files normalized to `Assets/Sprites/Environment/`.
+  - legacy `bg_run_forest_tile` path retired from active runtime and archived.
+- Docs sync:
+  - `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md` visual touchpoints updated to new background asset set.
+  - `docs/TODO.md` added pending decision item for grass shadow layer.

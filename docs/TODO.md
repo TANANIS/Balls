@@ -38,6 +38,9 @@
 - [ ] Replace HP/XP placeholder visuals with final art
 - [ ] Leaderboard UX polish (rank animation / presentation)
 
+## Fantasy Pixel Environment
+- [ ] 草地陰影：決定是否重新啟用 `bg_run_grass_overlay_shadow`，並完成透明度/權重調整
+
 ## Combat Feedback
 - [x] Enemy white flash on hit
 - [x] Enemy small knockback on hit

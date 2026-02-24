@@ -39,7 +39,11 @@
   - `Prefabs/ExperiencePickup.tscn`
 - World/background:
   - `Scenes/World/WorldRoot.tscn`
-  - `Assets/Sprites/Environment/bg_run_forest_tile.png`
+  - `Assets/Sprites/Environment/bg_run_grass_base.png`
+  - `Assets/Sprites/Environment/bg_run_grass_overlay_01.png`
+  - `Assets/Sprites/Environment/bg_run_grass_overlay_02.png`
+  - `Assets/Sprites/Environment/bg_run_grass_overlay_03.png`
+  - `Assets/Sprites/Environment/bg_run_grass_overlay_shadow.png` (currently parked as optional layer)
   - `Assets/Sprites/Environment/obstacle_big_rock.png`
   - `Assets/Sprites/Environment/obstacle_small_tree.png`
   - `Prefabs/Obstacles/ObstacleBigRock.tscn`
