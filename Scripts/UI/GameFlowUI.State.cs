@@ -47,11 +47,7 @@ public partial class GameFlowUI
 
 	private void OnStartDeleteSaveConfirmed()
 	{
-		bool deleted = MetaProgressionService.Instance.DeleteCurrentProfileSave();
-		if (deleted)
-			DebugSystem.Log($"[MetaProgression] Save deleted for profile '{MetaProgressionService.Instance.CurrentProfileId}'.");
-		else
-			DebugSystem.Warn($"[MetaProgression] Save deletion failed for profile '{MetaProgressionService.Instance.CurrentProfileId}'.");
+		MetaProgressionService.Instance.DeleteCurrentProfileSave();
 
 		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
 		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
@@ -60,17 +56,15 @@ public partial class GameFlowUI
 
 	private void OnRestartPressed()
 	{
-		// Restart by reloading scene to guarantee full state reset.
 		AudioManager.Instance?.PlaySfxUiButton();
 		AudioManager.Instance?.PlayBgmGameplay();
-
-		GetTree().Paused = false;
-		GetTree().ReloadCurrentScene();
+		StartRun();
 	}
 
 	private void OnRestartBackToMetaPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		PrepareFreshRun();
 		ShowStartPanel();
 		AudioManager.Instance?.PlayBgmMenu();
 	}
@@ -140,6 +134,7 @@ public partial class GameFlowUI
 		if (_menuDimmer != null) _menuDimmer.Visible = false;
 		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Visible = false;
 		ResetBuildSummaryLabels();
+		PrepareFreshRun();
 
 		if (_player != null)
 		{
@@ -153,6 +148,67 @@ public partial class GameFlowUI
 
 		_scoreSystem?.ResetScore();
 		OnScoreChanged(_scoreSystem != null ? _scoreSystem.Score : 0);
+	}
+
+	private void PrepareFreshRun()
+	{
+		ResetGameplaySystemsForNewRun();
+		ClearTransientRunNodes();
+	}
+
+	private void ResetGameplaySystemsForNewRun()
+	{
+		Engine.TimeScale = 1f;
+		_upgradeMenu?.ForceCloseForRunReset();
+		_player?.ResetForNewRunState();
+
+		_stabilitySystem?.ResetForNewRun();
+		_progressionSystem?.ResetForNewRun();
+		_upgradeSystem?.ResetForNewRun();
+		_scoreSystem?.ResetScore();
+
+		var spawnSystems = GetTree().GetNodesInGroup("SpawnSystem");
+		foreach (Node node in spawnSystems)
+		{
+			if (node is SpawnSystem spawnSystem)
+				spawnSystem.ResetForNewRun();
+		}
+	}
+
+	private void ClearTransientRunNodes()
+	{
+		if (_enemiesRoot is Node enemiesNode)
+			ClearNodeChildren(enemiesNode);
+
+		if (_projectilesRoot is Node projectilesNode)
+			ClearNodeChildren(projectilesNode);
+
+		ClearExperiencePickups();
+
+		if (_obstaclesRoot is ObstacleFieldGenerator obstacleField)
+			obstacleField.ResetField();
+		else if (_obstaclesRoot is Node obstaclesNode)
+			ClearNodeChildren(obstaclesNode);
+	}
+
+	private void ClearExperiencePickups()
+	{
+		var pickups = GetTree().GetNodesInGroup("ExperiencePickup");
+		foreach (Node node in pickups)
+		{
+			if (node.GetParent() != null)
+				node.GetParent().RemoveChild(node);
+			node.QueueFree();
+		}
+	}
+
+	private static void ClearNodeChildren(Node parent)
+	{
+		foreach (Node child in parent.GetChildren())
+		{
+			parent.RemoveChild(child);
+			child.QueueFree();
+		}
 	}
 
 	private void RespawnPlayerAtViewportCenter()

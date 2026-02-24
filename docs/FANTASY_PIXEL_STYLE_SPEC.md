@@ -1,4 +1,4 @@
-# Fantasy Pixel Style Spec (v1)
+﻿# Fantasy Pixel Style Spec (v1)
 
 ## Status
 - Date: 2026-02-23
@@ -63,11 +63,11 @@ These are source-art canvas sizes (not collision sizes).
 
 | Asset Class | Target Canvas | Notes |
 |---|---:|---|
-| Player core (`Player`, `BladeCore`, `BulwarkCore`) | 32x32 | Keep silhouette compact; center pivot. |
-| Basic enemy (`SwarmCircle`, `ChargerTriangle`) | 64x64 | Distinguish by outline/readable motion shape. |
-| Heavy enemy (`TankSquare`, `EliteSwarmCircle`) | 80x80 | Preserve "heavier" visual mass. |
-| Mini boss (`MiniBossHex`) | 96x96 | Distinctly larger than heavy class. |
-| Bullet | 16x16 | Clear bright center + soft 1px edge cluster. |
+| Player core (`Wizard`, `Knight`, `Priest`) | 32x32 | Keep silhouette compact; center pivot. |
+| Basic enemy (`Slime`, `Orc`) | 64x64 | Distinguish by outline/readable motion shape. |
+| Heavy enemy (`EliteOrc`, `EliteSlime`) | 80x80 | Preserve "heavier" visual mass. |
+| Mini boss (`Lancer`) | 96x96 | Distinctly larger than heavy class. |
+| Projectile VFX (`WizardProjectile`, `PriestProjectile`) | 16~64 per frame | Multi-frame sequence preferred; keep front edge readable under motion. |
 | Exp pickup | 24x24 | Reward object visible but not confused with bullets. |
 | Melee slash (`Melee`) | 192x192 | Arc VFX texture sheet/canvas target. |
 | Shield (`Skills/Shield/shield.png`) | 96x96 | Matches current visual radius intent (~44 world units). |
@@ -105,8 +105,10 @@ These are source-art canvas sizes (not collision sizes).
   - one enemy,
   - one pickup.
 - At least one full replacement set is produced against this size table:
-  - `Player`, `SwarmCircle`, `Bullet`, `ExpPickup`, `Shield`.
+  - `Wizard`, `Slime`, `WizardProjectile/PriestProjectile`, `ExpPickup`, `Shield`.
 - In-run smoke test confirms:
   - no blur artifacts,
   - no missing textures,
   - class readability maintained.
+
+

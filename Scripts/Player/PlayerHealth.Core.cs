@@ -19,28 +19,7 @@ public partial class PlayerHealth
 		if (_shieldCooldownTimer > 0f)
 			_shieldCooldownTimer -= dt;
 		RefreshShieldVisual();
-		TickDebugInvincibleToggle();
 		TickRegen(dt);
-	}
-
-	private void TickDebugInvincibleToggle()
-	{
-		if (!EnableDebugInvincibleToggle)
-		{
-			_togglePressedLastFrame = false;
-			return;
-		}
-
-		bool pressed = Input.IsPhysicalKeyPressed(DebugInvincibleToggleKey);
-		if (pressed && !_togglePressedLastFrame)
-		{
-			_debugInvincible = !_debugInvincible;
-			DebugSystem.Log(_debugInvincible
-				? "[PlayerHealth] Debug invincible ON."
-				: "[PlayerHealth] Debug invincible OFF.");
-		}
-
-		_togglePressedLastFrame = pressed;
 	}
 
 	public void SetInvincible(float duration)
@@ -59,15 +38,17 @@ public partial class PlayerHealth
 			_shieldCooldownTimer = _shieldCooldownSeconds;
 			TriggerShieldHitFlash();
 			RefreshShieldVisual(force: true);
-			DebugSystem.Log("[PlayerHealth] Shield absorbed damage.");
 			return;
 		}
 
-		GetParentOrNull<Player>()?.ApplyHitMovementFreeze(DamageMoveFreezeSeconds);
-		_hp -= amount;
+		int appliedDamage = Mathf.Max(0, amount);
+		if (appliedDamage <= 0)
+			return;
+
+		_hp -= appliedDamage;
+		Damaged?.Invoke(appliedDamage, source);
 		TriggerDamageFeedback();
 		AudioManager.Instance?.PlaySfxPlayerGetHit();
-		DebugSystem.Log($"[PlayerHealth] Took {amount} damage. HP: {_hp}/{MaxHp}");
 		if (RegenAmount > 0 && RegenIntervalSeconds > 0f)
 			_regenTimer = RegenIntervalSeconds;
 
@@ -89,6 +70,7 @@ public partial class PlayerHealth
 
 	public void ResetToFull()
 	{
+		ResetVisualRuntimeState();
 		_hp = MaxHp;
 		_isDead = false;
 		_invincibleTimer = 0f;
@@ -177,6 +159,18 @@ public partial class PlayerHealth
 
 		_hp = Mathf.Min(MaxHp, _hp + RegenAmount);
 		_regenTimer = RegenIntervalSeconds;
+		UpdateLowHpAudio();
+	}
+
+	public void DebugSetCurrentHp(int hp)
+	{
+		_hp = Mathf.Clamp(hp, 0, Mathf.Max(1, MaxHp));
+		_isDead = _hp <= 0;
+		if (!_isDead)
+			_invincibleTimer = 0f;
+		else
+			AudioManager.Instance?.StopLowHpLoop();
+
 		UpdateLowHpAudio();
 	}
 }

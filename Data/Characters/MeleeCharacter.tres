@@ -1,16 +1,16 @@
-[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/BladeCore.png" id="2_blade_core"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Knight/Knight.png" id="2_knight_core"]
 
 [resource]
 script = ExtResource("1_char_def")
 CharacterId = "melee"
-DisplayName = "Blade Core"
-DisplayNameZhTw = "刃核"
-Description = "High-mobility melee duelist. Strong close-range bursts and reposition tools, but punish mistakes heavily."
-DescriptionZhTw = "高機動近戰決鬥者，近距離爆發強，但失誤懲罰也更高。"
-CoreSprite = ExtResource("2_blade_core")
+DisplayName = "Knight"
+DisplayNameZhTw = "Knight"
+Description = "High-mobility melee duelist. Uses close-range burst attacks and dash repositioning."
+DescriptionZhTw = "Knight"
+CoreSprite = ExtResource("2_knight_core")
 CoreSpriteScaleMultiplier = Vector2(1.6166134, 1.6166134)
 PrimaryAbility = 2
 SecondaryAbility = 0
@@ -39,5 +39,3 @@ DashSpeed = 980.0
 DashDuration = 0.14
 DashCooldown = 0.9
 DashIFrame = 0.06
-
-

@@ -99,6 +99,5 @@ public partial class PerfProbe : Node
 		if (file != null)
 			file.StoreString(sb.ToString());
 
-		DebugSystem.Log($"[PerfProbe] Done. avg_fps={avgFps:F2} max_enemies={_maxEnemies} avg_enemies={avgEnemies:F2} total_spawns={_totalSpawns} -> {OutputPath}");
 	}
 }

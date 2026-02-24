@@ -159,15 +159,7 @@ public partial class BossArenaLimiter : Node2D
 
 	private static bool IsBossTag(Enemy enemy)
 	{
-		if (enemy == null)
-			return false;
-
-		string name = enemy.Name.ToString().ToLowerInvariant();
-		if (name.Contains("minibosshex") || name.Contains("miniboss"))
-			return true;
-
-		string path = enemy.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
-		return path.Contains("minibosshex");
+		return EnemyTagRules.IsMiniBoss(enemy);
 	}
 
 	private static bool IsBossAlive(Enemy enemy)

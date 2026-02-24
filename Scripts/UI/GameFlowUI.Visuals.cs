@@ -73,7 +73,10 @@ public partial class GameFlowUI
 
 	private void FitMenuBackground()
 	{
-		// Keep menu background aligned to camera center and scale-to-fill viewport.
+		// Pixel-art cover fit:
+		// - compute world-visible area from viewport + camera zoom
+		// - snap to integer scale to avoid shimmer/blur
+		// - add a small bleed so edges never reveal while camera jitters by sub-pixel
 		if (_menuBackground?.Texture == null)
 			return;
 
@@ -84,27 +87,24 @@ public partial class GameFlowUI
 		Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
 		Camera2D camera = GetViewport().GetCamera2D();
 		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
-		// Adaptive cover rule:
-		// - never shrink because of zoom-in (zoom < 1)
-		// - only enlarge when camera zooms out (zoom > 1)
-		float zoomComp = Mathf.Max(1f, Mathf.Max(zoom.X, zoom.Y));
-		Vector2 coverTarget = new Vector2(
-			(viewportSize.X + 96f) * zoomComp,
-			(viewportSize.Y + 96f) * zoomComp);
+		Vector2 visibleWorld = new Vector2(
+			Mathf.Max(1f, viewportSize.X * zoom.X),
+			Mathf.Max(1f, viewportSize.Y * zoom.Y));
+		const float bleed = 8f;
+		Vector2 coverTarget = new Vector2(visibleWorld.X + bleed * 2f, visibleWorld.Y + bleed * 2f);
 		float coverScale = Mathf.Max(coverTarget.X / texSize.X, coverTarget.Y / texSize.Y);
-		float scale = Mathf.Max(1f, Mathf.Ceil(coverScale * 1.03f));
+		float scale = Mathf.Max(1f, Mathf.Ceil(coverScale));
 		Vector2 center = GetMenuWorldCenter();
 		center = new Vector2(Mathf.Round(center.X), Mathf.Round(center.Y));
 
 		_menuBackground.Centered = true;
+		_menuBackground.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
 		_menuBackground.Scale = new Vector2(scale, scale);
 		_menuBackground.GlobalPosition = center;
 
 		if (_menuDimmer != null)
 		{
-			Vector2 dimSize = new Vector2(
-				(viewportSize.X + 96f) * zoomComp,
-				(viewportSize.Y + 96f) * zoomComp);
+			Vector2 dimSize = coverTarget;
 			_menuDimmer.Size = dimSize;
 			_menuDimmer.GlobalPosition = center - (dimSize * 0.5f);
 		}

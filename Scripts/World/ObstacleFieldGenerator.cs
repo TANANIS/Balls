@@ -261,7 +261,6 @@ public partial class ObstacleFieldGenerator : Node2D
 		if (node is not Node2D node2D)
 		{
 			node.QueueFree();
-			DebugSystem.Warn("[ObstacleFieldGenerator] Obstacle scene root must be Node2D.");
 			return false;
 		}
 
@@ -374,5 +373,22 @@ public partial class ObstacleFieldGenerator : Node2D
 			float radius = EstimateNodeRadius(node2D);
 			_placed.Add(new PlacedObstacle(node2D.GlobalPosition, Mathf.Max(24f, radius), -1, 1f));
 		}
+	}
+
+	public void ResetField()
+	{
+		foreach (Node child in GetChildren())
+		{
+			RemoveChild(child);
+			child.QueueFree();
+		}
+
+		_placed.Clear();
+		_lastVariantIndex = -1;
+		_hasClusterCenter = false;
+		_clusterCenter = Vector2.Zero;
+		_clusterRemaining = 0;
+		_spawnTimer = Mathf.Max(0.05f, SpawnIntervalSeconds);
+		_wasPaused = true;
 	}
 }

@@ -34,7 +34,6 @@ public partial class UpgradeSystem : Node
 		_player = GetNodeOrNull<Player>(PlayerPath);
 		if (_player == null)
 		{
-			DebugSystem.Error("[UpgradeSystem] Player not found.");
 			return;
 		}
 
@@ -51,14 +50,12 @@ public partial class UpgradeSystem : Node
 	{
 		if (!IsUpgradeCompatibleWithCurrentCharacter(id))
 		{
-			DebugSystem.Warn("[UpgradeSystem] Upgrade incompatible with active character: " + id);
 			return false;
 		}
 
 		bool hasDefinition = TryGetDefinition(id, out var definition);
 		if (hasDefinition && !CanApplyDefinition(definition))
 		{
-			DebugSystem.Warn("[UpgradeSystem] Upgrade blocked by stack/prerequisite/exclusive: " + id);
 			return false;
 		}
 
@@ -105,8 +102,6 @@ public partial class UpgradeSystem : Node
 		if (hasDefinition)
 			AddCategoryPick(definition.Category);
 		_appliedUpgradeCount++;
-		DebugSystem.Log("[UpgradeSystem] Applied upgrade: " + id);
-		DebugSystem.Log("[UpgradeSystem] Applied count: " + _appliedUpgradeCount);
 		return true;
 	}
 
@@ -210,5 +205,14 @@ public partial class UpgradeSystem : Node
 			1 => 1.25f,
 			_ => 1.20f
 		};
+	}
+
+	public void ResetForNewRun()
+	{
+		_appliedUpgradeCount = 0;
+		_stacks.Clear();
+		_categoryPickCounts.Clear();
+		_offersWithoutRare = 0;
+		_offersWithoutEpic = 0;
 	}
 }

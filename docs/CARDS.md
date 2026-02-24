@@ -210,7 +210,6 @@ Use this snapshot as first-pass tuning anchors for playtests.
 - New card checklist:
   - Add stable key pair in catalog (`CARD.<ID>.TITLE`, `CARD.<ID>.DESC`)
   - Add `en` and `zh_TW` rows in `Cards.csv`
-  - Keep `Title` / `Description` as fallback debug text
 
 ## Skill VFX Asset Convention (Current)
 - Base path: `Assets/Sprites/Skills/<SkillName>/`

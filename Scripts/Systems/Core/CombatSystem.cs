@@ -32,7 +32,6 @@ public partial class CombatSystem : Node
 	{
 		if (!req.IsValid())
 			return false;
-		DebugSystem.Log("[CombatSystem] RequestDamage: valid request received");
 
 		ulong guardKey = MakeGuardKey(req.Source, req.Target);
 		if (_frameHitGuard.Contains(guardKey))

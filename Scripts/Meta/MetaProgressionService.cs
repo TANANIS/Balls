@@ -197,6 +197,23 @@ public sealed class MetaProgressionService
 		return deleted;
 	}
 
+	public void DebugSetCurrencyWallet(int wallet, bool saveNow = true)
+	{
+		int nextWallet = Math.Max(0, wallet);
+		int currentWallet = _state.CurrencyWallet;
+		int earned = _state.CurrencyEarnedTotal;
+		int spent = _state.CurrencySpentTotal;
+
+		if (nextWallet > currentWallet)
+			earned += nextWallet - currentWallet;
+		else if (nextWallet < currentWallet)
+			spent += currentWallet - nextWallet;
+
+		_state.ReplaceCurrencySnapshot(nextWallet, Math.Max(nextWallet, earned), Math.Max(0, spent));
+		if (saveNow)
+			_saveStore.SaveState(_state);
+	}
+
 	public void RecordPerfectClear(int score, string characterName)
 	{
 		long unixTime = DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -209,22 +226,6 @@ public sealed class MetaProgressionService
 		if (maxCount <= 0)
 			return Array.Empty<PerfectClearRecord>();
 		return _state.GetPerfectClearRecords(maxCount).ToList();
-	}
-
-	public int DebugSetCurrencyWallet(int targetWallet)
-	{
-		targetWallet = Math.Max(0, targetWallet);
-		int current = _state.CurrencyWallet;
-		if (targetWallet == current)
-			return current;
-
-		if (targetWallet > current)
-			_state.AddCurrency(targetWallet - current);
-		else
-			_state.TrySpendCurrency(current - targetWallet);
-
-		_saveStore.SaveState(_state);
-		return _state.CurrencyWallet;
 	}
 
 	private bool EnsureBaselineUnlocks()

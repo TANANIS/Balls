@@ -13,7 +13,6 @@ public partial class UpgradeMenu
 
 		if (_title == null || _leftButton == null || _middleButton == null || _rightButton == null)
 		{
-			DebugSystem.Error("[UpgradeMenu] UI nodes are missing. Check TitlePath/LeftButtonPath/MiddleButtonPath/RightButtonPath.");
 			return;
 		}
 

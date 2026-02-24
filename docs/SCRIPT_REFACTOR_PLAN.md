@@ -21,9 +21,6 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Systems/Progression/UpgradeSystem.Options.cs`: option pool construction and random pick logic.
 - `Scripts/Systems/Progression/UpgradeSystem.Types.cs`: option DTO type.
 
-### DebugSystem
-- `Scripts/Systems/Core/DebugSystem.cs`: singleton, logging API, input toggle flow.
-- `Scripts/Systems/Core/DebugSystem.Overlay.cs`: in-game overlay UI rendering.
 
 ### GameFlowUI
 - `Scripts/UI/GameFlowUI.cs`: startup flow and shared helper utilities.
@@ -83,7 +80,6 @@ Rule update: upgrades target logical slots (primary/secondary/mobility compatibi
 - `Scripts/Enemy/Enemy.cs`: enemy frame loop and external notifications.
 - `Scripts/Enemy/Enemy.Resolve.cs`: dependency/module resolution.
 - `Scripts/Enemy/Enemy.Behavior.cs`: desired-velocity logic and event dispatch helpers.
-- `Scripts/Enemy/EnemyDebugEventModule.cs`: removed as orphan (not attached/referenced in runtime scenes).
 
 ### Projectile
 - `Scripts/Projectiles/Bullet.cs`: lifetime and movement.

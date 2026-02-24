@@ -2,28 +2,6 @@ using Godot;
 
 public partial class PlayerMelee
 {
-	private void ExecuteAttack()
-	{
-		if (_combat == null || _player == null)
-			return;
-
-		AudioManager.Instance?.PlaySfxPlayerMelee();
-
-		Vector2 attackDir = _player.GetGlobalMousePosition() - _player.GlobalPosition;
-		if (attackDir.LengthSquared() < 0.0001f)
-			attackDir = _player.LastMoveDir;
-		else
-			attackDir = attackDir.Normalized();
-
-		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
-		float runtimeRange = Range * (1f + ((powerMult - 1f) * 0.25f));
-		float dmgMult = Mathf.Max(0.1f, DamageMultiplier);
-		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * dmgMult * powerMult));
-
-		SpawnVfx(attackDir, runtimeRange);
-		QueryAndApplyMeleeDamage(attackDir, runtimeRange, runtimeDamage);
-	}
-
 	private void QueryAndApplyMeleeDamage(Vector2 attackDir, float runtimeRange, int runtimeDamage)
 	{
 		var circle = new CircleShape2D { Radius = runtimeRange };

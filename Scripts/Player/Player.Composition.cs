@@ -11,14 +11,18 @@ public partial class Player
 		_primaryAttack = GetNode<PlayerWeapon>("PrimaryAttack");
 		_secondaryAttack = GetNode<PlayerMelee>("SecondaryAttack");
 		_sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
+		_animatedSprite = GetNodeOrNull<AnimatedSprite2D>("Sprite2D")
+			?? GetNodeOrNull<AnimatedSprite2D>("AnimatedSprite2D");
+		if (_animatedSprite?.SpriteFrames != null)
+			_baseSpriteFrames = (SpriteFrames)_animatedSprite.SpriteFrames.Duplicate(true);
+		_visualRoot = (Node2D)_animatedSprite ?? _sprite;
 		_skillVfxRoot = GetNodeOrNull<Node2D>("SkillVfxRoot");
 		if (_skillVfxRoot == null)
 		{
 			_skillVfxRoot = this;
-			DebugSystem.Warn("[Player] SkillVfxRoot missing. Falling back to Player root.");
 		}
-		if (_sprite != null)
-			_baseSpriteScale = _sprite.Scale;
+		if (_visualRoot != null)
+			_baseSpriteScale = _visualRoot.Scale;
 		_camera = GetNodeOrNull<Camera2D>("Camera2D");
 		if (_camera != null)
 			_cameraBaseZoom = _camera.Zoom;
@@ -38,7 +42,10 @@ public partial class Player
 	private void BindSignals()
 	{
 		if (_health != null)
+		{
 			_health.Died += OnDied;
+			_health.Damaged += OnDamaged;
+		}
 	}
 
 	private void SetupModules()
@@ -55,7 +62,15 @@ public partial class Player
 		if (_deathLogged)
 			return;
 		_deathLogged = true;
-		DebugSystem.Log("[Player] Died.");
+		TriggerDeathAnimation();
+	}
+
+	private void OnDamaged(int amount, object source)
+	{
+		if (_health == null || _health.IsDead)
+			return;
+
+		QueueHurtCommand(_health.DamageMoveFreezeSeconds, 0.30f);
 	}
 
 	private void ResolveStabilitySystem()

@@ -1,4 +1,4 @@
-# Game Director And Progression Design
+﻿# Game Director And Progression Design
 
 This document defines pacing logic for spawn orchestration and upgrade timing.
 
@@ -13,16 +13,16 @@ This document defines pacing logic for spawn orchestration and upgrade timing.
 - `00:00 - 03:45` Stage 1 (Ramp-In)
   - Low baseline threat.
   - Tail-end threat peak.
-  - Stage boss: `MiniBossHex_Stage1` at `03:45`.
+  - Stage boss: `Lancer_Stage1` at `03:45`.
 - `03:45 - 07:30` Stage 2 (First Stress Cycle)
   - Threat resets lower than peak, then ramps again.
-  - Stage boss: `MiniBossHex_Stage2` at `07:30`.
+  - Stage boss: `Lancer_Stage2` at `07:30`.
 - `07:30 - 11:15` Stage 3 (Build Check)
   - Faster spawn tempo and denser packs near tail.
-  - Stage boss: `MiniBossHex_Stage3` at `11:15`.
+  - Stage boss: `Lancer_Stage3` at `11:15`.
 - `11:15 - 15:00` Stage 4 (Final Climb)
   - Highest sustained threat with final tail peak.
-  - Stage boss: `MiniBossHex_Stage4` near run tail (`14:30~15:00` window).
+  - Stage boss: `Lancer_Stage4` near run tail (`14:30~15:00` window).
 
 Special universe events are removed in this model. Stage-tail miniboss is the only phase-special spike marker.
 
@@ -106,3 +106,4 @@ Used fields now include:
 - Do not hard-code tier logic outside director systems.
 - Tune balance in CSV first, then patch code only when needed.
 - Keep stage-tail boss pacing time-based, not random-event based.
+

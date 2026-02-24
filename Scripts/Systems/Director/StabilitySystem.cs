@@ -29,8 +29,8 @@ public partial class StabilitySystem : Node
 	[Export] public float CollapseCriticalPlayerPowerMultiplier = 1.00f;
 	[Export] public float StructuralFractureInertiaMultiplier = 0.74f;
 	[Export] public float CollapseCriticalInertiaMultiplier = 0.58f;
-	[Export] public float StructuralFractureCameraZoomMultiplier = 1.16f;
-	[Export] public float CollapseCriticalCameraZoomMultiplier = 1.32f;
+	[Export] public float StructuralFractureCameraZoomMultiplier = 1.04f;
+	[Export] public float CollapseCriticalCameraZoomMultiplier = 1.08f;
 	[Export] public float StructuralFractureZoomHoldSeconds = 4f;
 	[Export] public float StructuralFractureZoomRecoverSeconds = 3f;
 	[Export] public float CollapseCriticalZoomHoldSeconds = 5f;
@@ -42,7 +42,6 @@ public partial class StabilitySystem : Node
 	[Export] public float EnergyAnomalyPressureFluctuationAmplitude = 0.09f;
 	[Export] public float StructuralFracturePressureFluctuationAmplitude = 0.15f;
 	[Export] public float CollapseCriticalPressureFluctuationAmplitude = 0.24f;
-	[Export] public bool VerboseLog = false;
 
 	private float _stability;
 	private StabilityPhase _phase = StabilityPhase.Stable;
@@ -105,8 +104,6 @@ public partial class StabilitySystem : Node
 		_stability = Mathf.Clamp(_stability + amount, 0f, cap);
 		UpdatePhaseAndSignals();
 
-		if (VerboseLog && _stability > before)
-			DebugSystem.Log($"[StabilitySystem] Recover +{_stability - before:F2} ({source}) => {_stability:F2}");
 		return _stability > before;
 	}
 
@@ -116,8 +113,6 @@ public partial class StabilitySystem : Node
 		_stability = Mathf.Clamp(_stability + delta, 0f, 100f);
 		UpdatePhaseAndSignals();
 
-		if (VerboseLog && !Mathf.IsEqualApprox(before, _stability))
-			DebugSystem.Log($"[StabilitySystem] Stability {_stability:F2} phase={_phase}");
 	}
 
 	private void TickStabilityDecay(float dt)
@@ -136,15 +131,12 @@ public partial class StabilitySystem : Node
 			_phase = next;
 			_phaseElapsedSeconds = 0f;
 			PhaseChanged?.Invoke(_phase);
-			if (VerboseLog)
-				DebugSystem.Log($"[StabilitySystem] Phase -> {_phase}");
 		}
 
 		if (!_collapsed && _stability <= 0f && !UseTimelinePhaseModel)
 		{
 			_collapsed = true;
 			_stability = 0f;
-			DebugSystem.Warn("[StabilitySystem] Universe collapse triggered.");
 			Collapsed?.Invoke();
 		}
 	}
@@ -303,5 +295,26 @@ public partial class StabilitySystem : Node
 	public void AddPlayerPowerBonus(float amount)
 	{
 		_playerPowerBonus = Mathf.Clamp(_playerPowerBonus + amount, 0f, 0.8f);
+	}
+
+	public void DebugSetElapsedSeconds(float elapsedSeconds)
+	{
+		_elapsedSeconds = Mathf.Max(0f, elapsedSeconds);
+		_phaseElapsedSeconds = 0f;
+		_timeLimitReached = MatchDurationLimitSeconds > 0f && _elapsedSeconds >= MatchDurationLimitSeconds;
+		UpdatePhaseAndSignals();
+	}
+
+	public void ResetForNewRun()
+	{
+		_stability = Mathf.Clamp(StartStability, 0f, 100f);
+		_phase = UseTimelinePhaseModel ? ResolvePhaseByTimeline(0f) : ResolvePhase(_stability);
+		_collapsed = false;
+		_elapsedSeconds = 0f;
+		_phaseElapsedSeconds = 0f;
+		_timeLimitReached = false;
+		_upgradeDecayMultiplier = 1f;
+		_playerPowerBonus = 0f;
+		PhaseChanged?.Invoke(_phase);
 	}
 }

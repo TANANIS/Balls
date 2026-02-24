@@ -3,16 +3,11 @@ using System.Text;
 
 public partial class GameFlowUI : Control
 {
-	[ExportGroup("Debug/Meta")]
-	[Export] public bool EditorOverrideFluxWalletOnReady = false;
-	[Export(PropertyHint.Range, "0,999999,1")] public int EditorFluxWallet = 0;
-
 	public override void _Ready()
 	{
 		ProcessMode = ProcessModeEnum.Always;
 
 		ResolveNodeReferences();
-		ApplyEditorDebugMetaOverrides();
 		BindSignals();
 		ShowStartPanel();
 		AudioManager.Instance?.PlayBgmMenu();
@@ -110,19 +105,7 @@ public partial class GameFlowUI : Control
 		if (raw is CharacterDefinition typed)
 			return typed;
 
-		DebugSystem.Error($"[GameFlowUI] Failed to load CharacterDefinition: {path}. Using fallback.");
 		return fallback;
-	}
-
-	private void ApplyEditorDebugMetaOverrides()
-	{
-		if (!OS.IsDebugBuild())
-			return;
-		if (!EditorOverrideFluxWalletOnReady)
-			return;
-
-		int wallet = MetaProgressionService.Instance.DebugSetCurrencyWallet(EditorFluxWallet);
-		DebugSystem.Warn($"[MetaProgression] Inspector debug wallet override applied: {wallet} Flux");
 	}
 
 	private static CharacterDefinition BuildRangerFallbackDefinition()
@@ -131,9 +114,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "ranged",
 			DisplayName = "Ranger Core",
-			DisplayNameZhTw = "遊俠核心",
+			DisplayNameZhTw = "????閰?",
 			Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire.",
-			DescriptionZhTw = "精準遠程特化，以快速單發維持穩定輸出，適合安全距離作戰。",
+			DescriptionZhTw = "遠程專精角色，擅長安全距離穩定輸出與快速單發射擊。",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
@@ -147,10 +130,10 @@ public partial class GameFlowUI : Control
 		return new CharacterDefinition
 		{
 			CharacterId = "melee",
-			DisplayName = "Blade Core",
-			DisplayNameZhTw = "刃核",
-			Description = "High-mobility melee duelist. Strong close-range bursts and reposition tools, but punish mistakes heavily.",
-			DescriptionZhTw = "高機動近戰決鬥者，近距離爆發強，但失誤懲罰也更高。",
+			DisplayName = "Knight",
+			DisplayNameZhTw = "Knight",
+			Description = "High-mobility melee duelist. Uses close-range burst attacks and dash repositioning.",
+			DescriptionZhTw = "Knight",
 			PrimaryAbility = AttackAbilityKind.Melee,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.Dash,
@@ -165,10 +148,10 @@ public partial class GameFlowUI : Control
 		return new CharacterDefinition
 		{
 			CharacterId = "tank_burst",
-			DisplayName = "Bulwark Core",
-			DisplayNameZhTw = "堡壘核心",
-			Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback, trading speed for control.",
-			DescriptionZhTw = "前線錨點型角色，擁有較高耐久；以雙發重射與擊退換取節奏控制。",
+			DisplayName = "Priest",
+			DisplayNameZhTw = "Priest",
+			Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback.",
+			DescriptionZhTw = "Priest",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,

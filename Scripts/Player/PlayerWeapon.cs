@@ -7,6 +7,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export] public bool EnabledInCurrentCharacter = true;
 
 	[Export] public PackedScene ProjectileScene;
+	[Export] public PackedScene WizardProjectileScene;
+	[Export] public PackedScene PriestProjectileScene;
 	[Export] public NodePath ProjectileContainerPath;
 
 	[Export] public float Cooldown = 0.12f;
@@ -14,18 +16,20 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export] public int Damage = 1;
 	[Export] public float CritChance = 0f;
 	[Export] public float CritDamageMultiplier = 1.5f;
+	[Export] public bool PrecisionSingleLine = true;
 	[Export] public int ExtraProjectiles = 0;
 	[Export] public int SplitShotLevel = 0;
 	[Export] public PrimaryFirePattern FirePattern = PrimaryFirePattern.Single;
 	[Export] public float BurstShotInterval = 0.08f;
+	[Export(PropertyHint.Range, "0.05,1.50,0.01")] public float AttackWindupSeconds = 0.42f;
+	[Export(PropertyHint.Range, "0.05,0.95,0.01")] public float FireAtNormalizedTime = 0.60f;
+	[Export] public bool AimAtFireMoment = true;
+	[Export] public bool AimEachBurstShot = false;
 
 	private Node _projectileContainer;
+	private float _attackAnimationSpeedMultiplier = 1f;
 	private float _cooldownTimer = 0f;
-	private float _burstTimer = 0f;
-	private int _burstShotsRemaining = 0;
-	private Vector2 _burstDir = Vector2.Right;
-	private float _burstSpeed = 0f;
-	private int _burstBaseDamage = 1;
+	private readonly PlayerAttackTimeline _attackTimeline = new();
 	private string _resolvedAction = InputActions.AttackPrimary;
 	private readonly RandomNumberGenerator _rng = new();
 
@@ -37,6 +41,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	{
 		SetupAbility(player, EnabledInCurrentCharacter);
 		_rng.Randomize();
+		ResolveProjectileScenes();
 
 		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
 			_projectileContainer = GetNode(ProjectileContainerPath);
@@ -46,17 +51,27 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	public void Tick(float dt)
 	{
+		Tick(dt, Input.IsActionPressed(_resolvedAction));
+	}
+
+	public void Tick(float dt, bool wantAttack)
+	{
 		if (!_isEnabled)
 			return;
 
 		EnsureStabilitySystem();
 		TickCooldown(ref _cooldownTimer, dt);
+		_attackTimeline.Tick(
+			dt,
+			aimAtFireMoment: AimAtFireMoment,
+			aimEachBurstShot: AimEachBurstShot,
+			resolveCurrentAimDirection: ResolveCurrentAimDirection,
+			fireVolley: FireVolley);
 
-		ProcessBurst(dt);
-		if (_cooldownTimer > 0f || _burstShotsRemaining > 0)
+		if (_cooldownTimer > 0f || _attackTimeline.IsBusy)
 			return;
 
-		if (!Input.IsActionPressed(_resolvedAction))
+		if (!wantAttack)
 			return;
 
 		ExecuteAttack();
@@ -67,30 +82,23 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		if (ProjectileScene == null || _projectileContainer == null || _player == null)
 			return;
 
-		Vector2 mouseWorld = _player.GetGlobalMousePosition();
-		Vector2 dir = mouseWorld - _player.GlobalPosition;
-		if (dir.LengthSquared() < 0.0001f)
-			dir = Vector2.Right;
-		else
-			dir = dir.Normalized();
+		Vector2 dir = ResolveCurrentAimDirection(_player.LastMoveDir);
 
 		float powerMult = GetPowerMultiplier();
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
 		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
 		int burstExtraShots = GetBurstExtraShots(FirePattern);
-		if (burstExtraShots > 0)
-		{
-			_burstDir = dir;
-			_burstSpeed = speed;
-			_burstBaseDamage = baseDamage;
-			_burstShotsRemaining = burstExtraShots;
-			_burstTimer = Mathf.Max(0.01f, BurstShotInterval);
-			FireVolley(dir, speed, baseDamage);
-			_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
-			return;
-		}
+		float baseDuration = Mathf.Clamp(AttackWindupSeconds, 0.05f, 1.5f);
+		float attackDuration = _player.TriggerPrimaryAttackAnimationAndGetDuration(baseDuration, _attackAnimationSpeedMultiplier);
+		_attackTimeline.BeginWindup(
+			durationSeconds: attackDuration,
+			fireAtNormalized: FireAtNormalizedTime,
+			aimFallbackDir: dir,
+			shotSpeed: speed,
+			shotBaseDamage: baseDamage,
+			burstExtraShots: burstExtraShots,
+			burstIntervalSeconds: BurstShotInterval);
 
-		FireVolley(dir, speed, baseDamage);
 		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
@@ -111,6 +119,9 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	private List<float> BuildVolleyAngles()
 	{
+		if (PrecisionSingleLine)
+			return new List<float> { 0f };
+
 		var angles = new List<float> { 0f };
 		int count = Mathf.Max(1, 1 + ExtraProjectiles);
 		angles.Clear();
@@ -158,12 +169,33 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	private void ResolveInputAction()
 	{
-		_resolvedAction = ResolveInputActionOrFallback(
-			AttackAction,
-			InputActions.LegacyAttackPrimary,
-			"PlayerWeapon",
-			"attack_primary",
-			"fire");
+		_resolvedAction = ResolveInputActionOrFallback(AttackAction);
+	}
+
+	private void ResolveProjectileScenes()
+	{
+		WizardProjectileScene ??= GD.Load<PackedScene>("res://Prefabs/WizardProjectile.tscn");
+		PriestProjectileScene ??= GD.Load<PackedScene>("res://Prefabs/PriestProjectile.tscn");
+		ProjectileScene ??= WizardProjectileScene ?? PriestProjectileScene;
+	}
+
+	public void ApplyProjectileByCharacterId(string characterId)
+	{
+		if (string.Equals(characterId, "tank_burst"))
+		{
+			if (PriestProjectileScene != null)
+				ProjectileScene = PriestProjectileScene;
+			return;
+		}
+
+		if (string.Equals(characterId, "ranged"))
+		{
+			if (WizardProjectileScene != null)
+				ProjectileScene = WizardProjectileScene;
+			return;
+		}
+
+		// Keep current scene for non-ranged archetypes (e.g. melee-only).
 	}
 
 	public void SetEnabled(bool enabled)
@@ -172,8 +204,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		EnabledInCurrentCharacter = enabled;
 		if (!enabled)
 		{
-			_burstShotsRemaining = 0;
-			_burstTimer = 0f;
+			_attackTimeline.Reset();
 		}
 	}
 
@@ -202,13 +233,16 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	public void MultiplyCooldown(float factor)
 	{
-		Cooldown = Mathf.Clamp(Cooldown * factor, 0.02f, 10f);
+		float safeFactor = Mathf.Clamp(factor, 0.05f, 20f);
+		Cooldown = Mathf.Clamp(Cooldown * safeFactor, 0.02f, 10f);
+		_attackAnimationSpeedMultiplier = Mathf.Clamp(_attackAnimationSpeedMultiplier / safeFactor, 0.2f, 6f);
 	}
 
 	public void SetBaseStats(int damage, float cooldown, float projectileSpeed)
 	{
 		Damage = Mathf.Max(1, damage);
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
+		_attackAnimationSpeedMultiplier = 1f;
 		ProjectileSpeed = Mathf.Max(50f, projectileSpeed);
 		CritChance = 0f;
 		CritDamageMultiplier = 1.5f;
@@ -232,26 +266,6 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		};
 	}
 
-	private void ProcessBurst(float dt)
-	{
-		if (_burstShotsRemaining <= 0)
-			return;
-		if (ProjectileScene == null || _projectileContainer == null || _player == null)
-		{
-			_burstShotsRemaining = 0;
-			return;
-		}
-
-		_burstTimer -= dt;
-		if (_burstTimer > 0f)
-			return;
-
-		FireVolley(_burstDir, _burstSpeed, _burstBaseDamage);
-		_burstShotsRemaining--;
-		if (_burstShotsRemaining > 0)
-			_burstTimer = Mathf.Max(0.01f, BurstShotInterval);
-	}
-
 	public void AddProjectileCount(int amount)
 	{
 		ExtraProjectiles = Mathf.Clamp(ExtraProjectiles + amount, 0, 10);
@@ -265,5 +279,23 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	public void AddCritChance(float amount)
 	{
 		CritChance = Mathf.Clamp(CritChance + amount, 0f, 0.95f);
+	}
+
+	public void ResetRuntimeState()
+	{
+		_attackAnimationSpeedMultiplier = 1f;
+		_cooldownTimer = 0f;
+		_attackTimeline.Reset();
+	}
+
+	private Vector2 ResolveCurrentAimDirection(Vector2 fallback)
+	{
+		if (_player == null)
+			return fallback;
+		Vector2 mouseWorld = _player.GetGlobalMousePosition();
+		Vector2 dir = mouseWorld - _player.GlobalPosition;
+		if (dir.LengthSquared() < 0.0001f)
+			return fallback.LengthSquared() < 0.0001f ? Vector2.Right : fallback.Normalized();
+		return dir.Normalized();
 	}
 }

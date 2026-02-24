@@ -14,6 +14,11 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 	[Export] public int MaxChainCount = 1;
 	[Export] public float ChainWindupMultiplier = 0.58f;
 	[Export] public float MinAimDistance = 12f;
+	[Export] public bool BindAnimationToDashState = true;
+	[Export] public StringName MoveAnimation = "walk";
+	[Export] public StringName AttackAnimation = "attack";
+	[Export] public StringName HurtAnimation = "hurt";
+	[Export] public StringName DeathAnimation = "death";
 
 	private enum DashState
 	{
@@ -27,6 +32,7 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 	private float _stateTimer = 0f;
 	private Vector2 _dashDirection = Vector2.Right;
 	private int _chainCount = 0;
+	private AnimatedSprite2D _animatedSprite;
 	private readonly RandomNumberGenerator _rng = new();
 
 	public override void OnInitialized(Enemy enemy)
@@ -35,6 +41,9 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 		_state = DashState.Chase;
 		_stateTimer = 0f;
 		_chainCount = 0;
+		_animatedSprite = enemy?.GetNodeOrNull<AnimatedSprite2D>("Sprite2D")
+			?? enemy?.GetNodeOrNull<AnimatedSprite2D>("AnimatedSprite2D");
+		PlayStateAnimation();
 	}
 
 	public override Vector2 GetDesiredVelocity(Enemy enemy, Node2D player, double delta)
@@ -52,7 +61,7 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 				if (distance <= TriggerDistance)
 				{
 					_dashDirection = distance > MinAimDistance ? toPlayer / distance : Vector2.Right;
-					_state = DashState.Windup;
+					SetState(DashState.Windup);
 					_stateTimer = Mathf.Max(0.02f, WindupDuration * (_chainCount > 0 ? ChainWindupMultiplier : 1f));
 					return Vector2.Zero;
 				}
@@ -63,7 +72,7 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 				_stateTimer -= dt;
 				if (_stateTimer <= 0f)
 				{
-					_state = DashState.Dash;
+					SetState(DashState.Dash);
 					_stateTimer = DashDuration;
 				}
 				return Vector2.Zero;
@@ -89,12 +98,12 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 					{
 						_chainCount++;
 						_dashDirection = checkDistance > MinAimDistance ? checkVector / checkDistance : _dashDirection;
-						_state = DashState.Windup;
+						SetState(DashState.Windup);
 						_stateTimer = Mathf.Max(0.02f, WindupDuration * Mathf.Max(0.2f, ChainWindupMultiplier));
 						return Vector2.Zero;
 					}
 
-					_state = DashState.Cooldown;
+					SetState(DashState.Cooldown);
 					_stateTimer = DashCooldown;
 					_chainCount = 0;
 				}
@@ -103,7 +112,7 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 			case DashState.Cooldown:
 				_stateTimer -= dt;
 				if (_stateTimer <= 0f)
-					_state = DashState.Chase;
+					SetState(DashState.Chase);
 				return GetChaseVelocity(enemy, toPlayer, distance);
 		}
 
@@ -124,5 +133,46 @@ public partial class EnemyDashBehavior : EnemyBehaviorModule
 		if (player is CharacterBody2D movingPlayer)
 			target += movingPlayer.Velocity * Mathf.Max(0f, AimPredictionSeconds);
 		return target - enemy.GlobalPosition;
+	}
+
+	private void SetState(DashState state)
+	{
+		if (_state == state)
+			return;
+		_state = state;
+		PlayStateAnimation();
+	}
+
+	private void PlayStateAnimation()
+	{
+		if (!BindAnimationToDashState || _animatedSprite?.SpriteFrames == null)
+			return;
+		if (IsBlockingAnimationPlaying())
+			return;
+
+		StringName animation = (_state == DashState.Windup || _state == DashState.Dash)
+			? AttackAnimation
+			: MoveAnimation;
+
+		if (animation.IsEmpty || !_animatedSprite.SpriteFrames.HasAnimation(animation))
+			return;
+		if (_animatedSprite.Animation == animation && _animatedSprite.IsPlaying())
+			return;
+
+		_animatedSprite.Play(animation);
+	}
+
+	private bool IsBlockingAnimationPlaying()
+	{
+		if (_animatedSprite == null || !_animatedSprite.IsPlaying())
+			return false;
+
+		StringName current = _animatedSprite.Animation;
+		if (!HurtAnimation.IsEmpty && current == HurtAnimation)
+			return true;
+		if (!DeathAnimation.IsEmpty && current == DeathAnimation)
+			return true;
+
+		return false;
 	}
 }

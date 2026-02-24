@@ -19,7 +19,7 @@
 - `Scripts/`: C# gameplay logic (Player, Enemy, Systems, UI, Audio).
 - `Data/`: Runtime data and balancing tables.
 - `Assets/`: Art and audio assets (including `.import` metadata).
-- `Prefabs/`: Reusable scene prefabs (bullet, pickup, menu, etc.).
+- `Prefabs/`: Reusable scene prefabs (projectile, pickup, menu, etc.).
 - `Enemies/`: Enemy scenes.
 - `docs/`: Design, architecture, flow, refactor, and planning docs.
 - `log.md`: Internal iteration log (mainly for Codex collaboration context).
@@ -38,6 +38,7 @@
 - `docs/META_PROGRESSION_IMPLEMENTATION_PLAN.md`: Phase-based implementation checklist for meta progression.
 - `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md`: Fantasy pixel art differentiation scope, sequencing, and acceptance criteria.
 - `docs/FANTASY_PIXEL_STYLE_SPEC.md`: Fantasy pixel visual tokens, import profile, and sprite size baseline.
+- `docs/PIXEL_SCALE_MASTER_SPEC.md`: Camera/unit/art hard rules and validation checklist for pixel-scale consistency.
 - `docs/TODO.md`: Current next-step checklist.
 - `Assets/Sprites/Skills/README.md`: Skill VFX asset path/naming contract.
 - `log.md`: Ongoing dev log and handoff notes.

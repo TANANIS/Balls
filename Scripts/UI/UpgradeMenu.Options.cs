@@ -9,7 +9,6 @@ public partial class UpgradeMenu
 
 		if (!_upgradeSystem.TryPickOptions(_rng, 3, out var picks) || picks.Count < 3)
 		{
-			DebugSystem.Error("[UpgradeMenu] Could not pick upgrade options.");
 			return false;
 		}
 

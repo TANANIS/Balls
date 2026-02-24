@@ -16,6 +16,9 @@ public partial class EnemyHealth : Node
 	private float _invincibleTimer;
 	private Enemy _ownerEnemy;
 	private Sprite2D _sprite;
+	private AnimatedSprite2D _animatedSprite;
+	private Node2D _visualNode;
+	private CanvasItem _visualCanvas;
 	private Tween _feedbackTween;
 	private Vector2 _baseSpriteScale = Vector2.One;
 	private Color _baseSpriteModulate = Colors.White;
@@ -29,11 +32,15 @@ public partial class EnemyHealth : Node
 		_hp = MaxHp;
 		_ownerEnemy = GetParent() as Enemy;
 		_sprite = _ownerEnemy?.GetNodeOrNull<Sprite2D>("Sprite2D");
-		if (_sprite != null)
-		{
-			_baseSpriteScale = _sprite.Scale;
-			_baseSpriteModulate = _sprite.Modulate;
-		}
+		_animatedSprite = _ownerEnemy?.GetNodeOrNull<AnimatedSprite2D>("Sprite2D")
+			?? _ownerEnemy?.GetNodeOrNull<AnimatedSprite2D>("AnimatedSprite2D");
+
+		_visualNode = (Node2D)_sprite ?? _animatedSprite;
+		_visualCanvas = (CanvasItem)_sprite ?? _animatedSprite;
+		if (_visualNode != null)
+			_baseSpriteScale = _visualNode.Scale;
+		if (_visualCanvas != null)
+			_baseSpriteModulate = _visualCanvas.Modulate;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -85,7 +92,7 @@ public partial class EnemyHealth : Node
 			_ownerEnemy.ApplySeparation(dir, HurtKnockbackStrength, HurtKnockbackDuration);
 		}
 
-		if (_sprite == null)
+		if (_visualNode == null || _visualCanvas == null)
 			return;
 
 		SpawnWhiteHitFlash();
@@ -93,37 +100,31 @@ public partial class EnemyHealth : Node
 		_feedbackTween?.Kill();
 		Color baseColor = _baseSpriteModulate;
 		Vector2 baseScale = _baseSpriteScale;
-		_sprite.Modulate = new Color(1f, 1f, 1f, 1f);
-		_sprite.Scale = baseScale * Mathf.Max(1f, HitPunchScale);
+		_visualCanvas.Modulate = new Color(1f, 1f, 1f, 1f);
+		_visualNode.Scale = baseScale * Mathf.Max(1f, HitPunchScale);
 
 		_feedbackTween = CreateTween();
-		_feedbackTween.TweenProperty(_sprite, "modulate", baseColor, Mathf.Max(0.03f, HitFlashDuration));
-		_feedbackTween.Parallel().TweenProperty(_sprite, "scale", baseScale, Mathf.Max(0.04f, HitFlashDuration + 0.03f));
+		_feedbackTween.TweenProperty(_visualCanvas, "modulate", baseColor, Mathf.Max(0.03f, HitFlashDuration));
+		_feedbackTween.Parallel().TweenProperty(_visualNode, "scale", baseScale, Mathf.Max(0.04f, HitFlashDuration + 0.03f));
 	}
 
 	private void SpawnWhiteHitFlash()
 	{
-		if (_ownerEnemy == null || _sprite == null || _sprite.Texture == null)
+		if (_ownerEnemy == null || _visualNode == null)
+			return;
+
+		Texture2D texture = ResolveCurrentVisualTexture();
+		if (texture == null)
 			return;
 
 		var flashSprite = new Sprite2D
 		{
-			Texture = _sprite.Texture,
-			Centered = _sprite.Centered,
-			Offset = _sprite.Offset,
-			FlipH = _sprite.FlipH,
-			FlipV = _sprite.FlipV,
-			Hframes = _sprite.Hframes,
-			Vframes = _sprite.Vframes,
-			Frame = _sprite.Frame,
-			FrameCoords = _sprite.FrameCoords,
-			RegionEnabled = _sprite.RegionEnabled,
-			RegionRect = _sprite.RegionRect,
-			RegionFilterClipEnabled = _sprite.RegionFilterClipEnabled,
-			Position = _sprite.Position,
-			Rotation = _sprite.Rotation,
-			Scale = _sprite.Scale * Mathf.Max(1f, HitFlashOverlayScale),
-			ZIndex = _sprite.ZIndex + 1,
+			Texture = texture,
+			Centered = true,
+			Position = _visualNode.Position,
+			Rotation = _visualNode.Rotation,
+			Scale = _visualNode.Scale * Mathf.Max(1f, HitFlashOverlayScale),
+			ZIndex = _visualNode.ZIndex + 1,
 			Modulate = new Color(1f, 1f, 1f, Mathf.Clamp(HitFlashOverlayAlpha, 0f, 1f))
 		};
 
@@ -140,9 +141,29 @@ public partial class EnemyHealth : Node
 		tween.Parallel().TweenProperty(
 			flashSprite,
 			"scale",
-			_sprite.Scale * Mathf.Max(1.05f, HitFlashOverlayScale + 0.12f),
+			_visualNode.Scale * Mathf.Max(1.05f, HitFlashOverlayScale + 0.12f),
 			duration);
 		tween.Finished += flashSprite.QueueFree;
+	}
+
+	private Texture2D ResolveCurrentVisualTexture()
+	{
+		if (_sprite != null)
+			return _sprite.Texture;
+
+		if (_animatedSprite == null || _animatedSprite.SpriteFrames == null)
+			return null;
+
+		StringName animation = _animatedSprite.Animation;
+		if (animation.IsEmpty)
+			return null;
+
+		int frameCount = _animatedSprite.SpriteFrames.GetFrameCount(animation);
+		if (frameCount <= 0)
+			return null;
+
+		int frame = Mathf.Clamp(_animatedSprite.Frame, 0, frameCount - 1);
+		return _animatedSprite.SpriteFrames.GetFrameTexture(animation, frame);
 	}
 
 	public void SetMaxHpAndRefill(int maxHp)

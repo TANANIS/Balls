@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 
 public partial class AudioManager
 {
@@ -61,11 +61,11 @@ public partial class AudioManager
 		_sfxPlayerDie = GD.Load<AudioStream>("res://Assets/Sound/PlayerDie.wav");
 		_sfxPlayerOneHp = GD.Load<AudioStream>("res://Assets/Sound/PlayerOneHp.wav");
 
-		_enemyDeathSfxByScene["res://Enemies/SwarmCircle.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_swarm_circle_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/ChargerTriangle.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_charger_triangle_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/TankSquare.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_tank_square_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/EliteSwarmCircle.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_elite_swarm_circle_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/MiniBossHex.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_miniboss_hex_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/Slime.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_slime_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/Orc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_orc_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/EliteOrc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_elite_orc_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/Werebear.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_werebear_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/EnemiesDies/sfx_enemy_lancer_die.wav");
 	}
 
 	private void BindCombatEvents()
@@ -83,3 +83,4 @@ public partial class AudioManager
 			gameplayMp3.Loop = true;
 	}
 }
+

@@ -11,12 +11,10 @@ public partial class PlayerHealth
 			_shieldCooldownSeconds = cd;
 			_shieldCooldownTimer = 0f;
 			RefreshShieldVisual(force: true);
-			DebugSystem.Log($"[PlayerHealth] Shield enabled. Cooldown={_shieldCooldownSeconds:0.##}s");
 			return;
 		}
 
 		_shieldCooldownSeconds = Mathf.Min(_shieldCooldownSeconds, cd);
 		RefreshShieldVisual(force: true);
-		DebugSystem.Log($"[PlayerHealth] Shield cooldown updated. Cooldown={_shieldCooldownSeconds:0.##}s");
 	}
 }

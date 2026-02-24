@@ -35,8 +35,23 @@ public partial class Player
 	{
 		// Reset transient runtime state for a fresh run.
 		GlobalPosition = globalPosition;
+		ResetForNewRunState();
+	}
+
+	public void ResetForNewRunState()
+	{
 		Velocity = Vector2.Zero;
+		_lastMoveDir = Vector2.Right;
+		_pendingMovementFreezeSeconds = 0f;
+		_pendingHurtAnimationSeconds = 0f;
 		_deathLogged = false;
 		_health?.ResetToFull();
+		_movement?.ResetRuntimeState();
+		_dash?.ResetRuntimeState();
+		_primaryAttack?.ResetRuntimeState();
+		_secondaryAttack?.ResetRuntimeState();
+		if (_camera != null)
+			_camera.Zoom = _cameraBaseZoom;
+		ResetVisualState();
 	}
 }

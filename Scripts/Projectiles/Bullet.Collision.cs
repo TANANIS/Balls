@@ -14,16 +14,18 @@ public partial class Bullet
 
 	private void TryHit(Node other)
 	{
-		if (_hasHit)
+		if (_hasHit || _impactStarted)
 			return;
 
 		if (other.IsInGroup("World"))
 		{
 			_hasHit = true;
-			QueueFree();
+			BeginImpact();
 			return;
 		}
 
+		if (_combat == null)
+			TryResolveCombatSystem();
 		if (_combat == null || _source == null || other == null)
 			return;
 		if (other == _source)
@@ -41,6 +43,6 @@ public partial class Bullet
 
 		_combat.RequestDamage(req);
 		_hasHit = true;
-		QueueFree();
+		BeginImpact();
 	}
 }

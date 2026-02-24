@@ -1,4 +1,4 @@
-﻿# Project Genesis Architecture
+# Project Genesis Architecture
 
 ## First Principles
 - `ProgressionSystem` owns EXP/upgrade progress and level-up queue timing.
@@ -29,7 +29,6 @@ Game
 |- Systems
 |  |- Core
 |  |  |- CombatSystem
-|  |  `- DebugSystem
 |  |- Director
 |  |  `- SpawnSystem
 |  `- Progression

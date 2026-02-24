@@ -1,18 +1,17 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://n11odh3r2j0r"]
 
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/obstacle_big_rock.png" id="1_tex"]
+[ext_resource type="Texture2D" uid="uid://b34jx8vy3iedd" path="res://Assets/Sprites/Environment/obstacle_big_rock.png" id="1_tex"]
 
 [sub_resource type="RectangleShape2D" id="1_shape"]
-size = Vector2(58, 42)
+size = Vector2(58, 63)
 
 [node name="ObstacleBigRock" type="StaticBody2D"]
-collision_layer = 1
 collision_mask = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_tex")
 scale = Vector2(3.6, 3.6)
+texture = ExtResource("1_tex")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 10)
+position = Vector2(0, -0.5)
 shape = SubResource("1_shape")

@@ -34,7 +34,6 @@ public partial class SpawnSystem
 		}
 
 		_tierRules.Sort((a, b) => a.PressureMin.CompareTo(b.PressureMin));
-		DebugSystem.Log($"[SpawnSystem] Loaded {_tierRules.Count} rows from {PressureTierRulesCsvPath}.");
 	}
 
 	private void LoadEnemyDefinitionsFromCsv()
@@ -64,7 +63,6 @@ public partial class SpawnSystem
 			PackedScene scene = GD.Load<PackedScene>(scenePath);
 			if (scene == null)
 			{
-				DebugSystem.Warn($"[SpawnSystem] Missing enemy scene for '{id}': {scenePath}");
 				continue;
 			}
 
@@ -81,7 +79,6 @@ public partial class SpawnSystem
 			};
 		}
 
-		DebugSystem.Log($"[SpawnSystem] Loaded {_enemyDefinitions.Count} enemy definitions from {EnemyDefinitionsCsvPath}.");
 	}
 
 	private void LoadTierWeightsFromCsv()
@@ -113,7 +110,6 @@ public partial class SpawnSystem
 			list.Add(new WeightedEnemy { EnemyId = enemyId, Weight = weight });
 		}
 
-		DebugSystem.Log($"[SpawnSystem] Loaded weights for {_tierWeights.Count} tiers from {TierEnemyWeightsCsvPath}.");
 	}
 
 	private static bool TryReadCsvLines(string path, out List<string> lines)
@@ -122,20 +118,17 @@ public partial class SpawnSystem
 
 		if (string.IsNullOrWhiteSpace(path))
 		{
-			DebugSystem.Warn("[SpawnSystem] CSV path is empty.");
 			return false;
 		}
 
 		if (!FileAccess.FileExists(path))
 		{
-			DebugSystem.Warn($"[SpawnSystem] CSV not found: {path}");
 			return false;
 		}
 
 		using FileAccess file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
 		if (file == null)
 		{
-			DebugSystem.Warn($"[SpawnSystem] Failed to open CSV: {path}");
 			return false;
 		}
 

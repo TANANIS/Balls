@@ -22,6 +22,7 @@ public partial class PlayerDash : PlayerAbilityModule
 	public float CurrentCooldown => DashCooldown;
 	public float CurrentSpeed => DashSpeed;
 	public float CurrentDuration => DashDuration;
+	public bool IsDashing => _isDashing;
 
 	public void Setup(Player player)
 	{
@@ -30,13 +31,18 @@ public partial class PlayerDash : PlayerAbilityModule
 
 	public bool Tick(float dt, Vector2 inputDir)
 	{
+		return Tick(dt, inputDir, Input.IsActionJustPressed(DashAction));
+	}
+
+	public bool Tick(float dt, Vector2 inputDir, bool wantDash)
+	{
 		if (!_isEnabled)
 			return false;
 
 		EnsureStabilitySystem();
 		TickCooldown(ref _cooldownTimer, dt);
 
-		if (!_isDashing && _cooldownTimer <= 0f && Input.IsActionJustPressed(DashAction))
+		if (!_isDashing && _cooldownTimer <= 0f && wantDash)
 			StartDash(inputDir);
 
 		if (!_isDashing)

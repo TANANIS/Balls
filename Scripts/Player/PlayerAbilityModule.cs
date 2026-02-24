@@ -36,17 +36,8 @@ public abstract partial class PlayerAbilityModule : Node
 		return _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
 	}
 
-	protected string ResolveInputActionOrFallback(string action, string legacyAction, string moduleTag, string actionName, string legacyAlias)
+	protected static string ResolveInputActionOrFallback(string action)
 	{
-		if (InputMap.HasAction(action))
-			return action;
-		if (InputMap.HasAction(legacyAction))
-		{
-			DebugSystem.Warn($"[{moduleTag}] {actionName} not found. Fallback to legacy action '{legacyAlias}'.");
-			return legacyAction;
-		}
-
-		DebugSystem.Error($"[{moduleTag}] No valid {actionName} action found.");
 		return action;
 	}
 

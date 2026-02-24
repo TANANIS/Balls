@@ -9,11 +9,8 @@ public partial class PlayerHurtbox : Area2D, IDamageable
 	{
 		Node player = GetParent();
 		AddToGroup("PlayerHurtbox");
-		DebugSystem.Log("[PlayerHurtbox] Ready. Added to group PlayerHurtbox.");
 
 		_health = player.GetNode<PlayerHealth>("Health");
-		if (_health == null)
-			DebugSystem.Error("[PlayerHurtbox] Cannot find PlayerHealth node at ../Health");
 	}
 
 	public bool IsDead => _health != null && _health.IsDead;

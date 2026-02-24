@@ -313,7 +313,7 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Blade Core"
+text = "Knight"
 
 [node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
@@ -326,7 +326,7 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Bulwark Core"
+text = "Priest"
 
 [node name="LockedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)

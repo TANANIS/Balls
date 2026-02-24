@@ -1,4 +1,4 @@
-# System Flow Diagram
+﻿# System Flow Diagram
 
 ```mermaid
 flowchart TD
@@ -32,10 +32,11 @@ flowchart TD
     F -->|Player Died| L[GameFlowUI\nRestart Panel]
     L -->|Show Final Score| M[ScoreSystem]
 
-    D -->|Phase Tail Boss\nMiniBossHex x4| F
+    D -->|Phase Tail Boss\nLancer x4| F
     D -->|Wave + Pack Horde Spawn| D
     D -->|Elite Injection| F
 
     C1 -->|15:00 Reached| R[Perfect Clear Panel]
     R -->|Record Score/Date/Character| B
 ```
+

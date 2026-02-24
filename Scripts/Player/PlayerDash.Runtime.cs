@@ -48,4 +48,17 @@ public partial class PlayerDash
 		DashCooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		DashIFrame = Mathf.Clamp(iFrame, 0f, 1.2f);
 	}
+
+	public void ResetRuntimeState()
+	{
+		_isDashing = false;
+		_dashTimer = 0f;
+		_cooldownTimer = 0f;
+		_dashDir = Vector2.Right;
+		if (_player != null)
+		{
+			_player.Velocity = Vector2.Zero;
+			_player.ExitDashCollisionMode();
+		}
+	}
 }

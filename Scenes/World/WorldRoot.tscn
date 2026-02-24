@@ -14,9 +14,9 @@
 visible = false
 script = ExtResource("3_infinite_bg")
 TileTexture = ExtResource("4_run_bg_tile")
-TileScale = Vector2(2, 2)
+TileScale = Vector2(3, 3)
 ExtraTileMargin = 2
-FlipXChance = 0.35
+FlipXChance = 0.3
 
 [node name="MenuBackground" type="Sprite2D" parent="."]
 z_index = -11

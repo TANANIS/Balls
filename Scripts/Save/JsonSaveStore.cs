@@ -37,9 +37,8 @@ public sealed class JsonSaveStore
 			System.IO.File.Delete(globalPath);
 			return true;
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
-			GD.PushError($"[JsonSaveStore] Failed to delete meta save at '{_savePath}'. {ex.Message}");
 			return false;
 		}
 	}
@@ -70,9 +69,8 @@ public sealed class JsonSaveStore
 			MetaSaveDto dto = JsonSerializer.Deserialize<MetaSaveDto>(json, JsonOptions);
 			return SaveMigrator.MigrateToCurrent(dto);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
-			GD.PushWarning($"[JsonSaveStore] Failed to load meta save at '{_savePath}'. Using defaults. {ex.Message}");
 			return new MetaSaveDto();
 		}
 	}
@@ -90,9 +88,8 @@ public sealed class JsonSaveStore
 				throw new InvalidOperationException($"Cannot open '{_savePath}' for writing.");
 			file.StoreString(json);
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
-			GD.PushError($"[JsonSaveStore] Failed to save meta progression to '{_savePath}'. {ex.Message}");
 		}
 	}
 

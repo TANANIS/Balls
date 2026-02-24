@@ -2,11 +2,16 @@ using Godot;
 
 public partial class GameFlowUI
 {
-	private void OnPlayerDied()
+	private async void OnPlayerDied()
 	{
 		// Present restart state only if the run was actually started.
 		if (!_started || _ending)
 			return;
+
+		_ending = true;
+		float deathAnimSeconds = _player?.GetDeathAnimationDurationSeconds(0.48f) ?? 0.48f;
+		deathAnimSeconds = Mathf.Clamp(deathAnimSeconds, 0.05f, 2.0f);
+		await ToSignal(GetTree().CreateTimer(deathAnimSeconds, processAlways: true, processInPhysics: false, ignoreTimeScale: true), SceneTreeTimer.SignalName.Timeout);
 		EnterEndState(Tr("UI.END.REASON_PLAYER_DOWN"), true);
 	}
 
@@ -42,7 +47,6 @@ public partial class GameFlowUI
 		if (HasAliveMiniBoss())
 		{
 			_pendingFinalBossKillClear = true;
-			DebugSystem.Log("[GameFlowUI] Match timer reached 00:00. Waiting for final boss kill.");
 			return;
 		}
 
@@ -72,7 +76,7 @@ public partial class GameFlowUI
 
 			string name = enemy.Name.ToString().ToLowerInvariant();
 			string path = enemy.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
-			bool isMiniBoss = name.Contains("miniboss") || path.Contains("minibosshex");
+			bool isMiniBoss = EnemyTagRules.IsMiniBoss(name, path);
 			if (!isMiniBoss)
 				continue;
 
@@ -161,13 +165,6 @@ public partial class GameFlowUI
 		};
 
 		RewardBreakdown breakdown = MetaProgressionService.Instance.SettleRun(result);
-		if (!breakdown.IsDuplicateRun)
-		{
-			DebugSystem.Log(
-				$"[MetaProgression] +{breakdown.TotalCurrency} Flux " +
-				$"(base={breakdown.BaseCurrency}, soft={breakdown.SoftCappedCurrency}, bonus={breakdown.BonusCurrency}, first={breakdown.FirstClearBonus})");
-		}
-
 		return breakdown;
 	}
 

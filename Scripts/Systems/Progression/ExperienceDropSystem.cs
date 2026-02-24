@@ -10,6 +10,7 @@ public partial class ExperienceDropSystem : Node
 	[Export] public int MiniBossExperience = 10;
 
 	private CombatSystem _combatSystem;
+	private bool _boundToCombat;
 
 	public override void _EnterTree()
 	{
@@ -18,18 +19,20 @@ public partial class ExperienceDropSystem : Node
 
 	public override void _Ready()
 	{
-		var list = GetTree().GetNodesInGroup("CombatSystem");
-		if (list.Count > 0)
-			_combatSystem = list[0] as CombatSystem;
+		TryBindCombatSystem();
+	}
 
-		if (_combatSystem != null)
-			_combatSystem.EnemyKilled += OnEnemyKilled;
+	public override void _PhysicsProcess(double delta)
+	{
+		if (!_boundToCombat)
+			TryBindCombatSystem();
 	}
 
 	public override void _ExitTree()
 	{
-		if (_combatSystem != null)
+		if (_boundToCombat && _combatSystem != null)
 			_combatSystem.EnemyKilled -= OnEnemyKilled;
+		_boundToCombat = false;
 	}
 
 	private void OnEnemyKilled(Node source, Node target)
@@ -65,13 +68,13 @@ public partial class ExperienceDropSystem : Node
 			scenePath = enemyNode.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
 		string name = enemy.Name?.ToString().ToLowerInvariant() ?? string.Empty;
 
-		if (scenePath.Contains("minibosshex") || name.Contains("miniboss"))
+		if (EnemyTagRules.IsMiniBoss(name, scenePath))
 			return Mathf.Max(1, MiniBossExperience);
-		if (scenePath.Contains("eliteswarmcircle") || name.Contains("elite"))
+		if (scenePath.Contains("werebear") || name.Contains("elite") || name.Contains("werebear"))
 			return Mathf.Max(1, EliteExperience);
-		if (scenePath.Contains("tanksquare") || name.Contains("tank"))
+		if (scenePath.Contains("eliteorc") || name.Contains("tank"))
 			return Mathf.Max(1, TankExperience);
-		if (scenePath.Contains("chargertriangle") || name.Contains("charger"))
+		if (scenePath.Contains("orc") || name.Contains("charger") || name.Contains("orc"))
 			return Mathf.Max(1, ChargerExperience);
 
 		if (enemy.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health)
@@ -87,5 +90,20 @@ public partial class ExperienceDropSystem : Node
 		}
 
 		return Mathf.Max(1, SwarmExperience);
+	}
+
+	private void TryBindCombatSystem()
+	{
+		if (_boundToCombat)
+			return;
+
+		var list = GetTree().GetNodesInGroup("CombatSystem");
+		if (list.Count > 0)
+			_combatSystem = list[0] as CombatSystem;
+		if (_combatSystem == null)
+			return;
+
+		_combatSystem.EnemyKilled += OnEnemyKilled;
+		_boundToCombat = true;
 	}
 }

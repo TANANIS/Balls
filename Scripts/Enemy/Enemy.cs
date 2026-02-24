@@ -16,17 +16,28 @@ public partial class Enemy : CharacterBody2D
 	[Export] public NodePath BehaviorPath = new NodePath("Behavior");
 	[Export] public NodePath SeparationPath = new NodePath("Separation");
 	[Export] public NodePath EventsPath = new NodePath("Events");
+	[Export] public bool AutoFlipVisualByVelocityX = false;
+	[Export] public float FlipFacingDeadzone = 10f;
+	[Export(PropertyHint.Range, "0,2,0.01")] public float DespawnDelayOnDeathSeconds = 0f;
 
 	private EnemyHealth _health;
 	private Node2D _player;
 	private StabilitySystem _stabilitySystem;
 	private EnemyBehaviorModule _behavior;
 	private EnemySeparationModule _separation;
+	private AnimatedSprite2D _animatedSprite;
+	private Sprite2D _sprite;
+	private bool _facingLeft = false;
+	private float _deathDespawnTimer = 0f;
+	private bool _deathDespawnArmed = false;
 	private readonly Godot.Collections.Array<EnemyEventModule> _events = new();
 
 	public override void _Ready()
 	{
 		_health = GetNodeOrNull<EnemyHealth>("Health");
+		_animatedSprite = GetNodeOrNull<AnimatedSprite2D>("Sprite2D")
+			?? GetNodeOrNull<AnimatedSprite2D>("AnimatedSprite2D");
+		_sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 		ResolvePlayer();
 		ResolveStabilitySystem();
 		ResolveBehavior();
@@ -41,7 +52,16 @@ public partial class Enemy : CharacterBody2D
 
 		if (_health != null && _health.IsDead)
 		{
-			QueueFree();
+			if (!_deathDespawnArmed)
+			{
+				_deathDespawnArmed = true;
+				_deathDespawnTimer = Mathf.Max(0f, DespawnDelayOnDeathSeconds);
+				Velocity = Vector2.Zero;
+			}
+
+			_deathDespawnTimer -= dt;
+			if (_deathDespawnTimer <= 0f)
+				QueueFree();
 			return;
 		}
 
@@ -59,7 +79,28 @@ public partial class Enemy : CharacterBody2D
 		Vector2 velocity = Velocity;
 		_separation?.ApplyToVelocity(ref velocity, dt);
 		Velocity = velocity;
+		UpdateVisualFacing(Velocity.X);
 		MoveAndSlide();
+	}
+
+	private void UpdateVisualFacing(float velocityX)
+	{
+		if (!AutoFlipVisualByVelocityX)
+			return;
+
+		float deadzone = Mathf.Max(0f, FlipFacingDeadzone);
+		if (Mathf.Abs(velocityX) <= deadzone)
+			return;
+
+		bool shouldFaceLeft = velocityX < 0f;
+		if (shouldFaceLeft == _facingLeft)
+			return;
+
+		_facingLeft = shouldFaceLeft;
+		if (_animatedSprite != null)
+			_animatedSprite.FlipH = shouldFaceLeft;
+		if (_sprite != null)
+			_sprite.FlipH = shouldFaceLeft;
 	}
 
 	public void ApplySeparation(Vector2 pushDir, float strength, float duration)

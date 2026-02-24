@@ -36,7 +36,6 @@ public partial class SpawnSystem
 			_phaseMiniBossSpawned[i] = true;
 			_pendingPhaseMiniBossIndex = i;
 			_spawnFreezeTimer = Mathf.Max(0f, PhaseMiniBossFreezeSeconds);
-			DebugSystem.Log($"[SpawnSystem] Phase tail MiniBoss scheduled: stage={i + 1}, freeze={_spawnFreezeTimer:F2}s");
 			return;
 		}
 	}
@@ -75,13 +74,11 @@ public partial class SpawnSystem
 	{
 		if (!_enemyDefinitions.TryGetValue(MiniBossEnemyId, out EnemyDefinition def) || def.Scene == null)
 		{
-			DebugSystem.Warn($"[SpawnSystem] MiniBoss definition missing: {MiniBossEnemyId}");
 			return;
 		}
 
 		if (def.Scene.Instantiate() is not Node2D miniBoss)
 		{
-			DebugSystem.Warn("[SpawnSystem] MiniBoss scene root is not Node2D.");
 			return;
 		}
 
@@ -89,7 +86,7 @@ public partial class SpawnSystem
 		float scaleMult = Mathf.Max(0.5f, PhaseMiniBossScaleBase + ((stage - 1) * PhaseMiniBossScaleStep));
 		miniBoss.Scale *= scaleMult;
 		miniBoss.GlobalPosition = GetSpawnPositionAroundPlayer();
-		miniBoss.Name = $"MiniBossHex_Stage{stage}";
+		miniBoss.Name = $"Lancer_Stage{stage}";
 
 		if (miniBoss.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health)
 		{
@@ -103,6 +100,5 @@ public partial class SpawnSystem
 		}
 
 		_enemiesRoot.AddChild(miniBoss);
-		DebugSystem.Log($"[SpawnSystem] MiniBoss spawned: stage={stage}, scale={scaleMult:F2}");
 	}
 }

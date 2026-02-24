@@ -15,6 +15,11 @@ public partial class ExperiencePickup : Area2D
 	private CircleShape2D _pickupShape;
 	private float _lifeTimer;
 
+	public override void _EnterTree()
+	{
+		AddToGroup("ExperiencePickup");
+	}
+
 	public override void _Ready()
 	{
 		_lifeTimer = Mathf.Max(0f, LifetimeSeconds);
@@ -34,6 +39,8 @@ public partial class ExperiencePickup : Area2D
 		_player = GetNodeOrNull<Player>(PlayerPath);
 		if (_player == null)
 			_player = GetTree().CurrentScene?.GetNodeOrNull<Player>("Player");
+
+		TryResolveProgressionSystem();
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -80,6 +87,7 @@ public partial class ExperiencePickup : Area2D
 	{
 		if (_pickupShape == null)
 			return;
+		TryResolveProgressionSystem();
 
 		float radiusMult = _progressionSystem?.PickupRadiusMultiplier ?? 1f;
 		float effectiveRadius = PickupRadius * Mathf.Clamp(radiusMult, 0.5f, 4f);
@@ -91,8 +99,19 @@ public partial class ExperiencePickup : Area2D
 		if (body is not Player)
 			return;
 
+		TryResolveProgressionSystem();
 		_progressionSystem?.AddExperienceFromPickup(Mathf.Max(1, ExperienceValue));
 		AudioManager.Instance?.PlaySfxPlayerUpgrade();
 		QueueFree();
+	}
+
+	private void TryResolveProgressionSystem()
+	{
+		if (_progressionSystem != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup("ProgressionSystem");
+		if (list.Count > 0)
+			_progressionSystem = list[0] as ProgressionSystem;
 	}
 }

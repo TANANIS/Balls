@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using System.Collections.Generic;
 
 public partial class UpgradeSystem
@@ -68,7 +68,6 @@ public partial class UpgradeSystem
 		// Fallback source: hardcoded options for editor/runtime safety.
 		if (pool.Count == 0)
 		{
-			DebugSystem.Warn("[UpgradeSystem] Catalog missing/empty. Fallback options are empty.");
 			foreach (var option in FallbackOptions)
 			{
 				if (IsUpgradeCompatibleWithCurrentCharacter(option.Id))

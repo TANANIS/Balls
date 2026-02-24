@@ -13,6 +13,8 @@ public partial class CursorRing : Node2D
 	private float _time;
 	private Vector2 _lastMouse = Vector2.Zero;
 
+	public Vector2 LastMouseScreenPosition => _lastMouse;
+
 	public override void _Ready()
 	{
 		ProcessMode = ProcessModeEnum.Always;
@@ -23,7 +25,11 @@ public partial class CursorRing : Node2D
 	{
 		_time += (float)delta;
 
-		_lastMouse = GetViewport().GetMousePosition();
+		Viewport viewport = GetViewport();
+		if (viewport == null)
+			return;
+		_lastMouse = viewport.GetMousePosition();
+
 		GlobalPosition = _lastMouse;
 
 		if (HideWhenMouseOutside)
@@ -41,5 +47,16 @@ public partial class CursorRing : Node2D
 		DrawCircle(Vector2.Zero, r + 6f, GlowColor);
 		DrawArc(Vector2.Zero, r, 0f, Mathf.Tau, 64, RingColor, Thickness, true);
 		DrawCircle(Vector2.Zero, 2.0f, RingColor);
+	}
+
+	public Vector2 GetMouseWorldPosition()
+	{
+		Viewport viewport = GetViewport();
+		if (viewport == null)
+			return Vector2.Zero;
+
+		Transform2D canvasToScreen = viewport.GetCanvasTransform();
+		Transform2D screenToCanvas = canvasToScreen.AffineInverse();
+		return screenToCanvas * _lastMouse;
 	}
 }

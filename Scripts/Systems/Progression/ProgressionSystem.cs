@@ -39,14 +39,7 @@ public partial class ProgressionSystem : Node
 
 	public override void _Ready()
 	{
-		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
-		if (_upgradeMenu == null)
-			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeMenu");
-		if (_upgradeMenu == null)
-			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu");
-
-		if (_upgradeMenu == null)
-			DebugSystem.Warn("[ProgressionSystem] UpgradeMenu not found. Placeholder node is active only.");
+		EnsureUpgradeMenu();
 
 		_player = GetNodeOrNull<Player>(PlayerPath);
 		if (_player != null)
@@ -144,6 +137,7 @@ public partial class ProgressionSystem : Node
 
 	public void ForceOpenForBoss()
 	{
+		EnsureUpgradeMenu();
 		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
 			return;
 
@@ -152,15 +146,16 @@ public partial class ProgressionSystem : Node
 
 	private void TriggerUpgradeMenu(string reason)
 	{
+		EnsureUpgradeMenu();
 		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
 			return;
 
 		_upgradeMenu.OpenMenu();
-		DebugSystem.Log($"[ProgressionSystem] Triggered upgrade menu: {reason}.");
 	}
 
 	private void TryConsumePendingUpgrade(string reason)
 	{
+		EnsureUpgradeMenu();
 		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
 			return;
 		if (_pendingUpgradeOpens <= 0)
@@ -184,5 +179,32 @@ public partial class ProgressionSystem : Node
 			return;
 
 		_playerHealth.Heal(_killChanceLifestealHeal);
+	}
+
+	private void EnsureUpgradeMenu()
+	{
+		if (_upgradeMenu != null)
+			return;
+
+		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
+		if (_upgradeMenu == null)
+			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeMenu");
+		if (_upgradeMenu == null)
+			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu");
+	}
+
+	public void ResetForNewRun()
+	{
+		_upgradeProgress = 0f;
+		_upgradeLevel = 0;
+		_pendingUpgradeOpens = 0;
+		_experienceGainMultiplier = 1f;
+		_xpRequirementOffset = 0f;
+		_triggerReliefBonus = 0f;
+		_pickupRadiusMultiplier = 1f;
+		_killChanceLifestealEnabled = false;
+		_killChanceLifestealHeal = 1;
+		_killChanceLifestealChance = 0.12f;
+		_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
 	}
 }

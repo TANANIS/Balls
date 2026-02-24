@@ -82,13 +82,13 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_pauseMenuOpen = false;
-		GetTree().Paused = false;
-		GetTree().ReloadCurrentScene();
+		StartRun();
 	}
 
 	private void OnPauseToTitlePressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		PrepareFreshRun();
 		ClosePauseMenu();
 		ShowStartPanel();
 		AudioManager.Instance?.PlayBgmMenu();

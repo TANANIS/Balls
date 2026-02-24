@@ -58,14 +58,13 @@ public partial class SpawnSystem : Node
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
-	[Export] public bool VerboseLog = true;
 	[Export] public bool UseUpgradeCountUnlocks = false;
 	[Export] public int EliteUnlockUpgradeCount = 4;
 	[Export] public float EliteInjectChanceMin = 0.02f;
 	[Export] public float EliteInjectChanceMax = 0.05f;
-	[Export] public string EliteEnemyId = "elite_swarm_circle";
+	[Export] public string EliteEnemyId = "werebear";
 	[Export] public int MiniBossUnlockUpgradeCount = 6;
-	[Export] public string MiniBossEnemyId = "miniboss_hex";
+	[Export] public string MiniBossEnemyId = "lancer";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
 	[Export] public bool UsePhaseTailMiniBossSchedule = true;
 	[Export] public float Phase1MiniBossAtSeconds = 225f;
@@ -158,15 +157,6 @@ public partial class SpawnSystem : Node
 		_player = GetNodeOrNull<Node2D>(PlayerPath);
 		_rng.Randomize();
 
-		if (EnemyScene == null)
-			DebugSystem.Warn("[SpawnSystem] EnemyScene is null. CSV and weighted spawn must be valid.");
-
-		if (_enemiesRoot == null)
-			DebugSystem.Error("[SpawnSystem] Enemies root not found. Check EnemiesPath.");
-
-		if (_player == null)
-			DebugSystem.Error("[SpawnSystem] Player not found. Check PlayerPath.");
-
 		EnsureUpgradeSystem();
 		ApplyFallbackRuntimeSettings();
 
@@ -240,10 +230,6 @@ public partial class SpawnSystem : Node
 			remainingSlots = Mathf.Max(0, remainingSlots - packSlots);
 		}
 
-		if (VerboseLog && spawned > 0)
-		{
-			DebugSystem.Log($"[SpawnSystem] Wave queued={spawned} budget={budget} alive={aliveCount}->{aliveCount + spawned}/{maxAlive} phase={GetCurrentPhase()} tier={_activeTier}");
-		}
 	}
 
 	private int SchedulePackedGroup(Vector2 center, int budget, int spawnSlots, int upgradeCount)
@@ -328,7 +314,6 @@ public partial class SpawnSystem : Node
 
 		if (scene.Instantiate() is not Node2D enemy)
 		{
-			DebugSystem.Error("[SpawnSystem] Spawn scene root must inherit Node2D.");
 			return false;
 		}
 
@@ -500,4 +485,76 @@ public partial class SpawnSystem : Node
 		offset = Vector2.Zero;
 		return false;
 	}
+
+	public string[] DebugGetEnemyIds()
+	{
+		if (UseTierRulesCsv && _enemyDefinitions.Count == 0)
+			LoadEnemyDefinitionsFromCsv();
+
+		var ids = new List<string>(_enemyDefinitions.Keys);
+		ids.Sort(StringComparer.OrdinalIgnoreCase);
+		return ids.ToArray();
+	}
+
+	public bool DebugSpawnEnemyById(string enemyId, int count = 1)
+	{
+		if (string.IsNullOrWhiteSpace(enemyId))
+			return false;
+
+		EnsureSpawnAnchors();
+		if (_enemiesRoot == null || _player == null)
+			return false;
+
+		if (UseTierRulesCsv && _enemyDefinitions.Count == 0)
+			LoadEnemyDefinitionsFromCsv();
+
+		if (!TryResolveEnemyDefinition(enemyId, out EnemyDefinition definition))
+			return false;
+
+		count = Mathf.Clamp(count, 1, 64);
+		int spawned = 0;
+		for (int i = 0; i < count; i++)
+		{
+			Vector2 pos = GetDebugSpawnPositionNearPlayer(42f, 260f);
+			if (SpawnEnemyAt(definition, pos))
+				spawned++;
+		}
+
+		return spawned > 0;
+	}
+
+	private void EnsureSpawnAnchors()
+	{
+		if (!IsInstanceValid(_enemiesRoot))
+			_enemiesRoot = GetNodeOrNull<Node2D>(EnemiesPath);
+		if (!IsInstanceValid(_player))
+			_player = GetNodeOrNull<Node2D>(PlayerPath);
+	}
+
+	private bool TryResolveEnemyDefinition(string enemyId, out EnemyDefinition definition)
+	{
+		if (_enemyDefinitions.TryGetValue(enemyId, out definition))
+			return true;
+
+		foreach (var pair in _enemyDefinitions)
+		{
+			if (string.Equals(pair.Key, enemyId, StringComparison.OrdinalIgnoreCase))
+			{
+				definition = pair.Value;
+				return true;
+			}
+		}
+
+		definition = default;
+		return false;
+	}
+
+	private Vector2 GetDebugSpawnPositionNearPlayer(float minRadius, float maxRadius)
+	{
+		float radius = _rng.RandfRange(Mathf.Max(0f, minRadius), Mathf.Max(minRadius + 1f, maxRadius));
+		float angle = _rng.RandfRange(0f, Mathf.Tau);
+		Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+		return _player.GlobalPosition + (dir * radius);
+	}
 }
+

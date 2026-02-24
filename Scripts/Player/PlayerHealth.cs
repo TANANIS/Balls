@@ -12,6 +12,7 @@ using System;
 public partial class PlayerHealth : Node
 {
 	public event Action Died;
+	public event Action<int, object> Damaged;
 
 	[Export] public int MaxHp = 3;
 	[Export] public float HurtIFrame = 0.5f;
@@ -21,8 +22,6 @@ public partial class PlayerHealth : Node
 	[Export] public bool EnableDamageFeedback = true;
 	[Export(PropertyHint.Range, "0.02,0.30,0.005")] public float DamageFeedbackDurationSeconds = 0.10f;
 	[Export(PropertyHint.Range, "0,1,0.01")] public float DamageFlashStrength = 0.95f;
-	[Export] public bool EnableDebugInvincibleToggle = true;
-	[Export] public Key DebugInvincibleToggleKey = Key.I;
 	[Export] public NodePath SkillVfxRootPath = new NodePath("../SkillVfxRoot");
 	[Export] public Texture2D ShieldTexture;
 	[Export] public Color ShieldReadyColor = new Color(1.0f, 0.95f, 0.70f, 0.62f);
@@ -52,16 +51,13 @@ public partial class PlayerHealth : Node
 	private bool _shieldVisualReadyLastFrame = false;
 	private bool _shieldFlashActive = false;
 	private int _shieldFlashToken = 0;
-	private bool _debugInvincible = false;
-	private bool _togglePressedLastFrame = false;
 	private int _damageFeedbackToken = 0;
 	private ShaderMaterial _damageFlashMaterial;
 	private Material _spriteMaterialBeforeFlash;
 
 	public int Hp => _hp;
 	public bool IsDead => _isDead;
-	public bool IsInvincible => _debugInvincible || _invincibleTimer > 0f;
-	public bool IsDebugInvincible => _debugInvincible;
+	public bool IsInvincible => _invincibleTimer > 0f;
 	public bool IsShieldEnabled => _shieldEnabled;
 	public bool IsShieldReady => _shieldEnabled && _shieldCooldownTimer <= 0f;
 	public float ShieldCooldownRemaining => Mathf.Max(0f, _shieldCooldownTimer);

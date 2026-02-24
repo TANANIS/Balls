@@ -1,18 +1,18 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3 uid="uid://dnttgcrwe1y88"]
 
-[ext_resource type="PackedScene" uid="uid://lt2ee22cjppb" path="res://Prefabs/enemy.tscn" id="1_enemy_scene"]
+[ext_resource type="PackedScene" path="res://Enemies/Slime.tscn" id="1_enemy_scene"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="2_combat"]
 [ext_resource type="Script" uid="uid://cbh21dgjcvlcu" path="res://Scripts/Audio/AudioManager.cs" id="3_audio_manager"]
 [ext_resource type="Script" uid="uid://cieddawp5ujgg" path="res://Scripts/Systems/Director/SpawnSystem.cs" id="4_spawn"]
-[ext_resource type="Script" uid="uid://d2i4l87fljo30" path="res://Scripts/Systems/Core/DebugSystem.cs" id="5_debug"]
-[ext_resource type="Script" path="res://Scripts/Systems/Core/PerfProbe.cs" id="6_perf"]
+[ext_resource type="Script" uid="uid://cw3dwepmvgf6q" path="res://Scripts/Systems/Core/PerfProbe.cs" id="6_perf"]
 [ext_resource type="Script" uid="uid://c57o3pbexyupj" path="res://Scripts/Systems/Progression/UpgradeSystem.cs" id="7_upgrade"]
 [ext_resource type="Script" uid="uid://csx6eukc73bnk" path="res://Scripts/Systems/Progression/ScoreSystem.cs" id="8_score"]
 [ext_resource type="Script" path="res://Scripts/Systems/Director/StabilitySystem.cs" id="10_stability"]
-[ext_resource type="Script" path="res://Scripts/Systems/Progression/ExperienceDropSystem.cs" id="11_exp_drop"]
+[ext_resource type="Script" uid="uid://blbq1mxo53hsd" path="res://Scripts/Systems/Progression/ExperienceDropSystem.cs" id="11_exp_drop"]
 [ext_resource type="PackedScene" path="res://Prefabs/ExperiencePickup.tscn" id="12_exp_pickup"]
-[ext_resource type="Script" path="res://Scripts/Systems/Progression/ProgressionSystem.cs" id="13_progression"]
-[ext_resource type="Resource" path="res://Data/Upgrades/DefaultUpgradeCatalog.tres" id="14_upgrade_catalog"]
+[ext_resource type="Script" uid="uid://qmfoq4yrbiwf" path="res://Scripts/Systems/Progression/ProgressionSystem.cs" id="13_progression"]
+[ext_resource type="Resource" uid="uid://bm8r67lsfg5sw" path="res://Data/Upgrades/DefaultUpgradeCatalog.tres" id="14_upgrade_catalog"]
+[ext_resource type="Script" uid="uid://bxcklil5fq53f" path="res://Scripts/Systems/Core/DebugCheatSystem.cs" id="15_debug_cheat"]
 
 [node name="Systems" type="Node"]
 
@@ -30,34 +30,22 @@ PlayerPath = NodePath("../../Player")
 SpawnInterval = 2.0
 MaxAliveEnemies = 100
 SpawnRadiusMax = 1060.0
-SpawnOutsideViewportMargin = 80.0
-SpawnRingThickness = 320.0
 HordeTargetAliveRatio = 0.62
 HordeCatchUpBudgetFactor = 0.1
 StablePacksPerWave = 2
 EnergyAnomalyPacksPerWave = 2
-StructuralFracturePacksPerWave = 3
 CollapseCriticalPacksPerWave = 3
 OpeningRampSeconds = 12.0
 OpeningSpawnIntervalStartMultiplier = 1.8
 OpeningBudgetStartMultiplier = 0.5
 OpeningMaxAliveStartMultiplier = 0.55
-PhaseTailPrepSeconds = 26.0
-PhaseTailBudgetMultiplier = 0.82
-PhaseTailMaxAliveMultiplier = 0.86
-PhaseTailSwarmWeightMultiplier = 0.55
-PhaseTailChargerWeightMultiplier = 1.35
-PhaseTailTankWeightMultiplier = 1.35
-PhaseTailEliteWeightMultiplier = 1.2
+SpawnOutsideViewportMargin = 80.0
+SpawnRingThickness = 320.0
+EliteUnlockUpgradeCount = 6
 ChaosWeightSwarm = 20.0
 ChaosWeightCharger = 34.0
 ChaosWeightTank = 30.0
 ChaosWeightElite = 16.0
-EliteUnlockUpgradeCount = 6
-
-[node name="DebugSystem" type="Node" parent="."]
-script = ExtResource("5_debug")
-EnableF3DebugToggle = true
 
 [node name="PerfProbe" type="Node" parent="."]
 script = ExtResource("6_perf")
@@ -80,3 +68,7 @@ ExperiencePickupScene = ExtResource("12_exp_pickup")
 [node name="StabilitySystem" type="Node" parent="."]
 script = ExtResource("10_stability")
 BaseDecayPerSecond = 0.42
+
+[node name="DebugCheatSystem" type="Node" parent="."]
+script = ExtResource("15_debug_cheat")
+EnableDebugMenu = true

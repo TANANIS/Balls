@@ -1,4 +1,4 @@
-# Art Differentiation Plan: Fantasy Pixel Style
+﻿# Art Differentiation Plan: Fantasy Pixel Style
 
 ## Status
 - Branch target: `feature/art-fantasy-pixel-style`
@@ -26,14 +26,15 @@
   - `Data/Characters/TankBurstCharacter.tres`
 - Player/attack prefabs:
   - `Scenes/Player.tscn`
-  - `Prefabs/Bullet.tscn`
+  - `Prefabs/WizardProjectile.tscn`
+  - `Prefabs/PriestProjectile.tscn`
   - `Prefabs/MeleeVFX.tscn`
 - Enemy visuals:
-  - `Enemies/SwarmCircle.tscn`
-  - `Enemies/ChargerTriangle.tscn`
-  - `Enemies/TankSquare.tscn`
-  - `Enemies/EliteSwarmCircle.tscn`
-  - `Enemies/MiniBossHex.tscn`
+  - `Enemies/Slime.tscn`
+  - `Enemies/Orc.tscn`
+  - `Enemies/EliteOrc.tscn`
+  - `Enemies/EliteSlime.tscn`
+  - `Enemies/Lancer.tscn`
 - Progression and drops:
   - `Prefabs/ExperiencePickup.tscn`
 - World/background:
@@ -79,7 +80,7 @@
   - Lock style tokens and size baseline in `docs/FANTASY_PIXEL_STYLE_SPEC.md`.
   - Set/verify Godot import presets for pixel art (filtering/mipmap behavior).
   - Build first replacement set with fixed size contract:
-    - `Player`, `SwarmCircle`, `Bullet`, `ExpPickup`, `Shield`.
+    - `Wizard`, `Slime`, `WizardProjectile/PriestProjectile`, `ExpPickup`, `Shield`.
 - Exit criteria:
   - No blur artifacts in movement/camera.
   - First replacement set matches the size table and passes smoke test.
@@ -88,8 +89,8 @@
 - Goal:
   - Replace the assets that directly affect moment-to-moment readability.
 - Tasks:
-  - Player cores (`Player.png`, `BladeCore.png`, `BulwarkCore.png`).
-  - Bullet/melee/pickup (`Bullet.png`, `Melee.png`, `ExpPickup.png`).
+- Player cores (`Wizard`, `Knight`, `Priest`).
+- Projectile/melee/pickup (`Wizard-Attack_Effect*`, `Priest-Attack_Effect*`, `Melee.png`, `ExpPickup.png`).
   - Enemy sprites for all currently spawned classes.
   - Shield visual fallback (`Assets/Sprites/Skills/Shield/shield.png`) in matching style.
 - Exit criteria:
@@ -142,3 +143,5 @@
   - before/after screenshots,
   - known temporary placeholders.
 - Keep art naming and folder organization stable so future content scales cleanly.
+
+

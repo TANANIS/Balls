@@ -28,14 +28,16 @@ public partial class Player
 		{
 			if (resolved.CoreSprite != null)
 				_sprite.Texture = resolved.CoreSprite;
-
-			Vector2 mult = resolved.CoreSpriteScaleMultiplier;
-			if (Mathf.IsZeroApprox(mult.X))
-				mult.X = 1f;
-			if (Mathf.IsZeroApprox(mult.Y))
-				mult.Y = 1f;
-			_sprite.Scale = _baseSpriteScale * mult;
 		}
+
+		Vector2 mult = resolved.CoreSpriteScaleMultiplier;
+		if (Mathf.IsZeroApprox(mult.X))
+			mult.X = 1f;
+		if (Mathf.IsZeroApprox(mult.Y))
+			mult.Y = 1f;
+		if (_visualRoot != null)
+			_visualRoot.Scale = _baseSpriteScale * mult;
+		ApplyCharacterAnimationProfile(resolved.CharacterId);
 
 		_movement?.SetBaseStats(
 			resolved.MoveMaxSpeed,
@@ -53,6 +55,7 @@ public partial class Player
 		_primaryAttack?.SetFirePattern(
 			resolved.RangedFirePattern,
 			resolved.RangedBurstShotInterval);
+		_primaryAttack?.ApplyProjectileByCharacterId(resolved.CharacterId);
 
 		_secondaryAttack?.SetBaseStats(
 			resolved.MeleeDamage,
@@ -92,7 +95,6 @@ public partial class Player
 		{
 			if (rangedEnabled)
 			{
-				DebugSystem.Warn("[Player] Secondary ranged slot ignored. Ranged already bound to primary slot.");
 			}
 			else
 			{
@@ -104,7 +106,6 @@ public partial class Player
 		{
 			if (meleeEnabled)
 			{
-				DebugSystem.Warn("[Player] Secondary melee slot ignored. Melee already bound to primary slot.");
 			}
 			else
 			{

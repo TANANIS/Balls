@@ -6,7 +6,7 @@
 - [x] XP pickup flow: enemy death drops pickup, pickup grants EXP
 - [x] XP model reworked to survivor-style: pickup adds EXP, full bar levels up
 - [x] Four-phase 15-minute pressure timeline
-- [x] Universe special events removed (phase-tail MiniBossHex used instead)
+- [x] Universe special events removed (phase-tail Lancer used instead)
 - [x] Enemy hit feedback with knockback + white flash effect
 - [x] In-run HP UI enabled as HUD module
 - [x] Top XP progress bar enabled (shows next-upgrade readiness)
@@ -57,7 +57,6 @@
 - [ ] Define skill data source and authoring format (Resource/CSV) and migration plan
 - [ ] Implement runtime skill application entry and compatibility gates
 - [ ] Integrate skill-layer choices into upgrade menu presentation
-- [ ] Add debug/dev cheats for rapid skill-layer validation (grant/clear/list)
 
 ## Meta Progression - Out-Of-Run
 - [x] Architecture spec created: `docs/META_PROGRESSION_ARCHITECTURE.md`
@@ -88,3 +87,4 @@
 - [ ] Add simple script-size guardrail doc:
   - [ ] target max LOC per behavior script
   - [ ] rule for when to split by responsibility
+

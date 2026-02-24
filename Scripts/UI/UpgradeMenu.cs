@@ -2,8 +2,6 @@ using Godot;
 
 public partial class UpgradeMenu : Control
 {
-	[Export] public bool DebugOpenWithKey = true;
-	[Export] public Key DebugOpenKey = Key.U;
 	private const string TitlePath = "Panel/VBox/Title";
 	private const string LeftButtonPath = "Panel/VBox/Options/LeftButton";
 	private const string MiddleButtonPath = "Panel/VBox/Options/MiddleButton";
@@ -30,26 +28,13 @@ public partial class UpgradeMenu : Control
 		ProcessMode = ProcessModeEnum.Always;
 		Visible = false;
 
-		var list = GetTree().GetNodesInGroup("UpgradeSystem");
-		if (list.Count > 0)
-			_upgradeSystem = list[0] as UpgradeSystem;
-
-		if (_upgradeSystem == null)
-			DebugSystem.Error("[UpgradeMenu] UpgradeSystem not found.");
+		TryResolveUpgradeSystem();
 
 		BindUi();
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (DebugOpenWithKey && @event is InputEventKey keyEvent && keyEvent.Pressed && !keyEvent.Echo && keyEvent.Keycode == DebugOpenKey)
-		{
-			if (_isOpen)
-				CloseMenu();
-			else
-				OpenMenu();
-		}
-
 		if (_isOpen && @event.IsActionPressed("ui_cancel"))
 		{
 			AudioManager.Instance?.PlaySfxUiExit();
@@ -59,6 +44,7 @@ public partial class UpgradeMenu : Control
 
 	public void OpenMenu()
 	{
+		TryResolveUpgradeSystem();
 		if (_isOpen || _upgradeSystem == null)
 			return;
 
@@ -78,5 +64,25 @@ public partial class UpgradeMenu : Control
 		_isOpen = false;
 		Visible = false;
 		GetTree().Paused = false;
+	}
+
+	public void ForceCloseForRunReset()
+	{
+		if (!_isOpen && !Visible)
+			return;
+		_isOpen = false;
+		Visible = false;
+		if (GetTree() != null)
+			GetTree().Paused = false;
+	}
+
+	private void TryResolveUpgradeSystem()
+	{
+		if (_upgradeSystem != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup("UpgradeSystem");
+		if (list.Count > 0)
+			_upgradeSystem = list[0] as UpgradeSystem;
 	}
 }

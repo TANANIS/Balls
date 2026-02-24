@@ -65,4 +65,9 @@ public partial class PlayerMovement : Node
 		Friction = Mathf.Max(1f, friction);
 		StopThreshold = Mathf.Max(0f, stopThreshold);
 	}
+
+	public void ResetRuntimeState()
+	{
+		_movementFreezeTimer = 0f;
+	}
 }

@@ -9,9 +9,6 @@
 
 ## Completed Actions
 ### 1) Orphan cleanup
-- Removed orphan debug module:
-  - `Scripts/Enemy/EnemyDebugEventModule.cs`
-  - `Scripts/Enemy/EnemyDebugEventModule.cs.uid`
 - Validation: no scene attachment and no runtime references.
 
 ### 2) `GameFlowUI` second split

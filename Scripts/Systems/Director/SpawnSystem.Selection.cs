@@ -135,10 +135,10 @@ public partial class SpawnSystem
 		if (GetCurrentPhase() == StabilitySystem.StabilityPhase.CollapseCritical)
 			eliteWeight *= 1.35f;
 
-		TryAddWeight(list, "swarm_circle", ChaosWeightSwarm, tier);
-		TryAddWeight(list, "charger_triangle", ChaosWeightCharger, tier);
-		TryAddWeight(list, "tank_square", ChaosWeightTank, tier);
-		TryAddWeight(list, "elite_swarm_circle", eliteWeight, tier);
+		TryAddWeight(list, "slime", ChaosWeightSwarm, tier);
+		TryAddWeight(list, "orc", ChaosWeightCharger, tier);
+		TryAddWeight(list, "elite_orc", ChaosWeightTank, tier);
+		TryAddWeight(list, "werebear", eliteWeight, tier);
 
 		return list;
 	}
@@ -212,11 +212,11 @@ public partial class SpawnSystem
 		if (string.IsNullOrWhiteSpace(enemyId))
 			return 1f;
 
-		if (string.Equals(enemyId, "swarm_circle", StringComparison.OrdinalIgnoreCase))
+		if (string.Equals(enemyId, "slime", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailSwarmWeightMultiplier;
-		if (string.Equals(enemyId, "charger_triangle", StringComparison.OrdinalIgnoreCase))
+		if (string.Equals(enemyId, "orc", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailChargerWeightMultiplier;
-		if (string.Equals(enemyId, "tank_square", StringComparison.OrdinalIgnoreCase))
+		if (string.Equals(enemyId, "elite_orc", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailTankWeightMultiplier;
 		if (string.Equals(enemyId, EliteEnemyId, StringComparison.OrdinalIgnoreCase))
 			return PhaseTailEliteWeightMultiplier;

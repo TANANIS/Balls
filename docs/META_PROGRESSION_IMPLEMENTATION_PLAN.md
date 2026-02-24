@@ -40,7 +40,6 @@
 ### Deliverables
 - `base = floor(score / scoreDivisor)` pipeline implemented.
 - Soft-cap curve with optional linear tail implemented.
-- Breakdown fields fully available for UI/debug.
 - Anti-duplicate settlement key (`RunId`) respected.
 
 ### Validation

@@ -17,10 +17,14 @@ public partial class PlayerMelee : PlayerAbilityModule
 	[Export] public Color VfxColor = new Color(1f, 0.9f, 0.2f, 0.7f);
 	[Export] public float VfxForwardOffset = 36f;
 	[Export] public float VfxSideOffset = 0f;
+	[Export(PropertyHint.Range, "0.01,1.50,0.01")] public float WindupSeconds = 0.10f;
+	[Export(PropertyHint.Range, "0.05,0.95,0.01")] public float HitAtNormalizedTime = 0.55f;
+	[Export(PropertyHint.Range, "0,0.50,0.01")] public float RecoverSeconds = 0.02f;
 
 	private CombatSystem _combat;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
+	private readonly PlayerMeleeTimeline _timeline = new();
 
 	public float CurrentCooldown => Cooldown;
 	public int CurrentDamage => Damage;
@@ -32,42 +36,43 @@ public partial class PlayerMelee : PlayerAbilityModule
 		SetupAbility(player, EnabledInCurrentCharacter);
 
 		// Resolve combat service from group to keep scene wiring flexible.
-		var list = GetTree().GetNodesInGroup("CombatSystem");
-		if (list.Count > 0)
-			_combat = list[0] as CombatSystem;
-
-		if (_combat == null)
-			DebugSystem.Error("[PlayerMelee] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
+		TryResolveCombatSystem();
 
 		ResolveInputAction();
 	}
 
 	public void Tick(float dt)
 	{
+		Tick(dt, Input.IsActionPressed(_resolvedAction));
+	}
+
+	public void Tick(float dt, bool wantAttack)
+	{
 		if (!_isEnabled)
 			return;
 
 		EnsureStabilitySystem();
 		TickCooldown(ref _cooldownTimer, dt);
-		if (_cooldownTimer > 0f)
+		_timeline.Tick(dt, OnTimelineHit);
+		if (_cooldownTimer > 0f || _timeline.IsBusy)
 			return;
 
-		if (!Input.IsActionPressed(_resolvedAction))
+		if (!wantAttack)
 			return;
 
-		ExecuteAttack();
+		if (_combat == null)
+			TryResolveCombatSystem();
+		if (_combat == null)
+			return;
+
+		StartAttackTimeline();
 		float powerMult = GetPowerMultiplier();
 		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
 
 	private void ResolveInputAction()
 	{
-		_resolvedAction = ResolveInputActionOrFallback(
-			AttackAction,
-			InputActions.LegacyAttackSecondary,
-			"PlayerMelee",
-			"attack_secondary",
-			"RightClick");
+		_resolvedAction = ResolveInputActionOrFallback(AttackAction);
 	}
 
 	public void SetEnabled(bool enabled)
@@ -82,5 +87,56 @@ public partial class PlayerMelee : PlayerAbilityModule
 			return;
 		AttackAction = action;
 		ResolveInputAction();
+	}
+
+	public void ResetRuntimeState()
+	{
+		_cooldownTimer = 0f;
+		_timeline.Reset();
+	}
+
+	private void StartAttackTimeline()
+	{
+		if (_player == null)
+			return;
+
+		float windup = Mathf.Clamp(WindupSeconds, 0.01f, 1.5f);
+		float recover = Mathf.Clamp(RecoverSeconds, 0f, 0.5f);
+		float meleeAnimDuration = Mathf.Clamp(windup + recover, 0.06f, 1.5f);
+		_player.TriggerPrimaryAttackAnimation(meleeAnimDuration);
+		Vector2 attackDir = _player.GetAimDirection(_player.LastMoveDir);
+
+		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
+		float runtimeRange = Range * (1f + ((powerMult - 1f) * 0.25f));
+		float dmgMult = Mathf.Max(0.1f, DamageMultiplier);
+		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * dmgMult * powerMult));
+
+		_timeline.BeginAttack(
+			windupDurationSeconds: windup,
+			hitAtNormalized: HitAtNormalizedTime,
+			recoverDurationSeconds: recover,
+			attackDir: attackDir,
+			attackRange: runtimeRange,
+			attackDamage: runtimeDamage);
+	}
+
+	private void OnTimelineHit(Vector2 attackDir, float runtimeRange, int runtimeDamage)
+	{
+		if (_combat == null || _player == null)
+			return;
+
+		AudioManager.Instance?.PlaySfxPlayerMelee();
+		SpawnVfx(attackDir, runtimeRange);
+		QueryAndApplyMeleeDamage(attackDir, runtimeRange, runtimeDamage);
+	}
+
+	private void TryResolveCombatSystem()
+	{
+		if (_combat != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup("CombatSystem");
+		if (list.Count > 0)
+			_combat = list[0] as CombatSystem;
 	}
 }

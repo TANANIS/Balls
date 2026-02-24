@@ -19,18 +19,11 @@ public partial class EnemyHitbox : Area2D
 		_ownerEnemy = GetParent() as Enemy;
 		if (_ownerEnemy == null)
 		{
-			DebugSystem.Error("[EnemyHitbox] Parent is not Enemy. Make Hitbox a direct child of Enemy.");
 			return;
 		}
 
 		AddToGroup("EnemyHitbox");
-
-		var list = GetTree().GetNodesInGroup("CombatSystem");
-		if (list.Count > 0)
-			_combat = list[0] as CombatSystem;
-
-		if (_combat == null)
-			DebugSystem.Error("[EnemyHitbox] CombatSystem not found. Did you AddToGroup(\"CombatSystem\")?");
+		TryResolveCombatSystem();
 
 		AreaEntered += OnAreaEntered;
 		AreaExited += OnAreaExited;
@@ -41,13 +34,14 @@ public partial class EnemyHitbox : Area2D
 		float dt = (float)delta;
 
 		if (_currentTarget == null) return;
+		if (_combat == null)
+			TryResolveCombatSystem();
 		if (_combat == null) return;
 
 		_tickTimer -= dt;
 		if (_tickTimer > 0f) return;
 
 		_tickTimer = TickInterval;
-		DebugSystem.Log("[EnemyHitbox] Tick damage -> target=" + _currentTarget.Name);
 
 		if (_currentTarget is not IDamageable)
 			return;
@@ -70,7 +64,6 @@ public partial class EnemyHitbox : Area2D
 
 	private void OnAreaEntered(Area2D other)
 	{
-		DebugSystem.Log("[EnemyHitbox] AreaEntered: " + other.Name + " PlayerHurtbox=" + other.IsInGroup("PlayerHurtbox"));
 		if (!other.IsInGroup("PlayerHurtbox"))
 			return;
 
@@ -82,5 +75,15 @@ public partial class EnemyHitbox : Area2D
 	{
 		if (other == _currentTarget)
 			_currentTarget = null;
+	}
+
+	private void TryResolveCombatSystem()
+	{
+		if (_combat != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup("CombatSystem");
+		if (list.Count > 0)
+			_combat = list[0] as CombatSystem;
 	}
 }

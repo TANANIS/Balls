@@ -10,7 +10,6 @@ public partial class PlayerHealth
 		Node2D anchor = ResolveSkillVfxRoot();
 		if (anchor == null)
 		{
-			DebugSystem.Warn("[PlayerHealth] Shield visual anchor is null. Expected SkillVfxRoot or Player node parent.");
 			return;
 		}
 
@@ -27,11 +26,9 @@ public partial class PlayerHealth
 		if (_shieldSprite.Texture != null)
 		{
 			Vector2 size = _shieldSprite.Texture.GetSize();
-			DebugSystem.Log($"[PlayerHealth] Shield texture loaded: '{_shieldSprite.Texture.ResourcePath}' size={size}. anchor={anchor.Name}");
 		}
 		else
 		{
-			DebugSystem.Warn("[PlayerHealth] Shield texture is null. Trying fallback ring visual.");
 		}
 
 		if (EnableShieldFallbackRing)
@@ -62,8 +59,8 @@ public partial class PlayerHealth
 		// Backward compatibility fallback.
 		_skillVfxRoot = GetParentOrNull<Node2D>();
 		if (_skillVfxRoot != null)
-			DebugSystem.Warn("[PlayerHealth] SkillVfxRoot not found; falling back to Player root.");
-		return _skillVfxRoot;
+			return _skillVfxRoot;
+		return null;
 	}
 
 	private void ApplyShieldVisualScale()
@@ -97,7 +94,6 @@ public partial class PlayerHealth
 
 		anchor.AddChild(_shieldFallbackRing);
 		_shieldFallbackRing.Position = Vector2.Zero;
-		DebugSystem.Log("[PlayerHealth] Shield fallback ring created.");
 	}
 
 	private void RefreshShieldVisual(bool force = false)
@@ -132,7 +128,6 @@ public partial class PlayerHealth
 				_shieldSprite.Visible = false;
 			if (_shieldFallbackRing != null)
 				_shieldFallbackRing.Visible = false;
-			DebugSystem.Log("[PlayerHealth] Shield visual state -> OFF");
 			return;
 		}
 
@@ -149,7 +144,6 @@ public partial class PlayerHealth
 				_shieldFallbackRing.Visible = ringVisible;
 				_shieldFallbackRing.DefaultColor = ShieldReadyColor;
 			}
-			DebugSystem.Log("[PlayerHealth] Shield visual state -> READY");
 			return;
 		}
 
@@ -257,7 +251,7 @@ public partial class PlayerHealth
 		if (anchor == null)
 			return;
 
-		Sprite2D sprite = anchor.GetNodeOrNull<Sprite2D>("Sprite2D");
+		CanvasItem sprite = anchor.GetNodeOrNull<CanvasItem>("Sprite2D");
 		float duration = Mathf.Clamp(DamageFeedbackDurationSeconds, 0.02f, 0.30f);
 		if (duration <= 0f)
 			return;
@@ -319,5 +313,32 @@ void fragment()
 		_damageFlashMaterial = new ShaderMaterial();
 		_damageFlashMaterial.Shader = shader;
 		_damageFlashMaterial.SetShaderParameter("flash_amount", 0f);
+	}
+
+	private void ResetVisualRuntimeState()
+	{
+		_damageFeedbackToken++;
+		_shieldFlashToken++;
+		_shieldFlashActive = false;
+
+		Node2D anchor = GetParentOrNull<Node2D>();
+		CanvasItem sprite = anchor?.GetNodeOrNull<CanvasItem>("Sprite2D");
+		if (sprite != null && _damageFlashMaterial != null)
+		{
+			_damageFlashMaterial.SetShaderParameter("flash_amount", 0f);
+			sprite.Material = _spriteMaterialBeforeFlash;
+		}
+
+		if (_shieldSprite != null)
+		{
+			_shieldSprite.Visible = false;
+			_shieldSprite.Modulate = ShieldReadyColor;
+		}
+
+		if (_shieldFallbackRing != null)
+		{
+			_shieldFallbackRing.Visible = false;
+			_shieldFallbackRing.DefaultColor = ShieldFallbackRingColor;
+		}
 	}
 }

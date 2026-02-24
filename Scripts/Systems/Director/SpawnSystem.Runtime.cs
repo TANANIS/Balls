@@ -72,15 +72,6 @@ public partial class SpawnSystem
 		_activeSpawnRadiusMin = Mathf.Max(1f, active.SpawnRadiusMin);
 		_activeSpawnRadiusMax = Mathf.Max(_activeSpawnRadiusMin, active.SpawnRadiusMax);
 
-		if (VerboseLog)
-		{
-			DebugSystem.Log(
-				$"[SpawnSystem] Tier={active.Tier} " +
-				$"spawn={_activeSpawnIntervalMin:F2}-{_activeSpawnIntervalMax:F2}s " +
-				$"budget={_activeBudgetMin}-{_activeBudgetMax} maxAlive={_activeMaxAlive} " +
-				$"radius={_activeSpawnRadiusMin:F0}-{_activeSpawnRadiusMax:F0} phase={GetCurrentPhase()}");
-		}
-
 		ResetSpawnTimer();
 	}
 
@@ -114,5 +105,27 @@ public partial class SpawnSystem
 
 		// If CSV tier ids are unexpected/missing, keep runtime stable by falling back to first row.
 		return 0;
+	}
+
+	public void ResetForNewRun()
+	{
+		_pendingSpawns.Clear();
+		_spawnStepTimer = 0f;
+		_timer = 0f;
+
+		_miniBossScheduled = false;
+		_miniBossSpawned = false;
+		_pendingPhaseMiniBossIndex = -1;
+		for (int i = 0; i < _phaseMiniBossSpawned.Length; i++)
+			_phaseMiniBossSpawned[i] = false;
+		_spawnFreezeTimer = 0f;
+		_survivalSeconds = 0f;
+		_nextLateMiniBossAt = -1f;
+
+		_activeTier = -1;
+		_activeTierRuleIndex = -1;
+		ApplyFallbackRuntimeSettings();
+		UpdateTierRuntimeSettings();
+		ResetSpawnTimer();
 	}
 }

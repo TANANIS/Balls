@@ -1,16 +1,21 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=37 format=3]
 
-[ext_resource type="Texture2D" uid="uid://c1kgru20bigl6" path="res://Assets/Sprites/Player/Player.png" id="1_ikhqc"]
-[ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_tyo64"]
-[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="2_meleevfx"]
-[ext_resource type="PackedScene" uid="uid://cc80w0s3oudea" path="res://Prefabs/Bullet.tscn" id="2_wyi7j"]
-[ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="3_x4450"]
-[ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="4_embg1"]
-[ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="5_embg1"]
-[ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="5_x4450"]
-[ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="6_melee"]
-[ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="8_vpcxr"]
+[ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_player_script"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Walk.png" id="2_wizard_walk"]
+[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="3_meleevfx"]
+[ext_resource type="PackedScene" path="res://Prefabs/WizardProjectile.tscn" id="4_wizard_projectile"]
+[ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="5_hurtbox_script"]
+[ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="6_move_script"]
+[ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="7_weapon_script"]
+[ext_resource type="Script" uid="uid://pymcqcxue1ji" path="res://Scripts/Player/PlayerDash.cs" id="8_dash_script"]
+[ext_resource type="Script" uid="uid://ceo7hv4a01rnn" path="res://Scripts/Player/PlayerMelee.cs" id="9_melee_script"]
+[ext_resource type="Script" uid="uid://bwx8eiovf2hj" path="res://Scripts/Player/PlayerHealth.cs" id="10_health_script"]
 [ext_resource type="Resource" path="res://Data/Characters/RangedCharacter.tres" id="11_ranged_character"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Idle.png" id="12_wizard_idle"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Hurt.png" id="13_wizard_hurt"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-DEATH.png" id="14_wizard_death"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Attack02.png" id="15_wizard_attack"]
+[ext_resource type="PackedScene" path="res://Prefabs/PriestProjectile.tscn" id="16_priest_projectile"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0
@@ -18,16 +23,158 @@ radius = 34.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
 radius = 36.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_0"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_1"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_2"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_3"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_4"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_5"]
+atlas = ExtResource("12_wizard_idle")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_0"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_1"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_2"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_3"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_4"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_5"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_6"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(600, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_walk_7"]
+atlas = ExtResource("2_wizard_walk")
+region = Rect2(700, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_hurt_0"]
+atlas = ExtResource("13_wizard_hurt")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_hurt_1"]
+atlas = ExtResource("13_wizard_hurt")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_hurt_2"]
+atlas = ExtResource("13_wizard_hurt")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_hurt_3"]
+atlas = ExtResource("13_wizard_hurt")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_death_0"]
+atlas = ExtResource("14_wizard_death")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_death_1"]
+atlas = ExtResource("14_wizard_death")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_death_2"]
+atlas = ExtResource("14_wizard_death")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_death_3"]
+atlas = ExtResource("14_wizard_death")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_0"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_1"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_2"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_3"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_4"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wizard_attack_5"]
+atlas = ExtResource("15_wizard_attack")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wizard"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_0")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_1")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_2")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_3")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_4")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_idle_5")}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_0")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_1")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_2")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_3")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_4")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_5")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_6")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_walk_7")}],
+"loop": true,
+"name": &"walk",
+"speed": 9.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_hurt_0")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_hurt_1")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_hurt_2")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_hurt_3")}],
+"loop": false,
+"name": &"hurt",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_0")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_1")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_2")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_3")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_4")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_attack_5")}],
+"loop": false,
+"name": &"attack",
+"speed": 13.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_death_0")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_death_1")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_death_2")}, {"duration": 1.0, "texture": SubResource("AtlasTexture_wizard_death_3")}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}]
+
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(-101, -46)
 collision_layer = 2
-collision_mask = 5
-script = ExtResource("1_tyo64")
+collision_mask = 1
+script = ExtResource("1_player_script")
 DefaultCharacter = ExtResource("11_ranged_character")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.14, 0.14)
-texture = ExtResource("1_ikhqc")
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_wizard")
+animation = &"idle"
+autoplay = "idle"
+scale = Vector2(4, 4)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
@@ -43,39 +190,41 @@ z_index = 2500
 position = Vector2(0, -1)
 collision_layer = 16
 collision_mask = 64
-script = ExtResource("3_x4450")
+script = ExtResource("5_hurtbox_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CircleShape2D_i30mb")
-debug_color = Color(0.85284024, 0.35988984, 0.24184075, 0.41960785)
 
 [node name="Movement" type="Node" parent="."]
-script = ExtResource("4_embg1")
+script = ExtResource("6_move_script")
 
 [node name="PrimaryAttack" type="Node" parent="."]
-script = ExtResource("5_embg1")
-ProjectileScene = ExtResource("2_wyi7j")
+script = ExtResource("7_weapon_script")
+ProjectileScene = ExtResource("4_wizard_projectile")
+WizardProjectileScene = ExtResource("4_wizard_projectile")
+PriestProjectileScene = ExtResource("16_priest_projectile")
 ProjectileContainerPath = NodePath("../../Projectiles")
 Cooldown = 0.32
 ProjectileSpeed = 760.0
+PrecisionSingleLine = true
 
 [node name="SecondaryAttack" type="Node" parent="."]
-script = ExtResource("6_melee")
+script = ExtResource("9_melee_script")
 Range = 160.0
 ArcDegrees = 240.0
-MeleeVfxScene = ExtResource("2_meleevfx")
+MeleeVfxScene = ExtResource("3_meleevfx")
 VfxPath = NodePath("../../World")
 VfxColor = Color(1, 1, 1, 0.9)
 VfxForwardOffset = 24.0
 
 [node name="Dash" type="Node" parent="."]
-script = ExtResource("5_x4450")
+script = ExtResource("8_dash_script")
 
 [node name="Health" type="Node" parent="."]
-script = ExtResource("8_vpcxr")
+script = ExtResource("10_health_script")
 HurtIFrame = 0.1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = true
-zoom = Vector2(0.85, 0.85)
+zoom = Vector2(1.35, 1.35)
 position_smoothing_enabled = false

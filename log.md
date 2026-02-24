@@ -171,7 +171,6 @@
 
 ## Session Update (2026-02-21, Structural Refactor + Docs Sync)
 - Orphan cleanup:
-  - Removed unused `Scripts/Enemy/EnemyDebugEventModule.cs` (+ `.uid`).
 - GameFlowUI refactor pass:
   - Added `GameFlowUI.References.cs`, `GameFlowUI.CharacterSelect.cs`, `GameFlowUI.EndState.cs`,
     `GameFlowUI.SettingsUI.cs`, `GameFlowUI.SettingsPersistence.cs`.
@@ -425,7 +424,6 @@
   - both failure and perfect-clear now display:
     - run-earned Flux (`+X`),
     - current Flux wallet total.
-  - meta settlement debug output wording updated from generic currency to Flux.
 - Character select upgraded toward meta-progression panel:
   - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
   - panel now presents:
@@ -473,7 +471,6 @@
   - NU1900 warning remains external (NuGet source connectivity).
 
 ## Session Update (2026-02-23, Save Isolation + Delete Save Feature)
-- Save isolation (for debug/production separation):
   - `Scripts/Save/JsonSaveStore.cs`
   - save path now uses profile partition:
     - `user://saves/<profile>/meta_progression.json`
@@ -574,7 +571,7 @@
     - placeholder 4th character card text changed to `Coming Soon`.
     - ability-tree graphic placeholder text changed to `Coming Soon`.
   - `Scripts/UI/GameFlowUI.CharacterSelect.cs`
-    - ability-tree fallback text now uses `UI.META.NOT_AVAILABLE` fallback (`Coming Soon` / `尚未開放`) instead of "framework pending design" wording.
+    - ability-tree fallback text now uses `UI.META.NOT_AVAILABLE` fallback (`Coming Soon` / `撠?`) instead of "framework pending design" wording.
   - `Scripts/UI/GameFlowUI.Localization.cs`
     - localized both "Coming Soon" placeholders for character slot and ability-tree area.
 
@@ -615,21 +612,14 @@
 - Behavior note:
   - shield-absorbed hits do not trigger movement freeze (only actual HP loss does).
 
-## Session Update (2026-02-23, Editor Inspector Flux Debug Override)
-- Adjusted debug-currency approach per request to Godot editor workflow (not in-game UI controls).
-- Added inspector-driven debug override on `GameFlowUI`:
   - `Scripts/UI/GameFlowUI.cs`
-  - new exported fields under `Debug/Meta`:
     - `EditorOverrideFluxWalletOnReady` (bool)
     - `EditorFluxWallet` (int)
-  - on `_Ready()`, in debug build and when enabled, applies wallet override to target Flux value.
 - Added service-side setter for wallet override:
   - `Scripts/Meta/MetaProgressionService.cs`
-  - `DebugSetCurrencyWallet(int targetWallet)`:
     - clamps to non-negative,
     - adjusts via add/spend path,
     - persists save immediately.
-- Removed previously added in-game Settings debug buttons from:
   - `Scenes/UI/Panels/StartPanel.tscn`
 
 ## Session Update (2026-02-23, Settings Layout Stabilization + End-State Actions)
@@ -739,3 +729,107 @@
 - Validation:
   - repeated `dotnet build ProjectGenesis.sln` checks passed (0 errors).
   - only external NU1900 warnings remained (NuGet index connectivity).
+
+## Session Update (2026-02-24, SwarmCircle Rename + Slime Pipeline Cleanup)
+- Renamed runtime base enemy scene:
+  - `Enemies/SwarmCircle.tscn` -> `Enemies/Slime.tscn`
+- Director/runtime id migration:
+  - `swarm_circle` -> `slime` in:
+    - `Data/Director/EnemyDefinitions.csv`
+    - `Data/Director/TierEnemyWeights.csv`
+    - `Data/Director/_planned/PackTemplates.csv`
+    - `Scripts/Systems/Director/SpawnSystem.Selection.cs`
+- Audio routing update:
+  - death SFX scene-key moved to `res://Enemies/Slime.tscn` in `Scripts/Audio/AudioManager.Setup.cs`.
+- Slime art asset normalization (naming/location):
+  - renamed to lowercase snake-case under:
+    - `Assets/Sprites/Enemies/Slime/`
+  - organized shadow assets under:
+    - `Assets/Sprites/Enemies/Slime/shadow/`
+  - removed stale legacy `.import` entries and obsolete shadow folder artifacts.
+- Slime scene node cleanup:
+  - visual node renamed to `AnimatedSprite2D`.
+  - event module moved under explicit `Events` node for resolver consistency.
+  - sprite-frame references updated to normalized slime asset paths.
+- Docs sync:
+  - updated references from `SwarmCircle` to `Slime` in active art/spec docs.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, NU1900 external warnings only).
+
+## Session Update (2026-02-24, Major Fantasy Pixel Runtime Migration + Player/Projectile Refactor)
+- Enemy runtime migration (old geometry ids/scenes retired):
+  - `SwarmCircle -> Slime`
+  - `ChargerTriangle -> Orc`
+  - `TankSquare -> EliteOrc`
+  - `EliteSwarmCircle -> Werebear`
+  - `MiniBossHex -> Lancer`
+- Spawn/audio/data sync completed for renamed enemy set:
+  - director definitions/weights/planned tables updated
+  - enemy scene references and death SFX bindings updated
+  - old legacy enemy sprites/sfx assets removed from active runtime paths.
+
+- Character identity remap completed for player archetypes:
+  - Ranged = `Wizard`
+  - Melee = `Knight`
+  - TankBurst = `Priest`
+- Character resources and start panel naming updated:
+  - `Data/Characters/MeleeCharacter.tres` -> Knight
+  - `Data/Characters/TankBurstCharacter.tres` -> Priest
+  - start/meta UI labels synchronized with new archetype naming.
+
+- Player visual system reworked to be character-id driven:
+  - added runtime animation-profile switch path:
+    - `Scripts/Player/Player.AnimationProfile.cs`
+  - `Player.ApplyCharacter(...)` now applies per-character animation atlases and profile contracts.
+  - melee attack now triggers visual attack state (fixes Knight attack animation not playing during melee timeline).
+
+- Player architecture refactor landed (combat/input/visual stability):
+  - command pipeline and explicit per-frame command model:
+    - `Scripts/Player/Player.CommandPipeline.cs`
+  - visual state machine extraction:
+    - `Scripts/Player/PlayerStateMachine.cs`
+  - ranged/melee attack timelines extracted:
+    - `Scripts/Player/PlayerAttackTimeline.cs`
+    - `Scripts/Player/PlayerMeleeTimeline.cs`
+  - composition/health/damage signaling paths cleaned to reduce coupling regressions.
+
+- Projectile pipeline replaced (old basic bullet path retired):
+  - removed legacy base projectile resource path from runtime (`Prefabs/Bullet.tscn` retired).
+  - added per-archetype projectile prefabs:
+    - `Prefabs/WizardProjectile.tscn`
+    - `Prefabs/PriestProjectile.tscn`
+  - `PlayerWeapon` now resolves projectile scenes by character id and keeps fallback loading guards.
+
+- Projectile VFX behavior upgraded:
+  - `Scripts/Projectiles/Bullet.cs` and `Bullet.Collision.cs` now support:
+    - staged animation flow (flight/impact)
+    - impact-finish cleanup instead of immediate disappear
+    - direction-based facing rotation.
+  - Wizard projectile switched to sequence frames:
+    - `Wizard-Attack_Effect (1..4)`
+    - frames 1-3 flight loop, frame 4 impact.
+  - Priest temporarily reuses same 4-frame sequence contract for consistency.
+  - projectile scale baseline raised to improve readability under new pixel style.
+
+- Knight dash visual contract finalized:
+  - dash animation source moved from attack-sheet slicing to dedicated `Knight-Dash.png`.
+  - dash state now plays dedicated `dash` animation (with fallback to `walk` for non-dash-profile characters).
+  - prior atlas bleed/tearing issues mitigated by frame slicing updates and `FilterClip` for runtime atlas frames.
+
+- Debug cleanup + replacement direction:
+  - legacy debug overlay/system files removed from active runtime path.
+  - project now uses newer cheat/debug entry path (`DebugCheatSystem`) instead of old overlay stack.
+
+- Documentation sync completed for this major pass:
+  - `docs/FANTASY_PIXEL_STYLE_SPEC.md`
+    - core player naming updated (Wizard/Knight/Priest)
+    - bullet entry replaced with projectile-VFX entry.
+  - `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md`
+    - touchpoint list updated from `Prefabs/Bullet.tscn` to character projectile prefabs
+    - phase tasks updated to current projectile/effect pipeline.
+  - `README.md`
+    - prefab description updated from "bullet" wording to "projectile" wording.
+
+- Validation:
+  - repeated `dotnet build ProjectGenesis.sln` passes succeeded (0 compile errors).
+  - external `NU1900` warnings remain environmental (NuGet index connectivity), not gameplay-logic regressions.
