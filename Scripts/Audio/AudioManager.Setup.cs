@@ -75,6 +75,7 @@ public partial class AudioManager
 		_sfxPlayerUpgrade = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_upgrade.wav");
 		_sfxPlayerExpPickup = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_exp_pickup.wav");
 		_sfxPlayerHitEnemy = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_hit_enemy.wav");
+		_sfxPlayerElementalBurst = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_elemental_burst.wav");
 		_sfxPlayerGetHit = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_get_hit.wav");
 		_sfxPlayerDie = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_die.wav");
 		_sfxPlayerOneHp = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_one_hp.wav");
@@ -85,6 +86,8 @@ public partial class AudioManager
 			_sfxPlayerExpPickup = _sfxPlayerUpgrade;
 		if (_sfxPlayerHitEnemy == null)
 			_sfxPlayerHitEnemy = _sfxPlayerFire;
+		if (_sfxPlayerElementalBurst == null)
+			_sfxPlayerElementalBurst = _sfxPlayerHitEnemy;
 
 		_enemyDeathSfxByScene.Clear();
 		_enemyDeathSfxByScene["res://Enemies/Slime.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_slime_die.wav");

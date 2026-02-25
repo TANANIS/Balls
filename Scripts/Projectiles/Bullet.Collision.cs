@@ -24,6 +24,7 @@ public partial class Bullet
 		if (other.IsInGroup("World"))
 		{
 			_hasHit = true;
+			TryTriggerElementalBurstExplosion(other);
 			BeginImpact();
 			return;
 		}
@@ -48,6 +49,7 @@ public partial class Bullet
 
 		bool didDealDamage = _combat.RequestDamage(req);
 		TrySpawnSplitShotsOnHit(other);
+		TryTriggerElementalBurstExplosion(other);
 		if (didDealDamage)
 			AudioManager.Instance?.PlaySfxPlayerHitEnemy();
 		_hasHit = true;

@@ -25,6 +25,13 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0.05,0.95,0.01")] public float FireAtNormalizedTime = 0.60f;
 	[Export] public bool AimAtFireMoment = true;
 	[Export] public bool AimEachBurstShot = false;
+	[ExportGroup("Elemental Burst")]
+	[Export] public bool ElementalBurstEnabled = false;
+	[Export(PropertyHint.Range, "1.0,30.0,0.1")] public float ElementalBurstChargeSeconds = 5f;
+	[Export(PropertyHint.Range, "16,400,1")] public float ElementalBurstExplosionRadius = 130f;
+	[Export(PropertyHint.Range, "0.1,3.0,0.05")] public float ElementalBurstDamageMultiplier = 1.20f;
+	[Export(PropertyHint.Range, "32,2000,1")] public float ElementalBurstMaxDistance = 280f;
+	[Export(PropertyHint.Range, "1,32,1")] public int ElementalBurstMaxTargets = 5;
 
 	private Node _projectileContainer;
 	private float _attackAnimationSpeedMultiplier = 1f;
@@ -32,6 +39,9 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	private readonly PlayerAttackTimeline _attackTimeline = new();
 	private string _resolvedAction = InputActions.AttackPrimary;
 	private readonly RandomNumberGenerator _rng = new();
+	private float _elementalBurstChargeTimer = 0f;
+	private bool _elementalBurstCharged = false;
+	private bool _elementalBurstWaitingForDetonation = false;
 
 	public float CurrentCooldown => Cooldown;
 	public int CurrentDamage => Damage;
@@ -67,6 +77,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 			aimEachBurstShot: AimEachBurstShot,
 			resolveCurrentAimDirection: ResolveCurrentAimDirection,
 			fireVolley: FireVolley);
+		TickElementalBurst(dt);
 
 		if (_cooldownTimer > 0f || _attackTimeline.IsBusy)
 			return;
@@ -153,6 +164,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	private void SpawnProjectile(Vector2 dir, float speed, int damage)
 	{
+		bool useElementalBurstShot = ElementalBurstEnabled && _elementalBurstCharged && !_elementalBurstWaitingForDetonation;
 		Node bullet = ProjectileScene.Instantiate();
 		if (bullet is Node2D bullet2D)
 			bullet2D.GlobalPosition = _player.GlobalPosition;
@@ -165,12 +177,27 @@ public partial class PlayerWeapon : PlayerAbilityModule
 				damage,
 				Mathf.Clamp(SplitShotLevel, 0, 4),
 				canSplitOnHit: true,
-				projectileScene: ProjectileScene);
+				projectileScene: ProjectileScene,
+				isElementalBurstShot: useElementalBurstShot,
+				elementalBurstRadius: ElementalBurstExplosionRadius,
+				elementalBurstDamageMultiplier: ElementalBurstDamageMultiplier,
+				elementalBurstMaxDistance: ElementalBurstMaxDistance,
+				elementalBurstMaxTargets: ElementalBurstMaxTargets,
+				elementalBurstOwner: useElementalBurstShot ? this : null);
 		}
 		else
 		{
 			bullet.Call("InitFromPlayer", _player, dir.Normalized(), speed, damage);
 		}
+
+		if (useElementalBurstShot)
+		{
+			_elementalBurstCharged = false;
+			_elementalBurstWaitingForDetonation = bullet is Bullet;
+			if (!_elementalBurstWaitingForDetonation)
+				_elementalBurstChargeTimer = 0f;
+		}
+
 		_projectileContainer.AddChild(bullet);
 	}
 
@@ -255,6 +282,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		CritDamageMultiplier = 1.5f;
 		ExtraProjectiles = 0;
 		SplitShotLevel = 0;
+		ElementalBurstEnabled = false;
+		ResetElementalBurstState();
 	}
 
 	public void SetFirePattern(PrimaryFirePattern pattern, float burstShotInterval)
@@ -293,6 +322,54 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		_attackAnimationSpeedMultiplier = 1f;
 		_cooldownTimer = 0f;
 		_attackTimeline.Reset();
+		ResetElementalBurstState();
+	}
+
+	public void EnableElementalBurst(
+		float chargeSeconds,
+		float explosionRadius,
+		float damageMultiplier,
+		float maxDistance,
+		int maxTargets)
+	{
+		ElementalBurstEnabled = true;
+		ElementalBurstChargeSeconds = Mathf.Clamp(chargeSeconds, 1f, 30f);
+		ElementalBurstExplosionRadius = Mathf.Clamp(explosionRadius, 16f, 400f);
+		ElementalBurstDamageMultiplier = Mathf.Clamp(damageMultiplier, 0.1f, 3f);
+		ElementalBurstMaxDistance = Mathf.Clamp(maxDistance, 32f, 2000f);
+		ElementalBurstMaxTargets = Mathf.Clamp(maxTargets, 1, 32);
+	}
+
+	public void NotifyElementalBurstDetonated()
+	{
+		if (!_elementalBurstWaitingForDetonation)
+			return;
+
+		_elementalBurstWaitingForDetonation = false;
+		_elementalBurstChargeTimer = 0f;
+		_elementalBurstCharged = false;
+	}
+
+	private void TickElementalBurst(float dt)
+	{
+		if (!ElementalBurstEnabled)
+			return;
+		if (_elementalBurstCharged || _elementalBurstWaitingForDetonation)
+			return;
+
+		_elementalBurstChargeTimer += dt;
+		if (_elementalBurstChargeTimer >= ElementalBurstChargeSeconds)
+		{
+			_elementalBurstChargeTimer = ElementalBurstChargeSeconds;
+			_elementalBurstCharged = true;
+		}
+	}
+
+	private void ResetElementalBurstState()
+	{
+		_elementalBurstChargeTimer = 0f;
+		_elementalBurstCharged = false;
+		_elementalBurstWaitingForDetonation = false;
 	}
 
 	private Vector2 ResolveCurrentAimDirection(Vector2 fallback)

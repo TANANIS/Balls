@@ -203,6 +203,24 @@ public partial class Player
 			_primaryAttack?.AddCritChance(amount);
 	}
 
+	public void EnablePrimaryElementalBurst(
+		float chargeSeconds,
+		float explosionRadius,
+		float damageMultiplier,
+		float maxDistance,
+		int maxTargets)
+	{
+		if (PrimarySupportsRanged())
+		{
+			_primaryAttack?.EnableElementalBurst(
+				chargeSeconds,
+				explosionRadius,
+				damageMultiplier,
+				maxDistance,
+				maxTargets);
+		}
+	}
+
 	public void MultiplyPrimaryDamage(float factor)
 	{
 		if (PrimarySupportsRanged())

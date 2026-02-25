@@ -121,6 +121,7 @@ public partial class UpgradeSystem
 			UpgradeId.AtkProjectilePlus1 => _player.PrimarySupportsRanged(),
 			UpgradeId.AtkSplitShot => _player.PrimarySupportsRanged(),
 			UpgradeId.AtkCritChanceUp10 => _player.PrimarySupportsRanged(),
+			UpgradeId.ModElementalBurst => _player.PrimarySupportsRanged(),
 			_ => true
 		};
 	}

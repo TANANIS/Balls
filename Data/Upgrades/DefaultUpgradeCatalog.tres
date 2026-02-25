@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=13 format=3 uid="uid://bm8r67lsfg5sw"]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=14 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
@@ -131,6 +131,19 @@ Category = 5
 Weight = 8
 MaxStack = 2
 
+[sub_resource type="Resource" id="Upgrade_ModElementalBurst"]
+script = ExtResource("2_definition_script")
+Id = 10
+Title = "Elemental Burst"
+Description = "Charges every 5s. Next shot explodes on first hit or max distance, dealing AoE damage."
+TitleKey = "CARD.MOD_ELEMENTAL_BURST.TITLE"
+DescriptionKey = "CARD.MOD_ELEMENTAL_BURST.DESC"
+Layer = 4
+Category = 3
+Rarity = 1
+Weight = 8
+MinPhase = 0
+
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25")])
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25"), SubResource("Upgrade_ModElementalBurst")])

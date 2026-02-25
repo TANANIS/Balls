@@ -9,5 +9,6 @@ public enum UpgradeId
 	SurvShieldCooldown,
 	SurvLifestealCloseKill,
 	EcoExpGainUp20,
-	EcoPickupRadiusUp25
+	EcoPickupRadiusUp25,
+	ModElementalBurst
 }

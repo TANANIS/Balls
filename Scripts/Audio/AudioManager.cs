@@ -39,6 +39,7 @@ public partial class AudioManager : Node
 	private AudioStream _sfxPlayerUpgrade;
 	private AudioStream _sfxPlayerExpPickup;
 	private AudioStream _sfxPlayerHitEnemy;
+	private AudioStream _sfxPlayerElementalBurst;
 	private AudioStream _sfxPlayerGetHit;
 	private AudioStream _sfxPlayerDie;
 	private AudioStream _sfxPlayerOneHp;
@@ -76,6 +77,7 @@ public partial class AudioManager : Node
 	public void PlaySfxPlayerUpgrade() => PlaySfx(_sfxPlayerUpgrade);
 	public void PlaySfxPlayerExpPickup() => PlaySfx(_sfxPlayerExpPickup);
 	public void PlaySfxPlayerHitEnemy() => PlaySfx(_sfxPlayerHitEnemy, -5f);
+	public void PlaySfxPlayerElementalBurst() => PlaySfx(_sfxPlayerElementalBurst, -3f);
 	public void PlaySfxPlayerGetHit() => PlaySfx(_sfxPlayerGetHit);
 	public void PlaySfxPlayerDie() => PlaySfx(_sfxPlayerDie, +6f);
 

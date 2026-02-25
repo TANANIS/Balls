@@ -1,7 +1,7 @@
 # Cards Spec
 
 ## Current Status
-- Runtime card pool is active with Batch 01 (10 cards).
+- Runtime card pool is active with Batch 01 (11 cards).
 - Card effects are bound in `UpgradeSystem` and `ProgressionSystem`.
 
 ## Document Purpose
@@ -165,7 +165,7 @@ Note:
 
 ### Core Attack - Quantity
 - `ATK_PROJECTILE_PLUS_1` : +1 Projectile (same-axis tight spread, single-target focus, `MaxStack = 2`)
-- `ATK_SPLIT_SHOT` : On-Hit Split Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360°`, child damage `50%`, non-chain)
+- `ATK_SPLIT_SHOT` : On-Hit Split Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360 deg`, child damage `50%`, non-chain)
 
 ### Core Attack - Power
 - `ATK_DAMAGE_UP_20` : Damage +20%
@@ -180,6 +180,9 @@ Note:
 - `ECO_EXP_GAIN_UP_20` : EXP Gain +20%
 - `ECO_PICKUP_RADIUS_UP_25` : Pickup Radius +25%
 
+### Modifier
+- `MOD_ELEMENTAL_BURST` : Elemental Burst (charges every 5s; next shot explodes on first hit or max distance)
+
 ## Round 1 Balance Table (Playable Baseline)
 
 This table is the first practical pass for in-run balancing.
@@ -188,7 +191,7 @@ This table is the first practical pass for in-run balancing.
 |---|---|---|---|---:|---:|
 | `ATK_SPEED_UP_15` | CoreAttack | Attack interval x`0.87` (~+15% rate) | x`0.89` (S2), x`0.93` (S3) | 3 | 14 |
 | `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` same-axis projectile (tight spread) | linear | 2 | 6 |
-| `ATK_SPLIT_SHOT` | CoreAttack | on-hit split from enemy pos: `3->4->5->6` (max stack `360°`, child x`0.50`, non-chain) | linear (hard-capped, stack increases split count) | 4 | 7 |
+| `ATK_SPLIT_SHOT` | CoreAttack | on-hit split from enemy pos: `3->4->5->6` (max stack `360 deg`, child x`0.50`, non-chain) | linear (hard-capped, stack increases split count) | 4 | 7 |
 | `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.20` | x`1.15` (S2), x`1.10` (S3) | 3 | 12 |
 | `ATK_CRIT_CHANCE_UP_10` | CoreAttack | Crit chance `+10%` | `+8%` (S2), `+6%` (S3) | 3 | 8 |
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
@@ -196,6 +199,7 @@ This table is the first practical pass for in-run balancing.
 | `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 12% chance heal 1 HP | no stack | 1 | 7 |
 | `ECO_EXP_GAIN_UP_20` | Economy | EXP gain x`1.20` | x`1.15` (S2) | 2 | 8 |
 | `ECO_PICKUP_RADIUS_UP_25` | Economy | Pickup radius x`1.25` | x`1.20` (S2) | 2 | 8 |
+| `MOD_ELEMENTAL_BURST` | Modifier | every `5s` charge next shot into explosive round (first hit or max distance, radius `130`, damage x`1.20`, target cap `5`) | no stack | 1 | 8 |
 
 ### Derived Ceiling Snapshot (Round 1)
 - `ATK_SPEED_UP_15` total rate multiplier at 3 stacks: about `1.39x`.
@@ -257,6 +261,17 @@ Additional rule:
   - Relative size target: split child visual scale should stay around primary projectile `2/3` (`1.33` vs primary `2.0`).
   - Collider baseline: `CircleShape2D radius = 9` (kept close to visible silhouette).
   - Hit timing rule: split child has no global hit-arm delay; it only ignores the original hit target for a short window to avoid immediate same-target re-hit.
+- Current elemental burst visual baseline (`MOD_ELEMENTAL_BURST` card):
+  - Projectile animation frames: `Assets/Sprites/MOD_ELEMENTAL_BURST/1.png` ~ `8.png`.
+  - Runtime frame rule for charged shot: `Flight 0..6`, `Impact 7`.
+  - Explosion VFX prefers frame animation:
+    - `Assets/Sprites/MOD_ELEMENTAL_BURST/explotion1.png` ~ `explotion5.png`
+    - spawned at detonation center, scaled to explosion radius
+    - fade starts at the last frame (`explotion5`) so the final frame works as disappear frame
+  - Explosion VFX fallback:
+    - `Assets/Sprites/MOD_ELEMENTAL_BURST/explotion.png` (single-texture rune fallback)
+  - SFX:
+    - `Assets/Sound/Player/sfx_player_elemental_burst.wav` (plays on detonation)
 - Benefit:
   - Split projectiles can run slower and use dedicated art.
   - Future projectile-wide VFX/system hooks remain shared because all variants still run `Bullet.cs`.
@@ -268,3 +283,4 @@ Additional rule:
 - [x] Add category weight decay (cost-increase model)
 - [ ] Add deterministic draw simulator (editor/console, fixed seed, 10,000 runs, N picks/run) with report outputs for card rate, pair/triple combos, ceiling-combo probability, and phase survival ratio validation (target error <= 2%).
 - [ ] Define first batch cards for each layer
+

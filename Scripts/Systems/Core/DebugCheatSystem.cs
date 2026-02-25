@@ -444,7 +444,7 @@ public partial class DebugCheatSystem : Node
 		int applied = 0;
 		for (int i = 0; i < count; i++)
 		{
-			if (!_upgradeSystem.ApplyUpgrade(id))
+			if (!_upgradeSystem.DebugApplyUpgrade(id))
 				break;
 			applied++;
 		}

@@ -293,3 +293,81 @@
 - [x] Runtime effect binding updated
 - [x] Pool routing checked
 - [ ] In-run smoke test done
+
+### 2026-02-25 - New Card: MOD_ELEMENTAL_BURST
+- Scope: `Add`
+- Affected Layer(s): `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added new modifier card `MOD_ELEMENTAL_BURST` (`元素引爆`).
+  - Runtime behavior:
+    - charges every `5s`,
+    - charge is retained if player does not fire,
+    - charged state converts only the next single projectile to explosive round,
+    - explosive round detonates once on first hit or when max travel distance is reached,
+    - after detonation, charge cooldown restarts.
+  - Explosion baseline:
+    - radius `130`,
+    - damage scale `1.20x` of triggering projectile final damage path,
+    - max travel distance `280`,
+    - max targets `5`,
+    - no stack (`MaxStack=1`).
+  - Offer tuning:
+    - `MinPhase: Mid -> Early`
+    - `Weight: 6 -> 8`
+
+#### Cards Added
+- `MOD_ELEMENTAL_BURST` | Modifier | Rare | Early/Mid/Late | 5s charge -> next shot AoE detonation
+
+#### Safety Fuse Notes
+- StackLimit: `MOD_ELEMENTAL_BURST` max 1.
+- Mutual Exclusion: none.
+- Diminishing Return: not applicable (single-stack proc card).
+- Weight/Cost Escalation: category decay still applies via `Category`.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done
+
+### 2026-02-25 - MOD_ELEMENTAL_BURST Visual Import (Projectile + Rune)
+- Scope: `Update`
+- Affected Layer(s): `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Imported dedicated elemental burst projectile animation frames (`1..8`).
+  - Imported explosion animation frames (`explotion1..5`) and bound them as detonation VFX.
+  - Added fallback rune texture (`explotion.png`) for environments where explosion frames are unavailable.
+  - Clarified runtime presentation split:
+    - charged projectile frame flow handles flight/impact,
+    - explosion area VFX is spawned independently at detonation center,
+    - fade starts on the final explosion frame so frame 5 acts as disappear frame.
+
+#### Cards Updated
+- `MOD_ELEMENTAL_BURST`
+  - Change: visual presentation
+  - Value: `default projectile visuals -> dedicated elemental frames + explosion animation with rune fallback`
+  - Reason: keep projectile readability and area explosion feedback clear.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [ ] In-run smoke test done
+
+### 2026-02-25 - MOD_ELEMENTAL_BURST Audio Hook
+- Scope: `Update`
+- Affected Layer(s): `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added dedicated detonation SFX for Elemental Burst.
+  - Wired audio load/play path through `AudioManager` and bullet detonation trigger.
+
+#### Cards Updated
+- `MOD_ELEMENTAL_BURST`
+  - Change: detonation feedback
+  - Value: `no dedicated detonation clip -> sfx_player_elemental_burst.wav on explode`
+  - Reason: improve proc readability and impact feedback.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [ ] In-run smoke test done

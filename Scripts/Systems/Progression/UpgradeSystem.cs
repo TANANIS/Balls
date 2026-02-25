@@ -60,15 +60,32 @@ public partial class UpgradeSystem : Node
 
 	public bool ApplyUpgrade(UpgradeId id)
 	{
+		return ApplyUpgradeInternal(id, ignoreDefinitionConstraints: false);
+	}
+
+	public bool DebugApplyUpgrade(UpgradeId id)
+	{
+		// Debug path bypasses catalog gates/exclusive/prerequisite checks
+		// but still respects character compatibility and stack caps.
+		return ApplyUpgradeInternal(id, ignoreDefinitionConstraints: true);
+	}
+
+	private bool ApplyUpgradeInternal(UpgradeId id, bool ignoreDefinitionConstraints)
+	{
 		if (!IsUpgradeCompatibleWithCurrentCharacter(id))
 		{
 			return false;
 		}
 
 		bool hasDefinition = TryGetDefinition(id, out var definition);
-		if (hasDefinition && !CanApplyDefinition(definition))
+		if (hasDefinition)
 		{
-			return false;
+			int maxStack = Mathf.Max(1, definition.MaxStack);
+			if (GetStack(id) >= maxStack)
+				return false;
+
+			if (!ignoreDefinitionConstraints && !CanApplyDefinition(definition))
+				return false;
 		}
 
 		// One place where all numeric gameplay mutations are applied.
@@ -104,6 +121,14 @@ public partial class UpgradeSystem : Node
 				break;
 			case UpgradeId.EcoPickupRadiusUp25:
 				_progressionSystem?.MultiplyPickupRadius(GetPickupRadiusMultiplier(nextStack));
+				break;
+			case UpgradeId.ModElementalBurst:
+				_player?.EnablePrimaryElementalBurst(
+					chargeSeconds: 5f,
+					explosionRadius: 130f,
+					damageMultiplier: 1.20f,
+					maxDistance: 280f,
+					maxTargets: 5);
 				break;
 		}
 

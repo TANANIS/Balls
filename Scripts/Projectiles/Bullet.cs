@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 /*
  * Bullet sensor:
@@ -11,6 +12,9 @@ public partial class Bullet : Area2D
 	private const string DefaultSplitProjectileScenePath = "res://Prefabs/SplitProjectile.tscn";
 	private const string SplitProjectileTexturePath = "res://Assets/Sprites/Projectiles/Split/split_bullet.png";
 	private const string DefaultProjectileTexturePath = "res://Assets/Sprites/player_orb_transparent.png";
+	private const string ElementalBurstFramesBasePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST";
+	private const string ElementalBurstExplosionRunePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST/explotion.png";
+	private const string ElementalBurstExplosionFramesBasePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST";
 
 	[Export] public float LifeTime = 1.5f;
 	[Export] public string DamageTag = "bullet";
@@ -37,6 +41,15 @@ public partial class Bullet : Area2D
 	[Export(PropertyHint.Range, "0,40,1")] public float SplitAngleStepDegrees = 10f;
 	[Export(PropertyHint.Range, "0,200,1")] public float SplitSpawnForwardOffset = 30f;
 	[Export] public PackedScene SplitChildProjectileScene;
+	[ExportGroup("Elemental Burst")]
+	[Export(PropertyHint.Range, "16,400,1")] public float ElementalBurstExplosionRadius = 130f;
+	[Export(PropertyHint.Range, "0.10,3.00,0.05")] public float ElementalBurstDamageMultiplier = 1.20f;
+	[Export(PropertyHint.Range, "32,2000,1")] public float ElementalBurstMaxDistance = 280f;
+	[Export(PropertyHint.Range, "1,32,1")] public int ElementalBurstMaxTargets = 5;
+	[Export(PropertyHint.Range, "0.05,2.0,0.01")] public float ElementalBurstRuneDurationSeconds = 0.65f;
+	[Export(PropertyHint.Range, "1,30,1")] public float ElementalBurstExplosionVfxFps = 9f;
+	[Export(PropertyHint.Range, "0.1,1.0,0.05")] public float ElementalBurstRuneStartAlpha = 0.92f;
+	[Export(PropertyHint.Range, "1.0,2.0,0.01")] public float ElementalBurstRuneScaleExpand = 1.12f;
 
 	private Vector2 _dir = Vector2.Right;
 	private float _speed = 900f;
@@ -53,6 +66,33 @@ public partial class Bullet : Area2D
 	private bool _prepareFinished = true;
 	private bool _canSplitOnHit = true;
 	private int _splitShotLevel = 0;
+	private bool _isElementalBurstShot = false;
+	private bool _elementalBurstDetonated = false;
+	private float _elementalBurstRadiusRuntime = 0f;
+	private float _elementalBurstDamageMultiplierRuntime = 1f;
+	private float _elementalBurstMaxDistanceRuntime = 0f;
+	private int _elementalBurstMaxTargetsRuntime = 1;
+	private Node _elementalBurstOwner;
+	private float _travelDistance = 0f;
+	private static readonly string[] ElementalBurstFramePaths =
+	{
+		$"{ElementalBurstFramesBasePath}/1.png",
+		$"{ElementalBurstFramesBasePath}/2.png",
+		$"{ElementalBurstFramesBasePath}/3.png",
+		$"{ElementalBurstFramesBasePath}/4.png",
+		$"{ElementalBurstFramesBasePath}/5.png",
+		$"{ElementalBurstFramesBasePath}/6.png",
+		$"{ElementalBurstFramesBasePath}/7.png",
+		$"{ElementalBurstFramesBasePath}/8.png"
+	};
+	private static readonly string[] ElementalBurstExplosionFramePaths =
+	{
+		$"{ElementalBurstExplosionFramesBasePath}/explotion1.png",
+		$"{ElementalBurstExplosionFramesBasePath}/explotion2.png",
+		$"{ElementalBurstExplosionFramesBasePath}/explotion3.png",
+		$"{ElementalBurstExplosionFramesBasePath}/explotion4.png",
+		$"{ElementalBurstExplosionFramesBasePath}/explotion5.png"
+	};
 	private CombatSystem _combat;
 	private AnimatedSprite2D _fx;
 	private float _frameTimer = 0f;
@@ -72,7 +112,13 @@ public partial class Bullet : Area2D
 			damageScale: 1f,
 			hitArmDelaySeconds: 0f,
 			ignoreTargetInstanceId: 0,
-			ignoreTargetSeconds: 0f);
+			ignoreTargetSeconds: 0f,
+			isElementalBurstShot: false,
+			elementalBurstRadius: 0f,
+			elementalBurstDamageMultiplier: 1f,
+			elementalBurstMaxDistance: 0f,
+			elementalBurstMaxTargets: 0,
+			elementalBurstOwner: null);
 	}
 
 	public void InitFromPlayer(
@@ -86,7 +132,13 @@ public partial class Bullet : Area2D
 		float damageScale = 1f,
 		float hitArmDelaySeconds = 0f,
 		ulong ignoreTargetInstanceId = 0,
-		float ignoreTargetSeconds = 0f)
+		float ignoreTargetSeconds = 0f,
+		bool isElementalBurstShot = false,
+		float elementalBurstRadius = 0f,
+		float elementalBurstDamageMultiplier = 1f,
+		float elementalBurstMaxDistance = 0f,
+		int elementalBurstMaxTargets = 0,
+		Node elementalBurstOwner = null)
 	{
 		_source = source;
 		_dir = dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
@@ -99,11 +151,28 @@ public partial class Bullet : Area2D
 		_splitShotLevel = Mathf.Clamp(splitShotLevel, 0, 4);
 		_canSplitOnHit = canSplitOnHit;
 		_projectileScene = projectileScene;
+		_isElementalBurstShot = isElementalBurstShot;
+		_elementalBurstDetonated = false;
+		_elementalBurstRadiusRuntime = isElementalBurstShot
+			? Mathf.Max(1f, elementalBurstRadius > 0f ? elementalBurstRadius : ElementalBurstExplosionRadius)
+			: 0f;
+		_elementalBurstDamageMultiplierRuntime = isElementalBurstShot
+			? Mathf.Clamp(elementalBurstDamageMultiplier > 0f ? elementalBurstDamageMultiplier : ElementalBurstDamageMultiplier, 0.01f, 10f)
+			: 1f;
+		_elementalBurstMaxDistanceRuntime = isElementalBurstShot
+			? Mathf.Max(1f, elementalBurstMaxDistance > 0f ? elementalBurstMaxDistance : ElementalBurstMaxDistance)
+			: 0f;
+		_elementalBurstMaxTargetsRuntime = isElementalBurstShot
+			? Mathf.Max(1, elementalBurstMaxTargets > 0 ? elementalBurstMaxTargets : ElementalBurstMaxTargets)
+			: 1;
+		_elementalBurstOwner = isElementalBurstShot ? elementalBurstOwner : null;
+		_travelDistance = 0f;
 		ApplyFacingByDirection();
 	}
 
 	public override void _Ready()
 	{
+		_travelDistance = 0f;
 		TryResolveCombatSystem();
 		ResolveEffect();
 		BuildEffectFramesIfNeeded();
@@ -125,6 +194,14 @@ public partial class Bullet : Area2D
 		_lifeTimer += dt;
 		if (_lifeTimer >= LifeTime)
 		{
+			if (_isElementalBurstShot && !_elementalBurstDetonated)
+			{
+				TryTriggerElementalBurstExplosion(null);
+				_hasHit = true;
+				BeginImpact();
+				return;
+			}
+
 			QueueFree();
 			return;
 		}
@@ -137,8 +214,17 @@ public partial class Bullet : Area2D
 
 		if (!_impactStarted && _prepareFinished)
 		{
-			GlobalPosition += _dir * _speed * dt;
+			Vector2 step = _dir * _speed * dt;
+			GlobalPosition += step;
+			_travelDistance += step.Length();
 			ApplyFacingByDirection();
+
+			if (_isElementalBurstShot && !_elementalBurstDetonated && _travelDistance >= _elementalBurstMaxDistanceRuntime)
+			{
+				TryTriggerElementalBurstExplosion(null);
+				_hasHit = true;
+				BeginImpact();
+			}
 		}
 	}
 
@@ -167,7 +253,8 @@ public partial class Bullet : Area2D
 		frames.SetAnimationLoop("default", false);
 		frames.SetAnimationSpeed("default", Mathf.Max(1f, EffectFps));
 
-		if (EffectFrames != null && EffectFrames.Count > 0)
+		bool builtElementalBurstFrames = _isElementalBurstShot && TryBuildElementalBurstFrames(frames);
+		if (!builtElementalBurstFrames && EffectFrames != null && EffectFrames.Count > 0)
 		{
 			for (int i = 0; i < EffectFrames.Count; i++)
 			{
@@ -177,7 +264,7 @@ public partial class Bullet : Area2D
 				frames.AddFrame("default", texture);
 			}
 		}
-		else if (EffectTexture != null)
+		else if (!builtElementalBurstFrames && EffectTexture != null)
 		{
 			int frameCount = Mathf.Max(1, TotalFrames);
 			float frameWidth = EffectTexture.GetWidth() / (float)frameCount;
@@ -210,6 +297,29 @@ public partial class Bullet : Area2D
 		_fx.Stop();
 	}
 
+	private static bool TryBuildElementalBurstFrames(SpriteFrames frames)
+	{
+		if (frames == null)
+			return false;
+
+		bool addedAny = false;
+		for (int i = 0; i < ElementalBurstFramePaths.Length; i++)
+		{
+			string path = ElementalBurstFramePaths[i];
+			if (!ResourceLoader.Exists(path))
+				continue;
+
+			Texture2D texture = GD.Load<Texture2D>(path);
+			if (texture == null)
+				continue;
+
+			frames.AddFrame("default", texture);
+			addedAny = true;
+		}
+
+		return addedAny;
+	}
+
 	private static bool TryAddSingleFrameFromPath(SpriteFrames frames, string texturePath)
 	{
 		if (frames == null)
@@ -240,6 +350,16 @@ public partial class Bullet : Area2D
 		int flightEnd = Mathf.Clamp(FlightEndFrame, flightStart, maxFrame);
 		int impactStart = Mathf.Clamp(ImpactStartFrame, flightEnd + 1, maxFrame);
 		int impactEnd = Mathf.Clamp(ImpactEndFrame, impactStart, maxFrame);
+
+		if (_isElementalBurstShot && _runtimeFrameCount >= 2)
+		{
+			prepareStart = 0;
+			prepareEnd = 0;
+			flightStart = 0;
+			flightEnd = Mathf.Max(0, maxFrame - 1);
+			impactStart = maxFrame;
+			impactEnd = maxFrame;
+		}
 
 		_frameTimer += dt;
 		float frameDuration = 1f / Mathf.Max(1f, EffectFps);
@@ -416,5 +536,222 @@ public partial class Bullet : Area2D
 			return;
 		float baseAngle = _dir.Angle();
 		Rotation = baseAngle + Mathf.DegToRad(RotationOffsetDegrees);
+	}
+
+	private void TryTriggerElementalBurstExplosion(Node hitTarget)
+	{
+		if (!_isElementalBurstShot || _elementalBurstDetonated)
+			return;
+
+		_elementalBurstDetonated = true;
+		Vector2 center = (hitTarget as Node2D)?.GlobalPosition ?? GlobalPosition;
+		SpawnElementalBurstRune(center, _elementalBurstRadiusRuntime);
+		AudioManager.Instance?.PlaySfxPlayerElementalBurst();
+		TryResolveCombatSystem();
+
+		if (_combat != null && _source != null)
+		{
+			List<Node> targets = CollectElementalBurstTargets(center, _elementalBurstRadiusRuntime, _elementalBurstMaxTargetsRuntime);
+			for (int i = 0; i < targets.Count; i++)
+			{
+				Node target = targets[i];
+				if (target == null || target == _source)
+					continue;
+				if (target is not IDamageable)
+					continue;
+
+				var req = new DamageRequest(
+					source: _source,
+					target: target,
+					baseDamage: Mathf.Max(1, _damage),
+					worldPos: center,
+					tag: "elemental_burst",
+					damageScale: Mathf.Clamp(_damageScale * _elementalBurstDamageMultiplierRuntime, 0.001f, 10f)
+				);
+
+				_combat.RequestDamage(req);
+			}
+		}
+
+		NotifyElementalBurstOwnerDetonated();
+	}
+
+	private void SpawnElementalBurstRune(Vector2 center, float radius)
+	{
+		Node parent = GetParent();
+		if (parent == null)
+			return;
+
+		if (TrySpawnElementalBurstExplosionAnimation(parent, center, radius))
+			return;
+
+		// Fallback for environments where animated explosion frames are unavailable.
+		if (!ResourceLoader.Exists(ElementalBurstExplosionRunePath))
+			return;
+
+		Texture2D texture = GD.Load<Texture2D>(ElementalBurstExplosionRunePath);
+		if (texture == null)
+			return;
+
+		var rune = new Sprite2D
+		{
+			Texture = texture,
+			Centered = true,
+			GlobalPosition = center,
+			ZIndex = 20
+		};
+
+		float maxDim = Mathf.Max(1f, Mathf.Max(texture.GetWidth(), texture.GetHeight()));
+		float diameter = Mathf.Max(1f, radius * 2f);
+		float baseScale = diameter / maxDim;
+		rune.Scale = new Vector2(baseScale, baseScale);
+		rune.Modulate = new Color(1f, 1f, 1f, Mathf.Clamp(ElementalBurstRuneStartAlpha, 0f, 1f));
+		parent.AddChild(rune);
+
+		float duration = Mathf.Max(0.05f, ElementalBurstRuneDurationSeconds);
+		float expandScale = baseScale * Mathf.Max(1f, ElementalBurstRuneScaleExpand);
+		Tween tween = rune.CreateTween();
+		tween.SetTrans(Tween.TransitionType.Cubic);
+		tween.SetEase(Tween.EaseType.Out);
+		tween.Parallel().TweenProperty(rune, "scale", new Vector2(expandScale, expandScale), duration);
+		tween.Parallel().TweenProperty(rune, "modulate:a", 0f, duration);
+		tween.Finished += rune.QueueFree;
+	}
+
+	private bool TrySpawnElementalBurstExplosionAnimation(Node parent, Vector2 center, float radius)
+	{
+		if (parent == null)
+			return false;
+
+		var frames = new SpriteFrames();
+		frames.AddAnimation("default");
+		frames.SetAnimationLoop("default", false);
+		float fps = Mathf.Max(1f, ElementalBurstExplosionVfxFps);
+		frames.SetAnimationSpeed("default", fps);
+
+		float maxDim = 1f;
+		int frameCount = 0;
+		for (int i = 0; i < ElementalBurstExplosionFramePaths.Length; i++)
+		{
+			string path = ElementalBurstExplosionFramePaths[i];
+			if (!ResourceLoader.Exists(path))
+				continue;
+
+			Texture2D tex = GD.Load<Texture2D>(path);
+			if (tex == null)
+				continue;
+
+			frames.AddFrame("default", tex);
+			frameCount++;
+			maxDim = Mathf.Max(maxDim, Mathf.Max(tex.GetWidth(), tex.GetHeight()));
+		}
+
+		if (frameCount <= 0)
+			return false;
+
+		float diameter = Mathf.Max(1f, radius * 2f);
+		float baseScale = diameter / maxDim;
+		float expandScale = baseScale * Mathf.Max(1f, ElementalBurstRuneScaleExpand);
+
+		var explosionFx = new AnimatedSprite2D
+		{
+			SpriteFrames = frames,
+			Animation = "default",
+			Centered = true,
+			GlobalPosition = center,
+			ZIndex = 20,
+			Scale = new Vector2(baseScale, baseScale),
+			Modulate = new Color(1f, 1f, 1f, Mathf.Clamp(ElementalBurstRuneStartAlpha, 0f, 1f))
+		};
+		parent.AddChild(explosionFx);
+		explosionFx.Play("default");
+
+		// Fade starts at the last animation frame so frame-5 acts as the disappear frame.
+		float frameDuration = 1f / fps;
+		float lastFrameStart = Mathf.Max(0f, (frameCount - 1) * frameDuration);
+		float fadeDuration = Mathf.Clamp(Mathf.Max(0.12f, ElementalBurstRuneDurationSeconds * 0.35f), 0.12f, 0.35f);
+		float totalDuration = Mathf.Max(Mathf.Max(0.05f, ElementalBurstRuneDurationSeconds), lastFrameStart + fadeDuration);
+		float scaleDuration = totalDuration;
+
+		Tween tween = explosionFx.CreateTween();
+		tween.SetTrans(Tween.TransitionType.Cubic);
+		tween.SetEase(Tween.EaseType.Out);
+		tween.Parallel().TweenProperty(explosionFx, "scale", new Vector2(expandScale, expandScale), scaleDuration);
+
+		if (lastFrameStart > 0f)
+			tween.TweenInterval(lastFrameStart);
+		tween.TweenProperty(explosionFx, "modulate:a", 0f, fadeDuration);
+
+		tween.Finished += explosionFx.QueueFree;
+		return true;
+	}
+
+	private List<Node> CollectElementalBurstTargets(Vector2 center, float radius, int maxTargets)
+	{
+		var targets = new List<Node>();
+		var world = GetWorld2D();
+		if (world?.DirectSpaceState == null)
+			return targets;
+
+		var shape = new CircleShape2D
+		{
+			Radius = Mathf.Max(1f, radius)
+		};
+
+		var query = new PhysicsShapeQueryParameters2D
+		{
+			Shape = shape,
+			Transform = new Transform2D(0f, center),
+			CollisionMask = CollisionMask,
+			CollideWithAreas = true,
+			CollideWithBodies = false
+		};
+
+		var hits = world.DirectSpaceState.IntersectShape(query, Mathf.Max(maxTargets * 4, 16));
+		var seen = new HashSet<ulong>();
+		for (int i = 0; i < hits.Count; i++)
+		{
+			var hit = hits[i];
+			if (!hit.ContainsKey("collider"))
+				continue;
+
+			GodotObject colliderObj = hit["collider"].AsGodotObject();
+			if (colliderObj is not Node collider)
+				continue;
+			if (collider is not EnemyHurtbox)
+				continue;
+
+			ulong id = (ulong)collider.GetInstanceId();
+			if (!seen.Add(id))
+				continue;
+
+			targets.Add(collider);
+		}
+
+		targets.Sort((a, b) =>
+		{
+			Vector2 aPos = (a as Node2D)?.GlobalPosition ?? center;
+			Vector2 bPos = (b as Node2D)?.GlobalPosition ?? center;
+			return aPos.DistanceSquaredTo(center).CompareTo(bPos.DistanceSquaredTo(center));
+		});
+
+		if (targets.Count > maxTargets)
+			targets.RemoveRange(maxTargets, targets.Count - maxTargets);
+
+		return targets;
+	}
+
+	private void NotifyElementalBurstOwnerDetonated()
+	{
+		if (_elementalBurstOwner == null)
+			return;
+		if (!IsInstanceValid(_elementalBurstOwner))
+		{
+			_elementalBurstOwner = null;
+			return;
+		}
+
+		_elementalBurstOwner.CallDeferred("NotifyElementalBurstDetonated");
+		_elementalBurstOwner = null;
 	}
 }
