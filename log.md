@@ -121,3 +121,109 @@
   - verify phase survival ratio error <= 2%.
 - Run in-game smoke pass for the latest card/runtime tuning.
 - Keep localization rows aligned when adding/removing cards.
+
+## Session Update (2026-02-25, God File Risk Blueprint)
+- Completed a fresh size-and-responsibility audit for current scripts.
+- Added refactor blueprint:
+  - `docs/GOD_FILE_REFACTOR_BLUEPRINT.md`
+  - includes risk baseline, phase plan, split targets, acceptance criteria, and guardrails.
+- Updated TODO execution tracking:
+  - `docs/TODO.md`
+  - marked audit complete and added phase-by-phase execution checklist.
+
+## Session Update (2026-02-25, Phase 1 Complete - Bullet Decomposition)
+- Refactor completed with no behavior-intended delta:
+  - `Scripts/Projectiles/Bullet.cs` now hosts core lifecycle/runtime state.
+  - `Scripts/Projectiles/Bullet.Collision.cs` remains hit-filter and damage bridge.
+  - added `Scripts/Projectiles/Bullet.Vfx.cs` (projectile/effect frame pipeline).
+  - added `Scripts/Projectiles/Bullet.SplitShot.cs` (split spawn/count/anti-chain logic).
+  - added `Scripts/Projectiles/Bullet.ElementalBurst.cs` (burst detonation/AoE/VFX callback path).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+- TODO sync:
+  - marked `Execute Phase 1 (Bullet decomposition)` as complete in `docs/TODO.md`.
+
+## Session Update (2026-02-25, Phase 2 Complete - DebugCheatSystem Decomposition)
+- Refactor completed for debug menu runtime boundary split:
+  - `Scripts/Systems/Core/DebugCheatSystem.cs` keeps lifecycle + refs.
+  - added `Scripts/Systems/Core/DebugCheatSystem.UI.cs`.
+  - added `Scripts/Systems/Core/DebugCheatSystem.Actions.cs`.
+  - added `Scripts/Systems/Core/DebugCheatSystem.Localization.cs`.
+  - added `Scripts/Systems/Core/DebugCheatSystem.Pause.cs`.
+- Behavior contract preserved:
+  - F3 open/close still toggles menu and pause ownership.
+  - existing actions still route through same runtime services (`ProgressionSystem`, `UpgradeSystem`, `SpawnSystem`, `PlayerHealth`, `MetaProgressionService`).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+- TODO sync:
+  - marked `Execute Phase 2 (DebugCheatSystem decomposition)` as complete in `docs/TODO.md`.
+
+## Session Update (2026-02-25, Phase 3 Complete - UpgradeSystem Policy/Apply Split)
+- Refactor completed for upgrade runtime boundaries:
+  - `Scripts/Systems/Progression/UpgradeSystem.cs` now keeps lifecycle/state/index utilities.
+  - added `Scripts/Systems/Progression/UpgradeSystem.Apply.cs` (id -> gameplay mutations).
+  - added `Scripts/Systems/Progression/UpgradeSystem.Eligibility.cs` (compatibility/gates/exclusive/prereq checks).
+  - `Scripts/Systems/Progression/UpgradeSystem.Options.cs` now carries pool policy and weighting flow (phase routing, pity, category decay).
+- Behavior contract preserved:
+  - apply path and stack behavior unchanged,
+  - option draw policy unchanged,
+  - debug apply bypass behavior unchanged.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Phase 5 Complete - SpawnSystem Base Cleanup)
+- Refactor completed for spawn base-file cleanup:
+  - `Scripts/Systems/Director/SpawnSystem.cs` reduced to config/state fields.
+  - added `Scripts/Systems/Director/SpawnSystem.Lifecycle.cs` (`_EnterTree`, `_Ready`, `_PhysicsProcess`).
+  - added `Scripts/Systems/Director/SpawnSystem.SpawnFactory.cs` (wave scheduling, pending queue, instantiate path).
+  - added `Scripts/Systems/Director/SpawnSystem.BoundsAndPlacement.cs` (spawn ring/pack center/spacing placement).
+  - added `Scripts/Systems/Director/SpawnSystem.Debug.cs` (debug id list/spawn + anchor helpers).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Phase 4 Partial - GameFlowUI Binding Boundary)
+- Performed low-risk boundary extraction in UI cluster:
+  - `ResolveNodeReferences` + `BindSignals` moved out of `GameFlowUI.References.cs`.
+  - added `Scripts/UI/GameFlowUI.Binding.cs`.
+  - `Scripts/UI/GameFlowUI.References.cs` now focuses on path constants + cached references/state fields.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Phase 4 Complete - GameFlowUI Controller Boundary Alignment)
+- Completed controller-oriented naming and file boundary alignment in UI flow:
+  - renamed `Scripts/UI/GameFlowUI.State.cs` -> `Scripts/UI/GameFlowUI.UIStateController.cs`.
+  - renamed `Scripts/UI/GameFlowUI.CharacterSelect.cs` -> `Scripts/UI/GameFlowUI.MetaProgressionPanelController.cs`.
+  - renamed `Scripts/UI/GameFlowUI.EndState.cs` -> `Scripts/UI/GameFlowUI.EndStateController.cs`.
+  - kept presenter responsibilities in rendering/localization-related partials (`Visuals`, `Localization`, `BuildSummary`) with `Binding` isolated.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Refactor Tail - SettingsPresenter + Guardrails)
+- Consolidated duplicated settings-panel wiring into shared presenter helpers:
+  - added `Scripts/UI/GameFlowUI.SettingsPresenter.cs`.
+  - `SettingsUI` / `SettingsPersistence` now use shared sync/populate helpers for start/pause panels.
+- Persistence robustness improvement:
+  - `SaveSettingsToDisk` now reads from either pause-settings controls or start-settings controls before falling back to defaults.
+- Upgrade draw correctness fix:
+  - removed title-string hard filter in `UpgradeSystem.Options` pool build so entries that rely on localization keys are not silently excluded.
+- Added guardrail doc:
+  - `docs/SCRIPT_SIZE_GUARDRAILS.md` (line thresholds + split rules + audit command).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Post-Refactor Risk Audit)
+- Added ranked logic risk audit document:
+  - `docs/REFACTOR_LOGIC_RISK_REVIEW_2026-02-25.md`
+  - includes High -> Low findings with file/line evidence and mitigation suggestions.
+
+## Session Update (2026-02-25, Risk Hotfix Follow-up)
+- Addressed high-priority risk findings directly:
+  - fixed garbled fallback zh_TW strings in `Scripts/UI/GameFlowUI.cs`.
+  - replaced debug CSV split with quoted-field-aware parser in `Scripts/Systems/Core/DebugCheatSystem.Localization.cs`.
+  - added spawn-anchor self-heal in `Scripts/Systems/Director/SpawnSystem.Lifecycle.cs`.
+  - added player-reference guard in `Scripts/Systems/Progression/UpgradeSystem.Apply.cs`.
+  - added explicit warning when upgrade option pool is empty in `Scripts/Systems/Progression/UpgradeSystem.Options.cs`.
+- Updated risk document to mark resolved items and keep only open findings:
+  - `docs/REFACTOR_LOGIC_RISK_REVIEW_2026-02-25.md`.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).

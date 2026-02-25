@@ -72,22 +72,28 @@
 - [ ] Phase 4 (content): Assign real node effects and bind to runtime gameplay systems
 
 ## Refactor - God File Risk
-- [ ] God file risk audit pass (top-10 largest scripts by responsibility, not just LOC)
-- [ ] Split `GameFlowUI` into explicit boundaries:
-  - [ ] `UIStateController` (panel transitions + flow state only)
-  - [ ] `UIBinding` (node refs + signal wiring only)
-  - [ ] `UIPresenter` (text/data rendering only)
-- [ ] Extract `MetaProgressionPanelController` from `GameFlowUI`:
-  - [ ] character select/unlock/confirm flow
-  - [ ] Flux/level/tree framework rendering
-- [ ] Extract `EndStateController` from `GameFlowUI`:
-  - [ ] settlement summary rendering
-  - [ ] restart/back-to-meta actions
-  - [ ] perfect-clear leaderboard refresh trigger
-- [ ] Consolidate duplicated settings logic into shared `SettingsPresenter`:
-  - [ ] start-menu settings panel
-  - [ ] in-run pause settings panel
-- [ ] Add simple script-size guardrail doc:
-  - [ ] target max LOC per behavior script
-  - [ ] rule for when to split by responsibility
+- [x] God file risk audit pass (top-10 largest scripts by responsibility, not just LOC)
+- [x] Baseline refactor blueprint created: `docs/GOD_FILE_REFACTOR_BLUEPRINT.md`
+- [x] Execute Phase 1 (`Bullet` decomposition)
+- [x] Execute Phase 2 (`DebugCheatSystem` decomposition)
+- [x] Execute Phase 3 (`UpgradeSystem` policy/apply split)
+- [x] Execute Phase 4 (`GameFlowUI` controller boundaries)
+- [x] Execute Phase 5 (`SpawnSystem` base-file cleanup)
+- [x] Split `GameFlowUI` into explicit boundaries:
+  - [x] `UIStateController` (panel transitions + flow state only)
+  - [x] `UIBinding` (node refs + signal wiring only)
+  - [x] `UIPresenter` (text/data rendering only)
+- [x] Extract `MetaProgressionPanelController` from `GameFlowUI`:
+  - [x] character select/unlock/confirm flow
+  - [x] Flux/level/tree framework rendering
+- [x] Extract `EndStateController` from `GameFlowUI`:
+  - [x] settlement summary rendering
+  - [x] restart/back-to-meta actions
+  - [x] perfect-clear leaderboard refresh trigger
+- [x] Consolidate duplicated settings logic into shared `SettingsPresenter`:
+  - [x] start-menu settings panel
+  - [x] in-run pause settings panel
+- [x] Add simple script-size guardrail doc:
+  - [x] target max LOC per behavior script
+  - [x] rule for when to split by responsibility
 

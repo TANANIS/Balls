@@ -42,8 +42,7 @@ public partial class Player
 	{
 		Velocity = Vector2.Zero;
 		_lastMoveDir = Vector2.Right;
-		_pendingMovementFreezeSeconds = 0f;
-		_pendingHurtAnimationSeconds = 0f;
+		ResetCommandPipelineRuntimeState();
 		_deathLogged = false;
 		_health?.ResetToFull();
 		_movement?.ResetRuntimeState();

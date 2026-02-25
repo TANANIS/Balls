@@ -6,10 +6,12 @@ public partial class PlayerMovement : Node
 	[Export] public float Accel = 2200f;
 	[Export] public float Friction = 2600f;
 	[Export] public float StopThreshold = 5f;
+	[Export(PropertyHint.Range, "0,0.50,0.01")] public float FreezeReapplyCooldown = 0.18f;
 
 	private Player _player;
 	private StabilitySystem _stabilitySystem;
 	private float _movementFreezeTimer = 0f;
+	private float _freezeReapplyTimer = 0f;
 
 	public void Setup(Player player)
 	{
@@ -21,6 +23,8 @@ public partial class PlayerMovement : Node
 	{
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
+		if (_freezeReapplyTimer > 0f)
+			_freezeReapplyTimer = Mathf.Max(0f, _freezeReapplyTimer - dt);
 
 		if (_movementFreezeTimer > 0f)
 		{
@@ -33,14 +37,15 @@ public partial class PlayerMovement : Node
 		float inertiaMult = _stabilitySystem?.GetPlayerInertiaMultiplier() ?? 1f;
 		float inputSign = _stabilitySystem?.InputDirectionSign ?? 1f;
 		Vector2 runtimeInput = inputDir * inputSign;
+		bool hasInput = runtimeInput.LengthSquared() > 0.0001f;
 
 		Vector2 targetVel = runtimeInput * MaxSpeed;
-		float rate = (runtimeInput.LengthSquared() > 0f) ? Accel : Friction;
+		float rate = hasInput ? Accel : Friction;
 		rate *= Mathf.Max(0.1f, inertiaMult);
 
 		_player.Velocity = _player.Velocity.MoveToward(targetVel, rate * dt);
 
-		if (runtimeInput == Vector2.Zero && _player.Velocity.Length() < StopThreshold)
+		if (!hasInput && _player.Velocity.Length() < StopThreshold)
 			_player.Velocity = Vector2.Zero;
 
 		_player.MoveAndSlide();
@@ -50,7 +55,12 @@ public partial class PlayerMovement : Node
 	{
 		if (duration <= 0f)
 			return;
+
+		if (_movementFreezeTimer <= 0f && _freezeReapplyTimer > 0f)
+			return;
+
 		_movementFreezeTimer = Mathf.Max(_movementFreezeTimer, duration);
+		_freezeReapplyTimer = Mathf.Max(_freezeReapplyTimer, Mathf.Max(0f, FreezeReapplyCooldown));
 	}
 
 	private void ResolveStabilitySystem()
@@ -69,5 +79,6 @@ public partial class PlayerMovement : Node
 	public void ResetRuntimeState()
 	{
 		_movementFreezeTimer = 0f;
+		_freezeReapplyTimer = 0f;
 	}
 }

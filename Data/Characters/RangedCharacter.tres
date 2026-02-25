@@ -5,11 +5,13 @@
 
 [resource]
 script = ExtResource("1_char_def")
+CharacterId = "ranged"
 DisplayName = "Mage"
 DisplayNameZhTw = "法師"
 Description = "Arcane caster who threads precise spell bolts from a safe distance."
-DescriptionZhTw = "奧術施法者，擅長在安全距離精準連發魔彈。"
+DescriptionZhTw = "遠距施法者，擅長在安全距離以精準術彈持續輸出。"
 CoreSprite = ExtResource("2_ranger_core")
+PrimaryAbility = 1
 SecondaryAbility = 0
 MobilityAbility = 0
 RangedDamage = 2
@@ -19,5 +21,3 @@ MeleeCooldown = 0.35
 DashDuration = 0.12
 DashCooldown = 0.6
 DashIFrame = 0.08
-
-

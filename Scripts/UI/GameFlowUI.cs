@@ -33,7 +33,7 @@ public partial class GameFlowUI : Control
 			catalog = GD.Load<UpgradeCatalog>("res://Data/Upgrades/DefaultUpgradeCatalog.tres");
 		if (catalog?.Entries == null || catalog.Entries.Count == 0)
 		{
-			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "No upgrade cards configured.");
+			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "未設定任何升級卡片。");
 			return;
 		}
 
@@ -54,13 +54,13 @@ public partial class GameFlowUI : Control
 			if (!string.IsNullOrWhiteSpace(description))
 				sb.Append(description).Append('\n');
 			sb.Append('[').Append(category).Append("] ")
-				.Append(TrOrDefault("UI.START.CARDS_MAX_STACK", "MaxStack", "MaxStack")).Append(": ")
+				.Append(TrOrDefault("UI.START.CARDS_MAX_STACK", "MaxStack", "最大層數")).Append(": ")
 				.Append(Mathf.Max(1, entry.MaxStack)).Append("\n\n");
 		}
 
 		if (sb.Length == 0)
 		{
-			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "No upgrade cards configured.");
+			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "未設定任何升級卡片。");
 			return;
 		}
 
@@ -71,11 +71,11 @@ public partial class GameFlowUI : Control
 	{
 		return category switch
 		{
-			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Battle Arts", "戰鬥技藝"),
-			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Encounter Flow", "戰局節奏"),
-			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Arcana", "奧術"),
-			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Field Control", "場域掌控"),
-			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival", "Survival"),
+			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Battle Arts", "核心攻擊"),
+			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Encounter Flow", "節奏壓力"),
+			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Arcana", "異常專精"),
+			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Field Control", "空間控制"),
+			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival", "生存"),
 			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Resource", "資源"),
 			_ => category.ToString()
 		};
@@ -116,7 +116,7 @@ public partial class GameFlowUI : Control
 			DisplayName = "Mage",
 			DisplayNameZhTw = "法師",
 			Description = "Arcane caster who threads precise spell bolts from a safe distance.",
-			DescriptionZhTw = "奧術施法者，擅長在安全距離精準連發魔彈。",
+			DescriptionZhTw = "遠距施法者，擅長在安全距離以精準術彈持續輸出。",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
@@ -133,7 +133,7 @@ public partial class GameFlowUI : Control
 			DisplayName = "Knight",
 			DisplayNameZhTw = "騎士",
 			Description = "Swift spellblade duelist. Excels at close-range bursts and dash repositioning.",
-			DescriptionZhTw = "高機動魔劍決鬥者，擅長近距離爆發與衝刺換位。",
+			DescriptionZhTw = "敏捷近戰決鬥者，擅長貼身爆發與衝刺換位。",
 			PrimaryAbility = AttackAbilityKind.Melee,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.Dash,
@@ -151,7 +151,7 @@ public partial class GameFlowUI : Control
 			DisplayName = "Priest",
 			DisplayNameZhTw = "牧師",
 			Description = "Battle cleric of the front line. Fires heavy twofold holy bolts with strong knockback.",
-			DescriptionZhTw = "前線戰鬥牧師，能射出厚重的雙重聖彈並附帶強力擊退。",
+			DescriptionZhTw = "前線戰鬥牧師，發射雙重聖彈並具備強力擊退。",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,

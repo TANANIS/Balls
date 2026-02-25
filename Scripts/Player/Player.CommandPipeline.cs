@@ -2,6 +2,9 @@ using Godot;
 
 public partial class Player
 {
+	private const float MoveInputDeadzone = 0.12f;
+	private const float MoveInputDropGraceSeconds = 0.04f;
+
 	private readonly struct FrameCommand
 	{
 		public readonly Vector2 MoveInput;
@@ -20,11 +23,20 @@ public partial class Player
 
 	private float _pendingMovementFreezeSeconds = 0f;
 	private float _pendingHurtAnimationSeconds = 0f;
+	private Vector2 _lastStableMoveInput = Vector2.Zero;
+	private float _moveInputDropGraceTimer = 0f;
 
 	private FrameCommand BuildFrameCommand()
 	{
-		Vector2 moveInput = Input.GetVector("left", "right", "up", "down");
-		bool wantDash = Input.IsActionJustPressed(_dash?.DashAction ?? "dash");
+		Vector2 moveInput = Input.GetVector(
+			InputActions.MoveLeft,
+			InputActions.MoveRight,
+			InputActions.MoveUp,
+			InputActions.MoveDown);
+		if (moveInput.LengthSquared() < (MoveInputDeadzone * MoveInputDeadzone))
+			moveInput = Vector2.Zero;
+
+		bool wantDash = Input.IsActionJustPressed(_dash?.DashAction ?? InputActions.Dash);
 		bool wantPrimaryAttack = Input.IsActionPressed(_primaryAttack?.AttackAction ?? InputActions.AttackPrimary);
 		bool wantSecondaryAttack = Input.IsActionPressed(_secondaryAttack?.AttackAction ?? InputActions.AttackSecondary);
 		return new FrameCommand(moveInput, wantDash, wantPrimaryAttack, wantSecondaryAttack);
@@ -32,32 +44,53 @@ public partial class Player
 
 	private void ExecuteFrameCommand(float dt, in FrameCommand command)
 	{
-		if (command.MoveInput != Vector2.Zero)
-			_lastMoveDir = command.MoveInput.Normalized();
+		Vector2 stableMoveInput = StabilizeMoveInput(dt, command.MoveInput);
+		if (stableMoveInput.LengthSquared() > 0.0001f)
+			_lastMoveDir = stableMoveInput.Normalized();
 
 		if (IsDead)
 		{
-			TickVisualState(dt, command.MoveInput, isDashActive: false);
+			TickVisualState(dt, stableMoveInput, isDashActive: false);
 			return;
 		}
 
 		ConsumePendingHurtCommand();
 
-		bool dashOwnsMovement = _dash.Tick(dt, command.MoveInput, command.WantDash);
+		bool dashOwnsMovement = _dash.Tick(dt, stableMoveInput, command.WantDash);
 		if (dashOwnsMovement)
 		{
 			ClampInsideBounds();
 			UpdatePhaseCamera(dt);
-			TickVisualState(dt, command.MoveInput, isDashActive: true);
+			TickVisualState(dt, stableMoveInput, isDashActive: true);
 			return;
 		}
 
-		_movement.Tick(dt, command.MoveInput);
+		_movement.Tick(dt, stableMoveInput);
 		_primaryAttack.Tick(dt, command.WantPrimaryAttack);
 		_secondaryAttack.Tick(dt, command.WantSecondaryAttack);
 		ClampInsideBounds();
 		UpdatePhaseCamera(dt);
-		TickVisualState(dt, command.MoveInput, isDashActive: _dash?.IsDashing ?? false);
+		TickVisualState(dt, stableMoveInput, isDashActive: _dash?.IsDashing ?? false);
+	}
+
+	private Vector2 StabilizeMoveInput(float dt, Vector2 rawInput)
+	{
+		if (rawInput.LengthSquared() > 0.0001f)
+		{
+			_lastStableMoveInput = rawInput;
+			_moveInputDropGraceTimer = MoveInputDropGraceSeconds;
+			return rawInput;
+		}
+
+		if (_moveInputDropGraceTimer > 0f && _lastStableMoveInput.LengthSquared() > 0.0001f)
+		{
+			_moveInputDropGraceTimer = Mathf.Max(0f, _moveInputDropGraceTimer - dt);
+			return _lastStableMoveInput;
+		}
+
+		_lastStableMoveInput = Vector2.Zero;
+		_moveInputDropGraceTimer = 0f;
+		return Vector2.Zero;
 	}
 
 	private void QueueHurtCommand(float movementFreezeSeconds, float hurtAnimationSeconds)
@@ -79,5 +112,13 @@ public partial class Player
 			TriggerHurtAnimation(_pendingHurtAnimationSeconds);
 			_pendingHurtAnimationSeconds = 0f;
 		}
+	}
+
+	private void ResetCommandPipelineRuntimeState()
+	{
+		_pendingMovementFreezeSeconds = 0f;
+		_pendingHurtAnimationSeconds = 0f;
+		_lastStableMoveInput = Vector2.Zero;
+		_moveInputDropGraceTimer = 0f;
 	}
 }
