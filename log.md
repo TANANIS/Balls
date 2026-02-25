@@ -97,6 +97,16 @@
 - Validation:
   - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
 
+### 2026-02-25 - README Sync (Current Mainline Snapshot)
+- Updated `README.md` to reflect current mainline status:
+  - fantasy presentation direction,
+  - live card/progression snapshot,
+  - projectile shared-script + variant-prefab convention,
+  - F3 debug panel behavior summary,
+  - branch note (`legacy/old-scifi-main` archive).
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
 ## Canonical Specs and Docs
 - Card spec: `docs/CARDS.md`
 - Card change history: `docs/CARDS_CHANGELOG.md`

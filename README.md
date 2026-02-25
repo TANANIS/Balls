@@ -1,19 +1,37 @@
 # Project Genesis
 2D top-down survival action prototype built with Godot 4 (Mono/C#), targeting a fixed 15:00 run loop.
+Current content direction is fantasy-themed combat/presentation on top of the existing runtime architecture.
 
 ## Core Architecture
 - Combat resolution single entry: `Scripts/Systems/Core/CombatSystem.cs`
 - Progression and upgrades: `Scripts/Systems/Progression/ProgressionSystem.cs` and `Scripts/Systems/Progression/UpgradeSystem.cs`
 - Spawn pacing and pressure shaping: `Scripts/Systems/Director/SpawnSystem.cs` with `Data/Director/*.csv`
 - UI is presentation-only and reads runtime state: `Scripts/UI/*`
+- Projectile runtime is shared-script with prefab variants:
+  - behavior host: `Scripts/Projectiles/Bullet.cs`
+  - split child variant: `Prefabs/SplitProjectile.tscn`
 
 ## Runtime Flow (Current)
 1. Enemy dies, then `ExperienceDropSystem` spawns `ExperiencePickup`.
-2. Player collects pickup, then `ProgressionSystem` adds EXP.
+2. Player collects pickup, then `ProgressionSystem` adds progression EXP.
 3. EXP reaches requirement, then a level-up charge is queued.
 4. `UpgradeMenu` opens, then `UpgradeSystem` applies one upgrade.
-5. `SpawnSystem` scales pressure by phase and director tables.
-6. `AudioManager` switches BGM playlist by game state (`Menu` / `Gameplay` / `Result`) and chains random tracks on finish.
+5. `UpgradeSystem` pool selection is phase-routed (Early/Mid/Late) with stack/exclusive/gate checks.
+6. `SpawnSystem` scales pressure by phase and director tables.
+7. `AudioManager` switches BGM playlist by game state (`Menu` / `Gameplay` / `Result`) and chains random tracks on finish.
+
+## Gameplay Snapshot (Current)
+- Fixed run target: `15:00`.
+- Runtime card pool: Batch 01 (`11` active cards).
+- Core card behaviors already live:
+  - `ATK_SPLIT_SHOT`: on-hit split from target position, non-chain split children.
+  - `MOD_ELEMENTAL_BURST`: charged explosive next-shot behavior (single-charge cycle).
+- F3 debug panel:
+  - supports invulnerability toggle and direct upgrade apply.
+  - opening panel pauses run; closing restores prior pause state.
+- Bilingual runtime (`en` / `zh_TW`) with localization CSV as source:
+  - `Data/Localization/UI.csv`
+  - `Data/Localization/Cards.csv`
 
 ## Folder Map (Purpose + Location)
 - `Scenes/`: Scene composition (player, world, systems root, UI).
@@ -47,6 +65,10 @@
 - `docs/TODO.md`: Current next-step checklist.
 - `Assets/Sprites/Skills/README.md`: Skill VFX asset path/naming contract.
 - `log.md`: Ongoing dev log and handoff notes.
+
+## Branch Notes
+- Current mainline branch: `main`.
+- Archived pre-fantasy mainline snapshot: `legacy/old-scifi-main`.
 
 ## Maintenance Rules
 - Keep `docs/` as the source of truth for architecture and behavior contracts.
