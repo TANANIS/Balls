@@ -7,9 +7,9 @@
 script = ExtResource("1_char_def")
 CharacterId = "tank_burst"
 DisplayName = "Priest"
-DisplayNameZhTw = "Priest"
-Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback."
-DescriptionZhTw = "Priest"
+DisplayNameZhTw = "牧師"
+Description = "Battle cleric of the front line. Fires heavy twofold holy bolts with strong knockback."
+DescriptionZhTw = "前線戰鬥牧師，能射出厚重的雙重聖彈並附帶強力擊退。"
 CoreSprite = ExtResource("2_priest_core")
 PrimaryAbility = 1
 SecondaryAbility = 0

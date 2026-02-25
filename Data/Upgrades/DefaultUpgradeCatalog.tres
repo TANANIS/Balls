@@ -5,8 +5,8 @@
 
 [sub_resource type="Resource" id="Upgrade_AtkSpeedUp15"]
 script = ExtResource("2_definition_script")
-Title = "Attack Speed +15%"
-Description = "Primary attack speed +15%."
+Title = "Combat Tempo +15%"
+Description = "Primary attack cadence +15%."
 TitleKey = "CARD.ATK_SPEED_UP_15.TITLE"
 DescriptionKey = "CARD.ATK_SPEED_UP_15.DESC"
 Layer = 2
@@ -17,8 +17,8 @@ MaxStack = 3
 [sub_resource type="Resource" id="Upgrade_AtkProjectilePlus1"]
 script = ExtResource("2_definition_script")
 Id = 1
-Title = "+1 Projectile"
-Description = "Primary volley gains +1 same-axis projectile (tight spread)."
+Title = "+1 Arc Bolt"
+Description = "Primary volley gains +1 aligned bolt (tight spread)."
 TitleKey = "CARD.ATK_PROJECTILE_PLUS_1.TITLE"
 DescriptionKey = "CARD.ATK_PROJECTILE_PLUS_1.DESC"
 Layer = 2
@@ -31,8 +31,8 @@ ExclusiveWith = Array[int]([2])
 [sub_resource type="Resource" id="Upgrade_AtkSplitShot"]
 script = ExtResource("2_definition_script")
 Id = 2
-Title = "Split Shot"
-Description = "On hit, splits from enemy position: 3->4->5->6 shots (max 6 is 360 deg, split shots deal 50%, non-chain)."
+Title = "Shatter Shot"
+Description = "On hit, split shots spawn from enemy position: 3->4->5->6 (max 6 = 360 deg). Split shots deal 50% and cannot chain."
 TitleKey = "CARD.ATK_SPLIT_SHOT.TITLE"
 DescriptionKey = "CARD.ATK_SPLIT_SHOT.DESC"
 Layer = 2
@@ -57,8 +57,8 @@ MaxStack = 3
 [sub_resource type="Resource" id="Upgrade_AtkCritChanceUp10"]
 script = ExtResource("2_definition_script")
 Id = 4
-Title = "Crit Chance +10%"
-Description = "Primary crit chance +10%."
+Title = "Critical Chance +10%"
+Description = "Primary critical chance +10%."
 TitleKey = "CARD.ATK_CRIT_CHANCE_UP_10.TITLE"
 DescriptionKey = "CARD.ATK_CRIT_CHANCE_UP_10.DESC"
 Layer = 2
@@ -82,8 +82,8 @@ MaxStack = 4
 [sub_resource type="Resource" id="Upgrade_SurvShieldCooldown"]
 script = ExtResource("2_definition_script")
 Id = 6
-Title = "Shield"
-Description = "Absorb one hit, then enters cooldown."
+Title = "Ward Shield"
+Description = "Block one hit, then enters cooldown."
 TitleKey = "CARD.SURV_SHIELD_COOLDOWN.TITLE"
 DescriptionKey = "CARD.SURV_SHIELD_COOLDOWN.DESC"
 Layer = 1
@@ -96,7 +96,7 @@ MinPhase = 1
 [sub_resource type="Resource" id="Upgrade_SurvLifestealCloseKill"]
 script = ExtResource("2_definition_script")
 Id = 7
-Title = "Kill-Chance Lifesteal"
+Title = "Blood Rite"
 Description = "On kill: 12% chance to heal 1 HP."
 TitleKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.TITLE"
 DescriptionKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.DESC"
@@ -110,8 +110,8 @@ MinPhase = 2
 [sub_resource type="Resource" id="Upgrade_EcoExpGainUp20"]
 script = ExtResource("2_definition_script")
 Id = 8
-Title = "EXP Gain +20%"
-Description = "Gain 20% more EXP from pickups."
+Title = "Essence Gain +20%"
+Description = "Gain 20% more Essence from pickups."
 TitleKey = "CARD.ECO_EXP_GAIN_UP_20.TITLE"
 DescriptionKey = "CARD.ECO_EXP_GAIN_UP_20.DESC"
 Layer = 6
@@ -122,8 +122,8 @@ MaxStack = 2
 [sub_resource type="Resource" id="Upgrade_EcoPickupRadiusUp25"]
 script = ExtResource("2_definition_script")
 Id = 9
-Title = "Pickup Radius +25%"
-Description = "Increase EXP pickup radius by 25%."
+Title = "Essence Reach +25%"
+Description = "Increase Essence pickup radius by 25%."
 TitleKey = "CARD.ECO_PICKUP_RADIUS_UP_25.TITLE"
 DescriptionKey = "CARD.ECO_PICKUP_RADIUS_UP_25.DESC"
 Layer = 6
@@ -135,7 +135,7 @@ MaxStack = 2
 script = ExtResource("2_definition_script")
 Id = 10
 Title = "Elemental Burst"
-Description = "Charges every 5s. Next shot explodes on first hit or max distance, dealing AoE damage."
+Description = "Every 5s, one explosive charge is prepared and kept until fired. The next shot detonates on first hit or max distance, dealing AoE damage."
 TitleKey = "CARD.MOD_ELEMENTAL_BURST.TITLE"
 DescriptionKey = "CARD.MOD_ELEMENTAL_BURST.DESC"
 Layer = 4

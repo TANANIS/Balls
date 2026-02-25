@@ -250,7 +250,7 @@ public partial class GameFlowUI
 
 		_rangedCharacter = LoadCharacterDefinitionOrFallback(
 			RangedCharacterResourcePath,
-			BuildRangerFallbackDefinition());
+			BuildMageFallbackDefinition());
 		_meleeCharacter = LoadCharacterDefinitionOrFallback(
 			MeleeCharacterResourcePath,
 			BuildBladeFallbackDefinition());

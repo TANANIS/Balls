@@ -69,10 +69,10 @@ public partial class GameFlowUI
 		if (boardTitle != null) boardTitle.Text = Tr("UI.START.PERFECT_BOARD_TITLE");
 		var characterSelectTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/Title");
 		if (characterSelectTitle != null)
-			characterSelectTitle.Text = TrOrDefault("UI.META.TITLE", "META PROGRESSION", "\u5c40\u5916\u990a\u6210");
+			characterSelectTitle.Text = TrOrDefault("UI.META.TITLE", "HERO PROGRESSION", "\u82f1\u96c4\u990a\u6210");
 		var characterSelectFluxLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader/FluxLabel");
 		if (characterSelectFluxLabel != null)
-			characterSelectFluxLabel.Text = $"{TrOrDefault("UI.META.FLUX", "Flux", "Flux")}:";
+			characterSelectFluxLabel.Text = $"{TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}:";
 		var characterComingSoonButton = GetNodeOrNull<Button>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/LockedButton");
 		if (characterComingSoonButton != null)
 			characterComingSoonButton.Text = TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
@@ -82,7 +82,7 @@ public partial class GameFlowUI
 		var startSettingsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/SettingsPanel/SettingsScroll/VBox/Title");
 		if (startSettingsTitle != null) startSettingsTitle.Text = Tr("UI.COMMON.SETTINGS");
 		var startCardsTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CardsPanel/VBox/Title");
-		if (startCardsTitle != null) startCardsTitle.Text = TrOrDefault("UI.START.CARDS_TITLE", "Upgrade Cards", "Upgrade Cards");
+		if (startCardsTitle != null) startCardsTitle.Text = TrOrDefault("UI.START.CARDS_TITLE", "Boons & Traits", "恩賜與詞條");
 		var pauseTitle = GetNodeOrNull<Label>("Panels/PausePanel/Panel/VBox/Title");
 		if (pauseTitle != null) pauseTitle.Text = Tr("UI.PAUSE.TITLE");
 		var pauseSettingsTitle = GetNodeOrNull<Label>("Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/Title");
@@ -116,8 +116,8 @@ public partial class GameFlowUI
 			deleteSaveDialog.Title = TrOrDefault("UI.META.DELETE_SAVE_TITLE", "Delete Save Data", "\u522a\u9664\u5b58\u6a94\u8cc7\u6599");
 			deleteSaveDialog.DialogText = TrOrDefault(
 				"UI.META.DELETE_SAVE_TEXT",
-				"Delete current profile save data?\nThis will reset Flux, unlocks, levels, and ability tree progression.",
-				"\u78ba\u5b9a\u522a\u9664\u76ee\u524d profile \u5b58\u6a94\u8cc7\u6599\uff1f\n\u9019\u6703\u91cd\u7f6e Flux\u3001\u89e3\u9396\u3001\u7b49\u7d1a\u8207\u80fd\u529b\u6a39\u9032\u5ea6\u3002");
+				"Delete current profile save data?\nThis will reset Aether, unlocks, levels, and hero talent progression.",
+				"\u78ba\u5b9a\u522a\u9664\u76ee\u524d profile \u5b58\u6a94\u8cc7\u6599\uff1f\n\u9019\u6703\u91cd\u7f6e\u9748\u5875\u3001\u89e3\u9396\u3001\u7b49\u7d1a\u8207\u5929\u8ce6\u6a39\u9032\u5ea6\u3002");
 			deleteSaveDialog.OkButtonText = TrOrDefault("UI.META.DELETE_SAVE_OK", "Delete", "\u522a\u9664");
 		}
 

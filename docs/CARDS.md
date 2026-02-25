@@ -161,27 +161,30 @@ Note:
 ## Batch 01 Draft Cards
 
 ### Core Attack - Frequency
-- `ATK_SPEED_UP_15` : Attack Speed +15%
+- `ATK_SPEED_UP_15` : Combat Tempo +15%
 
 ### Core Attack - Quantity
-- `ATK_PROJECTILE_PLUS_1` : +1 Projectile (same-axis tight spread, single-target focus, `MaxStack = 2`)
-- `ATK_SPLIT_SHOT` : On-Hit Split Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360 deg`, child damage `50%`, non-chain)
+- `ATK_PROJECTILE_PLUS_1` : +1 Arc Bolt (same-axis tight spread, single-target focus, `MaxStack = 2`)
+- `ATK_SPLIT_SHOT` : Shatter Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360 deg`, child damage `50%`, non-chain)
 
 ### Core Attack - Power
 - `ATK_DAMAGE_UP_20` : Damage +20%
-- `ATK_CRIT_CHANCE_UP_10` : Crit Chance +10%
+- `ATK_CRIT_CHANCE_UP_10` : Critical Chance +10%
 
 ### Survival
 - `SURV_MAX_HP_PLUS_1` : Max HP +1
-- `SURV_SHIELD_COOLDOWN` : Shield (absorb one hit, cooldown-based)
-- `SURV_LIFESTEAL_CLOSE_KILL` : Conditional Lifesteal (12% chance to heal 1 HP on kill)
+- `SURV_SHIELD_COOLDOWN` : Ward Shield (absorb one hit, cooldown-based)
+- `SURV_LIFESTEAL_CLOSE_KILL` : Blood Rite (12% chance to heal 1 HP on kill)
 
 ### Economy
-- `ECO_EXP_GAIN_UP_20` : EXP Gain +20%
-- `ECO_PICKUP_RADIUS_UP_25` : Pickup Radius +25%
+- `ECO_EXP_GAIN_UP_20` : Essence Gain +20%
+- `ECO_PICKUP_RADIUS_UP_25` : Essence Reach +25%
 
 ### Modifier
 - `MOD_ELEMENTAL_BURST` : Elemental Burst (charges every 5s; next shot explodes on first hit or max distance)
+
+Display-name note:
+- Card balancing remains keyed by `Id` (stable), while runtime `Title`/`Description` strings may change for theme/lore direction.
 
 ## Round 1 Balance Table (Playable Baseline)
 
@@ -197,8 +200,8 @@ This table is the first practical pass for in-run balancing.
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
 | `SURV_SHIELD_COOLDOWN` | Survival | 1-hit shield, 60s cooldown | no stack | 1 | 8 |
 | `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 12% chance heal 1 HP | no stack | 1 | 7 |
-| `ECO_EXP_GAIN_UP_20` | Economy | EXP gain x`1.20` | x`1.15` (S2) | 2 | 8 |
-| `ECO_PICKUP_RADIUS_UP_25` | Economy | Pickup radius x`1.25` | x`1.20` (S2) | 2 | 8 |
+| `ECO_EXP_GAIN_UP_20` | Economy | Essence gain x`1.20` | x`1.15` (S2) | 2 | 8 |
+| `ECO_PICKUP_RADIUS_UP_25` | Economy | Essence pickup radius x`1.25` | x`1.20` (S2) | 2 | 8 |
 | `MOD_ELEMENTAL_BURST` | Modifier | every `5s` charge next shot into explosive round (first hit or max distance, radius `130`, damage x`1.20`, target cap `5`) | no stack | 1 | 8 |
 
 ### Derived Ceiling Snapshot (Round 1)

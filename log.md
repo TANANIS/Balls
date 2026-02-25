@@ -81,6 +81,22 @@
 ### 2026-02-25 - Spawn Stall Mitigation
 - Added far-enemy recycle/leash handling to reduce situations where enemy count cap blocks new spawns while old enemies remain ineffective/off-screen.
 
+### 2026-02-25 - Fantasy Copy Refresh (UI + Character + Card Text)
+- Start/pause/end and upgrade-related UI strings were rewritten to remove sci-fi leftovers and align with fantasy wording.
+- Character presentation text cleanup:
+  - `Mage / 法師` naming now replaces old `Ranger Core / 遊俠核心`.
+  - Melee/Tank zh_TW placeholders were replaced with finalized descriptions.
+- Card display copy refresh (mechanics unchanged, ids unchanged):
+  - `Split Shot -> Shatter Shot`
+  - `+1 Projectile -> +1 Arc Bolt`
+  - `EXP Gain -> Essence Gain`
+  - `Shield -> Ward Shield`
+  - `Kill-Chance Lifesteal -> Blood Rite`
+- Fallback-path consistency:
+  - `Data/Characters/*.tres` + `GameFlowUI` fallback builders now use the same revised wording.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
 ## Canonical Specs and Docs
 - Card spec: `docs/CARDS.md`
 - Card change history: `docs/CARDS_CHANGELOG.md`

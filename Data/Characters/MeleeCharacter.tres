@@ -7,9 +7,9 @@
 script = ExtResource("1_char_def")
 CharacterId = "melee"
 DisplayName = "Knight"
-DisplayNameZhTw = "Knight"
-Description = "High-mobility melee duelist. Uses close-range burst attacks and dash repositioning."
-DescriptionZhTw = "Knight"
+DisplayNameZhTw = "騎士"
+Description = "Swift spellblade duelist. Excels at close-range bursts and dash repositioning."
+DescriptionZhTw = "高機動魔劍決鬥者，擅長近距離爆發與衝刺換位。"
 CoreSprite = ExtResource("2_knight_core")
 CoreSpriteScaleMultiplier = Vector2(1.6166134, 1.6166134)
 PrimaryAbility = 2

@@ -71,12 +71,12 @@ public partial class GameFlowUI : Control
 	{
 		return category switch
 		{
-			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Core Attack", "Core Attack"),
-			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Director", "Director"),
-			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Anomaly", "Anomaly"),
-			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Spatial", "Spatial"),
+			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Battle Arts", "戰鬥技藝"),
+			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Encounter Flow", "戰局節奏"),
+			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Arcana", "奧術"),
+			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Field Control", "場域掌控"),
 			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival", "Survival"),
-			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Economy", "Economy"),
+			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Resource", "資源"),
 			_ => category.ToString()
 		};
 	}
@@ -108,15 +108,15 @@ public partial class GameFlowUI : Control
 		return fallback;
 	}
 
-	private static CharacterDefinition BuildRangerFallbackDefinition()
+	private static CharacterDefinition BuildMageFallbackDefinition()
 	{
 		return new CharacterDefinition
 		{
 			CharacterId = "ranged",
-			DisplayName = "Ranger Core",
-			DisplayNameZhTw = "????閰?",
-			Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire.",
-			DescriptionZhTw = "遠程專精角色，擅長安全距離穩定輸出與快速單發射擊。",
+			DisplayName = "Mage",
+			DisplayNameZhTw = "法師",
+			Description = "Arcane caster who threads precise spell bolts from a safe distance.",
+			DescriptionZhTw = "奧術施法者，擅長在安全距離精準連發魔彈。",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
@@ -131,9 +131,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "melee",
 			DisplayName = "Knight",
-			DisplayNameZhTw = "Knight",
-			Description = "High-mobility melee duelist. Uses close-range burst attacks and dash repositioning.",
-			DescriptionZhTw = "Knight",
+			DisplayNameZhTw = "騎士",
+			Description = "Swift spellblade duelist. Excels at close-range bursts and dash repositioning.",
+			DescriptionZhTw = "高機動魔劍決鬥者，擅長近距離爆發與衝刺換位。",
 			PrimaryAbility = AttackAbilityKind.Melee,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.Dash,
@@ -149,9 +149,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "tank_burst",
 			DisplayName = "Priest",
-			DisplayNameZhTw = "Priest",
-			Description = "Frontline anchor with high durability. Fires heavy 2-round bursts with strong knockback.",
-			DescriptionZhTw = "Priest",
+			DisplayNameZhTw = "牧師",
+			Description = "Battle cleric of the front line. Fires heavy twofold holy bolts with strong knockback.",
+			DescriptionZhTw = "前線戰鬥牧師，能射出厚重的雙重聖彈並附帶強力擊退。",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,

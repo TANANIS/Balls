@@ -371,3 +371,28 @@
 #### Validation
 - [x] Runtime effect binding updated
 - [ ] In-run smoke test done
+
+### 2026-02-25 - Fantasy Text Pass (UI + Character + Card Display Copy)
+- Scope: `Update`
+- Affected Layer(s): `All`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Rewrote start-menu and key runtime UI copy to remove legacy sci-fi phrasing and align with fantasy tone.
+  - Updated character display names/descriptions and fallback definitions:
+    - `Ranger Core -> Mage` (`遊俠核心 -> 法師`)
+    - refreshed Melee/Tank zh_TW descriptions from placeholder text to final copy.
+  - Updated card display titles/descriptions (without changing gameplay ids/mechanics):
+    - `Split Shot -> Shatter Shot`
+    - `+1 Projectile -> +1 Arc Bolt`
+    - `EXP Gain -> Essence Gain`
+    - `Shield -> Ward Shield`
+    - `Kill-Chance Lifesteal -> Blood Rite`
+  - UI term harmonization examples:
+    - `XP -> Essence`
+    - `CHOOSE UPGRADE -> CHOOSE A BOON`
+    - failure/collapse labels rewritten to dark-fantasy wording.
+
+#### Validation
+- [x] Localization source updated (`UI.csv`, `Cards.csv`)
+- [x] Fallback text paths updated (`GameFlowUI*`, character resources)
+- [x] Build check passed

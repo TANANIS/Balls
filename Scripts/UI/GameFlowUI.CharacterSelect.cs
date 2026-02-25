@@ -73,7 +73,7 @@ public partial class GameFlowUI
 				int unlockCost = GetCharacterUnlockCost(_selectedCharacterDefinition);
 				bool canUnlock = MetaProgressionService.Instance.CanUnlockCharacter(_selectedCharacterDefinition.CharacterId, out _);
 				_startCharacterConfirmButton.Disabled = !canUnlock;
-				_startCharacterConfirmButton.Text = $"{TrOrDefault("UI.META.UNLOCK", "Unlock", "\u89e3\u9396")} ({unlockCost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")})";
+				_startCharacterConfirmButton.Text = $"{TrOrDefault("UI.META.UNLOCK", "Unlock", "\u89e3\u9396")} ({unlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")})";
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public partial class GameFlowUI
 		var meta = MetaProgressionService.Instance;
 		var sb = new StringBuilder();
 		sb.Append(def.GetLocalizedDisplayName()).Append('\n');
-		sb.Append($"{TrOrDefault("UI.META.FLUX", "Flux", "Flux")}: {meta.CurrencyWallet}").Append('\n');
+		sb.Append($"{TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}: {meta.CurrencyWallet}").Append('\n');
 
 		if (!unlocked)
 		{
@@ -92,7 +92,7 @@ public partial class GameFlowUI
 			if (ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
 				cost = defMeta.UnlockCost;
 			sb.Append($"{TrOrDefault("UI.META.STATUS", "Status", "\u72c0\u614b")}: {TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396")}").Append('\n');
-			sb.Append($"{TrOrDefault("UI.META.UNLOCK_COST", "Unlock Cost", "\u89e3\u9396\u9700\u6c42")}: {cost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")}").Append('\n');
+			sb.Append($"{TrOrDefault("UI.META.UNLOCK_COST", "Unlock Cost", "\u89e3\u9396\u9700\u6c42")}: {cost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}").Append('\n');
 			sb.Append('\n').Append(TrOrDefault("UI.META.CHAR_LOCKED_DESC", "This character is not unlocked yet.", "\u6b64\u89d2\u8272\u5c1a\u672a\u89e3\u9396\u3002"));
 			return sb.ToString();
 		}
@@ -104,7 +104,7 @@ public partial class GameFlowUI
 		sb.Append(TrOrDefault("UI.META.ATTACK", "Attack", "\u653b\u64ca")).Append(": ").Append(GetPrimaryRoleLabel(def, zh)).Append('\n');
 		sb.Append(TrOrDefault("UI.META.MOBILITY", "Mobility", "\u6a5f\u52d5")).Append(": ").Append(GetMobilityRoleLabel(def, zh)).Append('\n');
 		sb.Append(TrOrDefault("UI.META.SURVIVAL", "Survival", "\u751f\u5b58")).Append(": ").Append(GetSurvivalRoleLabel(def, zh)).Append("\n\n");
-		sb.Append(TrOrDefault("UI.META.ABILITY_TREE", "Character Ability Tree", "\u89d2\u8272\u80fd\u529b\u6a39")).Append(':').Append('\n');
+		sb.Append(TrOrDefault("UI.META.ABILITY_TREE", "Hero Talent Tree", "\u82f1\u96c4\u5929\u8ce6\u6a39")).Append(':').Append('\n');
 		sb.Append(BuildAbilityTreeFrameworkText(def));
 		return sb.ToString();
 	}
@@ -130,7 +130,7 @@ public partial class GameFlowUI
 				? TrOrDefault("UI.META.UNLOCKED", "Unlocked", "\u5df2\u89e3\u9396")
 				: TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396");
 			sb.Append("- ").Append(node.NodeId).Append(" [").Append(status).Append("] ");
-			sb.Append($"(Lv.{node.MinCharacterLevel} / {node.UnlockCost} {TrOrDefault("UI.META.FLUX", "Flux", "Flux")})");
+			sb.Append($"(Lv.{node.MinCharacterLevel} / {node.UnlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")})");
 			if (i < defMeta.AbilityNodes.Count - 1)
 				sb.Append('\n');
 		}
@@ -146,13 +146,13 @@ public partial class GameFlowUI
 			return zh ? "\u8fd1\u6230" : "Melee";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst2)
-			return zh ? "\u4e8c\u9023\u767c" : "2-round burst";
+			return zh ? "\u96d9\u91cd\u5f48\u5e55" : "Twin-bolt burst";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged && def.RangedFirePattern == PrimaryFirePattern.Burst3)
-			return zh ? "\u4e09\u9023\u767c" : "3-round burst";
+			return zh ? "\u4e09\u91cd\u5f48\u5e55" : "Triple-bolt burst";
 
 		if (def.PrimaryAbility == AttackAbilityKind.Ranged)
-			return zh ? "\u55ae\u767c\u5c04\u64ca" : "Single shot";
+			return zh ? "\u5967\u8853\u55ae\u5f48" : "Arc bolt";
 
 		return zh ? "\u57fa\u790e" : "Basic";
 	}
@@ -160,7 +160,7 @@ public partial class GameFlowUI
 	private static string GetMobilityRoleLabel(CharacterDefinition def, bool zh)
 	{
 		if (def.MobilityAbility == MobilityAbilityKind.Dash)
-			return zh ? "\u7a7a\u767d\u9375\u885d\u523a" : "Spacebar Dash";
+			return zh ? "\u885d\u523a\u63db\u4f4d" : "Dash reposition";
 		return zh ? "\u57fa\u790e\u79fb\u52d5" : "Base movement";
 	}
 

@@ -118,13 +118,13 @@ public partial class GameFlowUI
 			_finalSurvivalLabel.Text = $"{Tr("UI.END.SURVIVAL")}: {survival}";
 		if (_finalFluxGainLabel != null)
 		{
-			string fluxLabel = TrOrDefault("UI.META.FLUX", "Flux", "Flux");
+			string fluxLabel = TrOrDefault("UI.META.FLUX", "Aether", "靈塵");
 			_finalFluxGainLabel.Text = $"{fluxLabel}: +{flux.TotalCurrency}";
 		}
 		if (_finalFluxWalletLabel != null)
 		{
 			int wallet = MetaProgressionService.Instance.CurrencyWallet;
-			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Flux Wallet", "Flux \u9918\u984d");
+			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Aether Wallet", "\u9748\u5875\u9918\u984d");
 			_finalFluxWalletLabel.Text = $"{walletLabel}: {wallet}";
 		}
 

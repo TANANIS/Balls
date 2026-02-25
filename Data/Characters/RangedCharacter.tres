@@ -5,10 +5,10 @@
 
 [resource]
 script = ExtResource("1_char_def")
-DisplayName = "Ranger Core"
-DisplayNameZhTw = "遊俠核心"
-Description = "Precision ranged specialist. Maintains stable output at safe distance with fast single-shot fire."
-DescriptionZhTw = "精準遠程特化，以快速單發維持穩定輸出，適合安全距離作戰。"
+DisplayName = "Mage"
+DisplayNameZhTw = "法師"
+Description = "Arcane caster who threads precise spell bolts from a safe distance."
+DescriptionZhTw = "奧術施法者，擅長在安全距離精準連發魔彈。"
 CoreSprite = ExtResource("2_ranger_core")
 SecondaryAbility = 0
 MobilityAbility = 0
