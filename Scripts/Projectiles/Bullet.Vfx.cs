@@ -13,7 +13,8 @@ public partial class Bullet
 			return;
 
 		var frames = new SpriteFrames();
-		frames.AddAnimation("default");
+		if (!frames.HasAnimation("default"))
+			frames.AddAnimation("default");
 		frames.SetAnimationLoop("default", false);
 		frames.SetAnimationSpeed("default", Mathf.Max(1f, EffectFps));
 

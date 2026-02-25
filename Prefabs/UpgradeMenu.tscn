@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cc5l4n54jpjpi"]
 
-[ext_resource type="Script" uid="uid://dq3t2pkhxa0k0" path="res://Scripts/UI/UpgradeMenu.cs" id="1_upgrade_menu_script"]
+[ext_resource type="Script" path="res://Scripts/UI/UpgradeMenu.cs" id="1_upgrade_menu_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.05, 0.07, 0.12, 0.95)

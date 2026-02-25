@@ -73,7 +73,12 @@ public partial class Bullet
 	{
 		Node spawned = scene.Instantiate();
 		if (spawned is Node2D child2D)
-			child2D.GlobalPosition = spawnPos;
+		{
+			if (parent is Node2D parent2D)
+				child2D.Position = parent2D.ToLocal(spawnPos);
+			else
+				child2D.GlobalPosition = spawnPos;
+		}
 
 		Vector2 splitDir = _dir.Rotated(Mathf.DegToRad(angleDegrees)).Normalized();
 		if (spawned is Bullet splitBullet)
@@ -97,7 +102,12 @@ public partial class Bullet
 			spawned.Call("InitFromPlayer", _source, splitDir, speed, damage);
 		}
 
-		parent.AddChild(spawned);
+		// Collision callbacks can run while physics queries are flushing.
+		// Defer child insertion to avoid runtime "Can't change this state while flushing queries".
+		if (parent.IsInsideTree())
+			parent.CallDeferred(Node.MethodName.AddChild, spawned);
+		else
+			parent.AddChild(spawned);
 	}
 
 	private static int GetSplitProjectileCount(int level)

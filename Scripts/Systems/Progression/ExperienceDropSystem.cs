@@ -48,14 +48,35 @@ public partial class ExperienceDropSystem : Node
 		if (enemy is not Node2D enemy2D)
 			return;
 
-		Node pickup = ExperiencePickupScene.Instantiate();
-		if (pickup is not Node2D pickup2D)
+		Vector2 spawnPos = enemy2D.GlobalPosition;
+		int experienceValue = ResolveExperienceValue(enemy);
+		CallDeferred(nameof(SpawnPickupDeferred), spawnPos, experienceValue);
+	}
+
+	private void SpawnPickupDeferred(Vector2 spawnPos, int experienceValue)
+	{
+		if (ExperiencePickupScene == null)
 			return;
 
-		pickup2D.GlobalPosition = enemy2D.GlobalPosition;
+		Node pickup = ExperiencePickupScene.Instantiate();
+		if (pickup is not Node2D pickup2D)
+		{
+			pickup?.QueueFree();
+			return;
+		}
+
+		pickup2D.GlobalPosition = spawnPos;
 		if (pickup is ExperiencePickup expPickup)
-			expPickup.ExperienceValue = ResolveExperienceValue(enemy);
-		GetTree().CurrentScene.AddChild(pickup2D);
+			expPickup.ExperienceValue = Mathf.Max(1, experienceValue);
+
+		Node root = GetTree()?.CurrentScene;
+		if (root == null)
+		{
+			pickup2D.QueueFree();
+			return;
+		}
+
+		root.AddChild(pickup2D);
 	}
 
 	private int ResolveExperienceValue(Node enemy)

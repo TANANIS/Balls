@@ -95,16 +95,16 @@ public partial class EnemyAnimationEventModule : EnemyEventModule
 		EnemyHitbox hitbox = enemy.GetNodeOrNull<EnemyHitbox>("Hitbox");
 		if (hitbox != null)
 		{
-			hitbox.Monitoring = false;
-			hitbox.Monitorable = false;
-			hitbox.SetPhysicsProcess(false);
+			hitbox.SetDeferred("monitoring", false);
+			hitbox.SetDeferred("monitorable", false);
+			hitbox.CallDeferred(Node.MethodName.SetPhysicsProcess, false);
 		}
 
 		EnemyHurtbox hurtbox = enemy.GetNodeOrNull<EnemyHurtbox>("Hurtbox");
 		if (hurtbox != null)
 		{
-			hurtbox.Monitoring = false;
-			hurtbox.Monitorable = false;
+			hurtbox.SetDeferred("monitoring", false);
+			hurtbox.SetDeferred("monitorable", false);
 		}
 	}
 }
