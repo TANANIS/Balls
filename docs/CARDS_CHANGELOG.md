@@ -138,3 +138,158 @@
 - [x] Runtime effect binding updated
 - [x] Pool routing checked
 - [ ] In-run smoke test done
+
+### 2026-02-25 - Split Projectile Prefab Separation (Shared Script Path)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Introduced dedicated split-child projectile prefab while keeping shared projectile runtime script.
+  - Added `SplitChildProjectileScene` selection path in `Bullet` so split spawn can use a variant prefab first.
+  - Added scene-level speed override path (`RuntimeSpeedScale`) for projectile variants.
+  - Split projectile now supports independent visuals/tuning without duplicating gameplay script.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`
+  - Change: split child spawn source
+  - Value: `same projectile scene only -> prefer SplitChildProjectileScene prefab`
+  - Reason: isolate split projectile visual/motion identity while retaining shared combat/VFX logic.
+
+#### Safety Fuse Notes
+- StackLimit: unchanged (`ATK_SPLIT_SHOT` max 4).
+- Mutual Exclusion: unchanged (`ATK_PROJECTILE_PLUS_1` <-> `ATK_SPLIT_SHOT`).
+- Diminishing Return: unchanged.
+- Weight/Cost Escalation: unchanged.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done
+
+### 2026-02-25 - Card Framework Pass (Layer/Phase Router/Validation)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`, `Survival`, `Economy` (framework supports full layer set)
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added explicit `UpgradeLayer` model with backward-compatible mapping from existing `UpgradeCategory`.
+  - Added phase-based pool routing (`Early/Mid/Late`) with safety fallback when strict filter is disabled.
+  - Added category weight decay mode (cost-increase style) for repeated same-category picks.
+  - Added catalog integrity validation (duplicate IDs, invalid references, self prerequisite/exclusive checks).
+
+#### Cards Updated
+- `ALL (Batch 01 runtime cards)`
+  - Change: selection framework
+  - Value: `category-only pool -> layer + phase routed pool`
+  - Reason: align runtime behavior with `docs/CARDS.md` framework contract.
+
+#### Safety Fuse Notes
+- StackLimit: runtime stack cap remains enforced by `MaxStack`.
+- Mutual Exclusion: runtime `ExclusiveWith` check remains active; validation now warns missing refs.
+- Diminishing Return: unchanged from Round 1 curves.
+- Weight/Cost Escalation: category weight decay model added (`UseCategoryWeightDecay`, floor/step tunables).
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [x] In-run smoke test done
+
+### 2026-02-25 - Cooldown Card Removal + Survival Gating Rules
+- Scope: `Update` + `Remove`
+- Affected Layer(s): `CoreAttack`, `Survival`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Removed `ATK_COOLDOWN_DOWN_10` from runtime catalog and localization.
+  - Clarified dual-axis card contract: `Layer` drives phase pool routing; `Category` drives decay/statistics.
+  - Added timing gate fields to card definition (`MinUpgradeCount`, `MinPhase`, optional `MaxPhase`).
+  - Applied survival timing gates:
+    - `SURV_SHIELD_COOLDOWN`: unlock at `Mid` or `pick>=4`
+    - `SURV_LIFESTEAL_CLOSE_KILL`: unlock at `Late` or `pick>=8`
+  - Corrected Early pool ratio to 100% (`Modifier 10% -> 5%`).
+
+#### Cards Removed
+- `ATK_COOLDOWN_DOWN_10`
+  - Reason: highly overlapping growth axis with attack-speed card; reduced build differentiation.
+
+#### Cards Updated
+- `SURV_SHIELD_COOLDOWN`
+  - Change: timing gate
+  - Value: `none -> MinPhase=Mid OR MinUpgradeCount=4`
+  - Reason: prevent early no-brainer defensive spike.
+- `SURV_LIFESTEAL_CLOSE_KILL`
+  - Change: timing gate
+  - Value: `none -> MinPhase=Late OR MinUpgradeCount=8`
+  - Reason: reserve sustain spike for later build maturity.
+
+#### Safety Fuse Notes
+- StackLimit: unchanged (`MaxStack` contract remains active).
+- Mutual Exclusion: unchanged.
+- Diminishing Return: unchanged for remaining multiplicative cards.
+- Weight/Cost Escalation: unchanged (category decay model stays enabled).
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done
+
+### 2026-02-25 - Projectile Identity Split (On-Hit Split + Mutual Exclusion)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Reworked `ATK_SPLIT_SHOT` from fire-time side-angle volley into on-hit split behavior.
+  - Added non-chain guard: split child projectiles do not split again.
+  - Tightened `ATK_PROJECTILE_PLUS_1` identity to same-axis narrow spread for single-target pressure.
+  - Applied mutual exclusion between `ATK_PROJECTILE_PLUS_1` and `ATK_SPLIT_SHOT`.
+
+#### Cards Updated
+- `ATK_PROJECTILE_PLUS_1`
+  - Change: role + weight + rarity + exclusive rule
+  - Value: `generic +1 projectile / weight 9 / common -> same-axis tight spread / weight 6 / rare`
+  - Reason: preserve elite-focus identity and reduce overlap with split archetype.
+- `ATK_SPLIT_SHOT`
+  - Change: trigger model + effect text + exclusive rule
+  - Value: `fire-time side-angle shots -> on-hit split from enemy position (3->4->5->6; max=6 radial 360°; child 50% damage; non-chain)`
+  - Reason: make it a true crowd-clear branch and avoid same-pattern growth overlap.
+
+#### Safety Fuse Notes
+- StackLimit: updated (`ATK_PROJECTILE_PLUS_1` max 2, `ATK_SPLIT_SHOT` max 4).
+- Mutual Exclusion: added between `ATK_PROJECTILE_PLUS_1` and `ATK_SPLIT_SHOT` (runtime + catalog).
+- Diminishing Return: unchanged for other multiplicative cards.
+- Weight/Cost Escalation: unchanged (category decay model remains active).
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done
+
+### 2026-02-25 - Split Projectile Visual/Hit Sync Pass
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Switched split-child projectile visuals to dedicated 7-frame animation set (`SPLITBULLET`).
+  - Separated flight and impact frame windows to reduce "already hit-looking while still flying" mismatch.
+  - Tuned split-child visual/collider scale to match intended relative size (about 2/3 of primary projectile).
+  - Removed global split-child hit-arm delay; kept short same-target ignore window only.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`
+  - Change: split child visual + hit timing sync
+  - Value: `single-frame split texture -> 7-frame split animation`; `Flight 0..6 -> 0..5`, `Impact 6 -> 6`; `scale 3.33 -> 1.33`; `collider radius 12 -> 9`; `global hit-arm delay 0.05s -> 0.00s`
+  - Reason: align hit readability, prevent perceived no-damage hits, and keep split projectile visually smaller than primary shots.
+
+#### Safety Fuse Notes
+- StackLimit: unchanged (`ATK_SPLIT_SHOT` max 4).
+- Mutual Exclusion: unchanged (`ATK_PROJECTILE_PLUS_1` <-> `ATK_SPLIT_SHOT`).
+- Diminishing Return: unchanged.
+- Weight/Cost Escalation: unchanged.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done

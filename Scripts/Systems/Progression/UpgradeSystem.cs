@@ -6,7 +6,18 @@ public partial class UpgradeSystem : Node
 {
 	[Export] public NodePath PlayerPath = new NodePath("../../Player");
 	[Export] public UpgradeCatalog Catalog;
+
+	[ExportGroup("Pool Router")]
+	[Export] public bool EnablePhasePoolRouter = true;
+	[Export(PropertyHint.Range, "0,100,1")] public int MidPoolStartUpgradeCount = 6;
+	[Export(PropertyHint.Range, "0,100,1")] public int LatePoolStartUpgradeCount = 12;
+	[Export] public bool PhasePoolStrictFilter = false;
+
+	[ExportGroup("Weighting")]
 	[Export(PropertyHint.Range, "0,2,0.01")] public float CategoryBiasPerPick = 0.18f;
+	[Export] public bool UseCategoryWeightDecay = true;
+	[Export(PropertyHint.Range, "0,1,0.01")] public float CategoryWeightDecayPerPick = 0.12f;
+	[Export(PropertyHint.Range, "0.01,1,0.01")] public float CategoryWeightDecayFloor = 0.30f;
 	[Export(PropertyHint.Range, "1,20,1")] public int RarePityThreshold = 4;
 	[Export(PropertyHint.Range, "1,30,1")] public int EpicPityThreshold = 8;
 
@@ -44,6 +55,7 @@ public partial class UpgradeSystem : Node
 			_progressionSystem = progressionList[0] as ProgressionSystem;
 
 		RebuildDefinitionIndex();
+		ValidateCatalogIntegrity();
 	}
 
 	public bool ApplyUpgrade(UpgradeId id)
@@ -65,9 +77,6 @@ public partial class UpgradeSystem : Node
 		{
 			case UpgradeId.AtkSpeedUp15:
 				_player?.MultiplyPrimaryCooldown(GetAttackSpeedCooldownFactor(nextStack));
-				break;
-			case UpgradeId.AtkCooldownDown10:
-				_player?.MultiplyPrimaryCooldown(GetCooldownReductionFactor(nextStack));
 				break;
 			case UpgradeId.AtkProjectilePlus1:
 				_player?.AddPrimaryProjectileCount(1);
@@ -156,16 +165,6 @@ public partial class UpgradeSystem : Node
 			1 => 1f / 1.15f,
 			2 => 1f / 1.12f,
 			_ => 1f / 1.08f
-		};
-	}
-
-	private static float GetCooldownReductionFactor(int stack)
-	{
-		return stack switch
-		{
-			1 => 0.90f,
-			2 => 0.92f,
-			_ => 0.94f
 		};
 	}
 

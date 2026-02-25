@@ -18,6 +18,7 @@ public partial class UpgradeMenu : Control
 	private Control _panel;
 
 	private bool _isOpen = false;
+	private int _availableOptionCount = 0;
 	private UpgradeSystem.UpgradeOptionData _leftOption;
 	private UpgradeSystem.UpgradeOptionData _middleOption;
 	private UpgradeSystem.UpgradeOptionData _rightOption;
@@ -62,6 +63,7 @@ public partial class UpgradeMenu : Control
 	private void CloseMenu()
 	{
 		_isOpen = false;
+		_availableOptionCount = 0;
 		Visible = false;
 		GetTree().Paused = false;
 	}
@@ -71,6 +73,7 @@ public partial class UpgradeMenu : Control
 		if (!_isOpen && !Visible)
 			return;
 		_isOpen = false;
+		_availableOptionCount = 0;
 		Visible = false;
 		if (GetTree() != null)
 			GetTree().Paused = false;

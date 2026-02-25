@@ -10,9 +10,14 @@ public partial class UpgradeDefinition : Resource
 	[Export] public string DescriptionKey = "";
 	[Export] public Texture2D Icon;
 	[Export] public UpgradeCategory Category = UpgradeCategory.WeaponModifier;
+	[Export] public UpgradeLayer Layer = UpgradeLayer.Auto;
 	[Export] public UpgradeRarity Rarity = UpgradeRarity.Common;
 	[Export(PropertyHint.Range, "1,100,1")] public int Weight = 10;
 	[Export(PropertyHint.Range, "1,10,1")] public int MaxStack = 1;
+	[Export(PropertyHint.Range, "0,100,1")] public int MinUpgradeCount = 0;
+	[Export] public UpgradePoolPhase MinPhase = UpgradePoolPhase.Early;
+	[Export] public bool UseMaxPhaseGate = false;
+	[Export] public UpgradePoolPhase MaxPhase = UpgradePoolPhase.Late;
 	[Export] public Godot.Collections.Array<UpgradeId> Prerequisites = new();
 	[Export] public Godot.Collections.Array<UpgradeId> ExclusiveWith = new();
 
@@ -38,5 +43,14 @@ public partial class UpgradeDefinition : Resource
 		}
 
 		return Description;
+	}
+
+	public UpgradeLayer GetResolvedLayer()
+	{
+		if (Layer != UpgradeLayer.Auto)
+			return Layer;
+
+		// No implicit inference from category: unresolved layer defaults to CoreAttack.
+		return UpgradeLayer.CoreAttack;
 	}
 }

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=14 format=3 uid="uid://bm8r67lsfg5sw"]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=13 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
@@ -9,116 +9,128 @@ Title = "Attack Speed +15%"
 Description = "Primary attack speed +15%."
 TitleKey = "CARD.ATK_SPEED_UP_15.TITLE"
 DescriptionKey = "CARD.ATK_SPEED_UP_15.DESC"
+Layer = 2
+Category = 0
 Weight = 14
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_AtkCooldownDown10"]
-script = ExtResource("2_definition_script")
-Id = 1
-Title = "Cooldown -10%"
-Description = "Primary cooldown -10%."
-TitleKey = "CARD.ATK_COOLDOWN_DOWN_10.TITLE"
-DescriptionKey = "CARD.ATK_COOLDOWN_DOWN_10.DESC"
-Weight = 13
 MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_AtkProjectilePlus1"]
 script = ExtResource("2_definition_script")
-Id = 2
+Id = 1
 Title = "+1 Projectile"
-Description = "Primary volley gains +1 projectile."
+Description = "Primary volley gains +1 same-axis projectile (tight spread)."
 TitleKey = "CARD.ATK_PROJECTILE_PLUS_1.TITLE"
 DescriptionKey = "CARD.ATK_PROJECTILE_PLUS_1.DESC"
-Weight = 9
+Layer = 2
+Category = 0
+Rarity = 1
+Weight = 6
 MaxStack = 2
+ExclusiveWith = Array[int]([2])
 
 [sub_resource type="Resource" id="Upgrade_AtkSplitShot"]
 script = ExtResource("2_definition_script")
-Id = 3
+Id = 2
 Title = "Split Shot"
-Description = "Primary shots split to side angles."
+Description = "On hit, splits from enemy position: 3->4->5->6 shots (max 6 is 360 deg, split shots deal 50%, non-chain)."
 TitleKey = "CARD.ATK_SPLIT_SHOT.TITLE"
 DescriptionKey = "CARD.ATK_SPLIT_SHOT.DESC"
+Layer = 2
+Category = 0
 Rarity = 1
 Weight = 7
-MaxStack = 2
+MaxStack = 4
+ExclusiveWith = Array[int]([1])
 
 [sub_resource type="Resource" id="Upgrade_AtkDamageUp20"]
 script = ExtResource("2_definition_script")
-Id = 4
+Id = 3
 Title = "Damage +20%"
 Description = "Primary damage +20%."
 TitleKey = "CARD.ATK_DAMAGE_UP_20.TITLE"
 DescriptionKey = "CARD.ATK_DAMAGE_UP_20.DESC"
+Layer = 2
+Category = 0
 Weight = 12
 MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_AtkCritChanceUp10"]
 script = ExtResource("2_definition_script")
-Id = 5
+Id = 4
 Title = "Crit Chance +10%"
 Description = "Primary crit chance +10%."
 TitleKey = "CARD.ATK_CRIT_CHANCE_UP_10.TITLE"
 DescriptionKey = "CARD.ATK_CRIT_CHANCE_UP_10.DESC"
+Layer = 2
+Category = 0
 Rarity = 1
 Weight = 8
 MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_SurvMaxHpPlus1"]
 script = ExtResource("2_definition_script")
-Id = 6
+Id = 5
 Title = "Max HP +1"
 Description = "Increase max HP by 1."
 TitleKey = "CARD.SURV_MAX_HP_PLUS_1.TITLE"
 DescriptionKey = "CARD.SURV_MAX_HP_PLUS_1.DESC"
+Layer = 1
 Category = 4
 Weight = 12
 MaxStack = 4
 
 [sub_resource type="Resource" id="Upgrade_SurvShieldCooldown"]
 script = ExtResource("2_definition_script")
-Id = 7
+Id = 6
 Title = "Shield"
 Description = "Absorb one hit, then enters cooldown."
 TitleKey = "CARD.SURV_SHIELD_COOLDOWN.TITLE"
 DescriptionKey = "CARD.SURV_SHIELD_COOLDOWN.DESC"
+Layer = 1
 Category = 4
 Rarity = 1
 Weight = 8
+MinUpgradeCount = 4
+MinPhase = 1
 
 [sub_resource type="Resource" id="Upgrade_SurvLifestealCloseKill"]
 script = ExtResource("2_definition_script")
-Id = 8
+Id = 7
 Title = "Kill-Chance Lifesteal"
 Description = "On kill: 12% chance to heal 1 HP."
 TitleKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.TITLE"
 DescriptionKey = "CARD.SURV_LIFESTEAL_CLOSE_KILL.DESC"
+Layer = 1
 Category = 4
 Rarity = 1
 Weight = 7
+MinUpgradeCount = 8
+MinPhase = 2
 
 [sub_resource type="Resource" id="Upgrade_EcoExpGainUp20"]
 script = ExtResource("2_definition_script")
-Id = 9
+Id = 8
 Title = "EXP Gain +20%"
 Description = "Gain 20% more EXP from pickups."
 TitleKey = "CARD.ECO_EXP_GAIN_UP_20.TITLE"
 DescriptionKey = "CARD.ECO_EXP_GAIN_UP_20.DESC"
+Layer = 6
 Category = 5
 Weight = 8
 MaxStack = 2
 
 [sub_resource type="Resource" id="Upgrade_EcoPickupRadiusUp25"]
 script = ExtResource("2_definition_script")
-Id = 10
+Id = 9
 Title = "Pickup Radius +25%"
 Description = "Increase EXP pickup radius by 25%."
 TitleKey = "CARD.ECO_PICKUP_RADIUS_UP_25.TITLE"
 DescriptionKey = "CARD.ECO_PICKUP_RADIUS_UP_25.DESC"
+Layer = 6
 Category = 5
 Weight = 8
 MaxStack = 2
 
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkCooldownDown10"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25")])
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25")])

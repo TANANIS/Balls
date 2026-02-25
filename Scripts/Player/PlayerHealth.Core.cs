@@ -28,10 +28,16 @@ public partial class PlayerHealth
 		_invincibleTimer = Mathf.Max(_invincibleTimer, duration);
 	}
 
+	public void SetDebugNoDamage(bool enabled)
+	{
+		_debugNoDamage = enabled;
+	}
+
 	public void TakeDamage(int amount, object source)
 	{
 		// Minimal safeguard in case someone bypasses CombatSystem
 		if (_isDead) return;
+		if (_debugNoDamage) return;
 		if (IsInvincible) return;
 		if (_shieldEnabled && _shieldCooldownTimer <= 0f)
 		{

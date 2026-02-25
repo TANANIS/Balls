@@ -937,3 +937,182 @@
 - Docs sync:
   - `docs/ART_DIFFERENTIATION_FANTASY_PIXEL_PLAN.md` visual touchpoints updated to new background asset set.
   - `docs/TODO.md` added pending decision item for grass shadow layer.
+
+## Session Update (2026-02-25, Upgrade Menu Late-Run Option Floor + Pending Consume Guard)
+- Upgrade option selection no longer hard-requires 3 candidates:
+  - `Scripts/Systems/Progression/UpgradeSystem.Options.cs`
+    - `TryPickOptions(...)` now returns up to requested count (1~3 in current menu flow) instead of failing when candidate pool is below 3.
+  - `Scripts/UI/UpgradeMenu.Options.cs`
+    - menu open now accepts any non-zero pick count,
+    - supports 1/2/3-option states,
+    - cancel random-pick now rolls only across currently available options.
+  - `Scripts/UI/UpgradeMenu.UI.cs`
+    - option buttons now bind via index dispatch,
+    - unavailable slots are hidden/disabled/focus-blocked.
+  - `Scripts/UI/UpgradeMenu.cs`
+    - added `_availableOptionCount` state and clear/reset handling on close.
+- Fixed pending-upgrade consume order to avoid lost charges:
+  - `Scripts/Systems/Progression/ProgressionSystem.cs`
+    - `TriggerUpgradeMenu(...)` now returns open-success state,
+    - `_pendingUpgradeOpens` is decremented only if menu actually opened.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Spawn Stall Mitigation - Far Enemy Recycle Leash)
+- Added distance+time stale-enemy recycle path to prevent max-alive deadlocks when enemies cannot reconnect to player:
+  - new module: `Scripts/Systems/Director/SpawnSystem.Recycle.cs`
+  - runtime contract:
+    - enemy must exceed `FarEnemyRecycleDistance`,
+    - remain far for `FarEnemyRecycleGraceSeconds`,
+    - and be older than `FarEnemyRecycleMinAgeSeconds`,
+    - then is recycled with per-check cap `FarEnemyRecycleMaxPerTick`.
+- Added recycle tuning exports under `SpawnSystem`:
+  - `EnableFarEnemyRecycle`
+  - `FarEnemyRecycleDistance`
+  - `FarEnemyRecycleGraceSeconds`
+  - `FarEnemyRecycleMinAgeSeconds`
+  - `FarEnemyRecycleCheckIntervalSeconds`
+  - `FarEnemyRecycleMaxPerTick`
+  - `RecycleProtectMiniBoss`
+  - `RequeueSameTypeOnRecycle`
+- Spawn integration points:
+  - `Scripts/Systems/Director/SpawnSystem.cs`
+    - calls `TickFarEnemyRecycle(...)` each physics tick,
+    - registers spawned enemies for recycle tracking.
+  - `Scripts/Systems/Director/SpawnSystem.MiniBossSchedule.cs`
+    - miniboss registration marks `protectFromRecycle=true`.
+  - `Scripts/Systems/Director/SpawnSystem.Runtime.cs`
+    - run reset now clears recycle tracking buffers/timers.
+- Safety behavior:
+  - dead enemies are ignored by recycle pass,
+  - protected miniboss entities are excluded by default,
+  - optional same-type requeue keeps pressure continuity after recycle.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Card Framework Completion Pass)
+- Card layer model completed and made backward-compatible with existing catalog:
+  - added enums:
+    - `Scripts/Upgrades/UpgradeLayer.cs`
+    - `Scripts/Upgrades/UpgradePoolPhase.cs`
+  - `Scripts/Upgrades/UpgradeDefinition.cs`
+    - added `Layer` field (`Auto` default),
+    - added `GetResolvedLayer()` to map legacy `UpgradeCategory` into layer contract.
+- Upgrade option model expanded for routing-ready metadata:
+  - `Scripts/Systems/Progression/UpgradeSystem.Types.cs`
+    - `UpgradeOptionData` now carries `Layer` and `PhasePoolWeight`.
+- Phase-based pool router implemented in runtime picker:
+  - `Scripts/Systems/Progression/UpgradeSystem.cs`
+    - added pool-router and weighting exports (`EnablePhasePoolRouter`, phase thresholds, decay toggles).
+  - `Scripts/Systems/Progression/UpgradeSystem.Options.cs`
+    - build pool now resolves layer per entry and applies `Early/Mid/Late` routing weights.
+    - strict filter + safe fallback behavior added for pool exhaustion safety.
+    - added category weight decay model (with floor) to reduce repeated same-category snowball picks.
+- Catalog integrity validation added:
+  - `Scripts/Systems/Progression/UpgradeSystem.Validation.cs`
+    - warns on duplicate IDs, invalid/missing references, self prerequisite/exclusive, and empty phase coverage risks.
+- Upgrade UI text framework enriched (no scene break):
+  - `Scripts/UI/UpgradeMenu.UI.cs`
+    - card button text now includes rarity and stack progress context.
+    - button icon now binds from option `Icon`.
+- Docs sync:
+  - `docs/CARDS.md`
+    - framework checklist updated to mark completed items (layer map / phase router / validation / decay).
+  - `docs/CARDS_CHANGELOG.md`
+    - added `2026-02-25 - Card Framework Pass (Layer/Phase Router/Validation)`.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Card Spec Alignment + Cooldown Removal + Survival Timing Gates)
+- Spec alignment applied in docs:
+  - `docs/CARDS.md`
+    - fixed Early pool ratio total to 100% (`Modifier 10% -> 5%`),
+    - clarified dual-axis contract:
+      - `Layer` = phase-pool routing axis,
+      - `Category` = decay/statistics axis,
+      - no implicit inference between the two,
+    - added survival timing-gate rule description (`MinUpgradeCount`, `MinPhase`, optional `MaxPhase`).
+- Removed cooldown card from active runtime set:
+  - `Scripts/Upgrades/UpgradeId.cs`
+    - removed `AtkCooldownDown10`.
+  - `Scripts/Systems/Progression/UpgradeSystem.cs`
+    - removed cooldown apply branch and related curve helper.
+  - `Data/Upgrades/DefaultUpgradeCatalog.tres`
+    - removed `Upgrade_AtkCooldownDown10`,
+    - reindexed subsequent enum ids,
+    - updated active entries array.
+  - `Data/Localization/Cards.csv`
+    - removed `CARD.ATK_COOLDOWN_DOWN_10.*` localization rows.
+- Added survival strong-card timing gates in runtime:
+  - `Scripts/Upgrades/UpgradeDefinition.cs`
+    - added gate fields:
+      - `MinUpgradeCount`
+      - `MinPhase`
+      - `UseMaxPhaseGate`
+      - `MaxPhase`
+    - layer resolution now defaults to `CoreAttack` when unset (no category inference path).
+  - `Scripts/Systems/Progression/UpgradeSystem.Options.cs`
+    - added gate eligibility check in selection path.
+  - `Data/Upgrades/DefaultUpgradeCatalog.tres`
+    - `SURV_SHIELD_COOLDOWN`: `MinPhase=Mid` or `MinUpgradeCount=4`
+    - `SURV_LIFESTEAL_CLOSE_KILL`: `MinPhase=Late` or `MinUpgradeCount=8`
+- Runtime/framework consistency updates:
+  - `Scripts/Systems/Progression/UpgradeSystem.Options.cs`
+    - updated Early pool modifier weight from `0.10` to `0.05` (matching spec).
+  - `Scripts/Systems/Progression/UpgradeSystem.Validation.cs`
+    - added validation warnings for `Layer=Auto` and invalid phase gate ranges.
+  - `docs/CARDS_CHANGELOG.md`
+    - added new entry documenting cooldown removal + timing gates.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-02-25, Card Identity Split Refinement)
+- CoreAttack card identity separation:
+  - ATK_SPLIT_SHOT reworked to on-hit split behavior (implemented in projectile hit pipeline).
+  - Split child projectile damage set to 60% and explicitly non-chaining.
+  - ATK_PROJECTILE_PLUS_1 kept as same-axis tight-spread volley for single-target pressure.
+- Mutual exclusion and balance safety:
+  - Added mutual exclusion between ATK_PROJECTILE_PLUS_1 and ATK_SPLIT_SHOT (runtime safety check + catalog exclusives).
+  - Adjusted projectile+ rarity/weight to reduce overlap pressure (Rare, Weight=6).
+- Docs and localization sync:
+  - Updated docs/CARDS.md and docs/CARDS_CHANGELOG.md for new split trigger model, non-chain rule, and exclusivity.
+  - Updated card localization descriptions for projectile+ and split-shot behavior text.
+
+## Session Update (2026-02-25, Split Projectile Variant Prefab + Shared Script Convention)
+- Split-shot projectile architecture update:
+  - kept shared runtime behavior in Scripts/Projectiles/Bullet.cs.
+  - added variant-prefab path for split child spawn via exported field:
+    - SplitChildProjectileScene (preferred spawn source for split bullets).
+  - fallback order for split spawn now:
+    - SplitChildProjectileScene -> source projectile scene -> current scene file.
+- Added projectile variant speed override at prefab level:
+  - RuntimeSpeedScale export in Bullet.
+  - runtime init now applies scene-level speed multiplier.
+- Added dedicated split projectile prefab:
+  - Prefabs/SplitProjectile.tscn
+  - uses Bullet.cs with independent visual setup and lower runtime speed scale.
+- Wired primary projectile prefabs to use split-child prefab:
+  - Prefabs/WizardProjectile.tscn
+  - Prefabs/PriestProjectile.tscn
+  - both now set SplitChildProjectileScene = res://Prefabs/SplitProjectile.tscn.
+- Split damage tuning consistency:
+  - split child damage multiplier set to 50% ( .5) with accumulated fractional damage path.
+- Docs sync:
+  - docs/CARDS.md: added Projectile Variant Convention (same script + different prefab + overridable params/textures).
+  - docs/CARDS_CHANGELOG.md: added new entry for split projectile prefab separation and shared-script path.
+
+## Session Update (2026-02-25, Split Projectile Animation + Hit Sync Tuning)
+- Split projectile visual source migrated to dedicated animation folder:
+  - `Assets/Sprites/SPLITBULLET/1.png` ~ `7.png`.
+  - `Prefabs/SplitProjectile.tscn` now binds these as `EffectFrames`.
+- Visual/timing alignment:
+  - animation window split to `Flight 0..5`, `Impact 6` to avoid flight/impact ambiguity.
+  - split projectile scale reduced to ~2/3 of primary shot:
+    - `AnimatedSprite2D scale: 3.33 -> 1.33` (primary remains `2.0`).
+  - collider tuned to match visual silhouette:
+    - `CircleShape2D radius: 12 -> 9`.
+- Hit reliability tuning:
+  - split child projectile no longer uses global hit arm delay.
+  - short ignore window remains only for the original hit target, avoiding immediate same-target re-hit while allowing immediate damage to nearby enemies.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).

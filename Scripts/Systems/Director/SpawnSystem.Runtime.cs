@@ -112,6 +112,11 @@ public partial class SpawnSystem
 		_pendingSpawns.Clear();
 		_spawnStepTimer = 0f;
 		_timer = 0f;
+		_enemyRecycleTrack.Clear();
+		_recycleBuffer.Clear();
+		_recycleAliveIds.Clear();
+		_recyclePruneIds.Clear();
+		_recycleCheckTimer = 0f;
 
 		_miniBossScheduled = false;
 		_miniBossSpawned = false;

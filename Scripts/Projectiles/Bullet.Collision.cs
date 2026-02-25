@@ -16,6 +16,10 @@ public partial class Bullet
 	{
 		if (_hasHit || _impactStarted)
 			return;
+		if (_hitArmDelayTimer > 0f)
+			return;
+		if (_ignoreTargetTimer > 0f && _ignoreTargetInstanceId != 0 && (ulong)other.GetInstanceId() == _ignoreTargetInstanceId)
+			return;
 
 		if (other.IsInGroup("World"))
 		{
@@ -38,11 +42,14 @@ public partial class Bullet
 			target: other,
 			baseDamage: _damage,
 			worldPos: GlobalPosition,
-			tag: DamageTag
+			tag: DamageTag,
+			damageScale: _damageScale
 		);
 
-		_combat.RequestDamage(req);
-		AudioManager.Instance?.PlaySfxPlayerHitEnemy();
+		bool didDealDamage = _combat.RequestDamage(req);
+		TrySpawnSplitShotsOnHit(other);
+		if (didDealDamage)
+			AudioManager.Instance?.PlaySfxPlayerHitEnemy();
 		_hasHit = true;
 		BeginImpact();
 	}

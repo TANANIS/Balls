@@ -1,7 +1,7 @@
 # Cards Spec
 
 ## Current Status
-- Runtime card pool is active with Batch 01 (11 cards).
+- Runtime card pool is active with Batch 01 (10 cards).
 - Card effects are bound in `UpgradeSystem` and `ProgressionSystem`.
 
 ## Document Purpose
@@ -24,7 +24,7 @@ Design intent:
 ### 2) Core Attack Layer
 Example cards:
 - Attack Speed
-- Cooldown
+- Projectile Count
 - Damage
 - Split Shot
 - Ricochet
@@ -91,7 +91,7 @@ Design intent:
 - Survival: 40%
 - Core Attack: 40%
 - Subsystem: 10%
-- Modifier: 10%
+- Modifier: 5%
 - Economy: 5%
 - Meta Rules / Director Interaction: 0%
 
@@ -128,6 +128,10 @@ Note:
 
 ## Survival Layer Constraints
 - Avoid early no-brainer defense stacking (`Shield + Lifesteal + Damage Reduction`).
+- Strong survival cards must use timing gates:
+  - Gate fields: `MinUpgradeCount`, `MinPhase`, optional `MaxPhase`.
+  - Gate rule (runtime): if both `MinUpgradeCount` and `MinPhase` are set, either one can unlock the card; `MaxPhase` limits late availability when enabled.
+  - Current examples: `Shield` opens at `Mid` or `pick>=4`; `Lifesteal` opens at `Late` or `pick>=8`.
 - Survival cards should have cost/condition:
   - Lifesteal triggers by kill chance (not guaranteed sustain).
   - Shield requires movement or no-hit maintenance.
@@ -140,10 +144,15 @@ Note:
 - `Description`
 - `TitleKey` (for localization; e.g. `CARD.XXX.TITLE`)
 - `DescriptionKey` (for localization; e.g. `CARD.XXX.DESC`)
-- `Layer` (`Survival`, `CoreAttack`, `Subsystem`, `Modifier`, `Identity`, `Economy`, `MetaRules`)
+- `Layer` (`Survival`, `CoreAttack`, `Subsystem`, `Modifier`, `Identity`, `Economy`, `MetaRules`) for phase-pool routing only
+- `Category` (selection analytics + weight decay axis; independent from `Layer`)
 - `Rarity`
 - `Weight`
 - `MaxStack`
+- `MinUpgradeCount` (optional gate)
+- `MinPhase` (optional gate)
+- `UseMaxPhaseGate` (optional gate toggle)
+- `MaxPhase` (optional gate; active only when `UseMaxPhaseGate=true`)
 - `Prerequisites`
 - `ExclusiveWith`
 - `CharacterGate` (optional; for identity layer)
@@ -153,11 +162,10 @@ Note:
 
 ### Core Attack - Frequency
 - `ATK_SPEED_UP_15` : Attack Speed +15%
-- `ATK_COOLDOWN_DOWN_10` : Cooldown -10%
 
 ### Core Attack - Quantity
-- `ATK_PROJECTILE_PLUS_1` : +1 Projectile
-- `ATK_SPLIT_SHOT` : Split Shot (`MaxStack = 2`)
+- `ATK_PROJECTILE_PLUS_1` : +1 Projectile (same-axis tight spread, single-target focus, `MaxStack = 2`)
+- `ATK_SPLIT_SHOT` : On-Hit Split Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360°`, child damage `50%`, non-chain)
 
 ### Core Attack - Power
 - `ATK_DAMAGE_UP_20` : Damage +20%
@@ -179,9 +187,8 @@ This table is the first practical pass for in-run balancing.
 | CardId | Layer | Base Effect (Stack 1) | Diminishing Curve | MaxStack | Base Weight |
 |---|---|---|---|---:|---:|
 | `ATK_SPEED_UP_15` | CoreAttack | Attack interval x`0.87` (~+15% rate) | x`0.89` (S2), x`0.93` (S3) | 3 | 14 |
-| `ATK_COOLDOWN_DOWN_10` | CoreAttack | Cooldown x`0.90` | x`0.92` (S2), x`0.94` (S3) | 3 | 13 |
-| `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` projectile | linear | 2 | 9 |
-| `ATK_SPLIT_SHOT` | CoreAttack | split level `+1` | linear (hard-capped) | 2 | 7 |
+| `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` same-axis projectile (tight spread) | linear | 2 | 6 |
+| `ATK_SPLIT_SHOT` | CoreAttack | on-hit split from enemy pos: `3->4->5->6` (max stack `360°`, child x`0.50`, non-chain) | linear (hard-capped, stack increases split count) | 4 | 7 |
 | `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.20` | x`1.15` (S2), x`1.10` (S3) | 3 | 12 |
 | `ATK_CRIT_CHANCE_UP_10` | CoreAttack | Crit chance `+10%` | `+8%` (S2), `+6%` (S3) | 3 | 8 |
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
@@ -192,11 +199,13 @@ This table is the first practical pass for in-run balancing.
 
 ### Derived Ceiling Snapshot (Round 1)
 - `ATK_SPEED_UP_15` total rate multiplier at 3 stacks: about `1.39x`.
-- `ATK_COOLDOWN_DOWN_10` total rate multiplier at 3 stacks: about `1.28x`.
 - `ATK_DAMAGE_UP_20` total damage multiplier at 3 stacks: about `1.52x`.
 - `ATK_CRIT_CHANCE_UP_10` expected DPS multiplier at 3 stacks (crit x1.5): about `1.12x`.
 
 Use this snapshot as first-pass tuning anchors for playtests.
+
+Additional rule:
+- `ATK_PROJECTILE_PLUS_1` and `ATK_SPLIT_SHOT` are mutually exclusive archetypes (single-target line pressure vs crowd-clear branching).
 
 ## Bilingual Workflow (zh_TW / en)
 - Runtime source:
@@ -230,9 +239,32 @@ Use this snapshot as first-pass tuning anchors for playtests.
     - Cooldown: dim/blink near cooldown end
     - Hit consume: short white flash, then hidden until cooldown completes
 
+## Projectile Variant Convention (Current)
+- Runtime script stays shared:
+  - `Scripts/Projectiles/Bullet.cs` is the common behavior host (hit, damage request, split, effect animation).
+- Variant control uses prefab split (not script split):
+  - Primary projectile: existing character projectile prefabs (`WizardProjectile.tscn` / `PriestProjectile.tscn`).
+  - Split projectile: `Prefabs/SplitProjectile.tscn`.
+- Split generation rule:
+  - `Bullet.SplitChildProjectileScene` is preferred for split child spawn.
+  - Fallback order: `SplitChildProjectileScene -> source projectile scene -> current scene file`.
+- Override policy:
+  - Keep script logic unified.
+  - Put variant-specific visuals and runtime tuning in prefab exports (`RuntimeSpeedScale`, effect textures/frames, collider size, etc.).
+- Current split projectile baseline (`Prefabs/SplitProjectile.tscn`):
+  - Visual frames: `Assets/Sprites/SPLITBULLET/1.png` ~ `7.png`.
+  - Flight/impact frame split: `Flight 0..5`, `Impact 6`.
+  - Relative size target: split child visual scale should stay around primary projectile `2/3` (`1.33` vs primary `2.0`).
+  - Collider baseline: `CircleShape2D radius = 9` (kept close to visible silhouette).
+  - Hit timing rule: split child has no global hit-arm delay; it only ignores the original hit target for a short window to avoid immediate same-target re-hit.
+- Benefit:
+  - Split projectiles can run slower and use dedicated art.
+  - Future projectile-wide VFX/system hooks remain shared because all variants still run `Bullet.cs`.
+
 ## Next Implementation Checklist
-- [ ] Implement layer enum and map existing category model
-- [ ] Add phase-based pool router (Early/Mid/Late)
-- [ ] Add stack-limit and mutual-exclusion validation
-- [ ] Add category weight decay (cost-increase model)
+- [x] Implement dual-axis contract (`Layer` for phase routing + `Category` for decay/statistics)
+- [x] Add phase-based pool router (Early/Mid/Late)
+- [x] Add stack-limit and mutual-exclusion validation
+- [x] Add category weight decay (cost-increase model)
+- [ ] Add deterministic draw simulator (editor/console, fixed seed, 10,000 runs, N picks/run) with report outputs for card rate, pair/triple combos, ceiling-combo probability, and phase survival ratio validation (target error <= 2%).
 - [ ] Define first batch cards for each layer

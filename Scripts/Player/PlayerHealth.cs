@@ -41,6 +41,7 @@ public partial class PlayerHealth : Node
 	private int _hp;
 	private bool _isDead = false;
 	private float _invincibleTimer = 0f;
+	private bool _debugNoDamage = false;
 	private float _regenTimer = 0f;
 	private bool _shieldEnabled = false;
 	private float _shieldCooldownSeconds = 0f;
@@ -58,6 +59,7 @@ public partial class PlayerHealth : Node
 	public int Hp => _hp;
 	public bool IsDead => _isDead;
 	public bool IsInvincible => _invincibleTimer > 0f;
+	public bool IsDebugNoDamage => _debugNoDamage;
 	public bool IsShieldEnabled => _shieldEnabled;
 	public bool IsShieldReady => _shieldEnabled && _shieldCooldownTimer <= 0f;
 	public float ShieldCooldownRemaining => Mathf.Max(0f, _shieldCooldownTimer);

@@ -13,12 +13,13 @@ public partial class UpgradeSystem
 			return false;
 
 		var candidates = BuildOptionPool();
-		if (candidates.Count < count)
+		if (candidates.Count <= 0)
 		{
 			return false;
 		}
 
-		for (int i = 0; i < count; i++)
+		int pickCount = Mathf.Min(count, candidates.Count);
+		for (int i = 0; i < pickCount; i++)
 		{
 			int idx = PickWeightedIndex(rng, candidates);
 			if (idx < 0 || idx >= candidates.Count)
@@ -29,7 +30,7 @@ public partial class UpgradeSystem
 		}
 
 		UpdatePityCounters(picks);
-		return true;
+		return picks.Count > 0;
 	}
 
 	private List<UpgradeOptionData> BuildOptionPool()
@@ -58,6 +59,7 @@ public partial class UpgradeSystem
 					entry.GetLocalizedTitle(),
 					entry.GetLocalizedDescription(),
 					entry.Category,
+					entry.GetResolvedLayer(),
 					entry.Rarity,
 					stack,
 					Mathf.Max(1, entry.MaxStack),
@@ -75,7 +77,36 @@ public partial class UpgradeSystem
 			}
 		}
 
+		if (EnablePhasePoolRouter && pool.Count > 0)
+			pool = ApplyPhasePoolRouting(pool);
+
 		return pool;
+	}
+
+	private List<UpgradeOptionData> ApplyPhasePoolRouting(List<UpgradeOptionData> source)
+	{
+		var routed = new List<UpgradeOptionData>(source.Count);
+		UpgradePoolPhase phase = GetCurrentPoolPhase();
+
+		for (int i = 0; i < source.Count; i++)
+		{
+			UpgradeOptionData option = source[i];
+			float phaseWeight = GetPhaseLayerWeight(phase, option.Layer);
+			UpgradeOptionData withPhaseWeight = option.WithPhasePoolWeight(phaseWeight);
+			if (withPhaseWeight.PhasePoolWeight > 0f)
+				routed.Add(withPhaseWeight);
+		}
+
+		if (routed.Count > 0)
+			return routed;
+		if (PhasePoolStrictFilter)
+			return routed;
+
+		// Safety fallback: if strict filter empties the pool, keep run stable.
+		var relaxed = new List<UpgradeOptionData>(source.Count);
+		for (int i = 0; i < source.Count; i++)
+			relaxed.Add(source[i].WithPhasePoolWeight(1f));
+		return relaxed;
 	}
 
 	private bool IsUpgradeCompatibleWithCurrentCharacter(UpgradeId id)
@@ -86,7 +117,6 @@ public partial class UpgradeSystem
 		return id switch
 		{
 			UpgradeId.AtkSpeedUp15 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
-			UpgradeId.AtkCooldownDown10 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
 			UpgradeId.AtkDamageUp20 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
 			UpgradeId.AtkProjectilePlus1 => _player.PrimarySupportsRanged(),
 			UpgradeId.AtkSplitShot => _player.PrimarySupportsRanged(),
@@ -102,6 +132,8 @@ public partial class UpgradeSystem
 
 		int maxStack = Mathf.Max(1, definition.MaxStack);
 		if (GetStack(definition.Id) >= maxStack)
+			return false;
+		if (!IsDefinitionGateOpen(definition))
 			return false;
 
 		if (definition.Prerequisites != null)
@@ -122,6 +154,12 @@ public partial class UpgradeSystem
 			}
 		}
 
+		// Runtime safety fuse: keep projectile volley and split-shot as mutually exclusive archetypes.
+		if (definition.Id == UpgradeId.AtkProjectilePlus1 && GetStack(UpgradeId.AtkSplitShot) > 0)
+			return false;
+		if (definition.Id == UpgradeId.AtkSplitShot && GetStack(UpgradeId.AtkProjectilePlus1) > 0)
+			return false;
+
 		foreach (var pair in _definitions)
 		{
 			if (GetStack(pair.Key) <= 0)
@@ -137,6 +175,34 @@ public partial class UpgradeSystem
 					return false;
 			}
 		}
+
+		return true;
+	}
+
+	private bool IsDefinitionGateOpen(UpgradeDefinition definition)
+	{
+		if (definition == null)
+			return false;
+
+		int requiredPickCount = Mathf.Max(0, definition.MinUpgradeCount);
+		bool hasMinCountGate = requiredPickCount > 0;
+		bool hasMinPhaseGate = definition.MinPhase > UpgradePoolPhase.Early;
+		UpgradePoolPhase currentPhase = GetCurrentPoolPhase();
+
+		if (hasMinCountGate || hasMinPhaseGate)
+		{
+			bool passAny = false;
+			if (hasMinCountGate && _appliedUpgradeCount >= requiredPickCount)
+				passAny = true;
+			if (hasMinPhaseGate && currentPhase >= definition.MinPhase)
+				passAny = true;
+
+			if (!passAny)
+				return false;
+		}
+
+		if (definition.UseMaxPhaseGate && currentPhase > definition.MaxPhase)
+			return false;
 
 		return true;
 	}
@@ -167,6 +233,10 @@ public partial class UpgradeSystem
 
 	private float GetEffectiveWeight(UpgradeOptionData option)
 	{
+		float phaseWeight = Mathf.Max(0f, option.PhasePoolWeight);
+		if (phaseWeight <= 0f)
+			return 0f;
+
 		float rarityWeight = option.Rarity switch
 		{
 			UpgradeRarity.Common => 1f,
@@ -175,9 +245,7 @@ public partial class UpgradeSystem
 			_ => 1f
 		};
 
-		int categoryPicks = 0;
-		_categoryPickCounts.TryGetValue(option.Category, out categoryPicks);
-		float categoryBias = 1f + (categoryPicks * Mathf.Max(0f, CategoryBiasPerPick));
+		float categoryWeight = GetCategoryWeightFactor(option.Category);
 
 		float pityBonus = 1f;
 		if (option.Rarity == UpgradeRarity.Rare && _offersWithoutRare >= Mathf.Max(1, RarePityThreshold))
@@ -186,10 +254,70 @@ public partial class UpgradeSystem
 			pityBonus = 2.2f;
 
 		if (!TryGetDefinition(option.Id, out var def))
-			return Mathf.Max(0.01f, rarityWeight * categoryBias * pityBonus);
+			return Mathf.Max(0.01f, phaseWeight * rarityWeight * categoryWeight * pityBonus);
 
 		int baseWeight = Mathf.Max(1, def.Weight);
-		return baseWeight * rarityWeight * categoryBias * pityBonus;
+		return Mathf.Max(0.01f, baseWeight * phaseWeight * rarityWeight * categoryWeight * pityBonus);
+	}
+
+	private float GetCategoryWeightFactor(UpgradeCategory category)
+	{
+		_categoryPickCounts.TryGetValue(category, out int categoryPicks);
+		if (!UseCategoryWeightDecay)
+			return 1f + (categoryPicks * Mathf.Max(0f, CategoryBiasPerPick));
+
+		float decayPerPick = Mathf.Clamp(CategoryWeightDecayPerPick, 0f, 1f);
+		float floor = Mathf.Clamp(CategoryWeightDecayFloor, 0.01f, 1f);
+		float decay = 1f - (categoryPicks * decayPerPick);
+		return Mathf.Max(floor, decay);
+	}
+
+	private UpgradePoolPhase GetCurrentPoolPhase()
+	{
+		int applied = Mathf.Max(0, _appliedUpgradeCount);
+		int progressionLevel = Mathf.Max(0, _progressionSystem?.CurrentUpgradeLevel ?? 0);
+		int signal = Mathf.Max(applied, progressionLevel);
+
+		int mid = Mathf.Max(0, MidPoolStartUpgradeCount);
+		int late = Mathf.Max(mid, LatePoolStartUpgradeCount);
+		if (signal >= late)
+			return UpgradePoolPhase.Late;
+		if (signal >= mid)
+			return UpgradePoolPhase.Mid;
+		return UpgradePoolPhase.Early;
+	}
+
+	private static float GetPhaseLayerWeight(UpgradePoolPhase phase, UpgradeLayer layer)
+	{
+		return phase switch
+		{
+			UpgradePoolPhase.Early => layer switch
+			{
+				UpgradeLayer.Survival => 0.40f,
+				UpgradeLayer.CoreAttack => 0.40f,
+				UpgradeLayer.Subsystem => 0.10f,
+				UpgradeLayer.Modifier => 0.05f,
+				UpgradeLayer.Economy => 0.05f,
+				_ => 0f
+			},
+			UpgradePoolPhase.Mid => layer switch
+			{
+				UpgradeLayer.Survival => 0.20f,
+				UpgradeLayer.CoreAttack => 0.40f,
+				UpgradeLayer.Subsystem => 0.25f,
+				UpgradeLayer.Modifier => 0.15f,
+				_ => 0f
+			},
+			UpgradePoolPhase.Late => layer switch
+			{
+				UpgradeLayer.Survival => 0.10f,
+				UpgradeLayer.CoreAttack => 0.30f,
+				UpgradeLayer.Subsystem => 0.30f,
+				UpgradeLayer.Modifier => 0.30f,
+				_ => 0f
+			},
+			_ => 1f
+		};
 	}
 
 	private void UpdatePityCounters(List<UpgradeOptionData> picks)

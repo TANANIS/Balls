@@ -1,12 +1,10 @@
 keys,en,zh_TW
 CARD.ATK_SPEED_UP_15.TITLE,Attack Speed +15%,攻速 +15%
 CARD.ATK_SPEED_UP_15.DESC,Primary attack speed +15%.,主武器攻擊速度 +15%。
-CARD.ATK_COOLDOWN_DOWN_10.TITLE,Cooldown -10%,冷卻 -10%
-CARD.ATK_COOLDOWN_DOWN_10.DESC,Primary cooldown -10%.,主武器冷卻 -10%。
 CARD.ATK_PROJECTILE_PLUS_1.TITLE,+1 Projectile,+1 投射物
-CARD.ATK_PROJECTILE_PLUS_1.DESC,Primary volley gains +1 projectile.,主武器每次齊射額外 +1 投射物。
+CARD.ATK_PROJECTILE_PLUS_1.DESC,Primary volley gains +1 same-axis projectile (tight spread).,主武器每次齊射額外 +1 同軸投射物（窄散射）。
 CARD.ATK_SPLIT_SHOT.TITLE,Split Shot,分裂射擊
-CARD.ATK_SPLIT_SHOT.DESC,Primary shots split to side angles.,主武器射擊會向兩側分裂。
+CARD.ATK_SPLIT_SHOT.DESC,On hit, splits from enemy position: 3->4->5->6 shots (max 6 is 360 deg, split shots deal 50%, non-chain).,命中後以敵人位置分裂：3->4->5->6 發（6 發時 360 度，分裂彈為 50% 傷害，不連鎖）。
 CARD.ATK_DAMAGE_UP_20.TITLE,Damage +20%,傷害 +20%
 CARD.ATK_DAMAGE_UP_20.DESC,Primary damage +20%.,主武器傷害 +20%。
 CARD.ATK_CRIT_CHANCE_UP_10.TITLE,Crit Chance +10%,暴擊率 +10%

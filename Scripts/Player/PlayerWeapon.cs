@@ -130,17 +130,11 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		}
 		else
 		{
-			float spacing = 7f;
+			// Projectile+ is a same-axis volley by design; keep spread tight for single-target focus.
+			float spacing = PrecisionSingleLine ? 3f : 7f;
 			float start = -spacing * (count - 1) * 0.5f;
 			for (int i = 0; i < count; i++)
 				angles.Add(start + (spacing * i));
-		}
-
-		for (int level = 1; level <= Mathf.Clamp(SplitShotLevel, 0, 2); level++)
-		{
-			float offset = 12f + ((level - 1) * 10f);
-			angles.Add(offset);
-			angles.Add(-offset);
 		}
 
 		return angles;
@@ -162,7 +156,21 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		Node bullet = ProjectileScene.Instantiate();
 		if (bullet is Node2D bullet2D)
 			bullet2D.GlobalPosition = _player.GlobalPosition;
-		bullet.Call("InitFromPlayer", _player, dir.Normalized(), speed, damage);
+		if (bullet is Bullet typedBullet)
+		{
+			typedBullet.InitFromPlayer(
+				_player,
+				dir.Normalized(),
+				speed,
+				damage,
+				Mathf.Clamp(SplitShotLevel, 0, 4),
+				canSplitOnHit: true,
+				projectileScene: ProjectileScene);
+		}
+		else
+		{
+			bullet.Call("InitFromPlayer", _player, dir.Normalized(), speed, damage);
+		}
 		_projectileContainer.AddChild(bullet);
 	}
 
@@ -272,7 +280,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 	public void AddSplitShotLevel(int amount)
 	{
-		SplitShotLevel = Mathf.Clamp(SplitShotLevel + amount, 0, 2);
+		SplitShotLevel = Mathf.Clamp(SplitShotLevel + amount, 0, 4);
 	}
 
 	public void AddCritChance(float amount)

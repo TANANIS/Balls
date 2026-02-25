@@ -1,7 +1,6 @@
 public enum UpgradeId
 {
 	AtkSpeedUp15,
-	AtkCooldownDown10,
 	AtkProjectilePlus1,
 	AtkSplitShot,
 	AtkDamageUp20,

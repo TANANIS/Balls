@@ -100,5 +100,6 @@ public partial class SpawnSystem
 		}
 
 		_enemiesRoot.AddChild(miniBoss);
+		RegisterSpawnedEnemy(miniBoss, MiniBossEnemyId, protectFromRecycle: true);
 	}
 }

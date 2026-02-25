@@ -144,13 +144,33 @@ public partial class ProgressionSystem : Node
 		TriggerUpgradeMenu("boss/event exception");
 	}
 
-	private void TriggerUpgradeMenu(string reason)
+	public bool DebugForceOpenUpgradeMenu()
+	{
+		return TriggerUpgradeMenu("debug cheat");
+	}
+
+	public void DebugGrantUpgradeLevels(int levels, bool openMenu = true)
+	{
+		int amount = Mathf.Max(0, levels);
+		if (amount <= 0)
+			return;
+
+		_upgradeLevel += amount;
+		_pendingUpgradeOpens += amount;
+		_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+
+		if (openMenu)
+			TryConsumePendingUpgrade("debug cheat grant level");
+	}
+
+	private bool TriggerUpgradeMenu(string reason)
 	{
 		EnsureUpgradeMenu();
 		if (_upgradeMenu == null || _upgradeMenu.IsOpen)
-			return;
+			return false;
 
 		_upgradeMenu.OpenMenu();
+		return _upgradeMenu.IsOpen;
 	}
 
 	private void TryConsumePendingUpgrade(string reason)
@@ -161,8 +181,8 @@ public partial class ProgressionSystem : Node
 		if (_pendingUpgradeOpens <= 0)
 			return;
 
-		_pendingUpgradeOpens--;
-		TriggerUpgradeMenu(reason);
+		if (TriggerUpgradeMenu(reason))
+			_pendingUpgradeOpens--;
 	}
 
 	private void OnEnemyKilled(Node source, Node target)

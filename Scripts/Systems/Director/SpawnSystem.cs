@@ -181,6 +181,7 @@ public partial class SpawnSystem : Node
 		EnsureStabilitySystem();
 		UpdateTierRuntimeSettings();
 		UpdatePhaseTailMiniBossSchedule((float)delta);
+		TickFarEnemyRecycle((float)delta);
 
 		if (_spawnFreezeTimer > 0f)
 			return;
@@ -320,6 +321,7 @@ public partial class SpawnSystem : Node
 		enemy.GlobalPosition = position;
 		ApplyEnemyOverrides(enemy, definition);
 		_enemiesRoot.AddChild(enemy);
+		RegisterSpawnedEnemy(enemy, definition.Id, protectFromRecycle: false);
 		return true;
 	}
 

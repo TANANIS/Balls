@@ -10,6 +10,7 @@ public partial class CombatSystem : Node
 	[Export] public float TankBulletBonusKnockbackDuration = 0.14f;
 
 	private readonly HashSet<ulong> _frameHitGuard = new();
+	private readonly Dictionary<ulong, float> _fractionalCarry = new();
 	private ulong _lastFrame = 0;
 	public event Action<Node, Node> EnemyKilled;
 
@@ -48,13 +49,13 @@ public partial class CombatSystem : Node
 		if (damageable.IsInvincible)
 			return false;
 
-		int finalDamage = req.BaseDamage;
-		if (finalDamage <= 0)
+		float rawDamage = Mathf.Max(0f, req.BaseDamage * req.DamageScale);
+		if (rawDamage <= 0f)
 			return false;
 
 		if (IsTankBulletRequest(req, out Enemy targetEnemy))
 		{
-			finalDamage += Mathf.Max(0, TankBulletBonusDamage);
+			rawDamage += Mathf.Max(0, TankBulletBonusDamage);
 
 			Vector2 pushDir = targetEnemy.GlobalPosition - req.WorldPos;
 			if (pushDir.LengthSquared() < 0.0001f)
@@ -65,11 +66,26 @@ public partial class CombatSystem : Node
 			targetEnemy.ApplySeparation(pushDir, Mathf.Max(0f, TankBulletBonusKnockback), Mathf.Max(0.01f, TankBulletBonusKnockbackDuration));
 		}
 
+		_fractionalCarry.TryGetValue(guardKey, out float carry);
+		rawDamage += Mathf.Max(0f, carry);
+		int finalDamage = Mathf.FloorToInt(rawDamage);
+		float remain = rawDamage - finalDamage;
+		if (remain > 0.0001f)
+			_fractionalCarry[guardKey] = remain;
+		else
+			_fractionalCarry.Remove(guardKey);
+		if (finalDamage <= 0)
+			return false;
+
 		bool wasDead = damageable.IsDead;
 		damageable.TakeDamage(finalDamage, req.Source);
 
-		if (!wasDead && damageable.IsDead && req.Target is EnemyHurtbox)
-			EnemyKilled?.Invoke(req.Source, req.Target);
+		if (!wasDead && damageable.IsDead)
+		{
+			_fractionalCarry.Remove(guardKey);
+			if (req.Target is EnemyHurtbox)
+				EnemyKilled?.Invoke(req.Source, req.Target);
+		}
 
 		return true;
 	}

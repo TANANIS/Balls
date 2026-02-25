@@ -16,23 +16,46 @@ public partial class UpgradeMenu
 			return;
 		}
 
-		_leftButton.Pressed += () => ApplyOption(_leftOption);
-		_middleButton.Pressed += () => ApplyOption(_middleOption);
-		_rightButton.Pressed += () => ApplyOption(_rightOption);
+		_leftButton.Pressed += () => ApplyOptionByIndex(0);
+		_middleButton.Pressed += () => ApplyOptionByIndex(1);
+		_rightButton.Pressed += () => ApplyOptionByIndex(2);
 	}
 
 	private void RefreshButtons()
 	{
 		if (_title != null)
 			_title.Text = Tr("UI.UPGRADE.TITLE");
-		_leftButton.Text = FormatOptionText(_leftOption);
-		_middleButton.Text = FormatOptionText(_middleOption);
-		_rightButton.Text = FormatOptionText(_rightOption);
+		RefreshOptionButton(_leftButton, _leftOption, _availableOptionCount >= 1);
+		RefreshOptionButton(_middleButton, _middleOption, _availableOptionCount >= 2);
+		RefreshOptionButton(_rightButton, _rightOption, _availableOptionCount >= 3);
 	}
 
 	private static string FormatOptionText(UpgradeSystem.UpgradeOptionData option)
 	{
-		return $"{option.Title}\n{option.Description}";
+		string rarity = option.Rarity switch
+		{
+			UpgradeRarity.Epic => "EPIC",
+			UpgradeRarity.Rare => "RARE",
+			_ => "COMMON"
+		};
+
+		string stack = option.MaxStack > 1
+			? $" ({option.CurrentStack + 1}/{option.MaxStack})"
+			: string.Empty;
+
+		return $"[{rarity}] {option.Title}{stack}\n{option.Description}";
+	}
+
+	private static void RefreshOptionButton(Button button, UpgradeSystem.UpgradeOptionData option, bool available)
+	{
+		if (button == null)
+			return;
+
+		button.Visible = available;
+		button.Disabled = !available;
+		button.FocusMode = available ? FocusModeEnum.All : FocusModeEnum.None;
+		button.Icon = available ? option.Icon : null;
+		button.Text = available ? FormatOptionText(option) : "";
 	}
 
 	private void CenterPanel()
