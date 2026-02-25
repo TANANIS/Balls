@@ -51,7 +51,7 @@
 - Dedicated split prefab:
   - `Prefabs/SplitProjectile.tscn`.
 - Current split visual baseline:
-  - `Assets/Sprites/SPLITBULLET/1..7.png`,
+  - `Assets/Sprites/Projectiles/Split/Frames/split_bullet_01..07.png`,
   - flight `0..5`, impact `6`,
   - scale tuned to about `2/3` of primary,
   - collider radius `9`.
@@ -70,9 +70,9 @@
   - max distance `280`,
   - max targets `5`.
 - VFX:
-  - projectile frames: `Assets/Sprites/MOD_ELEMENTAL_BURST/1..8.png`,
-  - explosion animation: `explotion1..5.png` (fade starts on final frame),
-  - fallback rune: `explotion.png`.
+  - projectile frames: `Assets/Sprites/Projectiles/ElementalBurst/Projectile/elemental_burst_charge_01..08.png`,
+  - explosion animation: `Assets/Sprites/Projectiles/ElementalBurst/Explosion/elemental_burst_explosion_01..05.png` (normal playback timing, no final-frame hold extension),
+  - fallback uses first explosion frame.
 - Audio:
   - `Assets/Sound/Player/sfx_player_elemental_burst.wav`,
   - loaded by `AudioManager.Setup`,
@@ -106,6 +106,30 @@
   - branch note (`legacy/old-scifi-main` archive).
 - Validation:
   - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+### 2026-02-25 - Sprite Asset Folder Cleanup + Rebinding
+- Reorganized projectile visuals to deterministic folders:
+  - `Assets/Sprites/Projectiles/Common`
+  - `Assets/Sprites/Projectiles/Wizard`
+  - `Assets/Sprites/Projectiles/Split/Frames`
+  - `Assets/Sprites/Projectiles/ElementalBurst/{Projectile,Explosion}`
+- Removed unused legacy sprite files and stale import metadata from old root/legacy folders.
+- Rebound runtime references:
+  - `Scripts/Projectiles/Bullet.cs`
+  - `Prefabs/WizardProjectile.tscn`
+  - `Prefabs/PriestProjectile.tscn`
+  - `Prefabs/SplitProjectile.tscn`
+- Validation:
+  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+### 2026-02-25 - Combat Feel Alignment (Knight + Facing)
+- Melee animation timeline now aligns with ranged animation-speed model:
+  - cooldown multipliers also scale melee attack animation speed.
+- Knight base melee tempo adjusted:
+  - `MeleeCooldown: 0.68 -> 1.36`.
+- Player visual facing rule updated:
+  - face mouse aim position by default,
+  - fallback to movement direction only inside a tiny center deadzone.
 
 ## Canonical Specs and Docs
 - Card spec: `docs/CARDS.md`

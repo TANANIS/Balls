@@ -19,13 +19,16 @@ public partial class PlayerMelee
 
 	public void MultiplyCooldown(float factor)
 	{
-		Cooldown = Mathf.Clamp(Cooldown * factor, 0.02f, 10f);
+		float safeFactor = Mathf.Clamp(factor, 0.05f, 20f);
+		Cooldown = Mathf.Clamp(Cooldown * safeFactor, 0.02f, 10f);
+		_attackAnimationSpeedMultiplier = Mathf.Clamp(_attackAnimationSpeedMultiplier / safeFactor, 0.2f, 6f);
 	}
 
 	public void SetBaseStats(int damage, float cooldown, float range, float arcDegrees)
 	{
 		Damage = Mathf.Max(1, damage);
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
+		_attackAnimationSpeedMultiplier = 1f;
 		Range = Mathf.Max(4f, range);
 		ArcDegrees = Mathf.Clamp(arcDegrees, 5f, 180f);
 		DamageMultiplier = 1f;

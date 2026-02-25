@@ -259,20 +259,20 @@ Additional rule:
   - Keep script logic unified.
   - Put variant-specific visuals and runtime tuning in prefab exports (`RuntimeSpeedScale`, effect textures/frames, collider size, etc.).
 - Current split projectile baseline (`Prefabs/SplitProjectile.tscn`):
-  - Visual frames: `Assets/Sprites/SPLITBULLET/1.png` ~ `7.png`.
+  - Visual frames: `Assets/Sprites/Projectiles/Split/Frames/split_bullet_01.png` ~ `split_bullet_07.png`.
   - Flight/impact frame split: `Flight 0..5`, `Impact 6`.
   - Relative size target: split child visual scale should stay around primary projectile `2/3` (`1.33` vs primary `2.0`).
   - Collider baseline: `CircleShape2D radius = 9` (kept close to visible silhouette).
   - Hit timing rule: split child has no global hit-arm delay; it only ignores the original hit target for a short window to avoid immediate same-target re-hit.
 - Current elemental burst visual baseline (`MOD_ELEMENTAL_BURST` card):
-  - Projectile animation frames: `Assets/Sprites/MOD_ELEMENTAL_BURST/1.png` ~ `8.png`.
+  - Projectile animation frames: `Assets/Sprites/Projectiles/ElementalBurst/Projectile/elemental_burst_charge_01.png` ~ `elemental_burst_charge_08.png`.
   - Runtime frame rule for charged shot: `Flight 0..6`, `Impact 7`.
   - Explosion VFX prefers frame animation:
-    - `Assets/Sprites/MOD_ELEMENTAL_BURST/explotion1.png` ~ `explotion5.png`
+    - `Assets/Sprites/Projectiles/ElementalBurst/Explosion/elemental_burst_explosion_01.png` ~ `elemental_burst_explosion_05.png`
     - spawned at detonation center, scaled to explosion radius
-    - fade starts at the last frame (`explotion5`) so the final frame works as disappear frame
+    - normal playback timing (no extra hold on final frame); auto-cleanup after animation duration
   - Explosion VFX fallback:
-    - `Assets/Sprites/MOD_ELEMENTAL_BURST/explotion.png` (single-texture rune fallback)
+    - first explosion frame fallback: `Assets/Sprites/Projectiles/ElementalBurst/Explosion/elemental_burst_explosion_01.png`
   - SFX:
     - `Assets/Sound/Player/sfx_player_elemental_burst.wav` (plays on detonation)
 - Benefit:

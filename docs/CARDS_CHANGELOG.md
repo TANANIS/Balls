@@ -396,3 +396,44 @@
 - [x] Localization source updated (`UI.csv`, `Cards.csv`)
 - [x] Fallback text paths updated (`GameFlowUI*`, character resources)
 - [x] Build check passed
+
+### 2026-02-25 - Projectile Asset Path Normalization (Split + Elemental Burst)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`, `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Normalized projectile art paths into `Assets/Sprites/Projectiles/*`.
+  - Rebound split-shot and elemental-burst runtime references to renamed assets.
+  - Removed legacy folders (`SPLITBULLET`, `MOD_ELEMENTAL_BURST`) from active runtime paths.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`
+  - Change: split projectile frame path
+  - Value: `Assets/Sprites/SPLITBULLET/1..7 -> Assets/Sprites/Projectiles/Split/Frames/split_bullet_01..07`
+  - Reason: deterministic naming and cleaner asset hierarchy.
+- `MOD_ELEMENTAL_BURST`
+  - Change: projectile/explosion frame path
+  - Value: `Assets/Sprites/MOD_ELEMENTAL_BURST/* -> Assets/Sprites/Projectiles/ElementalBurst/{Projectile,Explosion}/*`
+  - Reason: deterministic naming, typo removal, and shared-projectile folder consistency.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [x] Build check passed
+
+### 2026-02-25 - MOD_ELEMENTAL_BURST Explosion Timing Normalization
+- Scope: `Update`
+- Affected Layer(s): `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Removed special final-frame hold/fade extension from explosion VFX.
+  - Explosion now plays at normal animation timing and auto-cleans after playback.
+
+#### Cards Updated
+- `MOD_ELEMENTAL_BURST`
+  - Change: explosion tail timing
+  - Value: `final-frame hold + delayed fade -> normal playback (no extra tail hold)`
+  - Reason: improve timing consistency with authored frame animation.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [x] Build check passed

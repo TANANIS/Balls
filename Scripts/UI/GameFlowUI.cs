@@ -139,7 +139,7 @@ public partial class GameFlowUI : Control
 			MobilityAbility = MobilityAbilityKind.Dash,
 			MaxHp = 2,
 			MeleeDamage = 4,
-			MeleeCooldown = 0.68f
+			MeleeCooldown = 1.36f
 		};
 	}
 

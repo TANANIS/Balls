@@ -11,10 +11,10 @@ public partial class Bullet : Area2D
 {
 	private const string DefaultSplitProjectileScenePath = "res://Prefabs/SplitProjectile.tscn";
 	private const string SplitProjectileTexturePath = "res://Assets/Sprites/Projectiles/Split/split_bullet.png";
-	private const string DefaultProjectileTexturePath = "res://Assets/Sprites/player_orb_transparent.png";
-	private const string ElementalBurstFramesBasePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST";
-	private const string ElementalBurstExplosionRunePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST/explotion.png";
-	private const string ElementalBurstExplosionFramesBasePath = "res://Assets/Sprites/MOD_ELEMENTAL_BURST";
+	private const string DefaultProjectileTexturePath = "res://Assets/Sprites/Projectiles/Common/projectile_orb_default.png";
+	private const string ElementalBurstFramesBasePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Projectile";
+	private const string ElementalBurstExplosionRunePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Explosion/elemental_burst_explosion_01.png";
+	private const string ElementalBurstExplosionFramesBasePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Explosion";
 
 	[Export] public float LifeTime = 1.5f;
 	[Export] public string DamageTag = "bullet";
@@ -76,22 +76,22 @@ public partial class Bullet : Area2D
 	private float _travelDistance = 0f;
 	private static readonly string[] ElementalBurstFramePaths =
 	{
-		$"{ElementalBurstFramesBasePath}/1.png",
-		$"{ElementalBurstFramesBasePath}/2.png",
-		$"{ElementalBurstFramesBasePath}/3.png",
-		$"{ElementalBurstFramesBasePath}/4.png",
-		$"{ElementalBurstFramesBasePath}/5.png",
-		$"{ElementalBurstFramesBasePath}/6.png",
-		$"{ElementalBurstFramesBasePath}/7.png",
-		$"{ElementalBurstFramesBasePath}/8.png"
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_01.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_02.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_03.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_04.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_05.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_06.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_07.png",
+		$"{ElementalBurstFramesBasePath}/elemental_burst_charge_08.png"
 	};
 	private static readonly string[] ElementalBurstExplosionFramePaths =
 	{
-		$"{ElementalBurstExplosionFramesBasePath}/explotion1.png",
-		$"{ElementalBurstExplosionFramesBasePath}/explotion2.png",
-		$"{ElementalBurstExplosionFramesBasePath}/explotion3.png",
-		$"{ElementalBurstExplosionFramesBasePath}/explotion4.png",
-		$"{ElementalBurstExplosionFramesBasePath}/explotion5.png"
+		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_01.png",
+		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_02.png",
+		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_03.png",
+		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_04.png",
+		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_05.png"
 	};
 	private CombatSystem _combat;
 	private AnimatedSprite2D _fx;

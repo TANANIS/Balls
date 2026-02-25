@@ -22,6 +22,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0,0.50,0.01")] public float RecoverSeconds = 0.02f;
 
 	private CombatSystem _combat;
+	private float _attackAnimationSpeedMultiplier = 1f;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
 	private readonly PlayerMeleeTimeline _timeline = new();
@@ -91,6 +92,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 
 	public void ResetRuntimeState()
 	{
+		_attackAnimationSpeedMultiplier = 1f;
 		_cooldownTimer = 0f;
 		_timeline.Reset();
 	}
@@ -102,8 +104,13 @@ public partial class PlayerMelee : PlayerAbilityModule
 
 		float windup = Mathf.Clamp(WindupSeconds, 0.01f, 1.5f);
 		float recover = Mathf.Clamp(RecoverSeconds, 0f, 0.5f);
-		float meleeAnimDuration = Mathf.Clamp(windup + recover, 0.06f, 1.5f);
-		_player.TriggerPrimaryAttackAnimation(meleeAnimDuration);
+		float baseTotalDuration = Mathf.Clamp(windup + recover, 0.06f, 1.5f);
+		float runtimeTotalDuration = _player.TriggerPrimaryAttackAnimationAndGetDuration(
+			baseTotalDuration,
+			_attackAnimationSpeedMultiplier);
+		float durationScale = runtimeTotalDuration / Mathf.Max(0.01f, baseTotalDuration);
+		float runtimeWindup = Mathf.Max(0.01f, windup * durationScale);
+		float runtimeRecover = Mathf.Max(0f, recover * durationScale);
 		Vector2 attackDir = _player.GetAimDirection(_player.LastMoveDir);
 
 		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
@@ -112,9 +119,9 @@ public partial class PlayerMelee : PlayerAbilityModule
 		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * dmgMult * powerMult));
 
 		_timeline.BeginAttack(
-			windupDurationSeconds: windup,
+			windupDurationSeconds: runtimeWindup,
 			hitAtNormalized: HitAtNormalizedTime,
-			recoverDurationSeconds: recover,
+			recoverDurationSeconds: runtimeRecover,
 			attackDir: attackDir,
 			attackRange: runtimeRange,
 			attackDamage: runtimeDamage);

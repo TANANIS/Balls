@@ -131,23 +131,15 @@ public partial class Bullet
 		parent.AddChild(explosionFx);
 		explosionFx.Play("default");
 
-		// Fade starts at the last animation frame so frame-5 acts as the disappear frame.
-		float frameDuration = 1f / fps;
-		float lastFrameStart = Mathf.Max(0f, (frameCount - 1) * frameDuration);
-		float fadeDuration = Mathf.Clamp(Mathf.Max(0.12f, ElementalBurstRuneDurationSeconds * 0.35f), 0.12f, 0.35f);
-		float totalDuration = Mathf.Max(Mathf.Max(0.05f, ElementalBurstRuneDurationSeconds), lastFrameStart + fadeDuration);
-		float scaleDuration = totalDuration;
+		// Play explosion in normal timing: no special last-frame hold/fade extension.
+		float animationDuration = Mathf.Max(0.05f, frameCount / fps);
 
 		Tween tween = explosionFx.CreateTween();
 		tween.SetTrans(Tween.TransitionType.Cubic);
 		tween.SetEase(Tween.EaseType.Out);
-		tween.Parallel().TweenProperty(explosionFx, "scale", new Vector2(expandScale, expandScale), scaleDuration);
-
-		if (lastFrameStart > 0f)
-			tween.TweenInterval(lastFrameStart);
-		tween.TweenProperty(explosionFx, "modulate:a", 0f, fadeDuration);
-
-		tween.Finished += explosionFx.QueueFree;
+		tween.Parallel().TweenProperty(explosionFx, "scale", new Vector2(expandScale, expandScale), animationDuration);
+		tween.TweenInterval(animationDuration);
+		tween.TweenCallback(Callable.From(explosionFx.QueueFree));
 		return true;
 	}
 

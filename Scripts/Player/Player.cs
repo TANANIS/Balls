@@ -7,6 +7,8 @@ using Godot;
  */
 public partial class Player : CharacterBody2D
 {
+	private const float AimFlipDeadzonePixels = 2f;
+
 	private PlayerHealth _health;
 	private PlayerMovement _movement;
 	private PlayerDash _dash;
@@ -60,7 +62,10 @@ public partial class Player : CharacterBody2D
 		if (_animatedSprite == null)
 			return;
 
-		if (Mathf.Abs(_lastMoveDir.X) > 0.01f)
+		Vector2 aimOffset = _aimWorldPosition - GlobalPosition;
+		if (Mathf.Abs(aimOffset.X) > AimFlipDeadzonePixels)
+			_animatedSprite.FlipH = aimOffset.X < 0f;
+		else if (Mathf.Abs(_lastMoveDir.X) > 0.01f)
 			_animatedSprite.FlipH = _lastMoveDir.X < 0f;
 
 		if (_hurtAnimTimer > 0f)

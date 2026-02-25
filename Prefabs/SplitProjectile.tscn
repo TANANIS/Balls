@@ -1,13 +1,13 @@
 [gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Projectiles/Bullet.cs" id="1_bullet_script"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/1.png" id="2_split_frame_1"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/2.png" id="3_split_frame_2"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/3.png" id="4_split_frame_3"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/4.png" id="5_split_frame_4"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/5.png" id="6_split_frame_5"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/6.png" id="7_split_frame_6"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/SPLITBULLET/7.png" id="8_split_frame_7"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_01.png" id="2_split_frame_1"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_02.png" id="3_split_frame_2"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_03.png" id="4_split_frame_3"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_04.png" id="5_split_frame_4"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_05.png" id="6_split_frame_5"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_06.png" id="7_split_frame_6"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_07.png" id="8_split_frame_7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_split"]
 radius = 9.0
