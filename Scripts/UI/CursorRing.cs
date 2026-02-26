@@ -4,8 +4,8 @@ public partial class CursorRing : Node2D
 {
 	[Export] public float Radius = 12f;
 	[Export] public float Thickness = 2.0f;
-	[Export] public Color RingColor = new Color(0.1f, 0.55f, 0.75f, 0.9f);
-	[Export] public Color GlowColor = new Color(0.0f, 0.35f, 0.55f, 0.18f);
+	[Export] public Color RingColor = new Color(0.67f, 0.50f, 0.28f, 0.9f);
+	[Export] public Color GlowColor = new Color(0.42f, 0.28f, 0.12f, 0.20f);
 	[Export] public float PulseSpeed = 2.4f;
 	[Export] public float PulseAmount = 0.15f;
 	[Export] public bool HideWhenMouseOutside = true;
@@ -60,3 +60,4 @@ public partial class CursorRing : Node2D
 		return screenToCanvas * _lastMouse;
 	}
 }
+

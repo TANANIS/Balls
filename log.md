@@ -26,6 +26,25 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-26 - UI Palette Pass (Sci-Fi -> Rustic/Fantasy)
+- Applied a rustic palette across primary runtime UI:
+  - `StartPanel`, `PausePanel`, `RestartPanel`, `HudOverlay`, `PlayerHealthBarDemo`, cursor ring.
+- Palette direction:
+  - dark wood/brown panel base,
+  - warm bronze borders,
+  - parchment-like text colors,
+  - warmer hover/pressed button states.
+- Upgrade draw UI (`UpgradeMenu`) synchronized to the same palette:
+  - panel/button style colors replaced from cyan-neon to warm earthy tones.
+  - title and option text now match rustic color identity.
+- Rarity readability pass for upgrade options:
+  - `COMMON`: parchment ivory,
+  - `RARE`: amber gold,
+  - `EPIC`: copper-gold,
+  - plus dedicated hover/pressed/disabled text color overrides.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` passed after UI palette update.
+
 ### 2026-02-26 - Priest Sustain + HUD Readability + Projectile Continuation Tuning
 - Priest sustain logic:
   - `TankBurstCharacter` regen interval updated to `30s`.

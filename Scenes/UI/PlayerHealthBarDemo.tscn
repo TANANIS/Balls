@@ -20,6 +20,7 @@ theme_override_constants/separation = 4
 
 [node name="HpLabel" type="Label" parent="VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 1, 0.82, 0.95)
+theme_override_colors/font_color = Color(0.95, 0.88, 0.72, 0.96)
 theme_override_font_sizes/font_size = 16
 text = "HP --/--"
+

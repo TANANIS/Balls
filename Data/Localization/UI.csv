@@ -6,10 +6,10 @@ UI.COMMON.QUIT_GAME,Quit Game,離開遊戲
 UI.COMMON.UNKNOWN,Unknown,未知
 UI.COMMON.NONE,none,無
 UI.START.TITLE,PROJECT GENESIS,PROJECT GENESIS
-UI.START.SUBTITLE,Stand against the dark tide and forge your own battle style.,對抗黑潮，打造屬於你的戰鬥流派。
+UI.START.SUBTITLE,Stand against the dark tide and forge your own battle style.,對抗怪物潮，打造屬於你的戰鬥流派。
 UI.START.DESC,"Controls:\nMove: W A S D\nConfirm / Menu: Left Mouse\nPause: Esc\n\nAfter pressing Start, choose your hero and prepare your build.\n\nGoal:\nSurvive for 15 minutes and break through the final wave.","操作：\n移動：W A S D\n確認 / 選單：滑鼠左鍵\n暫停：Esc\n\n按下開始後，先選擇你的英雄並準備構築。\n\n目標：\n生存 15 分鐘並突破最終浪潮。"
 UI.START.BUTTON_START,Start,開始
-UI.START.CONFIRM_START_RUN,Start Run,開始戰局
+UI.START.CONFIRM_START_RUN,Start Run,開始遊戲
 UI.START.PERFECT_BOARD_TITLE,Perfect 15:00 Leaderboard (Local),完美 15:00 排行榜（本機）
 UI.START.PERFECT_BOARD_EMPTY,"No perfect clears yet.\nSurvive the full 15:00 to enter local leaderboard.","目前還沒有完美通關紀錄。\n完整生存 15:00 即可進入本機排行榜。"
 UI.START.CLEAR_LEADERBOARD,Clear Leaderboard Record,清除排行榜紀錄
@@ -21,9 +21,9 @@ UI.PAUSE.TITLE,PAUSED,已暫停
 UI.PAUSE.RESUME,Resume,繼續
 UI.PAUSE.RESTART_RUN,Restart Run,重新開始
 UI.PAUSE.BACK_TO_MENU,Back To Menu,返回主選單
-UI.END.TITLE_FAILURE,FALLEN IN BATTLE,戰鬥失利
-UI.END.TITLE_PERFECT,PERFECT CLEAR,完美通關
-UI.END.PERFECT_BANNER,PERFECT SURVIVAL,完美生存
+UI.END.TITLE_FAILURE,FALLEN IN BATTLE,戰鬥失敗...
+UI.END.TITLE_PERFECT,PERFECT CLEAR！,完美通關！
+UI.END.PERFECT_BANNER,PERFECT SURVIVAL！,完美生存！
 UI.END.HINT_RESTART,Press the button to restart this run.,按下按鈕重新開始本局。
 UI.END.HINT_PERFECT,"You survived the full 15:00. Press to start another perfect run.","你已完整生存 15:00。按下可開始下一局挑戰。"
 UI.END.SURVIVAL,Survival,生存時間

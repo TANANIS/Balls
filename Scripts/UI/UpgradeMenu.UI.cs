@@ -56,6 +56,46 @@ public partial class UpgradeMenu
 		button.FocusMode = available ? FocusModeEnum.All : FocusModeEnum.None;
 		button.Icon = available ? option.Icon : null;
 		button.Text = available ? FormatOptionText(option) : "";
+		ApplyRarityTextColors(button, available ? option.Rarity : UpgradeRarity.Common, available);
+	}
+
+	private static void ApplyRarityTextColors(Button button, UpgradeRarity rarity, bool available)
+	{
+		if (!available)
+		{
+			button.AddThemeColorOverride("font_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
+			button.AddThemeColorOverride("font_hover_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
+			button.AddThemeColorOverride("font_pressed_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
+			button.AddThemeColorOverride("font_disabled_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
+			return;
+		}
+
+		Color baseColor;
+		Color hoverColor;
+		Color pressedColor;
+		switch (rarity)
+		{
+			case UpgradeRarity.Epic:
+				baseColor = new Color(0.96f, 0.78f, 0.60f, 1f);      // warm copper-gold
+				hoverColor = new Color(0.99f, 0.86f, 0.70f, 1f);
+				pressedColor = new Color(0.90f, 0.70f, 0.54f, 1f);
+				break;
+			case UpgradeRarity.Rare:
+				baseColor = new Color(0.97f, 0.86f, 0.67f, 1f);      // amber parchment
+				hoverColor = new Color(0.99f, 0.92f, 0.77f, 1f);
+				pressedColor = new Color(0.92f, 0.79f, 0.60f, 1f);
+				break;
+			default:
+				baseColor = new Color(0.97f, 0.92f, 0.82f, 1f);      // common parchment
+				hoverColor = new Color(0.99f, 0.95f, 0.88f, 1f);
+				pressedColor = new Color(0.94f, 0.88f, 0.76f, 1f);
+				break;
+		}
+
+		button.AddThemeColorOverride("font_color", baseColor);
+		button.AddThemeColorOverride("font_hover_color", hoverColor);
+		button.AddThemeColorOverride("font_pressed_color", pressedColor);
+		button.AddThemeColorOverride("font_disabled_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
 	}
 
 	private void CenterPanel()
