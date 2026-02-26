@@ -5,6 +5,8 @@ using System.Text;
 
 public partial class SpawnSystem
 {
+	private static readonly HashSet<string> CsvWarningOnceKeys = new();
+
 	private void LoadTierRulesFromCsv()
 	{
 		_tierRules.Clear();
@@ -34,6 +36,10 @@ public partial class SpawnSystem
 		}
 
 		_tierRules.Sort((a, b) => a.PressureMin.CompareTo(b.PressureMin));
+		if (_tierRules.Count == 0)
+			WarnCsvIssueOnce($"empty:{PressureTierRulesCsvPath}", $"No valid tier rules parsed from: {PressureTierRulesCsvPath}");
+		else
+			GD.Print($"[SpawnSystem] Loaded tier rules: {_tierRules.Count} ({PressureTierRulesCsvPath})");
 	}
 
 	private void LoadEnemyDefinitionsFromCsv()
@@ -79,6 +85,10 @@ public partial class SpawnSystem
 			};
 		}
 
+		if (_enemyDefinitions.Count == 0)
+			WarnCsvIssueOnce($"empty:{EnemyDefinitionsCsvPath}", $"No valid enemy definitions parsed from: {EnemyDefinitionsCsvPath}");
+		else
+			GD.Print($"[SpawnSystem] Loaded enemy definitions: {_enemyDefinitions.Count} ({EnemyDefinitionsCsvPath})");
 	}
 
 	private void LoadTierWeightsFromCsv()
@@ -110,6 +120,10 @@ public partial class SpawnSystem
 			list.Add(new WeightedEnemy { EnemyId = enemyId, Weight = weight });
 		}
 
+		if (_tierWeights.Count == 0)
+			WarnCsvIssueOnce($"empty:{TierEnemyWeightsCsvPath}", $"No valid tier weights parsed from: {TierEnemyWeightsCsvPath}");
+		else
+			GD.Print($"[SpawnSystem] Loaded tier weights: {_tierWeights.Count} tiers ({TierEnemyWeightsCsvPath})");
 	}
 
 	private static bool TryReadCsvLines(string path, out List<string> lines)
@@ -118,17 +132,20 @@ public partial class SpawnSystem
 
 		if (string.IsNullOrWhiteSpace(path))
 		{
+			WarnCsvIssueOnce("empty_path", "CSV path is empty.");
 			return false;
 		}
 
 		if (!FileAccess.FileExists(path))
 		{
+			WarnCsvIssueOnce(path, $"CSV file not found in runtime pack: {path}");
 			return false;
 		}
 
 		using FileAccess file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
 		if (file == null)
 		{
+			WarnCsvIssueOnce(path, $"CSV open failed: {path}");
 			return false;
 		}
 
@@ -142,6 +159,14 @@ public partial class SpawnSystem
 		}
 
 		return true;
+	}
+
+	private static void WarnCsvIssueOnce(string key, string message)
+	{
+		if (CsvWarningOnceKeys.Contains(key))
+			return;
+		CsvWarningOnceKeys.Add(key);
+		GD.PushWarning($"[SpawnSystem] {message}");
 	}
 
 	private static List<string> ParseCsvLine(string line)

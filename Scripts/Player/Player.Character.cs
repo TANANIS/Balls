@@ -69,6 +69,8 @@ public partial class Player
 			resolved.DashCooldown,
 			resolved.DashIFrame);
 
+		GD.Print($"[Player] ApplyCharacter id={resolved.CharacterId} move={resolved.MoveMaxSpeed:0.##} rangedDmg={resolved.RangedDamage:0.##} rangedCd={resolved.RangedCooldown:0.###}");
+
 		ConfigureAttackAbilities(resolved);
 		ConfigureMobilityAbility(resolved);
 	}

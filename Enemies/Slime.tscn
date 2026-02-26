@@ -188,7 +188,7 @@ shape = SubResource("CircleShape2D_hurtbox")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")
-MaxHp = 7
+MaxHp = 4
 
 [node name="Events" type="Node" parent="."]
 

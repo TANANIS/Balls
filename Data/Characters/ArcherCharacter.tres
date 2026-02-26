@@ -7,9 +7,9 @@
 script = ExtResource("1_char_def")
 CharacterId = "archer"
 DisplayName = "Archer"
-DisplayNameZhTw = "弓箭手"
+DisplayNameZhTw = "遊俠"
 Description = "Mobile marksman. Every third attack fires a quick 3-shot burst."
-DescriptionZhTw = "機動型射手。每第三次攻擊會變為快速三連發。"
+DescriptionZhTw = "高機動射手，每第三次攻擊會觸發快速三連射。"
 CoreSprite = ExtResource("2_archer_core")
 PrimaryAbility = 1
 SecondaryAbility = 0

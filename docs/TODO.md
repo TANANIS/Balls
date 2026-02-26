@@ -23,12 +23,15 @@
 - [ ] Melee risk tuning pass #2 (after playtest)
 - [ ] Ranged feel buff pass (damage cadence / projectile feel)
 - [x] Tank anti-chase compensation: stronger ranged damage + bullet knockback
+- [ ] Subsystem card batch #1 (at least 2-3 cards) to reduce Core/Survival over-concentration
+- [ ] Re-run `Tools/CardDrawSim` after Subsystem batch and verify phase Survival ratio error <= 2%
 
 ## Director And Spawn
 - [x] 15:00 split into 4 phases
 - [x] Phase-tail miniboss schedule active: 03:45 / 07:30 / 11:15 / 14:30+
 - [ ] Minute-by-minute micro pacing per phase (1/2/3/4 minute nodes)
 - [ ] Stage-specific survival logic doc with concrete spawn targets
+- [ ] Add 2 high-tier enemy types (tier 3+) and integrate into `EnemyDefinitions.csv` + `TierEnemyWeights.csv`
 
 ## UI / UX
 - [x] HP UI only shows after run starts
@@ -60,6 +63,13 @@
 - [ ] Define skill data source and authoring format (Resource/CSV) and migration plan
 - [ ] Implement runtime skill application entry and compatibility gates
 - [ ] Integrate skill-layer choices into upgrade menu presentation
+
+## Test / Verification - Difficulty Curve
+- [ ] Add deterministic balance simulation runner (fixed seed) for minute marks: `01:00 / 03:45 / 07:30 / 11:15 / 14:30`
+- [ ] Add progression curve tests: EXP required per level should match expected piecewise curve (especially after level 5)
+- [ ] Add spawn-system regression tests: tier pick validity, budget bounds, max_alive bounds, no-empty-wave under normal configs
+- [ ] Add combat TTK snapshot tests by archetype vs slime/orc baseline (expected hit-to-kill range)
+- [ ] Add CI gate/report for key metrics: player DPS proxy, enemy EHP proxy, spawn pressure proxy
 
 ## Meta Progression - Out-Of-Run
 - [x] Architecture spec created: `docs/META_PROGRESSION_ARCHITECTURE.md`
