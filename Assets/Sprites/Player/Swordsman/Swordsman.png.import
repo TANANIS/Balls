@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dc86gpd14k2ti"
-path="res://.godot/imported/Knight-Shadow_death.png-c8aea794078d75a208017643c6515e81.ctex"
+uid="uid://vkddbfi37vxm"
+path="res://.godot/imported/Swordsman.png-fa1a9277cfcf36041e46ef8decff4a38.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Knight/Shadow sprites/Knight-Shadow_death.png"
-dest_files=["res://.godot/imported/Knight-Shadow_death.png-c8aea794078d75a208017643c6515e81.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman.png"
+dest_files=["res://.godot/imported/Swordsman.png-fa1a9277cfcf36041e46ef8decff4a38.ctex"]
 
 [params]
 

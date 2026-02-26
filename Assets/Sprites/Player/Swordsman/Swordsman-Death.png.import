@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qq1heweugs43"
-path="res://.godot/imported/Melee.png-0bad12b5eab46a027e448527e72f01aa.ctex"
+uid="uid://61v2d1ixjl6t"
+path="res://.godot/imported/Swordsman-Death.png-7d94f0d9afda8944b45e2a8bc3964f78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Melee.png"
-dest_files=["res://.godot/imported/Melee.png-0bad12b5eab46a027e448527e72f01aa.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman-Death.png"
+dest_files=["res://.godot/imported/Swordsman-Death.png-7d94f0d9afda8944b45e2a8bc3964f78.ctex"]
 
 [params]
 

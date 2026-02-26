@@ -1,4 +1,4 @@
-﻿# Art Differentiation Plan: Fantasy Pixel Style
+# Art Differentiation Plan: Fantasy Pixel Style
 
 ## Status
 - Branch target: `feature/art-fantasy-pixel-style`
@@ -22,7 +22,7 @@
 ## Current Visual Touchpoints (Asset Map)
 - Player core sprite:
   - `Data/Characters/RangedCharacter.tres`
-  - `Data/Characters/MeleeCharacter.tres`
+  - `Data/Characters/SwordsmanCharacter.tres`
   - `Data/Characters/TankBurstCharacter.tres`
 - Player/attack prefabs:
   - `Scenes/Player.tscn`
@@ -93,7 +93,7 @@
 - Goal:
   - Replace the assets that directly affect moment-to-moment readability.
 - Tasks:
-- Player cores (`Wizard`, `Knight`, `Priest`).
+- Player cores (`Wizard`, `Swordsman`, `Priest`).
 - Projectile/melee/pickup (`Wizard-Attack_Effect*`, `Priest-Attack_Effect*`, `Melee.png`, `ExpPickup.png`).
   - Enemy sprites for all currently spawned classes.
   - Shield visual fallback (`Assets/Sprites/Skills/Shield/shield.png`) in matching style.

@@ -9,7 +9,7 @@ public partial class GameFlowUI
 	private const string StartCardsPanelPath = "Panels/StartPanel/Panel/CardsPanel";
 	private const string StartCharacterSelectPanelPath = "Panels/StartPanel/Panel/CharacterSelectPanel";
 	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/RangedButton";
-	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/MeleeButton";
+	private const string StartCharacterSwordsmanButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/SwordsmanButton";
 	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/TankButton";
 	private const string StartCharacterArcherButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/ArcherButton";
 	private const string StartCharacterDescriptionPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel/Margin/DescScroll/SelectedCharacterDesc";
@@ -72,7 +72,7 @@ public partial class GameFlowUI
 	private const string ProjectilesPath = "../../Projectiles";
 	private const string ObstaclesPath = "../../World/Obstacles";
 	private const string RangedCharacterResourcePath = "res://Data/Characters/RangedCharacter.tres";
-	private const string MeleeCharacterResourcePath = "res://Data/Characters/MeleeCharacter.tres";
+	private const string SwordsmanCharacterResourcePath = "res://Data/Characters/SwordsmanCharacter.tres";
 	private const string TankCharacterResourcePath = "res://Data/Characters/TankBurstCharacter.tres";
 	private const string ArcherCharacterResourcePath = "res://Data/Characters/ArcherCharacter.tres";
 
@@ -98,7 +98,7 @@ public partial class GameFlowUI
 	private Button _startCardsBackButton;
 	private Label _startCardsContentLabel;
 	private Button _startCharacterRangedButton;
-	private Button _startCharacterMeleeButton;
+	private Button _startCharacterSwordsmanButton;
 	private Button _startCharacterTankButton;
 	private Button _startCharacterArcherButton;
 	private Label _startCharacterFluxValueLabel;
@@ -161,7 +161,7 @@ public partial class GameFlowUI
 	private bool _suppressSettingsSignal;
 	private string _currentRunId = string.Empty;
 	private CharacterDefinition _rangedCharacter;
-	private CharacterDefinition _meleeCharacter;
+	private CharacterDefinition _swordsmanCharacter;
 	private CharacterDefinition _tankCharacter;
 	private CharacterDefinition _archerCharacter;
 	private CharacterDefinition _selectedCharacterDefinition;

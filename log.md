@@ -26,6 +26,20 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-26 - Swordsman Naming + Asset Unification
+- Character naming normalized from mixed `Melee/Knight` to `Swordsman`:
+  - character id: `swordsman`,
+  - display text: `Swordsman / 劍士`,
+  - resource: `Data/Characters/SwordsmanCharacter.tres`.
+- Runtime/UI binding aligned:
+  - `GameFlowUI` character select button/key paths and fallback definition now use `Swordsman`.
+  - animation profile now resolves swordsman atlas from `Assets/Sprites/Player/Swordsman/Swordsman*`.
+- Save compatibility hardening:
+  - legacy ids `melee` and typo `sowrdman` migrate/normalize to `swordsman`.
+- Tooling alignment:
+  - `CardDrawSim` and `BalanceTests` now read/use `swordsman` id (legacy aliases still accepted in simulator CLI).
+  - repository ignore rules now exclude test/sim artifacts (`Tools/**/bin`, `Tools/**/obj`, `Tools/CardDrawSim/reports`, `Tools/**/TestResults`).
+
 ### 2026-02-26 - Balance + Progression + Character Pass
 - Progression pacing:
   - added late XP slowdown fuse in `ProgressionSystem`:

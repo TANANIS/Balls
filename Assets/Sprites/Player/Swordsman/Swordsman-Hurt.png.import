@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hxsyuiy2gvw8"
-path="res://.godot/imported/Knight-Idle.png-85098b835b764ac9d3f3d8ca4daafee3.ctex"
+uid="uid://cwv7kyr2klvn4"
+path="res://.godot/imported/Swordsman-Hurt.png-ddda2cf199739706e23133bb5a93b866.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Knight/Knight-Idle.png"
-dest_files=["res://.godot/imported/Knight-Idle.png-85098b835b764ac9d3f3d8ca4daafee3.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman-Hurt.png"
+dest_files=["res://.godot/imported/Swordsman-Hurt.png-ddda2cf199739706e23133bb5a93b866.ctex"]
 
 [params]
 

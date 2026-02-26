@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://daqvhqkr4gqi5"
-path="res://.godot/imported/Knight-Shadow.png-d58eab325ae701d89615159d20b32617.ctex"
+uid="uid://bu8kcj5axq7yt"
+path="res://.godot/imported/Swordsman-Attack03.png-15ebde76acac9992cb7953ffe95eda34.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Knight/Shadow sprites/Knight-Shadow.png"
-dest_files=["res://.godot/imported/Knight-Shadow.png-d58eab325ae701d89615159d20b32617.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman-Attack03.png"
+dest_files=["res://.godot/imported/Swordsman-Attack03.png-15ebde76acac9992cb7953ffe95eda34.ctex"]
 
 [params]
 

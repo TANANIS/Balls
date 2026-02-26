@@ -29,7 +29,7 @@ public partial class GameFlowUI
 		_startCardsBackButton = GetNodeOrNull<Button>(StartCardsBackButtonPath);
 		_startCardsContentLabel = GetNodeOrNull<Label>(StartCardsContentPath);
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
-		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
+		_startCharacterSwordsmanButton = GetNodeOrNull<Button>(StartCharacterSwordsmanButtonPath);
 		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
 		_startCharacterArcherButton = GetNodeOrNull<Button>(StartCharacterArcherButtonPath);
 		_startCharacterFluxValueLabel = GetNodeOrNull<Label>(StartCharacterFluxValuePath);
@@ -92,16 +92,16 @@ public partial class GameFlowUI
 		_rangedCharacter = LoadCharacterDefinitionOrFallback(
 			RangedCharacterResourcePath,
 			BuildMageFallbackDefinition());
-		_meleeCharacter = LoadCharacterDefinitionOrFallback(
-			MeleeCharacterResourcePath,
-			BuildBladeFallbackDefinition());
+		_swordsmanCharacter = LoadCharacterDefinitionOrFallback(
+			SwordsmanCharacterResourcePath,
+			BuildSwordsmanFallbackDefinition());
 		_tankCharacter = LoadCharacterDefinitionOrFallback(
 			TankCharacterResourcePath,
 			BuildBulwarkFallbackDefinition());
 		_archerCharacter = LoadCharacterDefinitionOrFallback(
 			ArcherCharacterResourcePath,
 			BuildArcherFallbackDefinition());
-		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
+		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _swordsmanCharacter ?? _tankCharacter ?? _archerCharacter;
 
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
 		if (scoreList.Count > 0)
@@ -143,8 +143,8 @@ public partial class GameFlowUI
 			_startCardsBackButton.Pressed += OnStartCardsBackPressed;
 		if (_startCharacterRangedButton != null)
 			_startCharacterRangedButton.Pressed += OnCharacterRangedPressed;
-		if (_startCharacterMeleeButton != null)
-			_startCharacterMeleeButton.Pressed += OnCharacterMeleePressed;
+		if (_startCharacterSwordsmanButton != null)
+			_startCharacterSwordsmanButton.Pressed += OnCharacterSwordsmanPressed;
 		if (_startCharacterTankButton != null)
 			_startCharacterTankButton.Pressed += OnCharacterTankPressed;
 		if (_startCharacterArcherButton != null)

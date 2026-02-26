@@ -40,14 +40,14 @@ public partial class Player
 
 	private CharacterAnimationProfile ResolveAnimationProfile(string characterId)
 	{
-		if (string.Equals(characterId, "melee"))
+		if (string.Equals(characterId, "swordsman") || string.Equals(characterId, "sowrdman") || string.Equals(characterId, "melee"))
 			return new CharacterAnimationProfile(
-				"res://Assets/Sprites/Player/Knight/Knight",
+				"res://Assets/Sprites/Player/Swordsman/Swordsman",
 				"-Attack01",
 				"-Death",
-				dashSuffix: "-Dash",
-				dashFrameCount: 3,
-				dashSourceFrameCount: 3);
+				"-Dash",
+				3,
+				3);
 		if (string.Equals(characterId, "tank_burst"))
 			return new CharacterAnimationProfile("res://Assets/Sprites/Player/Priest/Priest", "-Attack", "-Death");
 		if (string.Equals(characterId, "archer"))

@@ -10,3 +10,12 @@ data_*_linuxbsd_*/
 data_*_macos_*/
 Project Genesis.console*
 **/Project Genesis.console.console/
+
+# Tooling / test artifacts
+Tools/**/bin/
+Tools/**/obj/
+Tools/CardDrawSim/reports/
+Tools/**/TestResults/
+*.trx
+*.coverage
+*.coveragexml

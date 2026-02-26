@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public static class ProgressionDefs
 {
+	private const string LegacyMeleeCharacterId = "melee";
+	private const string LegacyTypoSowrdmanCharacterId = "sowrdman";
+	private const string SwordsmanCharacterId = "swordsman";
+
 	private static readonly Dictionary<string, CharacterDef> CharacterDefs = new(StringComparer.Ordinal)
 	{
 		["ranged"] = new CharacterDef
@@ -16,9 +20,9 @@ public static class ProgressionDefs
 			LevelUpGrowth = 1.20f,
 			AbilityNodes = new List<AbilityNodeDef>()
 		},
-		["melee"] = new CharacterDef
+		[SwordsmanCharacterId] = new CharacterDef
 		{
-			CharacterId = "melee",
+			CharacterId = SwordsmanCharacterId,
 			IsDefaultUnlocked = false,
 			UnlockCost = 70,
 			MinLevel = 1,
@@ -64,7 +68,19 @@ public static class ProgressionDefs
 			return false;
 		}
 
-		return CharacterDefs.TryGetValue(characterId, out def);
+		string normalized = NormalizeCharacterId(characterId);
+		return CharacterDefs.TryGetValue(normalized, out def);
+	}
+
+	public static string NormalizeCharacterId(string characterId)
+	{
+		if (string.IsNullOrWhiteSpace(characterId))
+			return string.Empty;
+		if (string.Equals(characterId, LegacyMeleeCharacterId, StringComparison.Ordinal))
+			return SwordsmanCharacterId;
+		if (string.Equals(characterId, LegacyTypoSowrdmanCharacterId, StringComparison.Ordinal))
+			return SwordsmanCharacterId;
+		return characterId;
 	}
 
 	public static bool TryGetAbilityNode(string characterId, string nodeId, out AbilityNodeDef node)

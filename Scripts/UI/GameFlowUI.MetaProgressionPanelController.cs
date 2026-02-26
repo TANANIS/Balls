@@ -12,7 +12,7 @@ public partial class GameFlowUI
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true);
 
 		if (_selectedCharacterDefinition == null)
-			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
+			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _swordsmanCharacter ?? _tankCharacter ?? _archerCharacter;
 		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
 
 		RefreshCharacterSelectUi();
@@ -40,13 +40,13 @@ public partial class GameFlowUI
 				: $"{_rangedCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterRangedButton.Disabled = false;
 		}
-		if (_startCharacterMeleeButton != null && _meleeCharacter != null)
+		if (_startCharacterSwordsmanButton != null && _swordsmanCharacter != null)
 		{
-			bool unlocked = IsCharacterUnlocked(_meleeCharacter);
-			_startCharacterMeleeButton.Text = unlocked
-				? _meleeCharacter.GetLocalizedDisplayName()
-				: $"{_meleeCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
-			_startCharacterMeleeButton.Disabled = false;
+			bool unlocked = IsCharacterUnlocked(_swordsmanCharacter);
+			_startCharacterSwordsmanButton.Text = unlocked
+				? _swordsmanCharacter.GetLocalizedDisplayName()
+				: $"{_swordsmanCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterSwordsmanButton.Disabled = false;
 		}
 		if (_startCharacterTankButton != null && _tankCharacter != null)
 		{
@@ -193,10 +193,10 @@ public partial class GameFlowUI
 		RefreshCharacterSelectUi();
 	}
 
-	private void OnCharacterMeleePressed()
+	private void OnCharacterSwordsmanPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
-		_selectedCharacterDefinition = _meleeCharacter;
+		_selectedCharacterDefinition = _swordsmanCharacter;
 		RefreshCharacterSelectUi();
 	}
 
@@ -264,13 +264,13 @@ public partial class GameFlowUI
 			return preferred;
 		if (IsCharacterUnlocked(_rangedCharacter))
 			return _rangedCharacter;
-		if (IsCharacterUnlocked(_meleeCharacter))
-			return _meleeCharacter;
+		if (IsCharacterUnlocked(_swordsmanCharacter))
+			return _swordsmanCharacter;
 		if (IsCharacterUnlocked(_tankCharacter))
 			return _tankCharacter;
 		if (IsCharacterUnlocked(_archerCharacter))
 			return _archerCharacter;
-		return preferred ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
+		return preferred ?? _rangedCharacter ?? _swordsmanCharacter ?? _tankCharacter ?? _archerCharacter;
 	}
 
 	private static int GetCharacterUnlockCost(CharacterDefinition def)

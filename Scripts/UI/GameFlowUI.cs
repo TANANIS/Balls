@@ -126,15 +126,15 @@ public partial class GameFlowUI : Control
 		};
 	}
 
-	private static CharacterDefinition BuildBladeFallbackDefinition()
+	private static CharacterDefinition BuildSwordsmanFallbackDefinition()
 	{
 		return new CharacterDefinition
 		{
-			CharacterId = "melee",
-			DisplayName = "Knight",
-			DisplayNameZhTw = "騎士",
-			Description = "Swift spellblade duelist. Excels at close-range bursts and dash repositioning.",
-			DescriptionZhTw = "敏捷近戰決鬥者，擅長貼身爆發與衝刺換位。",
+			CharacterId = "swordsman",
+			DisplayName = "Swordsman",
+			DisplayNameZhTw = "\u528d\u58eb",
+			Description = "Close-range duelist. Uses decisive melee strikes and dash repositioning.",
+			DescriptionZhTw = "\u8fd1\u6230\u6c7a\u9b25\u8005\u3002\u4ee5\u9ad8\u7206\u767c\u8fd1\u8eab\u65ac\u64ca\u8207\u885d\u523a\u63db\u4f4d\u7dad\u6301\u7bc0\u594f\u3002",
 			PrimaryAbility = AttackAbilityKind.Melee,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.Dash,

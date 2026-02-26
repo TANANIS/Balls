@@ -34,6 +34,7 @@ public sealed class MetaProgressionService
 		result ??= new RunResult();
 		if (string.IsNullOrWhiteSpace(result.RunId))
 			result.RunId = Guid.NewGuid().ToString("N");
+		result.CharacterId = NormalizeCharacterId(result.CharacterId);
 
 		bool firstGlobal = !_state.Flags.Has(FirstClearGlobalFlag);
 		bool firstCharacter = IsFirstCharacterClear(result.CharacterId);
@@ -66,28 +67,31 @@ public sealed class MetaProgressionService
 
 	public bool IsCharacterUnlocked(string characterId)
 	{
-		if (string.IsNullOrWhiteSpace(characterId))
+		string normalized = NormalizeCharacterId(characterId);
+		if (string.IsNullOrWhiteSpace(normalized))
 			return false;
-		return _state.UnlockedCharacterIds.Contains(characterId);
+		return _state.UnlockedCharacterIds.Contains(normalized);
 	}
 
 	public bool TryUnlockCharacter(string characterId)
 	{
-		if (!CanUnlockCharacter(characterId, out int cost))
+		string normalized = NormalizeCharacterId(characterId);
+		if (!CanUnlockCharacter(normalized, out int cost))
 			return false;
 
 		_state.TrySpendCurrency(cost);
-		_state.UnlockCharacter(characterId);
+		_state.UnlockCharacter(normalized);
 		_saveStore.SaveState(_state);
 		return true;
 	}
 
 	public bool CanUnlockCharacter(string characterId, out int cost)
 	{
+		string normalized = NormalizeCharacterId(characterId);
 		cost = 0;
-		if (!ProgressionDefs.TryGetCharacter(characterId, out CharacterDef def))
+		if (!ProgressionDefs.TryGetCharacter(normalized, out CharacterDef def))
 			return false;
-		if (IsCharacterUnlocked(characterId))
+		if (IsCharacterUnlocked(normalized))
 			return false;
 
 		cost = Math.Max(0, def.UnlockCost);
@@ -96,18 +100,20 @@ public sealed class MetaProgressionService
 
 	public int GetCharacterLevel(string characterId)
 	{
-		if (!_state.TryGetCharacterProgress(characterId, out CharacterProgress progress))
+		string normalized = NormalizeCharacterId(characterId);
+		if (!_state.TryGetCharacterProgress(normalized, out CharacterProgress progress))
 			return 1;
 		return progress.Level;
 	}
 
 	public bool TryUpgradeCharacterLevel(string characterId)
 	{
-		if (!CanUpgradeCharacterLevel(characterId, out int cost))
+		string normalized = NormalizeCharacterId(characterId);
+		if (!CanUpgradeCharacterLevel(normalized, out int cost))
 			return false;
 
 		_state.TrySpendCurrency(cost);
-		CharacterProgress progress = _state.EnsureCharacterProgress(characterId);
+		CharacterProgress progress = _state.EnsureCharacterProgress(normalized);
 		if (progress == null)
 			return false;
 		progress.SetLevel(progress.Level + 1);
@@ -117,13 +123,14 @@ public sealed class MetaProgressionService
 
 	public bool CanUpgradeCharacterLevel(string characterId, out int cost)
 	{
+		string normalized = NormalizeCharacterId(characterId);
 		cost = 0;
-		if (!ProgressionDefs.TryGetCharacter(characterId, out CharacterDef def))
+		if (!ProgressionDefs.TryGetCharacter(normalized, out CharacterDef def))
 			return false;
-		if (!IsCharacterUnlocked(characterId))
+		if (!IsCharacterUnlocked(normalized))
 			return false;
 
-		int currentLevel = GetCharacterLevel(characterId);
+		int currentLevel = GetCharacterLevel(normalized);
 		if (currentLevel >= def.MaxLevel)
 			return false;
 
@@ -133,11 +140,12 @@ public sealed class MetaProgressionService
 
 	public bool TryUnlockAbilityNode(string characterId, string nodeId)
 	{
-		if (!CanUnlockAbilityNode(characterId, nodeId, out int cost))
+		string normalized = NormalizeCharacterId(characterId);
+		if (!CanUnlockAbilityNode(normalized, nodeId, out int cost))
 			return false;
 
 		_state.TrySpendCurrency(cost);
-		CharacterProgress progress = _state.EnsureCharacterProgress(characterId);
+		CharacterProgress progress = _state.EnsureCharacterProgress(normalized);
 		if (progress == null || !progress.UnlockAbilityNode(nodeId))
 			return false;
 		_saveStore.SaveState(_state);
@@ -146,15 +154,16 @@ public sealed class MetaProgressionService
 
 	public bool CanUnlockAbilityNode(string characterId, string nodeId, out int cost)
 	{
+		string normalized = NormalizeCharacterId(characterId);
 		cost = 0;
-		if (!ProgressionDefs.TryGetCharacter(characterId, out CharacterDef characterDef))
+		if (!ProgressionDefs.TryGetCharacter(normalized, out CharacterDef characterDef))
 			return false;
-		if (!IsCharacterUnlocked(characterId))
+		if (!IsCharacterUnlocked(normalized))
 			return false;
-		if (!ProgressionDefs.TryGetAbilityNode(characterId, nodeId, out AbilityNodeDef nodeDef))
+		if (!ProgressionDefs.TryGetAbilityNode(normalized, nodeId, out AbilityNodeDef nodeDef))
 			return false;
 
-		CharacterProgress progress = _state.TryGetCharacterProgress(characterId, out CharacterProgress existing)
+		CharacterProgress progress = _state.TryGetCharacterProgress(normalized, out CharacterProgress existing)
 			? existing
 			: new CharacterProgress();
 		if (progress.UnlockedAbilityNodes.Contains(nodeId))
@@ -170,7 +179,8 @@ public sealed class MetaProgressionService
 
 	public IReadOnlyCollection<string> GetUnlockedAbilityNodes(string characterId)
 	{
-		return _state.TryGetCharacterProgress(characterId, out CharacterProgress progress)
+		string normalized = NormalizeCharacterId(characterId);
+		return _state.TryGetCharacterProgress(normalized, out CharacterProgress progress)
 			? progress.UnlockedAbilityNodes
 			: Array.Empty<string>();
 	}
@@ -241,9 +251,15 @@ public sealed class MetaProgressionService
 
 	private bool IsFirstCharacterClear(string characterId)
 	{
-		if (string.IsNullOrWhiteSpace(characterId))
+		string normalized = NormalizeCharacterId(characterId);
+		if (string.IsNullOrWhiteSpace(normalized))
 			return false;
-		return !_state.Flags.Has($"{FirstClearCharacterFlagPrefix}{characterId}");
+		return !_state.Flags.Has($"{FirstClearCharacterFlagPrefix}{normalized}");
+	}
+
+	private static string NormalizeCharacterId(string characterId)
+	{
+		return ProgressionDefs.NormalizeCharacterId(characterId);
 	}
 
 	private static bool HasPrerequisiteNodes(CharacterProgress progress, AbilityNodeDef nodeDef)

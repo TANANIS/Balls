@@ -1,4 +1,4 @@
-﻿# Fantasy Pixel Style Spec (v1)
+# Fantasy Pixel Style Spec (v1)
 
 ## Status
 - Date: 2026-02-23
@@ -63,7 +63,7 @@ These are source-art canvas sizes (not collision sizes).
 
 | Asset Class | Target Canvas | Notes |
 |---|---:|---|
-| Player core (`Wizard`, `Knight`, `Priest`) | 32x32 | Keep silhouette compact; center pivot. |
+| Player core (`Wizard`, `Swordsman`, `Priest`) | 32x32 | Keep silhouette compact; center pivot. |
 | Basic enemy (`Slime`, `Orc`) | 64x64 | Distinguish by outline/readable motion shape. |
 | Heavy enemy (`EliteOrc`, `EliteSlime`) | 80x80 | Preserve "heavier" visual mass. |
 | Mini boss (`Lancer`) | 96x96 | Distinctly larger than heavy class. |

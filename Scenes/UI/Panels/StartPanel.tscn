@@ -302,7 +302,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Ranger Core"
 
-[node name="MeleeButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+[node name="SwordsmanButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -313,7 +313,7 @@ theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Knight"
+text = "Swordsman"
 
 [node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)

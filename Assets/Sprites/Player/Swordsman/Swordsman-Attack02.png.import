@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cmcxv80o7o05d"
-path="res://.godot/imported/Knight-Block.png-dcbe7a1e904db028a04d1837036b8c51.ctex"
+uid="uid://bwsjjs3f2f5ye"
+path="res://.godot/imported/Swordsman-Attack02.png-e92c26a5c6448ff3bf8d73450c0426db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Knight/Knight-Block.png"
-dest_files=["res://.godot/imported/Knight-Block.png-dcbe7a1e904db028a04d1837036b8c51.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman-Attack02.png"
+dest_files=["res://.godot/imported/Swordsman-Attack02.png-e92c26a5c6448ff3bf8d73450c0426db.ctex"]
 
 [params]
 

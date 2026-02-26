@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cd7cgr41qwmdd"]
 
 [ext_resource type="Script" uid="uid://c8loiyynvlhs1" path="res://Scripts/VFX/MeleeVFX.cs" id="1_meleevfx"]
-[ext_resource type="Texture2D" uid="uid://qq1heweugs43" path="res://Assets/Sprites/Player/Melee.png" id="2_fhftl"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Swordsman/Swordsman-Slash.png" id="2_fhftl"]
 
 [node name="MeleeVFX" type="Node2D"]
 script = ExtResource("1_meleevfx")

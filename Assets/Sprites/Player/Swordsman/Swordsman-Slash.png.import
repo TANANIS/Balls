@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dp1sc2pk0nroc"
-path="res://.godot/imported/Knight-Dash.png-3c5c0f78dc4bf970d3ff34f9adaefc38.ctex"
+uid="uid://bg2debfpdbtd2"
+path="res://.godot/imported/Swordsman-Slash.png-165c9b9625dfcb930f0da3fa0ed90475.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Knight/Knight-Dash.png"
-dest_files=["res://.godot/imported/Knight-Dash.png-3c5c0f78dc4bf970d3ff34f9adaefc38.ctex"]
+source_file="res://Assets/Sprites/Player/Swordsman/Swordsman-Slash.png"
+dest_files=["res://.godot/imported/Swordsman-Slash.png-165c9b9625dfcb930f0da3fa0ed90475.ctex"]
 
 [params]
 

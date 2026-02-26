@@ -1,8 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class SaveMigrator
 {
+	private const string LegacyMeleeCharacterId = "melee";
+	private const string LegacyTypoSowrdmanCharacterId = "sowrdman";
+	private const string SwordsmanCharacterId = "swordsman";
+	private const string FirstClearCharacterFlagPrefix = "meta.first_clear.character.";
+
 	public static MetaSaveDto MigrateToCurrent(MetaSaveDto dto)
 	{
 		dto ??= new MetaSaveDto();
@@ -22,6 +28,18 @@ public static class SaveMigrator
 		dto.MetaFlags ??= new List<string>();
 		dto.SettledRunIds ??= new List<string>();
 		dto.PerfectClearRecords ??= new List<PerfectClearRecord>();
+		for (int i = 0; i < dto.UnlockedCharacterIds.Count; i++)
+			dto.UnlockedCharacterIds[i] = NormalizeCharacterId(dto.UnlockedCharacterIds[i]);
+		dto.UnlockedCharacterIds = dto.UnlockedCharacterIds
+			.Where(id => !string.IsNullOrWhiteSpace(id))
+			.Distinct(StringComparer.Ordinal)
+			.ToList();
+		for (int i = 0; i < dto.MetaFlags.Count; i++)
+			dto.MetaFlags[i] = NormalizeMetaFlag(dto.MetaFlags[i]);
+		dto.MetaFlags = dto.MetaFlags
+			.Where(flag => !string.IsNullOrWhiteSpace(flag))
+			.Distinct(StringComparer.Ordinal)
+			.ToList();
 		for (int i = dto.PerfectClearRecords.Count - 1; i >= 0; i--)
 		{
 			PerfectClearRecord record = dto.PerfectClearRecords[i];
@@ -42,7 +60,7 @@ public static class SaveMigrator
 			CharacterProgressDto progress = pair.Value ?? new CharacterProgressDto();
 			progress.Level = Math.Max(1, progress.Level);
 			progress.UnlockedAbilityNodes ??= new List<string>();
-			normalized[pair.Key] = progress;
+			normalized[NormalizeCharacterId(pair.Key)] = progress;
 		}
 		dto.CharacterProgressById = normalized;
 
@@ -117,5 +135,24 @@ public static class SaveMigrator
 		}
 
 		return dto;
+	}
+
+	private static string NormalizeMetaFlag(string flag)
+	{
+		if (string.IsNullOrWhiteSpace(flag))
+			return string.Empty;
+		string legacy = $"{FirstClearCharacterFlagPrefix}{LegacyMeleeCharacterId}";
+		if (string.Equals(flag, legacy, StringComparison.Ordinal))
+			return $"{FirstClearCharacterFlagPrefix}{SwordsmanCharacterId}";
+		return flag;
+	}
+
+	private static string NormalizeCharacterId(string characterId)
+	{
+		if (string.Equals(characterId, LegacyMeleeCharacterId, StringComparison.Ordinal))
+			return SwordsmanCharacterId;
+		if (string.Equals(characterId, LegacyTypoSowrdmanCharacterId, StringComparison.Ordinal))
+			return SwordsmanCharacterId;
+		return characterId;
 	}
 }
