@@ -101,6 +101,37 @@ Used fields now include:
 - `max_alive`
 - `spawn_radius_min`, `spawn_radius_max`
 
+## Current Tuning Snapshot
+- Catch-up pressure policy (`SpawnSystem`):
+  - `HordeTargetAliveRatio = 0.82`
+  - `HordeCatchUpBudgetFactor = 0.22`
+- Tier rows currently active:
+  - Tier0:
+    - `spawn_interval_min/max = 2.10 / 2.90`
+    - `budget_min/max = 2 / 3`
+    - `max_alive = 18`
+  - Tier1:
+    - `spawn_interval_min/max = 1.70 / 2.35`
+    - `budget_min/max = 4 / 8`
+    - `max_alive = 24`
+  - Tier2:
+    - `spawn_interval_min/max = 0.85 / 1.30`
+    - `budget_min/max = 12 / 21`
+    - `max_alive = 60`
+  - Tier3:
+    - `spawn_interval_min/max = 0.62 / 0.98`
+    - `budget_min/max = 20 / 34`
+    - `max_alive = 90`
+- Enemy threat readability notes (scene-level tuning):
+  - Elite orc chain dash readability is tuned by:
+    - `Enemies/EliteOrc.tscn`
+    - `ChainDashDurationMultiplier = 2.26`
+    - `PlayAttackAnimationInWindup = true`
+    - chain attack animation speed (`attack_03`) = `13.0`.
+  - Orc dash speed is tuned by:
+    - `Enemies/Orc.tscn`
+    - `DashSpeedMultiplier = 2.55` (15% down from 3.0).
+
 ## Contributor Guardrails
 - Do not access progression state directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.

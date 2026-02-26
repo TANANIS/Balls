@@ -26,6 +26,42 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-26 - Director Pressure Relief + Enemy Contact Recalibration
+- Player survivability and mobility baseline updates:
+  - all four characters `MoveMaxSpeed` increased by `+15%`.
+  - all four characters `MaxHp` increased by `+1`.
+- Spawn pressure relief (early/mid):
+  - `SpawnSystem` catch-up tuning:
+    - `HordeTargetAliveRatio: 0.90 -> 0.82`
+    - `HordeCatchUpBudgetFactor: 0.40 -> 0.22`
+  - `PressureTierRules.csv` Tier1 tuning:
+    - `spawn_interval_min: 1.55 -> 1.70`
+    - `spawn_interval_max: 2.20 -> 2.35`
+    - `max_alive: 28 -> 24`
+- Elite orc dash/animation follow-up:
+  - chain dash duration restored to second-pass target:
+    - `ChainDashDurationMultiplier: 1.77 -> 2.26`
+  - attack animation binding adjusted for dash readability:
+    - `PlayAttackAnimationInWindup = true`
+    - `attack_02` speed increased to `20`
+    - `attack_03` speed adjusted to `13` (slower second segment)
+- Orc dash threat toned down:
+  - `DashSpeedMultiplier: 3.0 -> 2.55` (`-15%`)
+- Enemy contact hitbox recalibration pass (reduced oversized contact rings):
+  - Orc `33 -> 27`
+  - Slime `33 -> 30`
+  - SkeletonArcher `33 -> 30`
+  - Skeleton `38 -> 33`
+  - Werebear `38 -> 33`
+  - Werewolf `46 -> 35`
+  - EliteOrc `42 -> 38`
+  - Boss Lancer `56 -> 50`
+  - Boss GreatswordSkeleton `56 -> 50`
+- Validation:
+  - `dotnet test Tools/BalanceTests/BalanceTests.csproj` passed.
+  - `dotnet test ... --filter SpawnDifficultyCurveTests` passed.
+  - `dotnet build ProjectGenesis.sln` passed after each pass.
+
 ### 2026-02-26 - UI Palette Pass (Sci-Fi -> Rustic/Fantasy)
 - Applied a rustic palette across primary runtime UI:
   - `StartPanel`, `PausePanel`, `RestartPanel`, `HudOverlay`, `PlayerHealthBarDemo`, cursor ring.

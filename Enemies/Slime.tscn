@@ -15,7 +15,7 @@
 radius = 28.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 33.0
+radius = 30.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
 radius = 26.0

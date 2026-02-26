@@ -139,7 +139,11 @@ Current runtime usage:
   - `SURV_SHIELD_COOLDOWN` in `Scripts/Player/PlayerHealth.cs`
   - fallback sprite path: `res://Assets/Sprites/Skills/Shield/shield.png`
 
-## 2026-02-26 Runtime Sync Notes
+## Runtime Sync Notes
+- Character baseline sync:
+  - all `Data/Characters/*.tres` roles currently use:
+    - `MoveMaxSpeed` increased by `+15%` from pre-pass baseline.
+    - `MaxHp` increased by `+1`.
 - Priest sustain flow:
   - `RegenIntervalSeconds` is now tuned to `30s` for `tank_burst`.
   - regen timer no longer resets on taking damage.

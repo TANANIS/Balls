@@ -22,6 +22,8 @@
 - [x] Reduce melee max HP
 - [ ] Melee risk tuning pass #2 (after playtest)
 - [ ] Ranged feel buff pass (damage cadence / projectile feel)
+- [x] Early/mid spawn pressure relief pass (`Tier0` catch-up + `Tier1` pacing density)
+- [x] Enemy contact hitbox recalibration pass (oversized touch-damage rings reduced)
 - [x] Tank anti-chase compensation: stronger ranged damage + bullet knockback
 - [ ] Subsystem card batch #1 (at least 2-3 cards) to reduce Core/Survival over-concentration
 - [ ] Re-run `Tools/CardDrawSim` after Subsystem batch and verify phase Survival ratio error <= 2%
@@ -53,10 +55,12 @@
 - [ ] Tune flash intensity per enemy size class
 - [ ] Add optional hit-stop for melee heavy strikes
 
-## 2026-02-26 Follow-ups
+## Current Follow-ups
 - [ ] Priest regen VFX readability pass (timing, scale, offset) after 30s sustain tuning.
 - [ ] Verify ranged continuation damage falloff feel after pierce/ricochet nerf pass.
 - [ ] Run one full 15:00 balance smoke with numeric HP UI and new recycle aggressiveness.
+- [ ] Verify elite_orc chain dash readability after animation rebind (`attack_03` slower second segment).
+- [ ] Verify orc dash threat feel after `DashSpeedMultiplier` downshift (`3.0 -> 2.55`).
 
 ## Next Milestones
 - [ ] Stage 1 random boss pool

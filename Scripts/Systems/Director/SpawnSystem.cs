@@ -21,8 +21,8 @@ public partial class SpawnSystem : Node
 	[Export] public float EnergyAnomalyTierTailRampMultiplier = 1.30f;
 	[Export] public float StructuralFractureTierTailRampMultiplier = 1.24f;
 	[Export] public float CollapseCriticalTierTailRampMultiplier = 1.16f;
-	[Export] public float HordeTargetAliveRatio = 0.90f;
-	[Export] public float HordeCatchUpBudgetFactor = 0.40f;
+	[Export] public float HordeTargetAliveRatio = 0.82f;
+	[Export] public float HordeCatchUpBudgetFactor = 0.22f;
 	[Export] public int StablePacksPerWave = 3;
 	[Export] public int EnergyAnomalyPacksPerWave = 3;
 	[Export] public int StructuralFracturePacksPerWave = 3;

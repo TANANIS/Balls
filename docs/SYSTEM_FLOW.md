@@ -42,7 +42,10 @@ flowchart TD
     R -->|Record Score/Date/Character| B
 ```
 
-## Runtime Notes (2026-02-26)
+## Runtime Notes
+- Spawn pacing sync:
+  - catch-up uses `HordeTargetAliveRatio = 0.82` and `HordeCatchUpBudgetFactor = 0.22`.
+  - Tier1 pacing row uses `spawn_interval 1.70~2.35`, `max_alive = 24`.
 - Priest regen trigger:
   - interval is `30s`.
   - takes damage does not reset regen timer.

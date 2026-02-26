@@ -17,7 +17,7 @@
 size = Vector2(56, 58)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 42.0
+radius = 38.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
 radius = 34.0
@@ -250,7 +250,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack_02",
-"speed": 10.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -282,7 +282,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack_03",
-"speed": 10.0
+"speed": 13.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -335,10 +335,10 @@ DashSteerStrength = 2.4
 ChainDashChance = 1.0
 MaxChainCount = 1
 ChainWindupMultiplier = 0.60
-ChainDashDurationMultiplier = 3.1
+ChainDashDurationMultiplier = 2.26
 ChainDashSpeedMultiplier = 8.4
 RequireChainDistanceCheck = false
-PlayAttackAnimationInWindup = false
+PlayAttackAnimationInWindup = true
 AttackAnimation = &"attack_02"
 ChainAttackAnimation = &"attack_03"
 MoveAnimation = &"walk"
