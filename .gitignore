@@ -12,6 +12,7 @@ Project Genesis.console*
 **/Project Genesis.console.console/
 
 # Tooling / test artifacts
+Tools/
 Tools/**/bin/
 Tools/**/obj/
 Tools/CardDrawSim/reports/
