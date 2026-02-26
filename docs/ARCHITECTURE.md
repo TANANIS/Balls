@@ -138,3 +138,16 @@ Current runtime usage:
 - Current reference implementation:
   - `SURV_SHIELD_COOLDOWN` in `Scripts/Player/PlayerHealth.cs`
   - fallback sprite path: `res://Assets/Sprites/Skills/Shield/shield.png`
+
+## 2026-02-26 Runtime Sync Notes
+- Priest sustain flow:
+  - `RegenIntervalSeconds` is now tuned to `30s` for `tank_burst`.
+  - regen timer no longer resets on taking damage.
+  - when Priest is full HP and regen interval completes, heal VFX still plays (no HP gain) and starts next interval.
+  - Priest heal VFX applies temporary attack lock via `Player.LockAttacks(...)`.
+- HUD HP display:
+  - `PlayerHealthBarDemo` now uses numeric text only (`HP current/max`).
+  - segmented HP blocks are removed from active HUD layout.
+- Projectile readability/budget updates:
+  - Priest projectile visual scale reduced for combat readability.
+  - projectile lifetime/off-screen cleanup path is active to prevent long-tail stray projectiles.

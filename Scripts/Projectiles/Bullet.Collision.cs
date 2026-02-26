@@ -84,6 +84,7 @@ public partial class Bullet
 			return false;
 
 		_pierceRemaining--;
+		ApplyPostHitDamageFalloff(PierceDamageMultiplierPerHit);
 		_ignoreTargetInstanceId = (ulong)hitTarget.GetInstanceId();
 		_ignoreTargetTimer = Mathf.Max(_ignoreTargetTimer, Mathf.Max(0.01f, PostHitRetargetDelaySeconds));
 		GlobalPosition += _dir * Mathf.Max(0f, PostHitForwardOffset);
@@ -103,6 +104,7 @@ public partial class Bullet
 			return false;
 
 		_ricochetRemaining--;
+		ApplyPostHitDamageFalloff(RicochetDamageMultiplierPerBounce);
 		_dir = toTarget.Normalized();
 		_homingTarget = nextTarget;
 		_ignoreTargetInstanceId = (ulong)hitTarget.GetInstanceId();
@@ -118,11 +120,18 @@ public partial class Bullet
 			return false;
 
 		// No valid bounce target now: keep current heading and keep flying.
+		ApplyPostHitDamageFalloff(RicochetDamageMultiplierPerBounce);
 		_ignoreTargetInstanceId = (ulong)hitTarget.GetInstanceId();
 		_ignoreTargetTimer = Mathf.Max(_ignoreTargetTimer, Mathf.Max(0.01f, PostHitRetargetDelaySeconds));
 		GlobalPosition += _dir * Mathf.Max(0f, PostHitForwardOffset);
 		ApplyFacingByDirection();
 		return true;
+	}
+
+	private void ApplyPostHitDamageFalloff(float multiplierPerContinuation)
+	{
+		float mult = Mathf.Clamp(multiplierPerContinuation, 0.01f, 1f);
+		_damageScale = Mathf.Clamp(_damageScale * mult, 0.01f, 1f);
 	}
 
 	private EnemyHurtbox AcquireRicochetTarget(Node hitTarget)

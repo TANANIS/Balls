@@ -32,10 +32,12 @@
 - [ ] Minute-by-minute micro pacing per phase (1/2/3/4 minute nodes)
 - [ ] Stage-specific survival logic doc with concrete spawn targets
 - [ ] Add 2 high-tier enemy types (tier 3+) and integrate into `EnemyDefinitions.csv` + `TierEnemyWeights.csv`
+- [ ] GreatswordSkeleton: implement dedicated boss attack logic (separate behavior module, not shared miniboss defaults)
 
 ## UI / UX
 - [x] HP UI only shows after run starts
 - [x] XP bar visible at top during active run
+- [x] HP HUD fallback switched to numeric-only (`HP x/y`) for current playtest cycle
 - [ ] Upgrade-ready HUD polish (icon/animation/sfx sync)
 - [x] EXP value differentiation by enemy type (normal/elite/boss)
 - [ ] Replace HP/XP placeholder visuals with final art
@@ -47,8 +49,14 @@
 ## Combat Feedback
 - [x] Enemy white flash on hit
 - [x] Enemy small knockback on hit
+- [x] Priest projectile scale down pass (readability)
 - [ ] Tune flash intensity per enemy size class
 - [ ] Add optional hit-stop for melee heavy strikes
+
+## 2026-02-26 Follow-ups
+- [ ] Priest regen VFX readability pass (timing, scale, offset) after 30s sustain tuning.
+- [ ] Verify ranged continuation damage falloff feel after pierce/ricochet nerf pass.
+- [ ] Run one full 15:00 balance smoke with numeric HP UI and new recycle aggressiveness.
 
 ## Next Milestones
 - [ ] Stage 1 random boss pool

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnfms413ur71t"
-path="res://.godot/imported/split_bullet_04.png-0a973790b57ab294631209df40c623f4.ctex"
+uid="uid://dux0qrlvpbqcq"
+path="res://.godot/imported/werewolf_attack_01.png-744014372f4eb374322f2ff61461b093.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_04.png"
-dest_files=["res://.godot/imported/split_bullet_04.png-0a973790b57ab294631209df40c623f4.ctex"]
+source_file="res://Assets/Sprites/Enemies/Werewolf/werewolf_attack_01.png"
+dest_files=["res://.godot/imported/werewolf_attack_01.png-744014372f4eb374322f2ff61461b093.ctex"]
 
 [params]
 

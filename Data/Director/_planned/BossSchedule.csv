@@ -1,5 +1,5 @@
-﻿# BossSchedule.csv
+# BossSchedule.csv
 # boss_type,tier_min,trigger_type,interval_seconds,pressure_threshold,definition_id,freeze_spawns_seconds,notes
 elite,4,time,75,,werebear,0,"Every ~60??0s (tune interval). No need to pause spawns."
-miniboss,4,pressure,,95,lancer,2,"Spawn once when pressure first crosses 95; freeze spawns briefly for readability."
+miniboss,4,pressure,,95,boss_lancer,2,"Spawn once when pressure first crosses 95; freeze spawns briefly for readability."
 

@@ -1,4 +1,4 @@
-﻿# Game Director And Progression Design
+# Game Director And Progression Design
 
 This document defines pacing logic for spawn orchestration and upgrade timing.
 

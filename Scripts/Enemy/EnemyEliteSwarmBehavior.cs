@@ -10,6 +10,8 @@ public partial class EnemyEliteSwarmBehavior : EnemyBehaviorModule
 	[Export] public float InterceptSeconds = 0.22f;
 	[Export] public float WeaveAmplitude = 0.38f;
 	[Export] public float WeaveFrequency = 5.5f;
+	[Export] public float BaseForwardWeight = 1.0f;
+	[Export] public float BurstForwardWeight = 1.25f;
 
 	private float _time;
 	private bool _clockwise = true;
@@ -57,8 +59,10 @@ public partial class EnemyEliteSwarmBehavior : EnemyBehaviorModule
 		Vector2 forward = toPlayer / distance;
 		Vector2 side = _clockwise ? new Vector2(forward.Y, -forward.X) : new Vector2(-forward.Y, forward.X);
 		float weave = Mathf.Sin(_time * WeaveFrequency) * WeaveAmplitude;
-		Vector2 dir = (forward + side * weave).Normalized();
-		float speedMult = _burstRemaining > 0f ? BurstSpeedMultiplier : BaseSpeedMultiplier;
+		bool inBurst = _burstRemaining > 0f;
+		float forwardWeight = inBurst ? BurstForwardWeight : BaseForwardWeight;
+		Vector2 dir = ((forward * Mathf.Max(0.1f, forwardWeight)) + (side * weave)).Normalized();
+		float speedMult = inBurst ? BurstSpeedMultiplier : BaseSpeedMultiplier;
 		return dir * enemy.MaxSpeed * Mathf.Max(0f, speedMult);
 	}
 }

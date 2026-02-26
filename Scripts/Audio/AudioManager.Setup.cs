@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 
 public partial class AudioManager
 {
@@ -97,7 +97,7 @@ public partial class AudioManager
 		_enemyDeathSfxByScene["res://Enemies/Orc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_orc_die.wav");
 		_enemyDeathSfxByScene["res://Enemies/EliteOrc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_elite_orc_die.wav");
 		_enemyDeathSfxByScene["res://Enemies/Werebear.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_werebear_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_lancer_die.wav");
+		_enemyDeathSfxByScene["res://Enemies/Boss/BOSS_Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_lancer_die.wav");
 
 		ApplySfxLoopSettings();
 	}

@@ -440,6 +440,9 @@ void fragment()
 		Player player = GetParentOrNull<Player>();
 		if (player?.ActiveCharacter == null)
 			return false;
-		return string.Equals(player.ActiveCharacter.CharacterId, PriestCharacterId);
+		return string.Equals(
+			player.ActiveCharacter.CharacterId,
+			PriestCharacterId,
+			System.StringComparison.OrdinalIgnoreCase);
 	}
 }

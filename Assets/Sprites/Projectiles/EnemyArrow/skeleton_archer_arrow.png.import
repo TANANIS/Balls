@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsvt5lhieyh05"
-path="res://.godot/imported/split_bullet_02.png-4778e1ac323a7a8b52bbac4023e27775.ctex"
+uid="uid://pjtn3e4a63w2"
+path="res://.godot/imported/skeleton_archer_arrow.png-0c1f2b2d5aacfb409e500afb3a622a79.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_02.png"
-dest_files=["res://.godot/imported/split_bullet_02.png-4778e1ac323a7a8b52bbac4023e27775.ctex"]
+source_file="res://Assets/Sprites/Projectiles/EnemyArrow/skeleton_archer_arrow.png"
+dest_files=["res://.godot/imported/skeleton_archer_arrow.png-0c1f2b2d5aacfb409e500afb3a622a79.ctex"]
 
 [params]
 

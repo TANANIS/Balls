@@ -61,9 +61,10 @@ public partial class SpawnSystem : Node
 	[Export] public int EliteUnlockUpgradeCount = 4;
 	[Export] public float EliteInjectChanceMin = 0.02f;
 	[Export] public float EliteInjectChanceMax = 0.05f;
-	[Export] public string EliteEnemyId = "werebear";
+	[Export] public string EliteEnemyId = "werewolf";
 	[Export] public int MiniBossUnlockUpgradeCount = 6;
-	[Export] public string MiniBossEnemyId = "lancer";
+	[Export] public string MiniBossEnemyId = "boss_lancer";
+	[Export] public string Phase3MiniBossEnemyId = "boss_greatsword_skeleton";
 	[Export] public float MiniBossFreezeSeconds = 2.0f;
 	[Export] public bool UsePhaseTailMiniBossSchedule = true;
 	[Export] public float Phase1MiniBossAtSeconds = 225f;
@@ -75,8 +76,8 @@ public partial class SpawnSystem : Node
 	[Export] public float PhaseMiniBossScaleStep = 0.18f;
 	[Export] public int PhaseMiniBossHpBase = 120;
 	[Export] public int PhaseMiniBossHpStep = 50;
-	[Export] public int PhaseMiniBossContactDamageBase = 3;
-	[Export] public int PhaseMiniBossContactDamageStep = 1;
+	[Export] public int PhaseMiniBossContactDamageBase = 1;
+	[Export] public int PhaseMiniBossContactDamageStep = 0;
 	[Export] public float PhaseTailPrepSeconds = 26f;
 	[Export] public float PhaseTailBudgetMultiplier = 0.82f;
 	[Export] public float PhaseTailMaxAliveMultiplier = 0.86f;

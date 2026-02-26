@@ -1,0 +1,281 @@
+[gd_scene load_steps=39 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SkeletonArcher/skeleton_archer_walk.png" id="2_tex_walk"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyRangedAttackBehavior.cs" id="6_behavior"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SkeletonArcher/skeleton_archer_hurt.png" id="8_tex_hurt"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SkeletonArcher/skeleton_archer_death.png" id="9_tex_death"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyAnimationEventModule.cs" id="10_anim_events"]
+[ext_resource type="PackedScene" path="res://Prefabs/EnemyArrowProjectile.tscn" id="11_enemy_arrow"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/SkeletonArcher/skeleton_archer_attack.png" id="12_tex_attack"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 28.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 33.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
+radius = 26.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_0"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_1"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_2"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_3"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_4"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_walk_5"]
+atlas = ExtResource("2_tex_walk")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_hurt_0"]
+atlas = ExtResource("8_tex_hurt")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_hurt_1"]
+atlas = ExtResource("8_tex_hurt")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_hurt_2"]
+atlas = ExtResource("8_tex_hurt")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_hurt_3"]
+atlas = ExtResource("8_tex_hurt")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_death_0"]
+atlas = ExtResource("9_tex_death")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_death_1"]
+atlas = ExtResource("9_tex_death")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_death_2"]
+atlas = ExtResource("9_tex_death")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_death_3"]
+atlas = ExtResource("9_tex_death")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_0"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_1"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_2"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_3"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_4"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_5"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_6"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(600, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_7"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(700, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slime_attack_8"]
+atlas = ExtResource("12_tex_attack")
+region = Rect2(800, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slime"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_walk_5")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_hurt_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_hurt_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_hurt_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_hurt_3")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_attack_8")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_death_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_death_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_death_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slime_death_3")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}]
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_enemy")
+MaxSpeed = 98.0
+Accel = 1240.0
+Friction = 900.0
+AutoFlipVisualByVelocityX = true
+FlipFacingDeadzone = 8.0
+DespawnDelayOnDeathSeconds = 0.42
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_slime")
+animation = &"walk"
+autoplay = "walk"
+scale = Vector2(4, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_body")
+
+[node name="Behavior" type="Node" parent="."]
+script = ExtResource("6_behavior")
+AttackRange = 560.0
+MinRange = 210.0
+AttackCooldown = 1.7
+ProjectileSpeed = 760.0
+ProjectileDamage = 1
+ProjectileLifeTime = 1.6
+ProjectileSpawnForwardOffset = 40.0
+ChaseSpeedMultiplier = 0.75
+RetreatSpeedMultiplier = 0.62
+UseAttackAnimation = true
+AttackAnimLockSeconds = 0.48
+ProjectileScene = ExtResource("11_enemy_arrow")
+
+[node name="Separation" type="Node" parent="."]
+script = ExtResource("7_separation")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 16
+script = ExtResource("3_hitbox")
+ContactDamage = 1
+TickInterval = 0.24
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+visible = false
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_hitbox")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, -1)
+collision_layer = 32
+collision_mask = 8
+script = ExtResource("4_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+visible = false
+shape = SubResource("CircleShape2D_hurtbox")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("5_health")
+MaxHp = 10
+
+[node name="Events" type="Node" parent="."]
+
+[node name="AnimEvents" type="Node" parent="Events"]
+script = ExtResource("10_anim_events")
+MoveAnimation = &"walk"
+HurtAnimation = &"hurt"
+DeathAnimation = &"death"
+HurtReturnDelaySeconds = 0.2

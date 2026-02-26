@@ -11,10 +11,9 @@ public partial class Bullet
 		if (parent == null)
 			return;
 
-		// Prefer dedicated split projectile prefab so split visuals/motion stay deterministic.
+		// Default behavior: split child uses the same projectile prefab as the current character.
+		// Keep SplitChildProjectileScene as an explicit override hook only.
 		PackedScene scene = SplitChildProjectileScene;
-		if (scene == null && ResourceLoader.Exists(DefaultSplitProjectileScenePath))
-			scene = GD.Load<PackedScene>(DefaultSplitProjectileScenePath);
 		if (scene == null)
 			scene = _projectileScene;
 		if (scene == null && !string.IsNullOrWhiteSpace(SceneFilePath))
@@ -83,6 +82,8 @@ public partial class Bullet
 		Vector2 splitDir = _dir.Rotated(Mathf.DegToRad(angleDegrees)).Normalized();
 		if (spawned is Bullet splitBullet)
 		{
+			if (_homingEnabledRuntime)
+				splitBullet.HomingForwardDotThreshold = HomingForwardDotThreshold;
 			// Explicitly disable chaining to avoid runaway recursive split behavior.
 			splitBullet.InitFromPlayer(
 				_source,
@@ -95,7 +96,15 @@ public partial class Bullet
 				damageScale: damageScale,
 				hitArmDelaySeconds: 0f,
 				ignoreTargetInstanceId: ignoreTargetInstanceId,
-				ignoreTargetSeconds: SplitChildHitArmDelaySeconds);
+				ignoreTargetSeconds: SplitChildHitArmDelaySeconds,
+				isElementalBurstShot: false,
+				elementalBurstRadius: 0f,
+				elementalBurstDamageMultiplier: 1f,
+				elementalBurstMaxDistance: 0f,
+				elementalBurstMaxTargets: 0,
+				elementalBurstOwner: null,
+				homingTarget: null,
+				homingTurnRateDegrees: _homingEnabledRuntime ? _homingTurnRateRuntime : 0f);
 		}
 		else
 		{

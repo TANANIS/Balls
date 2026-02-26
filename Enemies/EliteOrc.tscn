@@ -1,15 +1,17 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=49 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/EliteOrc/elite_orc_walk.png" id="2_tex_walk"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
-[ext_resource type="Script" path="res://Scripts/Enemy/EnemyTankBlockBehavior.cs" id="6_behavior"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyDashBehavior.cs" id="6_behavior"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/EliteOrc/elite_orc_hurt.png" id="8_tex_hurt"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/EliteOrc/elite_orc_death.png" id="9_tex_death"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyAnimationEventModule.cs" id="10_anim_events"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/EliteOrc/elite_orc_attack_02.png" id="11_tex_attack_02"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/EliteOrc/elite_orc_attack_03.png" id="12_tex_attack_03"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(56, 58)
@@ -84,6 +86,86 @@ region = Rect2(200, 0, 100, 100)
 atlas = ExtResource("9_tex_death")
 region = Rect2(300, 0, 100, 100)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_0"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_1"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_2"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_3"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_4"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_5"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_6"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(600, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_7"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(700, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_8"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(800, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_9"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(900, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_02_10"]
+atlas = ExtResource("11_tex_attack_02")
+region = Rect2(1000, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_0"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_1"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_2"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_3"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_4"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_5"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_6"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(600, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_7"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(700, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elite_orc_attack_03_8"]
+atlas = ExtResource("12_tex_attack_03")
+region = Rect2(800, 0, 100, 100)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_elite_orc"]
 animations = [{
 "frames": [{
@@ -134,6 +216,76 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_02_10")
+}],
+"loop": true,
+"name": &"attack_02",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elite_orc_attack_03_8")
+}],
+"loop": true,
+"name": &"attack_03",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_elite_orc_death_0")
 }, {
 "duration": 1.0,
@@ -172,13 +324,24 @@ shape = SubResource("RectangleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-ApproachSpeedMultiplier = 0.95
-OrbitSpeedMultiplier = 0.55
-DesiredBlockDistance = 170.0
-DistanceTolerance = 20.0
-InterceptSeconds = 0.7
-CutoffAheadDistance = 150.0
-RetreatSpeedMultiplier = 0.48
+ChaseSpeedMultiplier = 0.80
+DashSpeedMultiplier = 4.00
+TriggerDistance = 360.0
+WindupDuration = 0.34
+DashDuration = 0.17
+DashCooldown = 1.95
+AimPredictionSeconds = 0.20
+DashSteerStrength = 2.4
+ChainDashChance = 1.0
+MaxChainCount = 1
+ChainWindupMultiplier = 0.60
+ChainDashDurationMultiplier = 3.1
+ChainDashSpeedMultiplier = 8.4
+RequireChainDistanceCheck = false
+PlayAttackAnimationInWindup = false
+AttackAnimation = &"attack_02"
+ChainAttackAnimation = &"attack_03"
+MoveAnimation = &"walk"
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
@@ -187,7 +350,7 @@ script = ExtResource("7_separation")
 collision_layer = 64
 collision_mask = 16
 script = ExtResource("3_hitbox")
-ContactDamage = 2
+ContactDamage = 1
 TickInterval = 0.3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]

@@ -1,14 +1,14 @@
 [gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Enemy/Enemy.cs" id="1_enemy"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/Lancer/lancer_walk.png" id="2_tex_walk"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/GreatswordSkeleton/greatsword_skeleton_walk.png" id="2_tex_walk"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHitbox.cs" id="3_hitbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHurtbox.cs" id="4_hurtbox"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyHealth.cs" id="5_health"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyMiniBossBehavior.cs" id="6_behavior"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemySeparationModule.cs" id="7_separation"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/Lancer/lancer_hurt.png" id="8_tex_hurt"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/Lancer/lancer_death.png" id="9_tex_death"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/GreatswordSkeleton/greatsword_skeleton_hurt.png" id="8_tex_hurt"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Enemies/GreatswordSkeleton/greatsword_skeleton_death.png" id="9_tex_death"]
 [ext_resource type="Script" path="res://Scripts/Enemy/EnemyAnimationEventModule.cs" id="10_anim_events"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
@@ -152,10 +152,10 @@ animations = [{
 
 [node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 6
 script = ExtResource("1_enemy")
-MaxSpeed = 72.0
-Accel = 980.0
+MaxSpeed = 74.0
+Accel = 1040.0
 Friction = 720.0
 KnockbackResistance = 0.88
 AutoFlipVisualByVelocityX = true
@@ -174,15 +174,15 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-PatrolSpeedMultiplier = 1.05
-RushSpeedMultiplier = 5.2
-TriggerDistance = 680.0
-WindupDuration = 0.12
-RushDuration = 0.62
-RecoveryDuration = 0.28
-RushCooldown = 0.55
-AimPredictionSeconds = 0.34
-RushSteerStrength = 9.8
+PatrolSpeedMultiplier = 0.95
+RushSpeedMultiplier = 4.6
+TriggerDistance = 540.0
+WindupDuration = 0.24
+RushDuration = 0.50
+RecoveryDuration = 0.56
+RushCooldown = 0.90
+AimPredictionSeconds = 0.18
+RushSteerStrength = 5.2
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
@@ -191,7 +191,7 @@ script = ExtResource("7_separation")
 collision_layer = 64
 collision_mask = 16
 script = ExtResource("3_hitbox")
-ContactDamage = 3
+ContactDamage = 1
 TickInterval = 0.3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
@@ -211,7 +211,7 @@ shape = SubResource("CircleShape2D_hurtbox")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("5_health")
-MaxHp = 120
+MaxHp = 180
 HurtKnockbackStrength = 36.0
 
 [node name="Events" type="Node" parent="."]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://82bd4ysc6fm8"
-path="res://.godot/imported/split_bullet_01.png-b1ce69438ccf86ee23e97ad8f209353b.ctex"
+uid="uid://vo3u417r45an"
+path="res://.godot/imported/skeleton_archer_death.png-805d3eef869ef28241587f2deffb824b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_01.png"
-dest_files=["res://.godot/imported/split_bullet_01.png-b1ce69438ccf86ee23e97ad8f209353b.ctex"]
+source_file="res://Assets/Sprites/Enemies/SkeletonArcher/skeleton_archer_death.png"
+dest_files=["res://.godot/imported/skeleton_archer_death.png-805d3eef869ef28241587f2deffb824b.ctex"]
 
 [params]
 

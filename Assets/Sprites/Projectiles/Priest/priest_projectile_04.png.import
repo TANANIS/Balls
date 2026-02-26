@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://by6b4p8kptcvu"
-path="res://.godot/imported/split_bullet_06.png-b88764b1bd1320fc55e57b5f6ae40603.ctex"
+uid="uid://ng4hangfftn7"
+path="res://.godot/imported/priest_projectile_04.png-9c61da056913a1a2393c840454b672fe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Projectiles/Split/Frames/split_bullet_06.png"
-dest_files=["res://.godot/imported/split_bullet_06.png-b88764b1bd1320fc55e57b5f6ae40603.ctex"]
+source_file="res://Assets/Sprites/Projectiles/Priest/priest_projectile_04.png"
+dest_files=["res://.godot/imported/priest_projectile_04.png-9c61da056913a1a2393c840454b672fe.ctex"]
 
 [params]
 

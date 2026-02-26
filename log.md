@@ -26,6 +26,26 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-26 - Priest Sustain + HUD Readability + Projectile Continuation Tuning
+- Priest sustain logic:
+  - `TankBurstCharacter` regen interval updated to `30s`.
+  - regen timer is no longer reset by incoming damage.
+  - when regen interval completes at full HP, Priest heal VFX still triggers (visual timing signal only, no HP gain).
+  - Priest heal VFX check now uses case-insensitive character id compare.
+- Priest combat lock confirmation:
+  - heal VFX path continues to call `player.LockAttacks(duration, interruptCurrentAttack: true)`; Priest cannot attack during heal animation.
+- HUD simplification:
+  - removed segmented HP blocks from `PlayerHealthBarDemo`; HUD now displays numeric `HP x/y` only.
+- Projectile readability/balance:
+  - Priest projectile visual scale reduced.
+  - continuation falloff strengthened for ranged multi-hit mechanics:
+    - pierce and ricochet now apply per-step damage multipliers.
+  - split children inherit homing tuning when parent has Arcane Tracking.
+- World pacing pressure:
+  - far-enemy recycle parameters were tightened to reduce safe-zone abuse and off-screen enemy accumulation.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` passed after changes.
+
 ### 2026-02-26 - Swordsman Naming + Asset Unification
 - Character naming normalized from mixed `Melee/Knight` to `Swordsman`:
   - character id: `swordsman`,

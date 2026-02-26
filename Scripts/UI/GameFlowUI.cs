@@ -158,6 +158,7 @@ public partial class GameFlowUI : Control
 			MobilityAbility = MobilityAbilityKind.None,
 			MaxHp = 5,
 			RegenAmount = 1,
+			RegenIntervalSeconds = 30f,
 			RangedDamage = 2,
 			RangedCooldown = 0.72f
 		};

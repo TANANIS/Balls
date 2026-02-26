@@ -34,7 +34,8 @@
   - `Enemies/Orc.tscn`
   - `Enemies/EliteOrc.tscn`
   - `Enemies/EliteSlime.tscn`
-  - `Enemies/Lancer.tscn`
+  - `Enemies/Boss/BOSS_Lancer.tscn`
+  - `Enemies/Boss/BOSS_GreatswordSkeleton.tscn`
 - Progression and drops:
   - `Prefabs/ExperiencePickup.tscn`
 - World/background:

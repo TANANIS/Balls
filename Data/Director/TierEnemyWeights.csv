@@ -4,15 +4,22 @@
 0,orc,22
 
 1,slime,50
-1,orc,35
+1,orc,28
+1,skeleton,20
 1,elite_orc,15
 
-2,slime,22
-2,orc,82
-2,elite_orc,55
-2,werebear,22
+2,slime,16
+2,orc,42
+2,skeleton,46
+2,elite_orc,38
+2,skeleton_archer,26
+2,werewolf,24
+2,werebear,14
 
-3,slime,12
-3,orc,70
-3,elite_orc,62
-3,werebear,48
+3,slime,6
+3,orc,24
+3,skeleton,34
+3,elite_orc,46
+3,skeleton_archer,34
+3,werewolf,42
+3,werebear,22

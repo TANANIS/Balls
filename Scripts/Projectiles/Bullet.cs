@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using System.Collections.Generic;
 
 /*
@@ -9,14 +9,14 @@ using System.Collections.Generic;
  */
 public partial class Bullet : Area2D
 {
-	private const string DefaultSplitProjectileScenePath = "res://Prefabs/SplitProjectile.tscn";
-	private const string SplitProjectileTexturePath = "res://Assets/Sprites/Projectiles/Split/split_bullet.png";
 	private const string DefaultProjectileTexturePath = "res://Assets/Sprites/Projectiles/Common/projectile_orb_default.png";
 	private const string ElementalBurstFramesBasePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Projectile";
 	private const string ElementalBurstExplosionRunePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Explosion/elemental_burst_explosion_01.png";
 	private const string ElementalBurstExplosionFramesBasePath = "res://Assets/Sprites/Projectiles/ElementalBurst/Explosion";
 
-	[Export] public float LifeTime = 1.5f;
+	[Export] public float LifeTime = 1.2f;
+	[Export] public bool DespawnOutsideViewport = true;
+	[Export(PropertyHint.Range, "0,1024,1")] public float DespawnOutsideViewportMargin = 64f;
 	[Export] public string DamageTag = "bullet";
 	[Export(PropertyHint.Range, "0.10,3.00,0.05")] public float RuntimeSpeedScale = 1.00f;
 	[Export(PropertyHint.Range, "0.00,0.20,0.005")] public float SplitChildHitArmDelaySeconds = 0.05f;
@@ -30,6 +30,8 @@ public partial class Bullet : Area2D
 	[Export(PropertyHint.Range, "0,6,1")] public int DefaultPierceCount = 0;
 	[Export(PropertyHint.Range, "0,6,1")] public int DefaultRicochetCount = 0;
 	[Export(PropertyHint.Range, "64,2400,1")] public float RicochetSearchRadius = 640f;
+	[Export(PropertyHint.Range, "0.05,1.00,0.01")] public float PierceDamageMultiplierPerHit = 0.60f;
+	[Export(PropertyHint.Range, "0.05,1.00,0.01")] public float RicochetDamageMultiplierPerBounce = 0.50f;
 	[Export(PropertyHint.Range, "0.01,0.30,0.005")] public float PostHitRetargetDelaySeconds = 0.05f;
 	[Export(PropertyHint.Range, "0,120,1")] public float PostHitForwardOffset = 10f;
 	[ExportGroup("Effect")]
@@ -256,6 +258,11 @@ public partial class Bullet : Area2D
 			GlobalPosition += step;
 			_travelDistance += step.Length();
 			ApplyFacingByDirection();
+			if (DespawnOutsideViewport && IsOutsideActiveCameraViewport())
+			{
+				QueueFree();
+				return;
+			}
 
 			if (_isElementalBurstShot && !_elementalBurstDetonated && _travelDistance >= _elementalBurstMaxDistanceRuntime)
 			{
@@ -375,5 +382,25 @@ public partial class Bullet : Area2D
 		if (target is EnemyHurtbox hurtbox && hurtbox.IsDead)
 			return false;
 		return true;
+	}
+
+	private bool IsOutsideActiveCameraViewport()
+	{
+		Viewport viewport = GetViewport();
+		if (viewport == null)
+			return false;
+
+		Camera2D camera = viewport.GetCamera2D();
+		if (camera == null)
+			return false;
+
+		Vector2 screenSize = viewport.GetVisibleRect().Size;
+		Vector2 worldSize = new Vector2(
+			screenSize.X * Mathf.Abs(camera.Zoom.X),
+			screenSize.Y * Mathf.Abs(camera.Zoom.Y));
+		Vector2 half = worldSize * 0.5f;
+		Rect2 worldRect = new Rect2(camera.GlobalPosition - half, worldSize)
+			.Grow(Mathf.Max(0f, DespawnOutsideViewportMargin));
+		return !worldRect.HasPoint(GlobalPosition);
 	}
 }

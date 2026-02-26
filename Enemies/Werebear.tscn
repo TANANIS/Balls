@@ -173,14 +173,16 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Behavior" type="Node" parent="."]
 script = ExtResource("6_behavior")
-BaseSpeedMultiplier = 1.18
-BurstSpeedMultiplier = 1.62
-BurstDuration = 0.52
-BurstCooldownMin = 0.95
-BurstCooldownMax = 1.6
-InterceptSeconds = 0.26
-WeaveAmplitude = 0.42
-WeaveFrequency = 6.1
+BaseSpeedMultiplier = 1.36
+BurstSpeedMultiplier = 3.15
+BurstDuration = 1.05
+BurstCooldownMin = 0.45
+BurstCooldownMax = 0.80
+InterceptSeconds = 0.34
+WeaveAmplitude = 0.95
+WeaveFrequency = 8.6
+BaseForwardWeight = 1.05
+BurstForwardWeight = 1.65
 
 [node name="Separation" type="Node" parent="."]
 script = ExtResource("7_separation")
@@ -189,7 +191,7 @@ script = ExtResource("7_separation")
 collision_layer = 64
 collision_mask = 16
 script = ExtResource("3_hitbox")
-ContactDamage = 2
+ContactDamage = 1
 TickInterval = 0.24
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]

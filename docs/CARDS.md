@@ -254,18 +254,16 @@ Additional rule:
   - `Scripts/Projectiles/Bullet.cs` is the common behavior host (hit, damage request, split, effect animation).
 - Variant control uses prefab split (not script split):
   - Primary projectile: existing character projectile prefabs (`WizardProjectile.tscn` / `PriestProjectile.tscn`).
-  - Split projectile: `Prefabs/SplitProjectile.tscn`.
 - Split generation rule:
-  - `Bullet.SplitChildProjectileScene` is preferred for split child spawn.
+  - Split child now defaults to the source projectile scene (character projectile visual consistency).
+  - `Bullet.SplitChildProjectileScene` remains available only as an explicit override hook.
   - Fallback order: `SplitChildProjectileScene -> source projectile scene -> current scene file`.
 - Override policy:
   - Keep script logic unified.
   - Put variant-specific visuals and runtime tuning in prefab exports (`RuntimeSpeedScale`, effect textures/frames, collider size, etc.).
-- Current split projectile baseline (`Prefabs/SplitProjectile.tscn`):
-  - Visual frames: `Assets/Sprites/Projectiles/Split/Frames/split_bullet_01.png` ~ `split_bullet_07.png`.
-  - Flight/impact frame split: `Flight 0..5`, `Impact 6`.
-  - Relative size target: split child visual scale should stay around primary projectile `2/3` (`1.33` vs primary `2.0`).
-  - Collider baseline: `CircleShape2D radius = 9` (kept close to visible silhouette).
+- Current split-shot baseline:
+  - No dedicated split projectile asset is required by default.
+  - Split child uses the active character projectile prefab/animation.
   - Hit timing rule: split child has no global hit-arm delay; it only ignores the original hit target for a short window to avoid immediate same-target re-hit.
 - Current elemental burst visual baseline (`MOD_ELEMENTAL_BURST` card):
   - Projectile animation frames: `Assets/Sprites/Projectiles/ElementalBurst/Projectile/elemental_burst_charge_01.png` ~ `elemental_burst_charge_08.png`.

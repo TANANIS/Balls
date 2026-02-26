@@ -1,4 +1,4 @@
-﻿# System Flow Diagram
+# System Flow Diagram
 
 ```mermaid
 flowchart TD
@@ -25,6 +25,8 @@ flowchart TD
     I --> F
     E -->|Progress/Ready State| U
     J -->|Current HP/Max HP| U
+    J -->|Regen Tick 30s| J1[Priest Heal VFX]
+    J1 -->|Lock attacks for VFX duration| F
 
     F -->|Player Damaged| J[PlayerHealth]
     J -->|Low HP| K[Low HP Vignette + Low HP SFX]
@@ -39,4 +41,14 @@ flowchart TD
     C1 -->|15:00 Reached| R[Perfect Clear Panel]
     R -->|Record Score/Date/Character| B
 ```
+
+## Runtime Notes (2026-02-26)
+- Priest regen trigger:
+  - interval is `30s`.
+  - takes damage does not reset regen timer.
+  - full HP still emits heal VFX as a timing signal (no HP added).
+- Heal VFX combat interaction:
+  - on Priest heal VFX play, attacks are temporarily locked for the animation duration.
+- HUD HP rendering:
+  - in-run HP is numeric only (`HP x/y`), segment blocks are removed.
 

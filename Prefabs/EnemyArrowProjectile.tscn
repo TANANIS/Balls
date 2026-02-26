@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyProjectile.cs" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Projectiles/EnemyArrow/skeleton_archer_arrow.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 12.0
+
+[node name="EnemyArrowProjectile" type="Area2D"]
+collision_layer = 128
+collision_mask = 17
+script = ExtResource("1_script")
+LifeTime = 2.3
+RotationOffsetDegrees = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+scale = Vector2(3.3, 3.3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_hit")

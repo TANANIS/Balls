@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 
 public partial class Bullet
 {
@@ -49,8 +49,7 @@ public partial class Bullet
 		// Safety fallback: if imported textures are missing/null, ensure projectile still renders.
 		if (frames.GetFrameCount("default") <= 0)
 		{
-			if (!TryAddSingleFrameFromPath(frames, SplitProjectileTexturePath))
-				TryAddSingleFrameFromPath(frames, DefaultProjectileTexturePath);
+			TryAddSingleFrameFromPath(frames, DefaultProjectileTexturePath);
 		}
 
 		_runtimeFrameCount = frames.GetFrameCount("default");

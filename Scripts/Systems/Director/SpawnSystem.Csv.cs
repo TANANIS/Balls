@@ -61,7 +61,11 @@ public partial class SpawnSystem
 			int minTier = ParseInt(cols[4], 0);
 			int hpOverride = cols.Count > 6 ? ParseInt(cols[6], 0) : 0;
 			float speedOverride = cols.Count > 7 ? ParseFloat(cols[7], 0f) : 0f;
-			int contactDamageOverride = cols.Count > 8 ? ParseInt(cols[8], 0) : 0;
+			if (cols.Count <= 8 || !TryParseIntStrict(cols[8], out int contactDamageOverride) || contactDamageOverride <= 0)
+			{
+				GD.PushError($"[SpawnSystem] Invalid or missing contact_damage in EnemyDefinitions.csv for id='{id}'. contact_damage must be an integer >= 1.");
+				continue;
+			}
 
 			if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(scenePath))
 				continue;
@@ -80,7 +84,7 @@ public partial class SpawnSystem
 				MinTier = minTier,
 				HpOverride = Mathf.Max(0, hpOverride),
 				SpeedOverride = Mathf.Max(0f, speedOverride),
-				ContactDamageOverride = Mathf.Max(0, contactDamageOverride),
+				ContactDamageOverride = contactDamageOverride,
 				Scene = scene
 			};
 		}
@@ -124,6 +128,23 @@ public partial class SpawnSystem
 			WarnCsvIssueOnce($"empty:{TierEnemyWeightsCsvPath}", $"No valid tier weights parsed from: {TierEnemyWeightsCsvPath}");
 		else
 			GD.Print($"[SpawnSystem] Loaded tier weights: {_tierWeights.Count} tiers ({TierEnemyWeightsCsvPath})");
+
+		ValidateTierWeightReferences();
+	}
+
+	private void ValidateTierWeightReferences()
+	{
+		foreach (KeyValuePair<int, List<WeightedEnemy>> kv in _tierWeights)
+		{
+			int tier = kv.Key;
+			foreach (WeightedEnemy entry in kv.Value)
+			{
+				if (_enemyDefinitions.ContainsKey(entry.EnemyId))
+					continue;
+
+				GD.PushError($"[SpawnSystem] TierEnemyWeights.csv references unknown enemy_id='{entry.EnemyId}' in tier={tier}. Check EnemyDefinitions.csv.");
+			}
+		}
 	}
 
 	private static bool TryReadCsvLines(string path, out List<string> lines)
@@ -210,5 +231,10 @@ public partial class SpawnSystem
 		if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out int v))
 			return v;
 		return fallback;
+	}
+
+	private static bool TryParseIntStrict(string s, out int value)
+	{
+		return int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
 	}
 }

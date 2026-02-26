@@ -18,7 +18,9 @@ public static class EnemyTagRules
 		string path = scenePathLower ?? string.Empty;
 
 		return name.Contains("miniboss", StringComparison.Ordinal)
-			|| name.Contains("lancer", StringComparison.Ordinal)
-			|| path.Contains("lancer", StringComparison.Ordinal);
+			|| name.Contains("boss_lancer", StringComparison.Ordinal)
+			|| name.Contains("boss_greatsword_skeleton", StringComparison.Ordinal)
+			|| path.Contains("boss_lancer", StringComparison.Ordinal)
+			|| path.Contains("boss_greatswordskeleton", StringComparison.Ordinal);
 	}
 }

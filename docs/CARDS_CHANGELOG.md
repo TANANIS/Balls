@@ -489,3 +489,43 @@
 - [x] Runtime effect binding updated
 - [x] Pool routing checked
 - [ ] In-run smoke test done
+
+### 2026-02-26 - Split Visual Routing Cleanup (Character-Consistent Split Child)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Removed dedicated split projectile asset dependency from default split-shot flow.
+  - Split child now uses the source character projectile prefab/animation by default.
+  - Migrated Priest projectile frames to `Assets/Sprites/Projectiles/Priest/*` (out of `Assets/Sprites/Player/Priest/*`).
+  - Removed legacy split bullet assets (`Assets/Sprites/Projectiles/Split/*`) and obsolete split prefab.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`
+  - Change: split child visual routing
+  - Value: `prefer dedicated split prefab -> default to source projectile prefab`
+  - Reason: keep split visuals consistent with active character and reduce redundant asset maintenance.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [x] Build check passed
+
+### 2026-02-26 - Projectile Continuation Balance + Priest Sustain/FX Sync
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`, `Modifier`, `Survival`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added stronger continuation falloff for ranged continuation mechanics:
+    - Pierce: per-through-hit damage multiplier.
+    - Ricochet: per-bounce damage multiplier (including fallback continue-forward path).
+  - Split child projectile now inherits homing runtime tuning when parent has Arcane Tracking.
+  - Priest sustain loop tuned and stabilized:
+    - regen interval adjusted to `30s`,
+    - regen timer no longer resets on damage,
+    - full-HP interval completion still emits Priest heal VFX timing signal.
+  - Priest projectile visual scale reduced to improve readability.
+  - HUD HP presentation simplified to numeric-only display.
+
+#### Validation
+- [x] Runtime effect binding updated
+- [x] Build check passed

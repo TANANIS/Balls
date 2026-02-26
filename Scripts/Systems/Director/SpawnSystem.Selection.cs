@@ -136,8 +136,11 @@ public partial class SpawnSystem
 			eliteWeight *= 1.35f;
 
 		TryAddWeight(list, "slime", ChaosWeightSwarm, tier);
+		TryAddWeight(list, "skeleton", ChaosWeightSwarm * 0.75f, tier);
 		TryAddWeight(list, "orc", ChaosWeightCharger, tier);
+		TryAddWeight(list, "werewolf", ChaosWeightCharger * 0.85f, tier);
 		TryAddWeight(list, "elite_orc", ChaosWeightTank, tier);
+		TryAddWeight(list, "skeleton_archer", ChaosWeightTank * 0.45f, tier);
 		TryAddWeight(list, "werebear", eliteWeight, tier);
 
 		return list;
@@ -214,9 +217,15 @@ public partial class SpawnSystem
 
 		if (string.Equals(enemyId, "slime", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailSwarmWeightMultiplier;
+		if (string.Equals(enemyId, "skeleton", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailSwarmWeightMultiplier;
 		if (string.Equals(enemyId, "orc", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailChargerWeightMultiplier;
+		if (string.Equals(enemyId, "werewolf", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailChargerWeightMultiplier;
 		if (string.Equals(enemyId, "elite_orc", StringComparison.OrdinalIgnoreCase))
+			return PhaseTailTankWeightMultiplier;
+		if (string.Equals(enemyId, "skeleton_archer", StringComparison.OrdinalIgnoreCase))
 			return PhaseTailTankWeightMultiplier;
 		if (string.Equals(enemyId, EliteEnemyId, StringComparison.OrdinalIgnoreCase))
 			return PhaseTailEliteWeightMultiplier;

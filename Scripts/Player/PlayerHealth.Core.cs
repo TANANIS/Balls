@@ -55,8 +55,6 @@ public partial class PlayerHealth
 		Damaged?.Invoke(appliedDamage, source);
 		TriggerDamageFeedback();
 		AudioManager.Instance?.PlaySfxPlayerGetHit();
-		if (RegenAmount > 0 && RegenIntervalSeconds > 0f)
-			_regenTimer = RegenIntervalSeconds;
 
 		if (HurtIFrame > 0f)
 			SetInvincible(HurtIFrame);
@@ -160,12 +158,18 @@ public partial class PlayerHealth
 	{
 		if (_isDead || RegenAmount <= 0 || RegenIntervalSeconds <= 0f)
 			return;
-		if (_hp >= MaxHp)
-			return;
 
-		_regenTimer -= dt;
+		if (_regenTimer > 0f)
+			_regenTimer -= dt;
 		if (_regenTimer > 0f)
 			return;
+
+		if (_hp >= MaxHp)
+		{
+			_regenTimer = RegenIntervalSeconds;
+			TryPlayPriestHealVfx();
+			return;
+		}
 
 		_regenTimer = RegenIntervalSeconds;
 		Heal(RegenAmount);

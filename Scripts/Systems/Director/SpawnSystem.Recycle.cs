@@ -5,11 +5,11 @@ public partial class SpawnSystem
 {
 	[ExportGroup("Stale Enemy Recycle")]
 	[Export] public bool EnableFarEnemyRecycle = true;
-	[Export] public float FarEnemyRecycleDistance = 2400f;
-	[Export] public float FarEnemyRecycleGraceSeconds = 7f;
-	[Export] public float FarEnemyRecycleMinAgeSeconds = 10f;
-	[Export] public float FarEnemyRecycleCheckIntervalSeconds = 0.35f;
-	[Export] public int FarEnemyRecycleMaxPerTick = 6;
+	[Export] public float FarEnemyRecycleDistance = 1250f;
+	[Export] public float FarEnemyRecycleGraceSeconds = 3.2f;
+	[Export] public float FarEnemyRecycleMinAgeSeconds = 5.5f;
+	[Export] public float FarEnemyRecycleCheckIntervalSeconds = 0.25f;
+	[Export] public int FarEnemyRecycleMaxPerTick = 12;
 	[Export] public bool RecycleProtectMiniBoss = true;
 	[Export] public bool RequeueSameTypeOnRecycle = true;
 

@@ -72,7 +72,11 @@ public partial class SpawnSystem
 
 	private void SpawnPhaseMiniBoss(int phaseIndex)
 	{
-		if (!_enemyDefinitions.TryGetValue(MiniBossEnemyId, out EnemyDefinition def) || def.Scene == null)
+		string miniBossId = MiniBossEnemyId;
+		if (phaseIndex == 2 && !string.IsNullOrWhiteSpace(Phase3MiniBossEnemyId))
+			miniBossId = Phase3MiniBossEnemyId;
+
+		if (!_enemyDefinitions.TryGetValue(miniBossId, out EnemyDefinition def) || def.Scene == null)
 		{
 			return;
 		}
@@ -86,7 +90,7 @@ public partial class SpawnSystem
 		float scaleMult = Mathf.Max(0.5f, PhaseMiniBossScaleBase + ((stage - 1) * PhaseMiniBossScaleStep));
 		miniBoss.Scale *= scaleMult;
 		miniBoss.GlobalPosition = GetSpawnPositionAroundPlayer();
-		miniBoss.Name = $"Lancer_Stage{stage}";
+		miniBoss.Name = $"{miniBossId}_stage{stage}";
 
 		if (miniBoss.GetNodeOrNull<EnemyHealth>("Health") is EnemyHealth health)
 		{
@@ -100,6 +104,6 @@ public partial class SpawnSystem
 		}
 
 		_enemiesRoot.AddChild(miniBoss);
-		RegisterSpawnedEnemy(miniBoss, MiniBossEnemyId, protectFromRecycle: true);
+		RegisterSpawnedEnemy(miniBoss, miniBossId, protectFromRecycle: true);
 	}
 }
