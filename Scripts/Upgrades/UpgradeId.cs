@@ -10,5 +10,8 @@ public enum UpgradeId
 	SurvLifestealCloseKill,
 	EcoExpGainUp20,
 	EcoPickupRadiusUp25,
-	ModElementalBurst
+	ModElementalBurst,
+	ModArcaneTracking,
+	ModPierce,
+	ModRicochet
 }

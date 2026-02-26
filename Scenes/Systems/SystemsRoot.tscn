@@ -46,6 +46,12 @@ ChaosWeightSwarm = 20.0
 ChaosWeightCharger = 34.0
 ChaosWeightTank = 30.0
 ChaosWeightElite = 16.0
+EnableFarEnemyRecycle = true
+FarEnemyRecycleDistance = 1500.0
+FarEnemyRecycleGraceSeconds = 2.5
+FarEnemyRecycleMinAgeSeconds = 4.0
+FarEnemyRecycleCheckIntervalSeconds = 0.2
+FarEnemyRecycleMaxPerTick = 12
 
 [node name="PerfProbe" type="Node" parent="."]
 script = ExtResource("6_perf")

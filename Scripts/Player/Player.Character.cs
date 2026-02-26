@@ -221,6 +221,24 @@ public partial class Player
 		}
 	}
 
+	public void EnablePrimaryArcaneTracking(float turnRateDegrees, float forwardDotThreshold)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.EnableArcaneTracking(turnRateDegrees, forwardDotThreshold);
+	}
+
+	public void AddPrimaryPierce(int amount)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.AddPierceCount(amount);
+	}
+
+	public void AddPrimaryRicochet(int amount)
+	{
+		if (PrimarySupportsRanged())
+			_primaryAttack?.AddRicochetCount(amount);
+	}
+
 	public void MultiplyPrimaryDamage(float factor)
 	{
 		if (PrimarySupportsRanged())

@@ -1,7 +1,7 @@
 # Cards Spec
 
 ## Current Status
-- Runtime card pool is active with Batch 01 (11 cards).
+- Runtime card pool is active with Batch 01 (13 cards).
 - Card effects are bound in `UpgradeSystem` and `ProgressionSystem`.
 
 ## Document Purpose
@@ -164,12 +164,11 @@ Note:
 - `ATK_SPEED_UP_15` : Combat Tempo +15%
 
 ### Core Attack - Quantity
-- `ATK_PROJECTILE_PLUS_1` : +1 Arc Bolt (same-axis tight spread, single-target focus, `MaxStack = 2`)
+- `ATK_PROJECTILE_PLUS_1` : Skill Split (same-axis +1 split shot, wider spread, `MaxStack = 2`)
 - `ATK_SPLIT_SHOT` : Shatter Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360 deg`, child damage `50%`, non-chain)
 
 ### Core Attack - Power
-- `ATK_DAMAGE_UP_20` : Damage +20%
-- `ATK_CRIT_CHANCE_UP_10` : Critical Chance +10%
+- `ATK_DAMAGE_UP_20` : Damage +10%
 
 ### Survival
 - `SURV_MAX_HP_PLUS_1` : Max HP +1
@@ -182,6 +181,9 @@ Note:
 
 ### Modifier
 - `MOD_ELEMENTAL_BURST` : Elemental Burst (charges every 5s; next shot explodes on first hit or max distance)
+- `MOD_ARCANE_TRACKING` : Arcane Tracking (ranged shots seek nearest enemy ahead after launch)
+- `MOD_PIERCE` : Piercing Sigil (extra penetration count `1 -> 2 -> 3`, `MaxStack = 3`)
+- `MOD_RICOCHET` : Rebound Sigil (on-hit bounce count `1 -> 2 -> 3`, `MaxStack = 3`)
 
 Display-name note:
 - Card balancing remains keyed by `Id` (stable), while runtime `Title`/`Description` strings may change for theme/lore direction.
@@ -193,21 +195,22 @@ This table is the first practical pass for in-run balancing.
 | CardId | Layer | Base Effect (Stack 1) | Diminishing Curve | MaxStack | Base Weight |
 |---|---|---|---|---:|---:|
 | `ATK_SPEED_UP_15` | CoreAttack | Attack interval x`0.87` (~+15% rate) | x`0.89` (S2), x`0.93` (S3) | 3 | 14 |
-| `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` same-axis projectile (tight spread) | linear | 2 | 6 |
+| `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` same-axis split shot (wider spread) | linear | 2 | 6 |
 | `ATK_SPLIT_SHOT` | CoreAttack | on-hit split from enemy pos: `3->4->5->6` (max stack `360 deg`, child x`0.50`, non-chain) | linear (hard-capped, stack increases split count) | 4 | 7 |
-| `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.20` | x`1.15` (S2), x`1.10` (S3) | 3 | 12 |
-| `ATK_CRIT_CHANCE_UP_10` | CoreAttack | Crit chance `+10%` | `+8%` (S2), `+6%` (S3) | 3 | 8 |
+| `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.10` | x`1.08` (S2), x`1.06` (S3) | 3 | 12 |
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
 | `SURV_SHIELD_COOLDOWN` | Survival | 1-hit shield, 60s cooldown | no stack | 1 | 8 |
 | `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 12% chance heal 1 HP | no stack | 1 | 7 |
 | `ECO_EXP_GAIN_UP_20` | Economy | Essence gain x`1.20` | x`1.15` (S2) | 2 | 8 |
 | `ECO_PICKUP_RADIUS_UP_25` | Economy | Essence pickup radius x`1.25` | x`1.20` (S2) | 2 | 8 |
 | `MOD_ELEMENTAL_BURST` | Modifier | every `5s` charge next shot into explosive round (first hit or max distance, radius `130`, damage x`1.20`, target cap `5`) | no stack | 1 | 8 |
+| `MOD_ARCANE_TRACKING` | Modifier | ranged shots gain homing (`turn rate 620`, forward target filter) | no stack | 1 | 6 |
+| `MOD_PIERCE` | Modifier | extra penetration `+1` per stack | linear | 3 | 7 |
+| `MOD_RICOCHET` | Modifier | extra ricochet `+1` per stack | linear | 3 | 6 |
 
 ### Derived Ceiling Snapshot (Round 1)
 - `ATK_SPEED_UP_15` total rate multiplier at 3 stacks: about `1.39x`.
-- `ATK_DAMAGE_UP_20` total damage multiplier at 3 stacks: about `1.52x`.
-- `ATK_CRIT_CHANCE_UP_10` expected DPS multiplier at 3 stacks (crit x1.5): about `1.12x`.
+- `ATK_DAMAGE_UP_20` total damage multiplier at 3 stacks: about `1.26x`.
 
 Use this snapshot as first-pass tuning anchors for playtests.
 

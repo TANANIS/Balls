@@ -93,6 +93,8 @@ public partial class AudioManager
 	{
 		if (stream == null)
 			return;
+		// Defensive: ensure one-shot SFX never keep source loop flags.
+		SetBgmLoop(stream, loop: false);
 
 		if (_sfxPlayers.Count == 0)
 			EnsureSfxPool();

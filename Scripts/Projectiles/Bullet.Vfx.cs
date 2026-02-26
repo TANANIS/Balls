@@ -108,13 +108,13 @@ public partial class Bullet
 			return;
 
 		int maxFrame = Mathf.Max(0, (_runtimeFrameCount > 0 ? _runtimeFrameCount : TotalFrames) - 1);
-		int prepareStart = Mathf.Clamp(PrepareStartFrame, 0, maxFrame);
-		int prepareEnd = Mathf.Clamp(PrepareEndFrame, prepareStart, maxFrame);
+		int prepareStart = ClampIntSafe(PrepareStartFrame, 0, maxFrame);
+		int prepareEnd = ClampIntSafe(PrepareEndFrame, prepareStart, maxFrame);
 		int minFlightStart = EnablePreparePhase ? Mathf.Min(maxFrame, prepareEnd + 1) : 0;
-		int flightStart = Mathf.Clamp(FlightStartFrame, minFlightStart, maxFrame);
-		int flightEnd = Mathf.Clamp(FlightEndFrame, flightStart, maxFrame);
-		int impactStart = Mathf.Clamp(ImpactStartFrame, flightEnd + 1, maxFrame);
-		int impactEnd = Mathf.Clamp(ImpactEndFrame, impactStart, maxFrame);
+		int flightStart = ClampIntSafe(FlightStartFrame, minFlightStart, maxFrame);
+		int flightEnd = ClampIntSafe(FlightEndFrame, flightStart, maxFrame);
+		int impactStart = ClampIntSafe(ImpactStartFrame, flightEnd + 1, maxFrame);
+		int impactEnd = ClampIntSafe(ImpactEndFrame, impactStart, maxFrame);
 
 		if (_isElementalBurstShot && _runtimeFrameCount >= 2)
 		{
@@ -181,5 +181,12 @@ public partial class Bullet
 		if (frameCount <= 0)
 			return;
 		_fx.Frame = Mathf.Clamp(frame, 0, frameCount - 1);
+	}
+
+	private static int ClampIntSafe(int value, int min, int max)
+	{
+		if (min > max)
+			min = max;
+		return Mathf.Clamp(value, min, max);
 	}
 }

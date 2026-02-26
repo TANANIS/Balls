@@ -21,6 +21,28 @@ public partial class Player
 		_movement?.ApplyMovementFreeze(duration);
 	}
 
+	public void LockAttacks(float durationSeconds, bool interruptCurrentAttack = true)
+	{
+		if (durationSeconds <= 0f)
+			return;
+
+		_attackLockTimer = Mathf.Max(_attackLockTimer, durationSeconds);
+
+		if (!interruptCurrentAttack)
+			return;
+
+		_primaryAttack?.InterruptCurrentAttack();
+		_secondaryAttack?.InterruptCurrentAttack();
+		_attackAnimTimer = 0f;
+		_attackAnimSpeedScale = 1f;
+
+		if (!_deathAnimLocked && _hurtAnimTimer <= 0f)
+		{
+			_stateMachine.Force(PlayerStateMachine.State.Idle);
+			ApplyVisualState(PlayerStateMachine.State.Idle);
+		}
+	}
+
 	public void EnterDashCollisionMode()
 	{
 		// Reserved hook for dash-specific collision layer/mask changes.

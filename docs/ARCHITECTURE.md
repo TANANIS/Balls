@@ -63,8 +63,16 @@ Game
 ## Progression + Upgrade Model
 - `UpgradeProgress`: XP/upgrade meter.
 - EXP requirement curve: `base + linear * level`, then scaled by `growth_factor^level`.
+- Late-run slowdown fuse:
+  - starts at upgrade level `5`,
+  - ramps to `x2.0` requirement within `2` levels,
+  - keeps early/mid progression responsive while reducing late upgrade flooding.
 - Overflow is preserved, and multiple level-up charges can queue.
 - `AppliedUpgradeCount`: content unlock milestone counter (from `UpgradeSystem`).
+
+Damage model note:
+- Character attack stats use float-friendly accumulation in runtime modules (`PlayerWeapon`, `PlayerMelee`).
+- Damage requests are still finalized through `CombatSystem` and integer-resolved at hit application boundaries.
 
 Trigger flow:
 1. Enemy dies -> `ExperienceDropSystem` spawns `ExperiencePickup`.

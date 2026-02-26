@@ -7,7 +7,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 	[Export] public float Cooldown = 0.35f;
 	[Export] public float Range = 140f;
 	[Export] public float ArcDegrees = 220f;
-	[Export] public int Damage = 3;
+	[Export] public float Damage = 3f;
 	[Export] public float DamageMultiplier = 1f;
 	[Export] public uint TargetMask = 1u << 5; // Layer 6: EnemyHurtbox
 
@@ -28,7 +28,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 	private readonly PlayerMeleeTimeline _timeline = new();
 
 	public float CurrentCooldown => Cooldown;
-	public int CurrentDamage => Damage;
+	public float CurrentDamage => Damage;
 	public float CurrentRange => Range;
 	public float CurrentArcDegrees => ArcDegrees;
 
@@ -94,6 +94,11 @@ public partial class PlayerMelee : PlayerAbilityModule
 	{
 		_attackAnimationSpeedMultiplier = 1f;
 		_cooldownTimer = 0f;
+		_timeline.Reset();
+	}
+
+	public void InterruptCurrentAttack()
+	{
 		_timeline.Reset();
 	}
 

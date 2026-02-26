@@ -9,7 +9,7 @@
 - Project: Godot C# top-down survival run (`15:00` target).
 - Upgrade pipeline:
   - runtime source is `UpgradeSystem` + `UpgradeCatalog`.
-  - card pool currently uses Batch 01 (`11` active cards).
+  - card pool currently uses Batch 01 (`13` active cards).
   - dual-axis contract is active:
     - `Layer` for phase pool routing,
     - `Category` for decay/statistics.
@@ -25,6 +25,34 @@
   - direct apply upgrade uses debug path (`DebugApplyUpgrade`) and bypasses gate/exclusive/prerequisite checks while still respecting stack cap and character compatibility.
 
 ## High-Signal Recent Changes
+
+### 2026-02-26 - Balance + Progression + Character Pass
+- Progression pacing:
+  - added late XP slowdown fuse in `ProgressionSystem`:
+    - start level `5`,
+    - ramp to `x2.0` requirement within `2` levels.
+- Character unlock/mobility:
+  - Archer default unlock switched to locked (`UnlockCost = 70`).
+  - Archer move speed tuned upward (`208 -> 216`).
+  - Knight visual scale normalized to default (`CoreSpriteScaleMultiplier = Vector2.One`).
+- Enemy durability tuning:
+  - Orc HP reduced by about one-third:
+    - director definition `10 -> 7`,
+    - scene health aligned to `7`.
+- Card/system tuning:
+  - removed crit chance card from active pool (`ATK_CRIT_CHANCE_UP_10`).
+  - damage card retuned:
+    - display `Damage +20% -> Damage +10%`,
+    - runtime curve `x1.10 -> x1.08 -> x1.06`.
+  - projectile+ card renamed and widened:
+    - `+1 Arc Bolt -> Skill Split`,
+    - same-axis spacing increased (`3/7 -> 8/14` degrees).
+  - homing/ricochet target filtering hardened:
+    - already-hit targets are no longer valid retargets,
+    - if no valid retarget exists, projectile continues forward until lifetime ends.
+- Damage authoring flexibility:
+  - ranged/melee attack base stats now support float-oriented runtime accumulation
+    before final hit resolution.
 
 ### 2026-02-25 - Card Framework Alignment
 - Removed cooldown card (`ATK_COOLDOWN_DOWN_10`) from runtime/catalog/localization/apply path.

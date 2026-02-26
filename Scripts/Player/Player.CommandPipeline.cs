@@ -25,6 +25,7 @@ public partial class Player
 	private float _pendingHurtAnimationSeconds = 0f;
 	private Vector2 _lastStableMoveInput = Vector2.Zero;
 	private float _moveInputDropGraceTimer = 0f;
+	private float _attackLockTimer = 0f;
 
 	private FrameCommand BuildFrameCommand()
 	{
@@ -44,6 +45,10 @@ public partial class Player
 
 	private void ExecuteFrameCommand(float dt, in FrameCommand command)
 	{
+		if (_attackLockTimer > 0f)
+			_attackLockTimer = Mathf.Max(0f, _attackLockTimer - dt);
+		bool isAttackLocked = _attackLockTimer > 0f;
+
 		Vector2 stableMoveInput = StabilizeMoveInput(dt, command.MoveInput);
 		if (stableMoveInput.LengthSquared() > 0.0001f)
 			_lastMoveDir = stableMoveInput.Normalized();
@@ -66,8 +71,8 @@ public partial class Player
 		}
 
 		_movement.Tick(dt, stableMoveInput);
-		_primaryAttack.Tick(dt, command.WantPrimaryAttack);
-		_secondaryAttack.Tick(dt, command.WantSecondaryAttack);
+		_primaryAttack.Tick(dt, !isAttackLocked && command.WantPrimaryAttack);
+		_secondaryAttack.Tick(dt, !isAttackLocked && command.WantSecondaryAttack);
 		ClampInsideBounds();
 		UpdatePhaseCamera(dt);
 		TickVisualState(dt, stableMoveInput, isDashActive: _dash?.IsDashing ?? false);
@@ -120,5 +125,6 @@ public partial class Player
 		_pendingHurtAnimationSeconds = 0f;
 		_lastStableMoveInput = Vector2.Zero;
 		_moveInputDropGraceTimer = 0f;
+		_attackLockTimer = 0f;
 	}
 }

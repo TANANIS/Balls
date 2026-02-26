@@ -73,9 +73,6 @@ public partial class GameFlowUI
 		var characterSelectFluxLabel = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader/FluxLabel");
 		if (characterSelectFluxLabel != null)
 			characterSelectFluxLabel.Text = $"{TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}:";
-		var characterComingSoonButton = GetNodeOrNull<Button>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/LockedButton");
-		if (characterComingSoonButton != null)
-			characterComingSoonButton.Text = TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");
 		var abilityTreeGraph = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/AbilityTreePanel/Margin/AbilityTreeVBox/AbilityTreeGraph");
 		if (abilityTreeGraph != null)
 			abilityTreeGraph.Text = TrOrDefault("UI.META.NOT_AVAILABLE", "Coming Soon", "\u5c1a\u672a\u958b\u653e");

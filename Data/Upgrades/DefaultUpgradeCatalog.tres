@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=14 format=3 uid="uid://bm8r67lsfg5sw"]
+[gd_resource type="Resource" script_class="UpgradeCatalog" load_steps=16 format=3 uid="uid://bm8r67lsfg5sw"]
 
 [ext_resource type="Script" uid="uid://c43vgjb65ybaw" path="res://Scripts/Upgrades/UpgradeCatalog.cs" id="1_catalog_script"]
 [ext_resource type="Script" uid="uid://ge3gsaeyfdw1" path="res://Scripts/Upgrades/UpgradeDefinition.cs" id="2_definition_script"]
@@ -17,8 +17,8 @@ MaxStack = 3
 [sub_resource type="Resource" id="Upgrade_AtkProjectilePlus1"]
 script = ExtResource("2_definition_script")
 Id = 1
-Title = "+1 Arc Bolt"
-Description = "Primary volley gains +1 aligned bolt (tight spread)."
+Title = "Skill Split"
+Description = "Primary volley gains +1 same-axis split shot (wider spread)."
 TitleKey = "CARD.ATK_PROJECTILE_PLUS_1.TITLE"
 DescriptionKey = "CARD.ATK_PROJECTILE_PLUS_1.DESC"
 Layer = 2
@@ -45,26 +45,13 @@ ExclusiveWith = Array[int]([1])
 [sub_resource type="Resource" id="Upgrade_AtkDamageUp20"]
 script = ExtResource("2_definition_script")
 Id = 3
-Title = "Damage +20%"
-Description = "Primary damage +20%."
+Title = "Damage +10%"
+Description = "Primary damage +10%."
 TitleKey = "CARD.ATK_DAMAGE_UP_20.TITLE"
 DescriptionKey = "CARD.ATK_DAMAGE_UP_20.DESC"
 Layer = 2
 Category = 0
 Weight = 12
-MaxStack = 3
-
-[sub_resource type="Resource" id="Upgrade_AtkCritChanceUp10"]
-script = ExtResource("2_definition_script")
-Id = 4
-Title = "Critical Chance +10%"
-Description = "Primary critical chance +10%."
-TitleKey = "CARD.ATK_CRIT_CHANCE_UP_10.TITLE"
-DescriptionKey = "CARD.ATK_CRIT_CHANCE_UP_10.DESC"
-Layer = 2
-Category = 0
-Rarity = 1
-Weight = 8
 MaxStack = 3
 
 [sub_resource type="Resource" id="Upgrade_SurvMaxHpPlus1"]
@@ -144,6 +131,45 @@ Rarity = 1
 Weight = 8
 MinPhase = 0
 
+[sub_resource type="Resource" id="Upgrade_ModArcaneTracking"]
+script = ExtResource("2_definition_script")
+Id = 11
+Title = "Arcane Tracking"
+Description = "Ranged shots become tracking rounds. After launch, they seek the nearest enemy ahead."
+TitleKey = "CARD.MOD_ARCANE_TRACKING.TITLE"
+DescriptionKey = "CARD.MOD_ARCANE_TRACKING.DESC"
+Layer = 2
+Category = 0
+Rarity = 1
+Weight = 6
+MaxStack = 1
+
+[sub_resource type="Resource" id="Upgrade_ModPierce"]
+script = ExtResource("2_definition_script")
+Id = 12
+Title = "Piercing Sigil"
+Description = "Ranged attacks pierce enemies. Stack increases extra penetrations: 1 -> 2 -> 3."
+TitleKey = "CARD.MOD_PIERCE.TITLE"
+DescriptionKey = "CARD.MOD_PIERCE.DESC"
+Layer = 2
+Category = 0
+Rarity = 1
+Weight = 7
+MaxStack = 3
+
+[sub_resource type="Resource" id="Upgrade_ModRicochet"]
+script = ExtResource("2_definition_script")
+Id = 13
+Title = "Rebound Sigil"
+Description = "Ranged attacks bounce to another nearby enemy on hit. Stack increases bounce count up to 3."
+TitleKey = "CARD.MOD_RICOCHET.TITLE"
+DescriptionKey = "CARD.MOD_RICOCHET.DESC"
+Layer = 2
+Category = 0
+Rarity = 1
+Weight = 6
+MaxStack = 3
+
 [resource]
 script = ExtResource("1_catalog_script")
-Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_AtkCritChanceUp10"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25"), SubResource("Upgrade_ModElementalBurst")])
+Entries = Array[ExtResource("2_definition_script")]([SubResource("Upgrade_AtkSpeedUp15"), SubResource("Upgrade_AtkProjectilePlus1"), SubResource("Upgrade_AtkSplitShot"), SubResource("Upgrade_AtkDamageUp20"), SubResource("Upgrade_SurvMaxHpPlus1"), SubResource("Upgrade_SurvShieldCooldown"), SubResource("Upgrade_SurvLifestealCloseKill"), SubResource("Upgrade_EcoExpGainUp20"), SubResource("Upgrade_EcoPickupRadiusUp25"), SubResource("Upgrade_ModElementalBurst"), SubResource("Upgrade_ModArcaneTracking"), SubResource("Upgrade_ModPierce"), SubResource("Upgrade_ModRicochet")])

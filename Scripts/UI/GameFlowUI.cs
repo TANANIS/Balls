@@ -120,6 +120,7 @@ public partial class GameFlowUI : Control
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
+			MoveMaxSpeed = 188f,
 			RangedDamage = 2,
 			RangedCooldown = 0.64f
 		};
@@ -158,8 +159,26 @@ public partial class GameFlowUI : Control
 			MaxHp = 5,
 			RegenAmount = 1,
 			RangedDamage = 2,
-			RangedCooldown = 0.72f,
-			RangedFirePattern = PrimaryFirePattern.Burst2
+			RangedCooldown = 0.72f
+		};
+	}
+
+	private static CharacterDefinition BuildArcherFallbackDefinition()
+	{
+		return new CharacterDefinition
+		{
+			CharacterId = "archer",
+			DisplayName = "Archer",
+			DisplayNameZhTw = "弓箭手",
+			Description = "Mobile marksman. Every third attack fires a quick 3-shot burst.",
+			DescriptionZhTw = "機動型射手。每第三次攻擊會變為快速三連發。",
+			PrimaryAbility = AttackAbilityKind.Ranged,
+			SecondaryAbility = AttackAbilityKind.None,
+			MobilityAbility = MobilityAbilityKind.None,
+			MoveMaxSpeed = 216f,
+			MaxHp = 2,
+			RangedDamage = 2,
+			RangedCooldown = 1.28f
 		};
 	}
 }

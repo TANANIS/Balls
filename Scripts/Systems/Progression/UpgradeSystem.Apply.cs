@@ -53,8 +53,7 @@ public partial class UpgradeSystem
 				_player?.MultiplyPrimaryDamage(GetDamageMultiplier(nextStack));
 				break;
 			case UpgradeId.AtkCritChanceUp10:
-				_player?.AddPrimaryCritChance(GetCritChanceAdd(nextStack));
-				break;
+				return false;
 			case UpgradeId.SurvMaxHpPlus1:
 				_playerHealth?.AddMaxHp(1);
 				break;
@@ -77,6 +76,17 @@ public partial class UpgradeSystem
 					damageMultiplier: 1.20f,
 					maxDistance: 280f,
 					maxTargets: 5);
+				break;
+			case UpgradeId.ModArcaneTracking:
+				_player?.EnablePrimaryArcaneTracking(
+					turnRateDegrees: 620f,
+					forwardDotThreshold: 0.20f);
+				break;
+			case UpgradeId.ModPierce:
+				_player?.AddPrimaryPierce(1);
+				break;
+			case UpgradeId.ModRicochet:
+				_player?.AddPrimaryRicochet(1);
 				break;
 		}
 
@@ -101,19 +111,9 @@ public partial class UpgradeSystem
 	{
 		return stack switch
 		{
-			1 => 1.20f,
-			2 => 1.15f,
-			_ => 1.10f
-		};
-	}
-
-	private static float GetCritChanceAdd(int stack)
-	{
-		return stack switch
-		{
-			1 => 0.10f,
-			2 => 0.08f,
-			_ => 0.06f
+			1 => 1.10f,
+			2 => 1.08f,
+			_ => 1.06f
 		};
 	}
 

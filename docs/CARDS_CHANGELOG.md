@@ -437,3 +437,55 @@
 #### Validation
 - [x] Runtime effect binding updated
 - [x] Build check passed
+
+### 2026-02-26 - New Cards: Arcane Tracking / Pierce / Ricochet
+- Scope: `Add`
+- Affected Layer(s): `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added `MOD_ARCANE_TRACKING`: ranged shots gain forward-target homing.
+  - Added `MOD_PIERCE`: ranged shots gain extra penetrations (`1 -> 2 -> 3`).
+  - Added `MOD_RICOCHET`: ranged shots gain extra on-hit bounces (`1 -> 2 -> 3`).
+  - `MOD_ARCANE_TRACKING` is now available to all ranged characters, including Archer.
+  - Removed Archer innate homing path; Archer now uses the same card-driven tracking path as other ranged characters.
+  - Runtime bullet collision path upgraded to support multi-hit continuation with per-target hit guard.
+
+#### Cards Added
+- `MOD_ARCANE_TRACKING` | Modifier | Rare | Early/Mid/Late | forward nearest-target homing
+- `MOD_PIERCE` | Modifier | Rare | Early/Mid/Late | extra penetration +1 per stack (max 3)
+- `MOD_RICOCHET` | Modifier | Rare | Early/Mid/Late | extra bounce +1 per stack (max 3)
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done
+
+### 2026-02-26 - Core Attack Rebalance + Crit Card Removal
+- Scope: `Update` + `Remove`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Reworked damage card from `+20%` baseline to `+10%` baseline with softer diminishing curve.
+  - Removed crit-chance card from runtime offer pool (`ATK_CRIT_CHANCE_UP_10`).
+  - Renamed projectile-count card presentation to `Skill Split` and widened same-axis projectile spacing.
+
+#### Cards Updated
+- `ATK_DAMAGE_UP_20`
+  - Change: baseline and stack curve
+  - Value: `x1.20, x1.15, x1.10 -> x1.10, x1.08, x1.06`
+  - Reason: reduce runaway multiplicative scaling and improve late-run tuning control.
+- `ATK_PROJECTILE_PLUS_1`
+  - Change: card display identity + firing spread
+  - Value: `+1 Arc Bolt (tight spread) -> Skill Split (+1 same-axis split shot, wider spread)`
+  - Reason: clearer gameplay identity and less front-loaded single-lane overfocus.
+
+#### Cards Removed
+- `ATK_CRIT_CHANCE_UP_10`
+  - Reason: low practical value and poor pick priority versus other growth axes.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [ ] In-run smoke test done

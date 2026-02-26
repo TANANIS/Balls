@@ -5,9 +5,16 @@ public partial class ProgressionSystem : Node
 	[Export] public NodePath UpgradeMenuPath = "../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu";
 	[Export] public NodePath PlayerPath = "../../Player";
 	[Export] public int ExperiencePerPickup = 1;
+	[Export] public bool UseEarlyUpgradeCurve = true;
+	[Export] public float EarlyUpgradeRequirement1 = 3f;
+	[Export] public float EarlyUpgradeRequirement2 = 5f;
+	[Export] public float EarlyUpgradeRequirement3 = 7f;
 	[Export] public float SurvivorXpBaseRequirement = 8f;
 	[Export] public float SurvivorXpLinearGrowth = 2f;
 	[Export] public float SurvivorXpGrowthFactor = 1.08f;
+	[Export] public int LateXpSlowdownStartLevel = 5;
+	[Export(PropertyHint.Range, "1.0,3.0,0.05")] public float LateXpSlowdownMultiplier = 2.0f;
+	[Export(PropertyHint.Range, "0,10,1")] public int LateXpSlowdownRampLevels = 2;
 
 	private UpgradeMenu _upgradeMenu;
 	private float _upgradeProgress = 0f;
@@ -94,10 +101,42 @@ public partial class ProgressionSystem : Node
 
 	public float GetCurrentUpgradeRequirement()
 	{
+		if (UseEarlyUpgradeCurve)
+		{
+			if (_upgradeLevel <= 0)
+				return Mathf.Max(1f, EarlyUpgradeRequirement1 + _xpRequirementOffset);
+			if (_upgradeLevel == 1)
+				return Mathf.Max(1f, EarlyUpgradeRequirement2 + _xpRequirementOffset);
+			if (_upgradeLevel == 2)
+				return Mathf.Max(1f, EarlyUpgradeRequirement3 + _xpRequirementOffset);
+
+			float postEarlyLevel = _upgradeLevel - 3f;
+			float baseRequirement = SurvivorXpBaseRequirement + (SurvivorXpLinearGrowth * postEarlyLevel);
+			float postEarlyCurve = baseRequirement * Mathf.Pow(Mathf.Max(1f, SurvivorXpGrowthFactor), postEarlyLevel);
+			return Mathf.Max(1f, ApplyLateXpSlowdown(postEarlyCurve + _xpRequirementOffset));
+		}
+
 		float level = _upgradeLevel;
 		float curve = SurvivorXpBaseRequirement + (SurvivorXpLinearGrowth * level);
 		curve *= Mathf.Pow(Mathf.Max(1f, SurvivorXpGrowthFactor), level);
-		return Mathf.Max(1f, curve + _xpRequirementOffset);
+		return Mathf.Max(1f, ApplyLateXpSlowdown(curve + _xpRequirementOffset));
+	}
+
+	private float ApplyLateXpSlowdown(float requirement)
+	{
+		float baseRequirement = Mathf.Max(1f, requirement);
+		int startLevel = Mathf.Max(0, LateXpSlowdownStartLevel);
+		if (_upgradeLevel < startLevel)
+			return baseRequirement;
+
+		float targetMultiplier = Mathf.Max(1f, LateXpSlowdownMultiplier);
+		int rampLevels = Mathf.Max(0, LateXpSlowdownRampLevels);
+		if (rampLevels <= 0)
+			return baseRequirement * targetMultiplier;
+
+		float t = Mathf.Clamp((_upgradeLevel - startLevel + 1f) / rampLevels, 0f, 1f);
+		float multiplier = Mathf.Lerp(1f, targetMultiplier, t);
+		return baseRequirement * multiplier;
 	}
 
 	public void MultiplyKillProgressGain(float factor)

@@ -12,7 +12,7 @@ public partial class GameFlowUI
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true);
 
 		if (_selectedCharacterDefinition == null)
-			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
+			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
 		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
 
 		RefreshCharacterSelectUi();
@@ -55,6 +55,14 @@ public partial class GameFlowUI
 				? _tankCharacter.GetLocalizedDisplayName()
 				: $"{_tankCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterTankButton.Disabled = false;
+		}
+		if (_startCharacterArcherButton != null && _archerCharacter != null)
+		{
+			bool unlocked = IsCharacterUnlocked(_archerCharacter);
+			_startCharacterArcherButton.Text = unlocked
+				? _archerCharacter.GetLocalizedDisplayName()
+				: $"{_archerCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterArcherButton.Disabled = false;
 		}
 
 		if (_startCharacterConfirmButton != null)
@@ -199,6 +207,13 @@ public partial class GameFlowUI
 		RefreshCharacterSelectUi();
 	}
 
+	private void OnCharacterArcherPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_selectedCharacterDefinition = _archerCharacter;
+		RefreshCharacterSelectUi();
+	}
+
 	private void OnCharacterSelectBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
@@ -253,7 +268,9 @@ public partial class GameFlowUI
 			return _meleeCharacter;
 		if (IsCharacterUnlocked(_tankCharacter))
 			return _tankCharacter;
-		return preferred ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
+		if (IsCharacterUnlocked(_archerCharacter))
+			return _archerCharacter;
+		return preferred ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
 	}
 
 	private static int GetCharacterUnlockCost(CharacterDefinition def)

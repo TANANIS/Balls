@@ -50,6 +50,8 @@ public partial class Player
 				dashSourceFrameCount: 3);
 		if (string.Equals(characterId, "tank_burst"))
 			return new CharacterAnimationProfile("res://Assets/Sprites/Player/Priest/Priest", "-Attack", "-Death");
+		if (string.Equals(characterId, "archer"))
+			return new CharacterAnimationProfile("res://Assets/Sprites/Player/Archer/Archer", "-Attack02", "-Death");
 		return new CharacterAnimationProfile("res://Assets/Sprites/Player/Wizard/Wizard", "-Attack02", "-DEATH");
 	}
 

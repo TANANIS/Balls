@@ -35,14 +35,14 @@ public partial class CharacterDefinition : Resource
 	[Export] public float RegenIntervalSeconds = 60f;
 
 	[ExportGroup("Ranged Ability Stats")]
-	[Export] public int RangedDamage = 1;
+	[Export] public float RangedDamage = 1f;
 	[Export] public float RangedCooldown = 0.32f;
 	[Export] public float RangedProjectileSpeed = 760f;
 	[Export] public PrimaryFirePattern RangedFirePattern = PrimaryFirePattern.Single;
 	[Export] public float RangedBurstShotInterval = 0.08f;
 
 	[ExportGroup("Melee Ability Stats")]
-	[Export] public int MeleeDamage = 3;
+	[Export] public float MeleeDamage = 3f;
 	[Export] public float MeleeCooldown = 0.35f;
 	[Export] public float MeleeRange = 160f;
 	[Export] public float MeleeArcDegrees = 180f;

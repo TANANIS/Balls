@@ -2,9 +2,9 @@ using Godot;
 
 public partial class PlayerMelee
 {
-	public void AddDamage(int amount)
+	public void AddDamage(float amount)
 	{
-		Damage = Mathf.Max(1, Damage + amount);
+		Damage = Mathf.Max(0.1f, Damage + amount);
 	}
 
 	public void AddRange(float amount)
@@ -24,9 +24,9 @@ public partial class PlayerMelee
 		_attackAnimationSpeedMultiplier = Mathf.Clamp(_attackAnimationSpeedMultiplier / safeFactor, 0.2f, 6f);
 	}
 
-	public void SetBaseStats(int damage, float cooldown, float range, float arcDegrees)
+	public void SetBaseStats(float damage, float cooldown, float range, float arcDegrees)
 	{
-		Damage = Mathf.Max(1, damage);
+		Damage = Mathf.Max(0.1f, damage);
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		_attackAnimationSpeedMultiplier = 1f;
 		Range = Mathf.Max(4f, range);

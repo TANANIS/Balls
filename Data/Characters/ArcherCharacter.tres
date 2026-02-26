@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Archer/Archer.png" id="2_archer_core"]
+
+[resource]
+script = ExtResource("1_char_def")
+CharacterId = "archer"
+DisplayName = "Archer"
+DisplayNameZhTw = "弓箭手"
+Description = "Mobile marksman. Every third attack fires a quick 3-shot burst."
+DescriptionZhTw = "機動型射手。每第三次攻擊會變為快速三連發。"
+CoreSprite = ExtResource("2_archer_core")
+PrimaryAbility = 1
+SecondaryAbility = 0
+MobilityAbility = 0
+PrimaryAction = "attack_primary"
+SecondaryAction = "attack_secondary"
+MobilityAction = "dash"
+MoveMaxSpeed = 216.0
+MoveAccel = 2200.0
+MoveFriction = 2600.0
+MoveStopThreshold = 5.0
+MaxHp = 2
+HurtIFrame = 0.5
+RegenAmount = 0
+RegenIntervalSeconds = 60.0
+RangedDamage = 2
+RangedCooldown = 1.28
+RangedProjectileSpeed = 760.0
+RangedFirePattern = 0
+RangedBurstShotInterval = 0.08
+MeleeDamage = 3
+MeleeCooldown = 0.35
+MeleeRange = 160.0
+MeleeArcDegrees = 180.0
+DashSpeed = 900.0
+DashDuration = 0.12
+DashCooldown = 0.6
+DashIFrame = 0.08

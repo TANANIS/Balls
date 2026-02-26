@@ -71,6 +71,7 @@ public partial class AudioManager
 		_sfxPlayerDash = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_dash.wav");
 		_sfxPlayerFire = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_fire_wizard.wav");
 		_sfxPlayerFirePriest = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_fire_priest.wav");
+		_sfxPlayerFireArcher = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_fire_archer.wav");
 		_sfxPlayerMelee = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_melee.wav");
 		_sfxPlayerUpgrade = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_upgrade.wav");
 		_sfxPlayerExpPickup = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_exp_pickup.wav");
@@ -82,6 +83,8 @@ public partial class AudioManager
 
 		if (_sfxPlayerFirePriest == null)
 			_sfxPlayerFirePriest = _sfxPlayerFire;
+		if (_sfxPlayerFireArcher == null)
+			_sfxPlayerFireArcher = _sfxPlayerFire;
 		if (_sfxPlayerExpPickup == null)
 			_sfxPlayerExpPickup = _sfxPlayerUpgrade;
 		if (_sfxPlayerHitEnemy == null)
@@ -95,6 +98,8 @@ public partial class AudioManager
 		_enemyDeathSfxByScene["res://Enemies/EliteOrc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_elite_orc_die.wav");
 		_enemyDeathSfxByScene["res://Enemies/Werebear.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_werebear_die.wav");
 		_enemyDeathSfxByScene["res://Enemies/Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_lancer_die.wav");
+
+		ApplySfxLoopSettings();
 	}
 
 	private void BindCombatEvents()
@@ -137,6 +142,28 @@ public partial class AudioManager
 
 		if (stream is AudioStreamWav wav)
 			wav.LoopMode = loop ? AudioStreamWav.LoopModeEnum.Forward : AudioStreamWav.LoopModeEnum.Disabled;
+	}
+
+	private void ApplySfxLoopSettings()
+	{
+		SetBgmLoop(_sfxUiButton, loop: false);
+		SetBgmLoop(_sfxUiExit, loop: false);
+		SetBgmLoop(_sfxUiUpgradeSelect, loop: false);
+		SetBgmLoop(_sfxPlayerDash, loop: false);
+		SetBgmLoop(_sfxPlayerFire, loop: false);
+		SetBgmLoop(_sfxPlayerFirePriest, loop: false);
+		SetBgmLoop(_sfxPlayerFireArcher, loop: false);
+		SetBgmLoop(_sfxPlayerMelee, loop: false);
+		SetBgmLoop(_sfxPlayerUpgrade, loop: false);
+		SetBgmLoop(_sfxPlayerExpPickup, loop: false);
+		SetBgmLoop(_sfxPlayerHitEnemy, loop: false);
+		SetBgmLoop(_sfxPlayerElementalBurst, loop: false);
+		SetBgmLoop(_sfxPlayerGetHit, loop: false);
+		SetBgmLoop(_sfxPlayerDie, loop: false);
+		SetBgmLoop(_sfxPlayerOneHp, loop: false);
+
+		foreach (AudioStream stream in _enemyDeathSfxByScene.Values)
+			SetBgmLoop(stream, loop: false);
 	}
 }
 

@@ -35,6 +35,7 @@ public partial class AudioManager : Node
 	private AudioStream _sfxPlayerDash;
 	private AudioStream _sfxPlayerFire;
 	private AudioStream _sfxPlayerFirePriest;
+	private AudioStream _sfxPlayerFireArcher;
 	private AudioStream _sfxPlayerMelee;
 	private AudioStream _sfxPlayerUpgrade;
 	private AudioStream _sfxPlayerExpPickup;
@@ -73,6 +74,7 @@ public partial class AudioManager : Node
 	public void PlaySfxPlayerDash() => PlaySfx(_sfxPlayerDash);
 	public void PlaySfxPlayerFire() => PlaySfx(_sfxPlayerFire, -6f);
 	public void PlaySfxPlayerFirePriest() => PlaySfx(_sfxPlayerFirePriest, -6f);
+	public void PlaySfxPlayerFireArcher() => PlaySfx(_sfxPlayerFireArcher, -6f);
 	public void PlaySfxPlayerMelee() => PlaySfx(_sfxPlayerMelee);
 	public void PlaySfxPlayerUpgrade() => PlaySfx(_sfxPlayerUpgrade);
 	public void PlaySfxPlayerExpPickup() => PlaySfx(_sfxPlayerExpPickup);

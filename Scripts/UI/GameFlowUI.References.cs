@@ -11,6 +11,7 @@ public partial class GameFlowUI
 	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/RangedButton";
 	private const string StartCharacterMeleeButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/MeleeButton";
 	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/TankButton";
+	private const string StartCharacterArcherButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/ArcherButton";
 	private const string StartCharacterDescriptionPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/BottomRow/DetailPanel/Margin/DescScroll/SelectedCharacterDesc";
 	private const string StartCharacterFluxValuePath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader/FluxValue";
 	private const string StartCharacterBackButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ActionButtons/BackButton";
@@ -73,6 +74,7 @@ public partial class GameFlowUI
 	private const string RangedCharacterResourcePath = "res://Data/Characters/RangedCharacter.tres";
 	private const string MeleeCharacterResourcePath = "res://Data/Characters/MeleeCharacter.tres";
 	private const string TankCharacterResourcePath = "res://Data/Characters/TankBurstCharacter.tres";
+	private const string ArcherCharacterResourcePath = "res://Data/Characters/ArcherCharacter.tres";
 
 	private Player _player;
 	private PlayerHealth _playerHealth;
@@ -98,6 +100,7 @@ public partial class GameFlowUI
 	private Button _startCharacterRangedButton;
 	private Button _startCharacterMeleeButton;
 	private Button _startCharacterTankButton;
+	private Button _startCharacterArcherButton;
 	private Label _startCharacterFluxValueLabel;
 	private Button _startCharacterBackButton;
 	private Button _startCharacterConfirmButton;
@@ -160,6 +163,7 @@ public partial class GameFlowUI
 	private CharacterDefinition _rangedCharacter;
 	private CharacterDefinition _meleeCharacter;
 	private CharacterDefinition _tankCharacter;
+	private CharacterDefinition _archerCharacter;
 	private CharacterDefinition _selectedCharacterDefinition;
 
 }

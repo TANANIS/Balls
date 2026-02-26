@@ -1,4 +1,4 @@
-﻿[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Priest/Priest.png" id="2_priest_core"]
@@ -17,7 +17,7 @@ MobilityAbility = 0
 PrimaryAction = "attack_primary"
 SecondaryAction = "attack_secondary"
 MobilityAction = "dash"
-MoveMaxSpeed = 213.3
+MoveMaxSpeed = 138.65
 MoveAccel = 1200.0
 MoveFriction = 1400.0
 MoveStopThreshold = 5.0
@@ -28,7 +28,7 @@ RegenIntervalSeconds = 60.0
 RangedDamage = 2
 RangedCooldown = 0.72
 RangedProjectileSpeed = 760.0
-RangedFirePattern = 2
+RangedFirePattern = 0
 RangedBurstShotInterval = 0.08
 MeleeDamage = 3
 MeleeCooldown = 0.35

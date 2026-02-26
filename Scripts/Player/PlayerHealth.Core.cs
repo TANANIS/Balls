@@ -109,7 +109,11 @@ public partial class PlayerHealth
 		if (_hp >= MaxHp)
 			return;
 
+		int before = _hp;
 		_hp = Mathf.Min(MaxHp, _hp + amount);
+		int healed = _hp - before;
+		if (healed > 0)
+			TryPlayPriestHealVfx();
 		UpdateLowHpAudio();
 	}
 
@@ -163,9 +167,8 @@ public partial class PlayerHealth
 		if (_regenTimer > 0f)
 			return;
 
-		_hp = Mathf.Min(MaxHp, _hp + RegenAmount);
 		_regenTimer = RegenIntervalSeconds;
-		UpdateLowHpAudio();
+		Heal(RegenAmount);
 	}
 
 	public void DebugSetCurrentHp(int hp)

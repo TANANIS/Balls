@@ -22,6 +22,16 @@ public partial class Bullet : Area2D
 	[Export(PropertyHint.Range, "0.00,0.20,0.005")] public float SplitChildHitArmDelaySeconds = 0.05f;
 	[Export] public bool RotateToDirection = true;
 	[Export(PropertyHint.Range, "-180,180,1")] public float RotationOffsetDegrees = 0f;
+	[ExportGroup("Homing")]
+	[Export] public bool HomingEnabled = false;
+	[Export(PropertyHint.Range, "60,1440,1")] public float HomingTurnRateDegrees = 680f;
+	[Export(PropertyHint.Range, "0.00,1.00,0.01")] public float HomingForwardDotThreshold = 0.15f;
+	[ExportGroup("Penetration / Ricochet")]
+	[Export(PropertyHint.Range, "0,6,1")] public int DefaultPierceCount = 0;
+	[Export(PropertyHint.Range, "0,6,1")] public int DefaultRicochetCount = 0;
+	[Export(PropertyHint.Range, "64,2400,1")] public float RicochetSearchRadius = 640f;
+	[Export(PropertyHint.Range, "0.01,0.30,0.005")] public float PostHitRetargetDelaySeconds = 0.05f;
+	[Export(PropertyHint.Range, "0,120,1")] public float PostHitForwardOffset = 10f;
 	[ExportGroup("Effect")]
 	[Export] public Texture2D EffectTexture;
 	[Export] public Godot.Collections.Array<Texture2D> EffectFrames = new();
@@ -66,6 +76,13 @@ public partial class Bullet : Area2D
 	private bool _prepareFinished = true;
 	private bool _canSplitOnHit = true;
 	private int _splitShotLevel = 0;
+	private bool _homingEnabledRuntime = false;
+	private float _homingTurnRateRuntime = 0f;
+	private Node2D _homingTarget;
+	private int _pierceRemaining = 0;
+	private int _ricochetRemaining = 0;
+	private float _ricochetSearchRadiusRuntime = 0f;
+	private readonly HashSet<ulong> _hitTargetIds = new();
 	private bool _isElementalBurstShot = false;
 	private bool _elementalBurstDetonated = false;
 	private float _elementalBurstRadiusRuntime = 0f;
@@ -118,7 +135,12 @@ public partial class Bullet : Area2D
 			elementalBurstDamageMultiplier: 1f,
 			elementalBurstMaxDistance: 0f,
 			elementalBurstMaxTargets: 0,
-			elementalBurstOwner: null);
+			elementalBurstOwner: null,
+			homingTarget: null,
+			homingTurnRateDegrees: 0f,
+			pierceCount: 0,
+			ricochetCount: 0,
+			ricochetSearchRadius: 0f);
 	}
 
 	public void InitFromPlayer(
@@ -138,11 +160,17 @@ public partial class Bullet : Area2D
 		float elementalBurstDamageMultiplier = 1f,
 		float elementalBurstMaxDistance = 0f,
 		int elementalBurstMaxTargets = 0,
-		Node elementalBurstOwner = null)
+		Node elementalBurstOwner = null,
+		Node2D homingTarget = null,
+		float homingTurnRateDegrees = 0f,
+		int pierceCount = 0,
+		int ricochetCount = 0,
+		float ricochetSearchRadius = 0f)
 	{
 		_source = source;
 		_dir = dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
-		_speed = speed * Mathf.Max(0.01f, RuntimeSpeedScale);
+		float runtimeScale = Mathf.Max(0.01f, RuntimeSpeedScale);
+		_speed = Mathf.Max(50f, speed * runtimeScale);
 		_damage = damage;
 		_damageScale = Mathf.Clamp(damageScale, 0f, 1f);
 		_hitArmDelayTimer = Mathf.Max(0f, hitArmDelaySeconds);
@@ -166,6 +194,15 @@ public partial class Bullet : Area2D
 			? Mathf.Max(1, elementalBurstMaxTargets > 0 ? elementalBurstMaxTargets : ElementalBurstMaxTargets)
 			: 1;
 		_elementalBurstOwner = isElementalBurstShot ? elementalBurstOwner : null;
+		_homingTarget = homingTarget;
+		_homingTurnRateRuntime = homingTurnRateDegrees > 0f ? homingTurnRateDegrees : HomingTurnRateDegrees;
+		_homingEnabledRuntime = HomingEnabled || homingTurnRateDegrees > 0f;
+		_pierceRemaining = Mathf.Max(0, Mathf.Max(DefaultPierceCount, pierceCount));
+		_ricochetRemaining = Mathf.Max(0, Mathf.Max(DefaultRicochetCount, ricochetCount));
+		_ricochetSearchRadiusRuntime = ricochetSearchRadius > 0f
+			? ricochetSearchRadius
+			: Mathf.Max(64f, RicochetSearchRadius);
+		_hitTargetIds.Clear();
 		_travelDistance = 0f;
 		ApplyFacingByDirection();
 	}
@@ -214,6 +251,7 @@ public partial class Bullet : Area2D
 
 		if (!_impactStarted && _prepareFinished)
 		{
+			UpdateHomingDirection(dt);
 			Vector2 step = _dir * _speed * dt;
 			GlobalPosition += step;
 			_travelDistance += step.Length();
@@ -252,5 +290,90 @@ public partial class Bullet : Area2D
 			return;
 		float baseAngle = _dir.Angle();
 		Rotation = baseAngle + Mathf.DegToRad(RotationOffsetDegrees);
+	}
+
+	private void UpdateHomingDirection(float dt)
+	{
+		if (!_homingEnabledRuntime)
+			return;
+		if (!IsRuntimeRetargetCandidate(_homingTarget))
+			_homingTarget = AcquireHomingTargetByCurrentDirection();
+		if (!IsRuntimeRetargetCandidate(_homingTarget))
+			return;
+
+		Vector2 toTarget = _homingTarget.GlobalPosition - GlobalPosition;
+		if (toTarget.LengthSquared() < 0.0001f)
+			return;
+
+		Vector2 desiredDir = toTarget.Normalized();
+		float maxTurnRadians = Mathf.DegToRad(Mathf.Max(0f, _homingTurnRateRuntime)) * Mathf.Max(0f, dt);
+		if (maxTurnRadians <= 0f)
+		{
+			_dir = desiredDir;
+			return;
+		}
+
+		float signedAngle = _dir.AngleTo(desiredDir);
+		if (Mathf.Abs(signedAngle) <= maxTurnRadians)
+			_dir = desiredDir;
+		else
+			_dir = _dir.Rotated(Mathf.Sign(signedAngle) * maxTurnRadians).Normalized();
+	}
+
+	private EnemyHurtbox AcquireHomingTargetByCurrentDirection()
+	{
+		SceneTree tree = GetTree();
+		if (tree == null)
+			return null;
+
+		EnemyHurtbox best = null;
+		float bestDistSq = float.MaxValue;
+		Vector2 forward = _dir.LengthSquared() < 0.0001f ? Vector2.Right : _dir.Normalized();
+		float threshold = Mathf.Clamp(HomingForwardDotThreshold, -1f, 1f);
+
+		foreach (Node node in tree.GetNodesInGroup("EnemyHurtbox"))
+		{
+			if (node is not EnemyHurtbox hurtbox || !IsRuntimeRetargetCandidate(hurtbox))
+				continue;
+
+			Vector2 toTarget = hurtbox.GlobalPosition - GlobalPosition;
+			float distSq = toTarget.LengthSquared();
+			if (distSq < 0.0001f)
+				continue;
+
+			float dot = forward.Dot(toTarget.Normalized());
+			if (dot < threshold)
+				continue;
+
+			if (distSq < bestDistSq)
+			{
+				bestDistSq = distSq;
+				best = hurtbox;
+			}
+		}
+
+		return best;
+	}
+
+	private bool IsRuntimeRetargetCandidate(Node2D target)
+	{
+		if (!IsHomingTargetValid(target))
+			return false;
+
+		ulong id = (ulong)target.GetInstanceId();
+		if (_hitTargetIds.Contains(id))
+			return false;
+		if (_ignoreTargetTimer > 0f && _ignoreTargetInstanceId != 0 && id == _ignoreTargetInstanceId)
+			return false;
+		return true;
+	}
+
+	private static bool IsHomingTargetValid(Node2D target)
+	{
+		if (target == null || !IsInstanceValid(target))
+			return false;
+		if (target is EnemyHurtbox hurtbox && hurtbox.IsDead)
+			return false;
+		return true;
 	}
 }

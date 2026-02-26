@@ -328,19 +328,18 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Priest"
 
-[node name="LockedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
+[node name="ArcherButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-disabled = true
 clip_text = true
-theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.6)
+theme_override_colors/font_color = Color(0.8, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
-text = "Coming Soon"
+text = "Archer"
 
 [node name="AbilityTreePanel" type="Panel" parent="Panel/CharacterSelectPanel/VBox/ContentRow"]
 custom_minimum_size = Vector2(300, 0)

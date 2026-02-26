@@ -37,6 +37,17 @@ public static class ProgressionDefs
 			BaseLevelUpCost = 24,
 			LevelUpGrowth = 1.25f,
 			AbilityNodes = new List<AbilityNodeDef>()
+		},
+		["archer"] = new CharacterDef
+		{
+			CharacterId = "archer",
+			IsDefaultUnlocked = false,
+			UnlockCost = 70,
+			MinLevel = 1,
+			MaxLevel = 20,
+			BaseLevelUpCost = 20,
+			LevelUpGrowth = 1.21f,
+			AbilityNodes = new List<AbilityNodeDef>()
 		}
 	};
 

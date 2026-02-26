@@ -13,8 +13,11 @@ public partial class UpgradeSystem
 			UpgradeId.AtkDamageUp20 => _player.PrimarySupportsRanged() || _player.PrimarySupportsMelee(),
 			UpgradeId.AtkProjectilePlus1 => _player.PrimarySupportsRanged(),
 			UpgradeId.AtkSplitShot => _player.PrimarySupportsRanged(),
-			UpgradeId.AtkCritChanceUp10 => _player.PrimarySupportsRanged(),
+			UpgradeId.AtkCritChanceUp10 => false,
 			UpgradeId.ModElementalBurst => _player.PrimarySupportsRanged(),
+			UpgradeId.ModArcaneTracking => _player.PrimarySupportsRanged(),
+			UpgradeId.ModPierce => _player.PrimarySupportsRanged(),
+			UpgradeId.ModRicochet => _player.PrimarySupportsRanged(),
 			_ => true
 		};
 	}

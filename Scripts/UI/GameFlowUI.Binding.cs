@@ -31,6 +31,7 @@ public partial class GameFlowUI
 		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
 		_startCharacterMeleeButton = GetNodeOrNull<Button>(StartCharacterMeleeButtonPath);
 		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
+		_startCharacterArcherButton = GetNodeOrNull<Button>(StartCharacterArcherButtonPath);
 		_startCharacterFluxValueLabel = GetNodeOrNull<Label>(StartCharacterFluxValuePath);
 		_startCharacterBackButton = GetNodeOrNull<Button>(StartCharacterBackButtonPath);
 		_startCharacterConfirmButton = GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
@@ -97,7 +98,10 @@ public partial class GameFlowUI
 		_tankCharacter = LoadCharacterDefinitionOrFallback(
 			TankCharacterResourcePath,
 			BuildBulwarkFallbackDefinition());
-		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter;
+		_archerCharacter = LoadCharacterDefinitionOrFallback(
+			ArcherCharacterResourcePath,
+			BuildArcherFallbackDefinition());
+		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _meleeCharacter ?? _tankCharacter ?? _archerCharacter;
 
 		var scoreList = GetTree().GetNodesInGroup("ScoreSystem");
 		if (scoreList.Count > 0)
@@ -143,6 +147,8 @@ public partial class GameFlowUI
 			_startCharacterMeleeButton.Pressed += OnCharacterMeleePressed;
 		if (_startCharacterTankButton != null)
 			_startCharacterTankButton.Pressed += OnCharacterTankPressed;
+		if (_startCharacterArcherButton != null)
+			_startCharacterArcherButton.Pressed += OnCharacterArcherPressed;
 		if (_startCharacterBackButton != null)
 			_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
 		if (_startCharacterConfirmButton != null)

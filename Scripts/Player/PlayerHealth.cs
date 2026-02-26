@@ -37,6 +37,12 @@ public partial class PlayerHealth : Node
 	[Export] public bool ShieldAlwaysShowRing = true;
 	[Export] public Color ShieldFallbackRingColor = new Color(1.0f, 0.95f, 0.70f, 0.55f);
 	[Export(PropertyHint.Range, "1,8,0.5")] public float ShieldFallbackRingWidth = 2.0f;
+	[Export] public Texture2D PriestHealTexture;
+	[Export(PropertyHint.Range, "1,24,1")] public int PriestHealFrameCount = 6;
+	[Export(PropertyHint.Range, "1,60,1")] public float PriestHealFps = 12f;
+	[Export(PropertyHint.Range, "0.1,12,0.1")] public float PriestHealScale = 4f;
+	[Export] public Vector2 PriestHealOffset = Vector2.Zero;
+	[Export(PropertyHint.Range, "0,5000,1")] public int PriestHealZIndex = 1250;
 
 	private int _hp;
 	private bool _isDead = false;

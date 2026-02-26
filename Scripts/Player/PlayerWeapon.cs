@@ -3,17 +3,22 @@ using System.Collections.Generic;
 
 public partial class PlayerWeapon : PlayerAbilityModule
 {
+	private const string ArcherCharacterId = "archer";
+	private const string TankCharacterId = "tank_burst";
+	private const string RangedCharacterId = "ranged";
+
 	[Export] public string AttackAction = InputActions.AttackPrimary;
 	[Export] public bool EnabledInCurrentCharacter = true;
 
 	[Export] public PackedScene ProjectileScene;
 	[Export] public PackedScene WizardProjectileScene;
 	[Export] public PackedScene PriestProjectileScene;
+	[Export] public PackedScene ArcherProjectileScene;
 	[Export] public NodePath ProjectileContainerPath;
 
 	[Export] public float Cooldown = 0.12f;
 	[Export] public float ProjectileSpeed = 900f;
-	[Export] public int Damage = 1;
+	[Export] public float Damage = 1f;
 	[Export] public float CritChance = 0f;
 	[Export] public float CritDamageMultiplier = 1.5f;
 	[Export] public bool PrecisionSingleLine = true;
@@ -25,6 +30,13 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0.05,0.95,0.01")] public float FireAtNormalizedTime = 0.60f;
 	[Export] public bool AimAtFireMoment = true;
 	[Export] public bool AimEachBurstShot = false;
+	[ExportGroup("Card Modifiers")]
+	[Export] public bool ArcaneTrackingEnabled = false;
+	[Export(PropertyHint.Range, "60,1440,1")] public float ArcaneTrackingTurnRateDegrees = 620f;
+	[Export(PropertyHint.Range, "0.00,1.00,0.01")] public float ArcaneTrackingForwardDotThreshold = 0.20f;
+	[Export(PropertyHint.Range, "0,6,1")] public int PiercingCount = 0;
+	[Export(PropertyHint.Range, "0,6,1")] public int RicochetCount = 0;
+	[Export(PropertyHint.Range, "64,2400,1")] public float RicochetSearchRadius = 640f;
 	[ExportGroup("Elemental Burst")]
 	[Export] public bool ElementalBurstEnabled = false;
 	[Export(PropertyHint.Range, "1.0,30.0,0.1")] public float ElementalBurstChargeSeconds = 5f;
@@ -32,6 +44,12 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0.1,3.0,0.05")] public float ElementalBurstDamageMultiplier = 1.20f;
 	[Export(PropertyHint.Range, "32,2000,1")] public float ElementalBurstMaxDistance = 280f;
 	[Export(PropertyHint.Range, "1,32,1")] public int ElementalBurstMaxTargets = 5;
+	[ExportGroup("Archer")]
+	[Export(PropertyHint.Range, "2,12,1")] public int ArcherBurstCycle = 3;
+	[Export(PropertyHint.Range, "1,8,1")] public int ArcherBurstProjectiles = 3;
+	[Export(PropertyHint.Range, "0.01,0.30,0.005")] public float ArcherBurstShotInterval = 0.060f;
+	[Export(PropertyHint.Range, "0,64,1")] public float ArcherSpawnForwardOffset = 22f;
+	[Export(PropertyHint.Range, "0.00,0.20,0.005")] public float ArcherHitArmDelaySeconds = 0.03f;
 
 	private Node _projectileContainer;
 	private float _attackAnimationSpeedMultiplier = 1f;
@@ -42,9 +60,11 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	private float _elementalBurstChargeTimer = 0f;
 	private bool _elementalBurstCharged = false;
 	private bool _elementalBurstWaitingForDetonation = false;
+	private bool _isArcherCharacter = false;
+	private int _archerBurstCounter = 0;
 
 	public float CurrentCooldown => Cooldown;
-	public int CurrentDamage => Damage;
+	public float CurrentDamage => Damage;
 	public float CurrentProjectileSpeed => ProjectileSpeed;
 
 	public void Setup(Player player)
@@ -99,6 +119,14 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
 		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
 		int burstExtraShots = GetBurstExtraShots(FirePattern);
+		float burstIntervalSeconds = BurstShotInterval;
+		bool triggerArcherRapidBurst = ConsumeArcherBurstFlagForThisAttack();
+		if (_isArcherCharacter && triggerArcherRapidBurst)
+		{
+			// Archer's every-Nth attack becomes a quick sequential burst (not fan spread).
+			burstExtraShots += Mathf.Max(0, ArcherBurstProjectiles - 1);
+			burstIntervalSeconds = Mathf.Clamp(ArcherBurstShotInterval, 0.01f, 0.30f);
+		}
 		float baseDuration = Mathf.Clamp(AttackWindupSeconds, 0.05f, 1.5f);
 		float attackDuration = _player.TriggerPrimaryAttackAnimationAndGetDuration(baseDuration, _attackAnimationSpeedMultiplier);
 		_attackTimeline.BeginWindup(
@@ -108,7 +136,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 			shotSpeed: speed,
 			shotBaseDamage: baseDamage,
 			burstExtraShots: burstExtraShots,
-			burstIntervalSeconds: BurstShotInterval);
+			burstIntervalSeconds: burstIntervalSeconds);
 
 		_cooldownTimer = Cooldown / Mathf.Max(0.1f, powerMult);
 	}
@@ -120,6 +148,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 
 		if (PriestProjectileScene != null && ProjectileScene == PriestProjectileScene)
 			AudioManager.Instance?.PlaySfxPlayerFirePriest();
+		else if (_isArcherCharacter || (ArcherProjectileScene != null && ProjectileScene == ArcherProjectileScene))
+			AudioManager.Instance?.PlaySfxPlayerFireArcher();
 		else
 			AudioManager.Instance?.PlaySfxPlayerFire();
 
@@ -141,8 +171,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		}
 		else
 		{
-			// Projectile+ is a same-axis volley by design; keep spread tight for single-target focus.
-			float spacing = PrecisionSingleLine ? 3f : 7f;
+			// Skill Split remains same-axis, but spread is widened for clearer lane coverage.
+			float spacing = PrecisionSingleLine ? 8f : 14f;
 			float start = -spacing * (count - 1) * 0.5f;
 			for (int i = 0; i < count; i++)
 				angles.Add(start + (spacing * i));
@@ -165,25 +195,40 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	private void SpawnProjectile(Vector2 dir, float speed, int damage)
 	{
 		bool useElementalBurstShot = ElementalBurstEnabled && _elementalBurstCharged && !_elementalBurstWaitingForDetonation;
+		bool useArcaneTracking = ArcaneTrackingEnabled;
+		Vector2 shotDir = dir.Normalized();
+		Vector2 spawnPos = _player.GlobalPosition;
+		if (_isArcherCharacter)
+			spawnPos += shotDir * Mathf.Max(0f, ArcherSpawnForwardOffset);
 		Node bullet = ProjectileScene.Instantiate();
 		if (bullet is Node2D bullet2D)
-			bullet2D.GlobalPosition = _player.GlobalPosition;
+			bullet2D.GlobalPosition = spawnPos;
 		if (bullet is Bullet typedBullet)
 		{
+			float homingTurnRate = useArcaneTracking ? ArcaneTrackingTurnRateDegrees : 0f;
+			if (useArcaneTracking)
+				typedBullet.HomingForwardDotThreshold = Mathf.Clamp(ArcaneTrackingForwardDotThreshold, 0f, 1f);
+
 			typedBullet.InitFromPlayer(
 				_player,
-				dir.Normalized(),
+				shotDir,
 				speed,
 				damage,
 				Mathf.Clamp(SplitShotLevel, 0, 4),
 				canSplitOnHit: true,
 				projectileScene: ProjectileScene,
+				hitArmDelaySeconds: _isArcherCharacter ? Mathf.Max(0f, ArcherHitArmDelaySeconds) : 0f,
 				isElementalBurstShot: useElementalBurstShot,
 				elementalBurstRadius: ElementalBurstExplosionRadius,
 				elementalBurstDamageMultiplier: ElementalBurstDamageMultiplier,
 				elementalBurstMaxDistance: ElementalBurstMaxDistance,
 				elementalBurstMaxTargets: ElementalBurstMaxTargets,
-				elementalBurstOwner: useElementalBurstShot ? this : null);
+				elementalBurstOwner: useElementalBurstShot ? this : null,
+				homingTarget: null,
+				homingTurnRateDegrees: homingTurnRate,
+				pierceCount: Mathf.Max(0, PiercingCount),
+				ricochetCount: Mathf.Max(0, RicochetCount),
+				ricochetSearchRadius: Mathf.Max(64f, RicochetSearchRadius));
 		}
 		else
 		{
@@ -210,19 +255,31 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	{
 		WizardProjectileScene ??= GD.Load<PackedScene>("res://Prefabs/WizardProjectile.tscn");
 		PriestProjectileScene ??= GD.Load<PackedScene>("res://Prefabs/PriestProjectile.tscn");
-		ProjectileScene ??= WizardProjectileScene ?? PriestProjectileScene;
+		ArcherProjectileScene ??= GD.Load<PackedScene>("res://Prefabs/ArcherProjectile.tscn");
+		ProjectileScene ??= WizardProjectileScene ?? PriestProjectileScene ?? ArcherProjectileScene;
 	}
 
 	public void ApplyProjectileByCharacterId(string characterId)
 	{
-		if (string.Equals(characterId, "tank_burst"))
+		_isArcherCharacter = false;
+		_archerBurstCounter = 0;
+
+		if (string.Equals(characterId, TankCharacterId))
 		{
 			if (PriestProjectileScene != null)
 				ProjectileScene = PriestProjectileScene;
 			return;
 		}
 
-		if (string.Equals(characterId, "ranged"))
+		if (string.Equals(characterId, ArcherCharacterId))
+		{
+			_isArcherCharacter = true;
+			if (ArcherProjectileScene != null)
+				ProjectileScene = ArcherProjectileScene;
+			return;
+		}
+
+		if (string.Equals(characterId, RangedCharacterId))
 		{
 			if (WizardProjectileScene != null)
 				ProjectileScene = WizardProjectileScene;
@@ -250,14 +307,14 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		ResolveInputAction();
 	}
 
-	public void AddDamage(int amount)
+	public void AddDamage(float amount)
 	{
-		Damage = Mathf.Max(1, Damage + amount);
+		Damage = Mathf.Max(0.1f, Damage + amount);
 	}
 
 	public void MultiplyDamage(float factor)
 	{
-		Damage = Mathf.Max(1, Mathf.RoundToInt(Damage * Mathf.Max(0.1f, factor)));
+		Damage = Mathf.Max(0.1f, Damage * Mathf.Max(0.1f, factor));
 	}
 
 	public void AddProjectileSpeed(float amount)
@@ -272,9 +329,9 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		_attackAnimationSpeedMultiplier = Mathf.Clamp(_attackAnimationSpeedMultiplier / safeFactor, 0.2f, 6f);
 	}
 
-	public void SetBaseStats(int damage, float cooldown, float projectileSpeed)
+	public void SetBaseStats(float damage, float cooldown, float projectileSpeed)
 	{
-		Damage = Mathf.Max(1, damage);
+		Damage = Mathf.Max(0.1f, damage);
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		_attackAnimationSpeedMultiplier = 1f;
 		ProjectileSpeed = Mathf.Max(50f, projectileSpeed);
@@ -282,8 +339,15 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		CritDamageMultiplier = 1.5f;
 		ExtraProjectiles = 0;
 		SplitShotLevel = 0;
+		ArcaneTrackingEnabled = false;
+		ArcaneTrackingTurnRateDegrees = 620f;
+		ArcaneTrackingForwardDotThreshold = 0.20f;
+		PiercingCount = 0;
+		RicochetCount = 0;
+		RicochetSearchRadius = 640f;
 		ElementalBurstEnabled = false;
 		ResetElementalBurstState();
+		_archerBurstCounter = 0;
 	}
 
 	public void SetFirePattern(PrimaryFirePattern pattern, float burstShotInterval)
@@ -317,12 +381,35 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		CritChance = Mathf.Clamp(CritChance + amount, 0f, 0.95f);
 	}
 
+	public void EnableArcaneTracking(float turnRateDegrees, float forwardDotThreshold)
+	{
+		ArcaneTrackingEnabled = true;
+		ArcaneTrackingTurnRateDegrees = Mathf.Clamp(turnRateDegrees, 60f, 1440f);
+		ArcaneTrackingForwardDotThreshold = Mathf.Clamp(forwardDotThreshold, 0f, 1f);
+	}
+
+	public void AddPierceCount(int amount)
+	{
+		PiercingCount = Mathf.Clamp(PiercingCount + amount, 0, 3);
+	}
+
+	public void AddRicochetCount(int amount)
+	{
+		RicochetCount = Mathf.Clamp(RicochetCount + amount, 0, 3);
+	}
+
 	public void ResetRuntimeState()
 	{
 		_attackAnimationSpeedMultiplier = 1f;
 		_cooldownTimer = 0f;
 		_attackTimeline.Reset();
 		ResetElementalBurstState();
+		_archerBurstCounter = 0;
+	}
+
+	public void InterruptCurrentAttack()
+	{
+		_attackTimeline.Reset();
 	}
 
 	public void EnableElementalBurst(
@@ -381,5 +468,18 @@ public partial class PlayerWeapon : PlayerAbilityModule
 		if (dir.LengthSquared() < 0.0001f)
 			return fallback.LengthSquared() < 0.0001f ? Vector2.Right : fallback.Normalized();
 		return dir.Normalized();
+	}
+
+	private bool ConsumeArcherBurstFlagForThisAttack()
+	{
+		if (!_isArcherCharacter)
+			return false;
+		int cycle = Mathf.Max(2, ArcherBurstCycle);
+		_archerBurstCounter++;
+		if (_archerBurstCounter < cycle)
+			return false;
+
+		_archerBurstCounter = 0;
+		return true;
 	}
 }

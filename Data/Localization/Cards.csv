@@ -1,14 +1,12 @@
 keys,en,zh_TW
 CARD.ATK_SPEED_UP_15.TITLE,Combat Tempo +15%,戰鬥節奏 +15%
 CARD.ATK_SPEED_UP_15.DESC,Primary attack cadence +15%.,主攻擊節奏 +15%。
-CARD.ATK_PROJECTILE_PLUS_1.TITLE,+1 Arc Bolt,+1 奧術彈
-CARD.ATK_PROJECTILE_PLUS_1.DESC,Primary volley gains +1 aligned bolt (tight spread).,主齊射額外 +1 發同軸奧術彈（小幅散射）。
+CARD.ATK_PROJECTILE_PLUS_1.TITLE,Skill Split,技能分裂
+CARD.ATK_PROJECTILE_PLUS_1.DESC,Primary volley gains +1 same-axis split shot (wider spread).,主齊射額外 +1 發同軸分裂彈（較寬散射）。
 CARD.ATK_SPLIT_SHOT.TITLE,Shatter Shot,碎裂射擊
 CARD.ATK_SPLIT_SHOT.DESC,On hit, split shots spawn from enemy position: 3->4->5->6 (max 6 = 360 deg). Split shots deal 50% damage and cannot chain.,命中後從敵人位置生成分裂彈：3->4->5->6 發（6 發為 360 度）。分裂彈傷害為 50%，且不可連鎖分裂。
-CARD.ATK_DAMAGE_UP_20.TITLE,Damage +20%,傷害 +20%
-CARD.ATK_DAMAGE_UP_20.DESC,Primary damage +20%.,主攻擊傷害 +20%。
-CARD.ATK_CRIT_CHANCE_UP_10.TITLE,Critical Chance +10%,暴擊率 +10%
-CARD.ATK_CRIT_CHANCE_UP_10.DESC,Primary critical chance +10%.,主攻擊暴擊率 +10%。
+CARD.ATK_DAMAGE_UP_20.TITLE,Damage +10%,傷害 +10%
+CARD.ATK_DAMAGE_UP_20.DESC,Primary damage +10%.,主攻擊傷害 +10%。
 CARD.SURV_MAX_HP_PLUS_1.TITLE,Max HP +1,最大生命 +1
 CARD.SURV_MAX_HP_PLUS_1.DESC,Increase max HP by 1.,最大生命值 +1。
 CARD.SURV_SHIELD_COOLDOWN.TITLE,Ward Shield,護符護盾
@@ -21,3 +19,9 @@ CARD.ECO_PICKUP_RADIUS_UP_25.TITLE,Essence Reach +25%,靈蘊吸引範圍 +25%
 CARD.ECO_PICKUP_RADIUS_UP_25.DESC,Increase Essence pickup radius by 25%.,靈蘊拾取半徑 +25%。
 CARD.MOD_ELEMENTAL_BURST.TITLE,Elemental Burst,元素引爆
 CARD.MOD_ELEMENTAL_BURST.DESC,Every 5s, one explosive charge is prepared and kept until fired. The next shot detonates on first hit or max distance, dealing AoE damage.,每 5 秒準備 1 層引爆充能，未射擊時會保留。下一發子彈命中首個目標或達到最遠距離時引爆，造成範圍傷害。
+CARD.MOD_ARCANE_TRACKING.TITLE,Arcane Tracking,祕法追蹤
+CARD.MOD_ARCANE_TRACKING.DESC,Ranged shots become tracking rounds. After launch, they seek the nearest enemy ahead.,遠程攻擊改為追蹤彈。發射後會尋找子彈前方最近的敵人。
+CARD.MOD_PIERCE.TITLE,Piercing Sigil,貫穿
+CARD.MOD_PIERCE.DESC,Ranged attacks pierce enemies. Stack increases extra penetrations: 1 -> 2 -> 3.,遠程攻擊可貫穿敵人。升級後額外貫穿次數為 1 -> 2 -> 3。
+CARD.MOD_RICOCHET.TITLE,Rebound Sigil,彈射
+CARD.MOD_RICOCHET.DESC,Ranged attacks bounce to another nearby enemy on hit. Stack increases bounce count up to 3.,遠程攻擊命中後會彈跳至附近另一名敵人。升級可提高彈跳次數，最多 3 次。
