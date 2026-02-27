@@ -164,10 +164,8 @@ public partial class ObstacleFieldGenerator : Node2D
 		if (_wasPaused)
 		{
 			_wasPaused = false;
-			SpawnInitialInsideView();
-			SpawnInitialDecorationsInsideView();
-			int initialBurst = Mathf.Max(1, SpawnPerTickMax) * Mathf.Clamp(InitialBurstMultiplier, 1, 16);
-			SpawnBatch(initialBurst);
+			// Keep startup clean: do not force an initial obstacle/deco burst.
+			// Generation continues via regular interval ticks only.
 			_spawnTimer = SpawnIntervalSeconds;
 			return;
 		}
