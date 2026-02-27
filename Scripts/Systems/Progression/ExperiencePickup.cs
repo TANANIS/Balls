@@ -3,7 +3,7 @@ using Godot;
 public partial class ExperiencePickup : Area2D
 {
 	[Export] public float LifetimeSeconds = 0f;
-	[Export] public float PickupRadius = 16f;
+	[Export] public float PickupRadius = 12f;
 	[Export] public int ExperienceValue = 1;
 	[Export] public NodePath PlayerPath = "../Player";
 	[Export] public bool EnableAutoAttract = true;

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cdpvg1amlxfs0"
-path="res://.godot/imported/obstacle_small_tree.png-7cefb8f88cac8c5e708e2d870bb9fcdd.ctex"
+uid="uid://b1vv5d7h3g0ey"
+path="res://.godot/imported/terrain_cap_grass_se.png-b65ead7489e783407e5e1b09011e8559.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Environment/obstacle_small_tree.png"
-dest_files=["res://.godot/imported/obstacle_small_tree.png-7cefb8f88cac8c5e708e2d870bb9fcdd.ctex"]
+source_file="res://Assets/Sprites/World/Terrain/Canonical/terrain_cap_grass_se.png"
+dest_files=["res://.godot/imported/terrain_cap_grass_se.png-b65ead7489e783407e5e1b09011e8559.ctex"]
 
 [params]
 

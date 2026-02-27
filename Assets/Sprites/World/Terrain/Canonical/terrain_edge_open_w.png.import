@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1kgru20bigl6"
-path="res://.godot/imported/Player.png-db2acdf988f9d7b071ead854f4ace434.ctex"
+uid="uid://dvf7563kwbkqt"
+path="res://.godot/imported/terrain_edge_open_w.png-96e22155969dacb5f7184e8b5d9390c8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/Player.png"
-dest_files=["res://.godot/imported/Player.png-db2acdf988f9d7b071ead854f4ace434.ctex"]
+source_file="res://Assets/Sprites/World/Terrain/Canonical/terrain_edge_open_w.png"
+dest_files=["res://.godot/imported/terrain_edge_open_w.png-96e22155969dacb5f7184e8b5d9390c8.ctex"]
 
 [params]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://n11odh3r2j0r"]
 
-[ext_resource type="Texture2D" uid="uid://b34jx8vy3iedd" path="res://Assets/Sprites/Environment/obstacle_big_rock.png" id="1_tex"]
+[ext_resource type="Texture2D" uid="uid://b34jx8vy3iedd" path="res://Assets/Sprites/Environment/Obstacles/obstacle_big_rock.png" id="1_tex"]
 
 [sub_resource type="RectangleShape2D" id="1_shape"]
 size = Vector2(58, 63)

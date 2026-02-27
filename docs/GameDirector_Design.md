@@ -1,4 +1,6 @@
 # Game Director And Progression Design
+Last Synced: 2026-02-27
+
 
 This document defines pacing logic for spawn orchestration and upgrade timing.
 
@@ -137,4 +139,3 @@ Used fields now include:
 - Do not hard-code tier logic outside director systems.
 - Tune balance in CSV first, then patch code only when needed.
 - Keep stage-tail boss pacing time-based, not random-event based.
-

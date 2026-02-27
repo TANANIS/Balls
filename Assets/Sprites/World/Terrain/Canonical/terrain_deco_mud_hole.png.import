@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jgylb63xqacf"
-path="res://.godot/imported/BladeCore.png-c489544aca2e74c43ca4d3a9fa11dc60.ctex"
+uid="uid://bwdt4n4i42bgs"
+path="res://.godot/imported/terrain_deco_mud_hole.png-84669c631c2ec8fb6dc9317b24e97355.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/BladeCore.png"
-dest_files=["res://.godot/imported/BladeCore.png-c489544aca2e74c43ca4d3a9fa11dc60.ctex"]
+source_file="res://Assets/Sprites/World/Terrain/Canonical/terrain_deco_mud_hole.png"
+dest_files=["res://.godot/imported/terrain_deco_mud_hole.png-84669c631c2ec8fb6dc9317b24e97355.ctex"]
 
 [params]
 

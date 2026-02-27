@@ -368,3 +368,25 @@
   - `docs/REFACTOR_LOGIC_RISK_REVIEW_2026-02-25.md`.
 - Validation:
   - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+
+### 2026-02-27 - Terrain/Obstacles/UI/Card Polish Sync
+- Terrain pipeline refactor and split completed:
+  - ProceduralTerrainBackground split into mask/tiling/features partial files.
+  - diagonal + cap edge rules iterated with in-map debug naming/overlay, then debug moved to separate tools.
+  - restart now triggers terrain refresh; world generation stability improved.
+- World content pipeline updates:
+  - terrain assets reorganized under world sprite folders; canonical naming cleaned.
+  - obstacle prefabs expanded and grouped under unified obstacle folder.
+  - obstacle density/clustering tuned toward denser forests while keeping traversal lanes.
+  - edge-safety spawning enforced (avoid spawning directly on grass/dirt border tiles).
+- Runtime fixes and tuning:
+  - swordsman cooldown rollback restored previous feel.
+  - mage/ranger HP set to 4.
+  - card damage stack retune applied to +50% -> +100% -> +150%.
+  - zh-TW card text normalized (祕法追蹤 -> 秘法追蹤) to reduce missing-glyph risk.
+- UI and visual consistency:
+  - restart/result panel blue-tinted inner block replaced with warm palette.
+  - result score text color aligned to parchment theme.
+- Documentation sync:
+  - all files in docs/*.md stamped with Last Synced: 2026-02-27.
+  - cards spec/changelog updated to reflect latest tuning.

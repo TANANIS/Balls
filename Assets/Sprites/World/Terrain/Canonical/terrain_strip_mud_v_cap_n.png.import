@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3x4m2ov3oyyu"
-path="res://.godot/imported/BulwarkCore.png-50d55bdd1849f5f8862a26574580c38a.ctex"
+uid="uid://bihimjt3rpl7i"
+path="res://.godot/imported/terrain_strip_mud_v_cap_n.png-54977f893e2253d6401073ab66c7d9a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Player/BulwarkCore.png"
-dest_files=["res://.godot/imported/BulwarkCore.png-50d55bdd1849f5f8862a26574580c38a.ctex"]
+source_file="res://Assets/Sprites/World/Terrain/Canonical/terrain_strip_mud_v_cap_n.png"
+dest_files=["res://.godot/imported/terrain_strip_mud_v_cap_n.png-54977f893e2253d6401073ab66c7d9a7.ctex"]
 
 [params]
 

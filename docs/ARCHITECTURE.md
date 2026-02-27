@@ -1,4 +1,6 @@
 # Project Genesis Architecture
+Last Synced: 2026-02-27
+
 
 ## First Principles
 - `ProgressionSystem` owns EXP/upgrade progress and level-up queue timing.

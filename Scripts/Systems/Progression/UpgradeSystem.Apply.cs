@@ -111,9 +111,11 @@ public partial class UpgradeSystem
 	{
 		return stack switch
 		{
-			1 => 1.10f,
-			2 => 1.08f,
-			_ => 1.06f
+			// Total bonus targets by stack: +50% -> +100% -> +150%.
+			// Apply incremental multipliers per pick because upgrades stack cumulatively.
+			1 => 1.50f,             // 1.0x -> 1.5x
+			2 => 2.00f / 1.50f,     // 1.5x -> 2.0x
+			_ => 2.50f / 2.00f      // 2.0x -> 2.5x
 		};
 	}
 

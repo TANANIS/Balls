@@ -1,31 +1,23 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=13 format=3 uid="uid://cklbcky6qglxw"]
 
 [ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="1_menu_bg"]
-[ext_resource type="Script" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="2_obstacle_gen"]
-[ext_resource type="Script" path="res://Scripts/World/InfiniteTiledBackground.cs" id="3_infinite_bg"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/bg_run_grass_base.png" id="4_run_bg_base"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/bg_run_grass_overlay_01.png" id="5_run_bg_overlay_01"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/bg_run_grass_overlay_02.png" id="6_run_bg_overlay_02"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/bg_run_grass_overlay_03.png" id="7_run_bg_overlay_03"]
-[ext_resource type="Script" path="res://Scripts/World/BossArenaLimiter.cs" id="8_boss_arena"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleBigRock.tscn" id="9_obstacle_big_rock_scene"]
+[ext_resource type="Script" uid="uid://bfaydivoicgbu" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="2_obstacle_gen"]
+[ext_resource type="Script" uid="uid://b21n5jl3thh3o" path="res://Scripts/World/BossArenaLimiter.cs" id="8_boss_arena"]
+[ext_resource type="PackedScene" uid="uid://n11odh3r2j0r" path="res://Prefabs/Obstacles/ObstacleBigRock.tscn" id="9_obstacle_big_rock_scene"]
 [ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleSmallTree.tscn" id="10_obstacle_small_tree_scene"]
+[ext_resource type="Script" uid="uid://c1fpxw4xdjqc1" path="res://Scripts/World/ProceduralTerrainBackground.cs" id="11_terrain_bg"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleTreeSmallB.tscn" id="12_obstacle_tree_small_b_scene"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleTreeSmallC.tscn" id="13_obstacle_tree_small_c_scene"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleRockTinyB.tscn" id="14_obstacle_rock_tiny_b_scene"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleRockTinyC.tscn" id="15_obstacle_rock_tiny_c_scene"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleBushSmallA.tscn" id="16_obstacle_bush_small_a_scene"]
+[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleBushSmallB.tscn" id="17_obstacle_bush_small_b_scene"]
 
 [node name="World" type="Node2D"]
 
 [node name="Background" type="Node2D" parent="."]
 visible = false
-script = ExtResource("3_infinite_bg")
-BaseTexture = ExtResource("4_run_bg_base")
-OverlayTextures = Array[Texture2D]([ExtResource("5_run_bg_overlay_01"), ExtResource("6_run_bg_overlay_02"), ExtResource("7_run_bg_overlay_03")])
-TileScale = Vector2(3, 3)
-ExtraTileMargin = 2
-BaseFlipXChance = 0.1
-OverlaySpawnChance = 0.95
-OverlayPerTileMin = 1
-OverlayPerTileMax = 3
-OverlayFlipXChance = 0.25
-AllowOverlayDuplicates = false
+script = ExtResource("11_terrain_bg")
 
 [node name="MenuBackground" type="Sprite2D" parent="."]
 z_index = -11
@@ -33,21 +25,38 @@ texture = ExtResource("1_menu_bg")
 
 [node name="Obstacles" type="Node2D" parent="."]
 script = ExtResource("2_obstacle_gen")
-ObstacleScenes = Array[PackedScene]([ExtResource("9_obstacle_big_rock_scene"), ExtResource("10_obstacle_small_tree_scene")])
+ObstacleScenes = Array[PackedScene]([ExtResource("9_obstacle_big_rock_scene"), ExtResource("10_obstacle_small_tree_scene"), ExtResource("12_obstacle_tree_small_b_scene"), ExtResource("13_obstacle_tree_small_c_scene"), ExtResource("14_obstacle_rock_tiny_b_scene"), ExtResource("15_obstacle_rock_tiny_c_scene"), ExtResource("16_obstacle_bush_small_a_scene"), ExtResource("17_obstacle_bush_small_b_scene")])
 SpawnIntervalSeconds = 0.9
-SpawnPerTickMin = 3
-SpawnPerTickMax = 4
-MaxObstacleCount = 240
-SpawnOutsideMargin = 180.0
-SpawnRingThickness = 840.0
-ObstacleSpacingMultiplier = 1.48
-PlacementAttemptsPerSpawn = 64
-EnforceAlternatingTypes = true
-UseNaturalClusters = true
-ClusterStickiness = 0.78
-ClusterRadiusMin = 140.0
-ClusterRadiusMax = 300.0
-ClusterLifetimeSpawns = 9
+SpawnPerTickMin = 5
+SpawnPerTickMax = 6
+InitialBurstMultiplier = 6
+InitialInsideViewSpawnCount = 14
+InitialInsideSafeRadius = 150.0
+InitialInsidePadding = 20.0
+MaxObstacleCount = 420
+SpawnOutsideMargin = 24.0
+SpawnRingThickness = 260.0
+SpawnDistanceScale = 0.64
+ObstacleSpacingMultiplier = 1.28
+PlacementAttemptsPerSpawn = 80
+ClusterStickiness = 0.84
+ClusterRadiusMin = 96.0
+ClusterRadiusMax = 220.0
+ClusterLifetimeSpawns = 12
+TerrainAffinityStrength = 0.68
+AvoidTerrainEdges = true
+TerrainEdgeGuardTiles = 2
+VegetationBiomeScaleTiles = 18
+VegetationBiomeThreshold = 0.5
+VegetationBiomeStrength = 0.74
+TreeSpeciesBiomeScaleTiles = 30
+TreeSpeciesClusterStrength = 0.82
+MaxDecorationCount = 460
+InitialDecorationInsideViewCount = 28
+DecorationPerTick = 6
+DecorationSpacingMultiplier = 0.72
+FreezeDecorationsAfterInitial = true
+SpawnVariantRetryCount = 8
 
 [node name="BossArenaLimiter" type="Node2D" parent="."]
 script = ExtResource("8_boss_arena")

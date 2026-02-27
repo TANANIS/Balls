@@ -1,4 +1,6 @@
 # Pixel Scale Master Spec (v1)
+Last Synced: 2026-02-27
+
 
 ## Purpose
 - Lock `Camera / Unit / Art` into one deterministic rule set.
@@ -118,4 +120,3 @@
   - `CollapseCriticalCameraZoomMultiplier = 1.08`
 - `Enemies/Slime.tscn`
   - Slime replacement uses larger visual scale to compensate heavy transparent padding in source frames.
-

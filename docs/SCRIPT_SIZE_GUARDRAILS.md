@@ -1,4 +1,6 @@
 # Script Size Guardrails
+Last Synced: 2026-02-27
+
 
 ## Purpose
 - Keep runtime scripts readable and reviewable.

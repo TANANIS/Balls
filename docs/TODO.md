@@ -1,4 +1,6 @@
 # TODO (2026-02-21)
+Last Synced: 2026-02-27
+
 
 ## Current Build Status
 - [x] Character split to three roles (Ranged / Melee / TankBurst)
@@ -118,4 +120,3 @@
 - [x] Add simple script-size guardrail doc:
   - [x] target max LOC per behavior script
   - [x] rule for when to split by responsibility
-

@@ -76,8 +76,13 @@ public partial class Enemy : CharacterBody2D
 		float moveRate = desired == Vector2.Zero ? Friction : Accel;
 		Velocity = Velocity.MoveToward(desired, Mathf.Max(1f, moveRate) * dt);
 
+		float preSeparationSpeed = Velocity.Length();
 		Vector2 velocity = Velocity;
 		_separation?.ApplyToVelocity(ref velocity, dt);
+		float desiredSpeed = desired.Length();
+		float maxAllowedSpeed = Mathf.Max(desiredSpeed, preSeparationSpeed) * 1.10f;
+		if (maxAllowedSpeed > 0.001f && velocity.Length() > maxAllowedSpeed)
+			velocity = velocity.Normalized() * maxAllowedSpeed;
 		Velocity = velocity;
 		UpdateVisualFacing(Velocity.X);
 		MoveAndSlide();

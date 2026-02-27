@@ -129,6 +129,8 @@ public partial class GameFlowUI
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = true;
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = true;
+		if (_background is ProceduralTerrainBackground terrainBackground)
+			terrainBackground.RefreshForNewRun();
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
 		if (_menuDimmer != null) _menuDimmer.Visible = false;

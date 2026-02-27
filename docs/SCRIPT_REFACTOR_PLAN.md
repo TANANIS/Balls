@@ -1,4 +1,6 @@
 ## Script Refactor Layout (2026-02)
+Last Synced: 2026-02-27
+
 
 > Status: Archived snapshot of refactor outcomes in 2026-02. Current architecture should be validated against live scripts first.
 

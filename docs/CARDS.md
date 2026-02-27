@@ -1,4 +1,6 @@
 # Cards Spec
+Last Synced: 2026-02-27
+
 
 ## Current Status
 - Runtime card pool is active with Batch 01 (13 cards).
@@ -168,7 +170,7 @@ Note:
 - `ATK_SPLIT_SHOT` : Shatter Shot (`MaxStack = 4`, split count `3->4->5->6`, max stack `360 deg`, child damage `50%`, non-chain)
 
 ### Core Attack - Power
-- `ATK_DAMAGE_UP_20` : Damage +10%
+- `ATK_DAMAGE_UP_20` : Damage +50% (stack total `+50% -> +100% -> +150%`)
 
 ### Survival
 - `SURV_MAX_HP_PLUS_1` : Max HP +1
@@ -197,7 +199,7 @@ This table is the first practical pass for in-run balancing.
 | `ATK_SPEED_UP_15` | CoreAttack | Attack interval x`0.87` (~+15% rate) | x`0.89` (S2), x`0.93` (S3) | 3 | 14 |
 | `ATK_PROJECTILE_PLUS_1` | CoreAttack | `+1` same-axis split shot (wider spread) | linear | 2 | 6 |
 | `ATK_SPLIT_SHOT` | CoreAttack | on-hit split from enemy pos: `3->4->5->6` (max stack `360 deg`, child x`0.50`, non-chain) | linear (hard-capped, stack increases split count) | 4 | 7 |
-| `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.10` | x`1.08` (S2), x`1.06` (S3) | 3 | 12 |
+| `ATK_DAMAGE_UP_20` | CoreAttack | Damage x`1.50` | x`1.3333` (S2), x`1.25` (S3) | 3 | 12 |
 | `SURV_MAX_HP_PLUS_1` | Survival | Max HP `+1` | linear | 4 | 12 |
 | `SURV_SHIELD_COOLDOWN` | Survival | 1-hit shield, 60s cooldown | no stack | 1 | 8 |
 | `SURV_LIFESTEAL_CLOSE_KILL` | Survival | On kill: 12% chance heal 1 HP | no stack | 1 | 7 |
@@ -210,7 +212,7 @@ This table is the first practical pass for in-run balancing.
 
 ### Derived Ceiling Snapshot (Round 1)
 - `ATK_SPEED_UP_15` total rate multiplier at 3 stacks: about `1.39x`.
-- `ATK_DAMAGE_UP_20` total damage multiplier at 3 stacks: about `1.26x`.
+- `ATK_DAMAGE_UP_20` total damage multiplier at 3 stacks: `2.50x` (`+150%`).
 
 Use this snapshot as first-pass tuning anchors for playtests.
 
@@ -287,4 +289,3 @@ Additional rule:
 - [x] Add category weight decay (cost-increase model)
 - [ ] Add deterministic draw simulator (editor/console, fixed seed, 10,000 runs, N picks/run) with report outputs for card rate, pair/triple combos, ceiling-combo probability, and phase survival ratio validation (target error <= 2%).
 - [ ] Define first batch cards for each layer
-

@@ -42,8 +42,8 @@ ExclusiveWith = Array[int]([1])
 [sub_resource type="Resource" id="Upgrade_AtkDamageUp20"]
 script = ExtResource("2_definition_script")
 Id = 3
-Title = "Damage +10%"
-Description = "Primary damage +10%."
+Title = "Damage +50%"
+Description = "Primary damage bonus scales by stack: +50% -> +100% -> +150%."
 TitleKey = "CARD.ATK_DAMAGE_UP_20.TITLE"
 DescriptionKey = "CARD.ATK_DAMAGE_UP_20.DESC"
 Layer = 2

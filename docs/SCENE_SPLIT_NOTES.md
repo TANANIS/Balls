@@ -1,4 +1,6 @@
 # Scene Split Notes (MainScence.tscn)
+Last Synced: 2026-02-27
+
 
 > Status: Maintained guidance. Re-validate when introducing additional world themes or UI root-level wrappers.
 

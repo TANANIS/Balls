@@ -1,4 +1,6 @@
 # Cards Changelog
+Last Synced: 2026-02-27
+
 
 ## Usage Rule
 - One entry per card change batch.
@@ -47,6 +49,25 @@
 ---
 
 ## Initial Baseline
+### 2026-02-27 - Damage Card Retune (+50/+100/+150)
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Retuned `ATK_DAMAGE_UP_20` from small DR stacks to strong linear step targets.
+  - Updated card text (EN/zh_TW) and runtime multiplier curve.
+  - Normalized zh-TW title for Arcane Tracking (`祕法追蹤 -> 秘法追蹤`) to avoid glyph compatibility issues.
+
+#### Cards Updated
+- `ATK_DAMAGE_UP_20`
+  - Change: title/description + runtime stack multipliers
+  - Value: `+10% (x1.10, x1.08, x1.06 incremental) -> +50%/+100%/+150% total (x1.50, x1.3333, x1.25 incremental)`
+  - Reason: match requested stronger damage pacing and explicit stack progression.
+- `MOD_ARCANE_TRACKING` (zh_TW title)
+  - Change: localization glyph normalization
+  - Value: `祕法追蹤 -> 秘法追蹤`
+  - Reason: reduce risk of missing-glyph rendering in bitmap/pixel fonts.
+
 ### 2026-02-21 - Baseline Reset
 - Scope: `Remove`
 - Summary:

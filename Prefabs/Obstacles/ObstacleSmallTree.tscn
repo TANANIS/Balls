@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/obstacle_small_tree.png" id="1_tex"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/Obstacles/obstacle_small_tree.png" id="1_tex"]
 
 [sub_resource type="RectangleShape2D" id="1_shape"]
-size = Vector2(28, 36)
+size = Vector2(44, 58)
 
 [node name="ObstacleSmallTree" type="StaticBody2D"]
 collision_layer = 1
@@ -14,5 +14,5 @@ texture = ExtResource("1_tex")
 scale = Vector2(3.9, 3.9)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 12)
+position = Vector2(0, 10)
 shape = SubResource("1_shape")

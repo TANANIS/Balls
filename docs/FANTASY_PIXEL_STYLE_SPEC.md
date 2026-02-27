@@ -1,4 +1,6 @@
 # Fantasy Pixel Style Spec (v1)
+Last Synced: 2026-02-27
+
 
 ## Status
 - Date: 2026-02-23
@@ -110,5 +112,3 @@ These are source-art canvas sizes (not collision sizes).
   - no blur artifacts,
   - no missing textures,
   - class readability maintained.
-
-

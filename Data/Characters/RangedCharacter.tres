@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterDefinition" load_steps=3 format=3 uid="uid://q81qyvu1b7pv"]
 
 [ext_resource type="Script" path="res://Scripts/Characters/CharacterDefinition.cs" id="1_char_def"]
-[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Player.png" id="2_ranger_core"]
+[ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard.png" id="2_ranger_core"]
 
 [resource]
 script = ExtResource("1_char_def")

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b34jx8vy3iedd"
-path="res://.godot/imported/obstacle_big_rock.png-7c2a4f8fefb6687eb2117e297ecf034f.ctex"
+uid="uid://blfmhk742rypu"
+path="res://.godot/imported/terrain_edge_open_e.png-9d9f0539438595fbc4d44027e3ee9c6f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Environment/obstacle_big_rock.png"
-dest_files=["res://.godot/imported/obstacle_big_rock.png-7c2a4f8fefb6687eb2117e297ecf034f.ctex"]
+source_file="res://Assets/Sprites/World/Terrain/Canonical/terrain_edge_open_e.png"
+dest_files=["res://.godot/imported/terrain_edge_open_e.png-9d9f0539438595fbc4d44027e3ee9c6f.ctex"]
 
 [params]
 

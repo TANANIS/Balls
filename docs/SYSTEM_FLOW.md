@@ -1,4 +1,6 @@
 # System Flow Diagram
+Last Synced: 2026-02-27
+
 
 ```mermaid
 flowchart TD
@@ -54,4 +56,3 @@ flowchart TD
   - on Priest heal VFX play, attacks are temporarily locked for the animation duration.
 - HUD HP rendering:
   - in-run HP is numeric only (`HP x/y`), segment blocks are removed.
-
