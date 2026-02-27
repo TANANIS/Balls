@@ -605,27 +605,23 @@ public partial class ObstacleFieldGenerator : Node2D
 		int footprintTiles = Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(0f, radiusWorld) / Mathf.Max(1f, step * 3f)), 0, 2);
 		int scanTiles = Mathf.Clamp(guardTiles + footprintTiles, 1, 6);
 		bool centerIsDirt = _terrainBackground.IsDirtAtWorldPosition(worldPos);
-		int mismatch = 0;
-		int sampled = 0;
+
+		// Strict boundary guard:
+		// if any sampled tile in guard area belongs to the opposite terrain type,
+		// this position is treated as an edge and rejected.
 		for (int oy = -scanTiles; oy <= scanTiles; oy++)
 		{
 			for (int ox = -scanTiles; ox <= scanTiles; ox++)
 			{
-				// Perimeter-focused check avoids over-rejecting large interior regions.
 				if (ox == 0 && oy == 0)
 					continue;
-				if (Mathf.Max(Mathf.Abs(ox), Mathf.Abs(oy)) != scanTiles)
-					continue;
 				Vector2 p = worldPos + new Vector2(ox * step, oy * step);
-				sampled++;
 				if (_terrainBackground.IsDirtAtWorldPosition(p) != centerIsDirt)
-					mismatch++;
+					return true;
 			}
 		}
 
-		if (sampled <= 0)
-			return false;
-		return mismatch >= Mathf.Max(2, sampled / 3);
+		return false;
 	}
 
 	private float SampleVegetationBiome(Vector2 worldPos)
