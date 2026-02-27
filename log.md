@@ -26,6 +26,12 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-27 - Slime Speed Follow-up
+- `Data/Director/EnemyDefinitions.csv`
+  - `slime` speed override: `105 -> 96`
+- Intent:
+  - soften baseline chase pressure from filler enemies while keeping count-based map pressure.
+
 ### 2026-02-27 - Character Numeric CSV Overlay
 - Added character numeric table:
   - `Data/Characters/CharacterStats.csv`
