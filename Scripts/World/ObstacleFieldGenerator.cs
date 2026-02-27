@@ -520,11 +520,10 @@ public partial class ObstacleFieldGenerator : Node2D
 		int probeRadius = Mathf.Clamp(TerrainAffinityProbeRadiusTiles, 0, 16);
 		float dirtRatio = SampleDirtRatio(worldPos, probeRadius);
 		float strength = Mathf.Clamp(TerrainAffinityStrength, 0f, 1f);
-
-		// Keep it soft: preference biases probability instead of hard reject.
-		float accept = variant.Affinity == TerrainAffinity.PreferDirt
-			? Mathf.Lerp(0.5f, dirtRatio, strength)
-			: Mathf.Lerp(0.5f, 1f - dirtRatio, strength);
+		float target = variant.Affinity == TerrainAffinity.PreferDirt ? dirtRatio : 1f - dirtRatio;
+		// Keep soft randomness, but strongly favor matching terrain to avoid large empty zones.
+		float accept = Mathf.Lerp(0.85f, Mathf.Clamp(target, 0f, 1f), strength);
+		accept = Mathf.Clamp(accept, 0.08f, 0.98f);
 		return _rng.Randf() <= accept;
 	}
 
@@ -533,7 +532,14 @@ public partial class ObstacleFieldGenerator : Node2D
 		if (GodotObject.IsInstanceValid(_terrainBackground) && AvoidTerrainEdges)
 		{
 			int guardTiles = Mathf.Clamp(TerrainEdgeGuardTiles, 1, 4);
-			if (IsNearTerrainBoundary(worldPos, guardTiles, radiusWorld))
+			float edgeRadius = radiusWorld;
+			// Trees have large colliders; using full radius over-rejects them near valid interiors.
+			// Keep anti-edge rule, but sample with a reduced footprint for large foliage.
+			if (variant.Kind == ObstacleKind.Tree)
+				edgeRadius *= 0.35f;
+			else if (variant.Kind == ObstacleKind.Bush)
+				edgeRadius *= 0.55f;
+			if (IsNearTerrainBoundary(worldPos, guardTiles, edgeRadius))
 				return false;
 		}
 
@@ -551,6 +557,11 @@ public partial class ObstacleFieldGenerator : Node2D
 			float strength = Mathf.Clamp(VegetationBiomeStrength, 0f, 1f);
 			float localChance = Mathf.Clamp((biome - threshold) / Mathf.Max(0.001f, 1f - threshold), 0f, 1f);
 			float accept = Mathf.Lerp(1f, localChance, strength);
+			// Prevent very large grass zones from becoming visually empty.
+			if (variant.Kind == ObstacleKind.Tree)
+				accept = Mathf.Max(accept, 0.68f);
+			else
+				accept = Mathf.Max(accept, 0.60f);
 			if (_rng.Randf() > accept)
 				return false;
 
@@ -560,8 +571,8 @@ public partial class ObstacleFieldGenerator : Node2D
 				int preferredSpecies = SampleTreeSpeciesGroup(worldPos);
 				float clusterStrength = Mathf.Clamp(TreeSpeciesClusterStrength, 0f, 1f);
 				float speciesAccept = preferredSpecies == variant.SpeciesId
-					? Mathf.Lerp(1f, 0.95f, clusterStrength)
-					: Mathf.Lerp(1f, 0.10f, clusterStrength);
+					? Mathf.Lerp(1f, 0.96f, clusterStrength)
+					: Mathf.Lerp(1f, 0.72f, clusterStrength);
 				if (_rng.Randf() > speciesAccept)
 					return false;
 			}
@@ -775,11 +786,11 @@ public partial class ObstacleFieldGenerator : Node2D
 	{
 		string path = scene?.ResourcePath?.ToLowerInvariant() ?? string.Empty;
 		if (path.Contains("tree"))
-			return 1.35f;
+			return 2.1f;
 		if (path.Contains("bush"))
 			return 1.2f;
 		if (path.Contains("rock"))
-			return 0.95f;
+			return 1.25f;
 		return 1f;
 	}
 
@@ -787,7 +798,7 @@ public partial class ObstacleFieldGenerator : Node2D
 	{
 		string path = scene?.ResourcePath?.ToLowerInvariant() ?? string.Empty;
 		if (path.Contains("tree"))
-			return 0.88f;
+			return 0.72f;
 		if (path.Contains("bush"))
 			return 0.86f;
 		if (path.Contains("rock"))
