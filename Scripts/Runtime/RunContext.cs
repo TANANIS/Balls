@@ -15,14 +15,17 @@ public partial class RunContext : Node
 		Instance = this;
 		if (DefaultCharacter == null)
 			DefaultCharacter = GD.Load<CharacterDefinition>(FallbackCharacterPath);
+		CharacterStatsCsvService.ApplyTo(DefaultCharacter);
 		if (SelectedCharacter == null)
 			SelectedCharacter = DefaultCharacter;
+		CharacterStatsCsvService.ApplyTo(SelectedCharacter);
 
 		SelectedCharacter = ResolveSelectableCharacterOrDefault(SelectedCharacter);
 	}
 
 	public void SetSelectedCharacter(CharacterDefinition character)
 	{
+		CharacterStatsCsvService.ApplyTo(character);
 		SelectedCharacter = ResolveSelectableCharacterOrDefault(character);
 	}
 
@@ -34,6 +37,8 @@ public partial class RunContext : Node
 	private CharacterDefinition ResolveSelectableCharacterOrDefault(CharacterDefinition candidate)
 	{
 		CharacterDefinition fallback = DefaultCharacter ?? candidate;
+		CharacterStatsCsvService.ApplyTo(candidate);
+		CharacterStatsCsvService.ApplyTo(fallback);
 		if (candidate != null && MetaProgressionService.Instance.IsCharacterUnlocked(candidate.CharacterId))
 			return candidate;
 		if (fallback != null && MetaProgressionService.Instance.IsCharacterUnlocked(fallback.CharacterId))

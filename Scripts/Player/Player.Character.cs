@@ -19,6 +19,7 @@ public partial class Player
 		CharacterDefinition resolved = character ?? DefaultCharacter;
 		if (resolved == null)
 			return;
+		CharacterStatsCsvService.ApplyTo(resolved);
 
 		_activeCharacter = resolved;
 		_primaryAbility = resolved.PrimaryAbility;

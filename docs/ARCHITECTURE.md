@@ -100,6 +100,21 @@ Current runtime usage:
     - `upgrade_count >= 4`: low-frequency elite injection (10%~15% replace chance),
     - `upgrade_count == 6`: schedule one-time miniboss spawn with 2s spawn freeze.
 
+## Character Numeric Data Source
+- Runtime character stat source is now dual-layer:
+  - base definition from `Data/Characters/*.tres`,
+  - numeric override from `Data/Characters/CharacterStats.csv`.
+- Current CSV-overridden fields:
+  - `MaxHp`
+  - `MoveMaxSpeed`
+  - `RangedCooldown`
+  - `MeleeCooldown`
+  - `DashCooldown`
+- Application points:
+  - `RunContext` load/select path,
+  - `GameFlowUI` character definition load fallback,
+  - `Player.ApplyCharacter` final pre-apply normalization.
+
 ## Contributor Guardrails
 - Do not read progression state directly in enemy scripts.
 - Do not hard-code tier logic outside director systems.

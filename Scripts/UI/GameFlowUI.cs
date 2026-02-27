@@ -99,12 +99,19 @@ public partial class GameFlowUI : Control
 	{
 		CharacterDefinition loaded = GD.Load<CharacterDefinition>(path);
 		if (loaded != null)
+		{
+			CharacterStatsCsvService.ApplyTo(loaded);
 			return loaded;
+		}
 
 		Resource raw = ResourceLoader.Load(path);
 		if (raw is CharacterDefinition typed)
+		{
+			CharacterStatsCsvService.ApplyTo(typed);
 			return typed;
+		}
 
+		CharacterStatsCsvService.ApplyTo(fallback);
 		return fallback;
 	}
 

@@ -26,6 +26,23 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-27 - Character Numeric CSV Overlay
+- Added character numeric table:
+  - `Data/Characters/CharacterStats.csv`
+- Added runtime loader:
+  - `Scripts/Characters/CharacterStatsCsvService.cs`
+- Character numeric fields now overridable via CSV:
+  - `MaxHp`
+  - `MoveMaxSpeed`
+  - `RangedCooldown`
+  - `MeleeCooldown`
+  - `DashCooldown`
+- Applied at three runtime entry points:
+  - `RunContext` (default/select resolution),
+  - `GameFlowUI` character definition load path,
+  - `Player.ApplyCharacter` pre-apply normalization.
+- Translation loading baseline kept stable (`project.godot` uses `*.translation` registration).
+
 ### 2026-02-26 - Director Pressure Relief + Enemy Contact Recalibration
 - Player survivability and mobility baseline updates:
   - all four characters `MoveMaxSpeed` increased by `+15%`.

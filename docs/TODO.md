@@ -16,6 +16,7 @@ Last Synced: 2026-02-27
 - [x] Perfect 15:00 dedicated end-state UI
 - [x] Start menu Perfect 15:00 leaderboard (stored in meta save profile)
 - [x] Documentation sync: upgrade flow unified to EXP pickup canonical path
+- [x] Character numeric tuning CSV overlay active (`Data/Characters/CharacterStats.csv`)
 
 ## Balance - Immediate
 - [x] Melee nerf pass #1
