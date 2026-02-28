@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class SpawnSystem
@@ -7,9 +8,9 @@ public partial class SpawnSystem
 	{
 		int budget = RollWaveBudget(aliveCount, maxAlive);
 		int spawnSlots = Mathf.Max(0, maxAlive - aliveCount);
-		int packs = Mathf.Clamp(GetPhasePackCount(), 1, Mathf.Max(1, spawnSlots));
 		if (budget <= 0 || spawnSlots <= 0)
 			return;
+		int packs = ResolvePackCountForBudget(budget, spawnSlots);
 
 		int spawned = 0;
 		int remainingBudget = budget;
@@ -28,6 +29,43 @@ public partial class SpawnSystem
 			remainingBudget = Mathf.Max(0, remainingBudget - packBudget);
 			remainingSlots = Mathf.Max(0, remainingSlots - packSlots);
 		}
+	}
+
+	private int ResolvePackCountForBudget(int budget, int spawnSlots)
+	{
+		int requestedPacks = Mathf.Clamp(GetPhasePackCount(), 1, Mathf.Max(1, spawnSlots));
+		int minBudgetPerPack = GetPreferredMinPackBudget();
+		int maxPacksByBudget = Mathf.Max(1, budget / Mathf.Max(1, minBudgetPerPack));
+		return Mathf.Clamp(requestedPacks, 1, Mathf.Max(1, Mathf.Min(spawnSlots, maxPacksByBudget)));
+	}
+
+	private int GetPreferredMinPackBudget()
+	{
+		if (!UseTierRulesCsv || _enemyDefinitions.Count == 0 || _tierWeights.Count == 0)
+			return 1;
+
+		List<WeightedEnemy> weights = GetWeightsForTier(_activeTier);
+		if (weights == null || weights.Count == 0)
+			return 1;
+
+		int cheapestNonSlimeCost = int.MaxValue;
+		foreach (var item in weights)
+		{
+			if (item.Weight <= 0f)
+				continue;
+			if (!_enemyDefinitions.TryGetValue(item.EnemyId, out EnemyDefinition def))
+				continue;
+			if (_activeTier < def.MinTier || def.Scene == null)
+				continue;
+			if (string.Equals(def.Id, "slime", StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			cheapestNonSlimeCost = Mathf.Min(cheapestNonSlimeCost, Mathf.Max(1, def.Cost));
+		}
+
+		if (cheapestNonSlimeCost == int.MaxValue)
+			return 1;
+		return Mathf.Clamp(cheapestNonSlimeCost, 1, 8);
 	}
 
 	private int SchedulePackedGroup(Vector2 center, int budget, int spawnSlots, int upgradeCount)
