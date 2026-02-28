@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bxlhsqve75kgx"
+
+[deps]
+
+files=["res://Data/Characters/CharacterStats.max.translation", "res://Data/Characters/CharacterStats.move.translation", "res://Data/Characters/CharacterStats.ranged.translation", "res://Data/Characters/CharacterStats.melee.translation", "res://Data/Characters/CharacterStats.dash.translation"]
+
+source_file="res://Data/Characters/CharacterStats.csv"
+dest_files=["res://Data/Characters/CharacterStats.max.translation", "res://Data/Characters/CharacterStats.move.translation", "res://Data/Characters/CharacterStats.ranged.translation", "res://Data/Characters/CharacterStats.melee.translation", "res://Data/Characters/CharacterStats.dash.translation"]
+
+[params]
+
+compress=true
+delimiter=0

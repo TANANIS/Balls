@@ -82,19 +82,19 @@ public partial class DebugCheatSystem : Node
 		Node player = GetNodeOrNull(PlayerPath);
 		_playerHealth = player?.GetNodeOrNull<PlayerHealth>("Health");
 
-		var stabilityList = GetTree().GetNodesInGroup("StabilitySystem");
+		var stabilityList = GetTree().GetNodesInGroup(RuntimeGroups.StabilitySystem);
 		if (stabilityList.Count > 0)
 			_stabilitySystem = stabilityList[0] as StabilitySystem;
 
-		var spawnList = GetTree().GetNodesInGroup("SpawnSystem");
+		var spawnList = GetTree().GetNodesInGroup(RuntimeGroups.SpawnSystem);
 		if (spawnList.Count > 0)
 			_spawnSystem = spawnList[0] as SpawnSystem;
 
-		var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+		var progressionList = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
 		if (progressionList.Count > 0)
 			_progressionSystem = progressionList[0] as ProgressionSystem;
 
-		var upgradeList = GetTree().GetNodesInGroup("UpgradeSystem");
+		var upgradeList = GetTree().GetNodesInGroup(RuntimeGroups.UpgradeSystem);
 		if (upgradeList.Count > 0)
 			_upgradeSystem = upgradeList[0] as UpgradeSystem;
 	}

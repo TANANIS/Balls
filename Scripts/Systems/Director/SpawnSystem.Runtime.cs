@@ -7,14 +7,14 @@ public partial class SpawnSystem
 		if (IsInstanceValid(_upgradeSystem))
 			return;
 
-		var list = GetTree().GetNodesInGroup("UpgradeSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.UpgradeSystem);
 		if (list.Count > 0)
 			_upgradeSystem = list[0] as UpgradeSystem;
 	}
 
 	private void EnsureStabilitySystem()
 	{
-		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 
 	private StabilitySystem.StabilityPhase GetCurrentPhase()

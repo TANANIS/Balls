@@ -1,5 +1,5 @@
 # Project Genesis Architecture
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 ## First Principles
@@ -39,6 +39,21 @@ Game
 `- CanvasLayer/UI
    `- UpgradeMenu
 ```
+
+## Scene Path Contract (2026-02-28)
+- Canonical runtime scene roots:
+  - `Scenes/Actors/Enemies/*`
+  - `Scenes/Projectiles/*`
+  - `Scenes/Props/Obstacles/*`
+  - `Scenes/Gameplay/*`
+  - `Scenes/VFX/*`
+  - existing roots kept: `Scenes/UI/*`, `Scenes/World/*`, `Scenes/Systems/*`
+- Deprecated for runtime ownership:
+  - `Enemies/*`
+  - `Prefabs/*`
+- Guardrail:
+  - runtime `.tscn/.tres` references to `res://Prefabs/` and `res://Enemies/` should stay at `0`.
+  - validate with `Tools/Quality/Check-StructureHealth.ps1` and `Tools/Quality/Check-SceneResourcePaths.ps1`.
 
 ## System Boundaries
 - `Core/*`: universal runtime services.
@@ -127,6 +142,9 @@ Current runtime usage:
 - Large partial-class families (`SpawnSystem`, `GameFlowUI`, `Player*`) are easier to read now but can hide cross-file coupling; behavior changes should always be traced across sibling partial files.
 - Runtime depends on CSV/resource schema consistency (`Data/Director/*.csv`, character `.tres`); missing schema/version checks can fail late at runtime.
 - Automated gameplay regression tests are minimal; most validation is still build + manual run, which increases risk for flow-level regressions.
+
+Update note (2026-02-28):
+- runtime group literals are centralized under `Scripts/Shared/RuntimeGroups.cs` and adopted across core systems.
 
 ## Text Encoding Rule (Bilingual UI)
 - All localization text files must be saved as UTF-8.

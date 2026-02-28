@@ -35,7 +35,7 @@ public partial class UpgradeSystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("UpgradeSystem");
+		AddToGroup(RuntimeGroups.UpgradeSystem);
 	}
 
 	public override void _Ready()
@@ -47,7 +47,7 @@ public partial class UpgradeSystem : Node
 
 		_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
-		var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+		var progressionList = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
 		if (progressionList.Count > 0)
 			_progressionSystem = progressionList[0] as ProgressionSystem;
 

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://buvl65c46k2su" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
-[ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Prefabs/UpgradeMenu.tscn" id="6_upgrade_menu"]
+[ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Scenes/UI/UpgradeMenu.tscn" id="6_upgrade_menu"]
 
 [node name="UI" type="Control"]
 layout_mode = 3

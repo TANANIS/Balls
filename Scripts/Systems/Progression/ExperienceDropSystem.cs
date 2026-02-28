@@ -14,7 +14,7 @@ public partial class ExperienceDropSystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("ExperienceDropSystem");
+		AddToGroup(RuntimeGroups.ExperienceDropSystem);
 	}
 
 	public override void _Ready()
@@ -118,7 +118,7 @@ public partial class ExperienceDropSystem : Node
 		if (_boundToCombat)
 			return;
 
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combatSystem = list[0] as CombatSystem;
 		if (_combatSystem == null)

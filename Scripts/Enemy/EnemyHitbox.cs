@@ -22,7 +22,7 @@ public partial class EnemyHitbox : Area2D
 			return;
 		}
 
-		AddToGroup("EnemyHitbox");
+		AddToGroup(RuntimeGroups.EnemyHitbox);
 		TryResolveCombatSystem();
 
 		AreaEntered += OnAreaEntered;
@@ -64,7 +64,7 @@ public partial class EnemyHitbox : Area2D
 
 	private void OnAreaEntered(Area2D other)
 	{
-		if (!other.IsInGroup("PlayerHurtbox"))
+		if (!other.IsInGroup(RuntimeGroups.PlayerHurtbox))
 			return;
 
 		_currentTarget = other;
@@ -82,7 +82,7 @@ public partial class EnemyHitbox : Area2D
 		if (_combat != null)
 			return;
 
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
 	}

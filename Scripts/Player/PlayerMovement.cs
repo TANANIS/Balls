@@ -65,7 +65,7 @@ public partial class PlayerMovement : Node
 
 	private void ResolveStabilitySystem()
 	{
-		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 
 	public void SetBaseStats(float maxSpeed, float accel, float friction, float stopThreshold)

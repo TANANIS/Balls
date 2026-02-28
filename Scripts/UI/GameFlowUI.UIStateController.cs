@@ -169,7 +169,7 @@ public partial class GameFlowUI
 		_upgradeSystem?.ResetForNewRun();
 		_scoreSystem?.ResetScore();
 
-		var spawnSystems = GetTree().GetNodesInGroup("SpawnSystem");
+		var spawnSystems = GetTree().GetNodesInGroup(RuntimeGroups.SpawnSystem);
 		foreach (Node node in spawnSystems)
 		{
 			if (node is SpawnSystem spawnSystem)
@@ -195,7 +195,7 @@ public partial class GameFlowUI
 
 	private void ClearExperiencePickups()
 	{
-		var pickups = GetTree().GetNodesInGroup("ExperiencePickup");
+		var pickups = GetTree().GetNodesInGroup(RuntimeGroups.ExperiencePickup);
 		foreach (Node node in pickups)
 		{
 			if (node.GetParent() != null)

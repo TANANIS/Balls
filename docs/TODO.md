@@ -1,5 +1,5 @@
 # TODO (2026-02-21)
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 ## Current Build Status
@@ -121,3 +121,11 @@ Last Synced: 2026-02-27
 - [x] Add simple script-size guardrail doc:
   - [x] target max LOC per behavior script
   - [x] rule for when to split by responsibility
+
+## Structure Cleanup Program (2026-02-28)
+- [x] Phase 0 baseline freeze report (`docs/reports/STRUCTURE_BASELINE_2026-02-28.md`)
+- [x] Phase 1 high-risk script split pass (all targeted files now `<= 300` lines)
+- [x] Phase 2 scene path unification (`Prefabs/` + `Enemies/` runtime references reduced to zero)
+- [x] Phase 3 runtime group literals centralized (`Scripts/Shared/RuntimeGroups.cs`)
+- [x] Phase 4 asset/data placement contract (`docs/ASSET_DATA_PLACEMENT_CONTRACT.md`)
+- [ ] Phase 5 final doc sync tail and residual naming polish

@@ -16,7 +16,7 @@ public partial class CombatSystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("CombatSystem");
+		AddToGroup(RuntimeGroups.CombatSystem);
 	}
 
 	public override void _PhysicsProcess(double delta)

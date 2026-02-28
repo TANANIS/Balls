@@ -4,7 +4,7 @@ public partial class SpawnSystem
 {
 	public override void _EnterTree()
 	{
-		AddToGroup("SpawnSystem");
+		AddToGroup(RuntimeGroups.SpawnSystem);
 	}
 
 	public override void _Ready()

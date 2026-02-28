@@ -23,7 +23,7 @@ public partial class GameFlowUI
 
 		if (!IsInstanceValid(_progressionSystem))
 		{
-			var progressionList = GetTree().GetNodesInGroup("ProgressionSystem");
+			var progressionList = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
 			if (progressionList.Count > 0)
 				_progressionSystem = progressionList[0] as ProgressionSystem;
 		}

@@ -65,7 +65,7 @@ public partial class StabilitySystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("StabilitySystem");
+		AddToGroup(RuntimeGroups.StabilitySystem);
 	}
 
 	public override void _Ready()

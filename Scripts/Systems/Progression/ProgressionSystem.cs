@@ -41,7 +41,7 @@ public partial class ProgressionSystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("ProgressionSystem");
+		AddToGroup(RuntimeGroups.ProgressionSystem);
 	}
 
 	public override void _Ready()
@@ -52,7 +52,7 @@ public partial class ProgressionSystem : Node
 		if (_player != null)
 			_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
-		var combatList = GetTree().GetNodesInGroup("CombatSystem");
+		var combatList = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (combatList.Count > 0)
 			_combatSystem = combatList[0] as CombatSystem;
 		if (_combatSystem != null)

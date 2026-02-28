@@ -3,15 +3,15 @@
 [ext_resource type="Texture2D" uid="uid://sobd1hi4k1ia" path="res://Assets/Sprites/MenuBackGround.png" id="1_menu_bg"]
 [ext_resource type="Script" uid="uid://bfaydivoicgbu" path="res://Scripts/World/ObstacleFieldGenerator.cs" id="2_obstacle_gen"]
 [ext_resource type="Script" uid="uid://b21n5jl3thh3o" path="res://Scripts/World/BossArenaLimiter.cs" id="8_boss_arena"]
-[ext_resource type="PackedScene" uid="uid://n11odh3r2j0r" path="res://Prefabs/Obstacles/ObstacleBigRock.tscn" id="9_obstacle_big_rock_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleSmallTree.tscn" id="10_obstacle_small_tree_scene"]
+[ext_resource type="PackedScene" uid="uid://n11odh3r2j0r" path="res://Scenes/Props/Obstacles/ObstacleBigRock.tscn" id="9_obstacle_big_rock_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleSmallTree.tscn" id="10_obstacle_small_tree_scene"]
 [ext_resource type="Script" uid="uid://c1fpxw4xdjqc1" path="res://Scripts/World/ProceduralTerrainBackground.cs" id="11_terrain_bg"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleTreeSmallB.tscn" id="12_obstacle_tree_small_b_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleTreeSmallC.tscn" id="13_obstacle_tree_small_c_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleRockTinyB.tscn" id="14_obstacle_rock_tiny_b_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleRockTinyC.tscn" id="15_obstacle_rock_tiny_c_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleBushSmallA.tscn" id="16_obstacle_bush_small_a_scene"]
-[ext_resource type="PackedScene" path="res://Prefabs/Obstacles/ObstacleBushSmallB.tscn" id="17_obstacle_bush_small_b_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleTreeSmallB.tscn" id="12_obstacle_tree_small_b_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleTreeSmallC.tscn" id="13_obstacle_tree_small_c_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleRockTinyB.tscn" id="14_obstacle_rock_tiny_b_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleRockTinyC.tscn" id="15_obstacle_rock_tiny_c_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleBushSmallA.tscn" id="16_obstacle_bush_small_a_scene"]
+[ext_resource type="PackedScene" path="res://Scenes/Props/Obstacles/ObstacleBushSmallB.tscn" id="17_obstacle_bush_small_b_scene"]
 
 [node name="World" type="Node2D"]
 
@@ -27,35 +27,35 @@ texture = ExtResource("1_menu_bg")
 script = ExtResource("2_obstacle_gen")
 ObstacleScenes = Array[PackedScene]([ExtResource("9_obstacle_big_rock_scene"), ExtResource("10_obstacle_small_tree_scene"), ExtResource("12_obstacle_tree_small_b_scene"), ExtResource("13_obstacle_tree_small_c_scene"), ExtResource("14_obstacle_rock_tiny_b_scene"), ExtResource("15_obstacle_rock_tiny_c_scene"), ExtResource("16_obstacle_bush_small_a_scene"), ExtResource("17_obstacle_bush_small_b_scene")])
 SpawnIntervalSeconds = 0.9
-SpawnPerTickMin = 5
-SpawnPerTickMax = 6
+SpawnPerTickMin = 6
+SpawnPerTickMax = 8
 InitialBurstMultiplier = 6
 InitialInsideViewSpawnCount = 14
 InitialInsideSafeRadius = 150.0
 InitialInsidePadding = 20.0
-MaxObstacleCount = 420
+MaxObstacleCount = 560
 SpawnOutsideMargin = 24.0
 SpawnRingThickness = 260.0
 SpawnDistanceScale = 0.64
-ObstacleSpacingMultiplier = 1.28
-PlacementAttemptsPerSpawn = 80
+ObstacleSpacingMultiplier = 1.18
+PlacementAttemptsPerSpawn = 120
 ClusterStickiness = 0.84
 ClusterRadiusMin = 96.0
 ClusterRadiusMax = 220.0
 ClusterLifetimeSpawns = 12
-TerrainAffinityStrength = 0.68
+TerrainAffinityStrength = 0.56
 AvoidTerrainEdges = true
-TerrainEdgeGuardTiles = 2
+TerrainEdgeGuardTiles = 1
 VegetationBiomeScaleTiles = 18
 VegetationBiomeThreshold = 0.5
-VegetationBiomeStrength = 0.74
+VegetationBiomeStrength = 0.58
 TreeSpeciesBiomeScaleTiles = 30
 TreeSpeciesClusterStrength = 0.82
 MaxDecorationCount = 460
 InitialDecorationInsideViewCount = 28
-DecorationPerTick = 6
+DecorationPerTick = 10
 DecorationSpacingMultiplier = 0.72
-FreezeDecorationsAfterInitial = true
+FreezeDecorationsAfterInitial = false
 SpawnVariantRetryCount = 8
 
 [node name="BossArenaLimiter" type="Node2D" parent="."]

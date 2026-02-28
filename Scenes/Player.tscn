@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://44nxdre6abfr" path="res://Scripts/Player/Player.cs" id="1_player_script"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Walk.png" id="2_wizard_walk"]
-[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Prefabs/MeleeVFX.tscn" id="3_meleevfx"]
-[ext_resource type="PackedScene" path="res://Prefabs/WizardProjectile.tscn" id="4_wizard_projectile"]
+[ext_resource type="PackedScene" uid="uid://cd7cgr41qwmdd" path="res://Scenes/VFX/MeleeVFX.tscn" id="3_meleevfx"]
+[ext_resource type="PackedScene" path="res://Scenes/Projectiles/WizardProjectile.tscn" id="4_wizard_projectile"]
 [ext_resource type="Script" uid="uid://b2qc2anl26j5d" path="res://Scripts/Player/PlayerHurtbox.cs" id="5_hurtbox_script"]
 [ext_resource type="Script" uid="uid://bevu1otdy4gcr" path="res://Scripts/Player/PlayerMovement.cs" id="6_move_script"]
 [ext_resource type="Script" uid="uid://bfcg0p5mr1n46" path="res://Scripts/Player/PlayerWeapon.cs" id="7_weapon_script"]
@@ -15,8 +15,8 @@
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Hurt.png" id="13_wizard_hurt"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-DEATH.png" id="14_wizard_death"]
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Player/Wizard/Wizard-Attack02.png" id="15_wizard_attack"]
-[ext_resource type="PackedScene" path="res://Prefabs/PriestProjectile.tscn" id="16_priest_projectile"]
-[ext_resource type="PackedScene" path="res://Prefabs/ArcherProjectile.tscn" id="17_archer_projectile"]
+[ext_resource type="PackedScene" path="res://Scenes/Projectiles/PriestProjectile.tscn" id="16_priest_projectile"]
+[ext_resource type="PackedScene" path="res://Scenes/Projectiles/ArcherProjectile.tscn" id="17_archer_projectile"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
 radius = 34.0

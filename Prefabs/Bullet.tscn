@@ -1,5 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://buppemmtecpfd"]
-
-[ext_resource type="PackedScene" path="res://Prefabs/WizardProjectile.tscn" id="1_projectile"]
-
-[node name="Bullet" instance=ExtResource("1_projectile")]

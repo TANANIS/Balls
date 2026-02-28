@@ -17,7 +17,7 @@ public partial class EnemyHurtbox : Area2D, IDamageable
 
 	public override void _Ready()
 	{
-		AddToGroup("EnemyHurtbox");
+		AddToGroup(RuntimeGroups.EnemyHurtbox);
 
 		Node enemy = GetParent();
 		_health = enemy.GetNode<EnemyHealth>("Health");

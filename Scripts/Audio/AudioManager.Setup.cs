@@ -93,18 +93,18 @@ public partial class AudioManager
 			_sfxPlayerElementalBurst = _sfxPlayerHitEnemy;
 
 		_enemyDeathSfxByScene.Clear();
-		_enemyDeathSfxByScene["res://Enemies/Slime.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_slime_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/Orc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_orc_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/EliteOrc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_elite_orc_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/Werebear.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_werebear_die.wav");
-		_enemyDeathSfxByScene["res://Enemies/Boss/BOSS_Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_lancer_die.wav");
+		_enemyDeathSfxByScene["res://Scenes/Actors/Enemies/Slime.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_slime_die.wav");
+		_enemyDeathSfxByScene["res://Scenes/Actors/Enemies/Orc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_orc_die.wav");
+		_enemyDeathSfxByScene["res://Scenes/Actors/Enemies/EliteOrc.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_elite_orc_die.wav");
+		_enemyDeathSfxByScene["res://Scenes/Actors/Enemies/Werebear.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_werebear_die.wav");
+		_enemyDeathSfxByScene["res://Scenes/Actors/Enemies/Boss/BOSS_Lancer.tscn"] = GD.Load<AudioStream>("res://Assets/Sound/Enemies/sfx_enemy_lancer_die.wav");
 
 		ApplySfxLoopSettings();
 	}
 
 	private void BindCombatEvents()
 	{
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0 && list[0] is CombatSystem combat)
 			combat.EnemyKilled += OnEnemyKilled;
 	}

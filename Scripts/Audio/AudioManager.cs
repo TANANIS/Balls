@@ -51,7 +51,7 @@ public partial class AudioManager : Node
 	public override void _EnterTree()
 	{
 		Instance = this;
-		AddToGroup("AudioManager");
+		AddToGroup(RuntimeGroups.AudioManager);
 	}
 
 	public override void _Ready()

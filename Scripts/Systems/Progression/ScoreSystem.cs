@@ -17,14 +17,14 @@ public partial class ScoreSystem : Node
 
 	public override void _EnterTree()
 	{
-		AddToGroup("ScoreSystem");
+		AddToGroup(RuntimeGroups.ScoreSystem);
 	}
 
 	public override void _Ready()
 	{
 		LoadEnemyCosts();
 
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0 && list[0] is CombatSystem combat)
 			combat.EnemyKilled += OnEnemyKilled;
 	}

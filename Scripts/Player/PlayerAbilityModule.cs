@@ -43,6 +43,6 @@ public abstract partial class PlayerAbilityModule : Node
 
 	private void ResolveStabilitySystem()
 	{
-		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 }

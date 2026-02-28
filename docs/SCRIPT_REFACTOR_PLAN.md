@@ -1,8 +1,32 @@
 ## Script Refactor Layout (2026-02)
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 > Status: Archived snapshot of refactor outcomes in 2026-02. Current architecture should be validated against live scripts first.
+
+## 2026-02-28 Additions (Structure Cleanup Pass)
+- `ObstacleFieldGenerator` split:
+  - `Scripts/World/ObstacleFieldGenerator.cs` (core state + frame orchestration)
+  - `Scripts/World/ObstacleFieldGenerator.Spawn.cs`
+  - `Scripts/World/ObstacleFieldGenerator.Environment.cs`
+  - `Scripts/World/ObstacleFieldGenerator.Variants.cs`
+  - `Scripts/World/ObstacleFieldGenerator.Runtime.cs`
+- `PlayerWeapon` split:
+  - `Scripts/Player/PlayerWeapon.cs` (core tick/orchestration)
+  - `Scripts/Player/PlayerWeapon.Attack.cs`
+  - `Scripts/Player/PlayerWeapon.Configuration.cs`
+  - `Scripts/Player/PlayerWeapon.ElementalBurst.cs`
+- `PlayerHealth` VFX split:
+  - `Scripts/Player/PlayerHealth.Vfx.cs` (shield visual flow)
+  - `Scripts/Player/PlayerHealth.Vfx.Damage.cs`
+  - `Scripts/Player/PlayerHealth.Vfx.Priest.cs`
+- `Bullet` homing split:
+  - `Scripts/Projectiles/Bullet.cs` (runtime lifecycle)
+  - `Scripts/Projectiles/Bullet.Homing.cs`
+- `ProceduralTerrainBackground` split expansion:
+  - `Scripts/World/ProceduralTerrainBackground.Mask.Noise.cs`
+  - `Scripts/World/ProceduralTerrainBackground.Tiling.Caps.cs`
+  - `Scripts/World/ProceduralTerrainBackground.Tiling.Resolve.cs`
 
 Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were split into partial files to make responsibilities explicit while keeping runtime behavior intact.
 

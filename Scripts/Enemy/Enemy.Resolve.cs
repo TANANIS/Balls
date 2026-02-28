@@ -29,7 +29,7 @@ public partial class Enemy
 
 	private void ResolveStabilitySystem()
 	{
-		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 
 	private void ResolveSeparation()

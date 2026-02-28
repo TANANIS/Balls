@@ -17,7 +17,7 @@ public partial class ExperiencePickup : Area2D
 
 	public override void _EnterTree()
 	{
-		AddToGroup("ExperiencePickup");
+		AddToGroup(RuntimeGroups.ExperiencePickup);
 	}
 
 	public override void _Ready()
@@ -32,7 +32,7 @@ public partial class ExperiencePickup : Area2D
 			_pickupShape.Radius = PickupRadius;
 		}
 
-		var list = GetTree().GetNodesInGroup("ProgressionSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
 		if (list.Count > 0)
 			_progressionSystem = list[0] as ProgressionSystem;
 
@@ -110,7 +110,7 @@ public partial class ExperiencePickup : Area2D
 		if (_progressionSystem != null)
 			return;
 
-		var list = GetTree().GetNodesInGroup("ProgressionSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
 		if (list.Count > 0)
 			_progressionSystem = list[0] as ProgressionSystem;
 	}

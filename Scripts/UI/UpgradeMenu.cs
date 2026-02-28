@@ -84,7 +84,7 @@ public partial class UpgradeMenu : Control
 		if (_upgradeSystem != null)
 			return;
 
-		var list = GetTree().GetNodesInGroup("UpgradeSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.UpgradeSystem);
 		if (list.Count > 0)
 			_upgradeSystem = list[0] as UpgradeSystem;
 	}

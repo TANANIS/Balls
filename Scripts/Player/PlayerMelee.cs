@@ -147,7 +147,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 		if (_combat != null)
 			return;
 
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
 	}

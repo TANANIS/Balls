@@ -25,7 +25,7 @@ public partial class Bullet
 		if (_hitTargetIds.Contains((ulong)other.GetInstanceId()))
 			return;
 
-		if (other.IsInGroup("World"))
+		if (other.IsInGroup(RuntimeGroups.World))
 		{
 			_hasHit = true;
 			TryTriggerElementalBurstExplosion(other);
@@ -146,7 +146,7 @@ public partial class Bullet
 		float bestDistSq = float.MaxValue;
 		EnemyHurtbox best = null;
 
-		foreach (Node node in tree.GetNodesInGroup("EnemyHurtbox"))
+		foreach (Node node in tree.GetNodesInGroup(RuntimeGroups.EnemyHurtbox))
 		{
 			if (node is not EnemyHurtbox hurtbox)
 				continue;

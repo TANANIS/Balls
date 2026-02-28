@@ -8,7 +8,7 @@ public partial class PlayerHurtbox : Area2D, IDamageable
 	public override void _Ready()
 	{
 		Node player = GetParent();
-		AddToGroup("PlayerHurtbox");
+		AddToGroup(RuntimeGroups.PlayerHurtbox);
 
 		_health = player.GetNode<PlayerHealth>("Health");
 	}

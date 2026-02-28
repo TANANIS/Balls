@@ -1,5 +1,5 @@
 # Scene Split Notes (MainScence.tscn)
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 > Status: Maintained guidance. Re-validate when introducing additional world themes or UI root-level wrappers.
@@ -12,6 +12,17 @@ Current composition is already split and in use:
 4. `Scenes/World/WorldRoot.tscn`
 
 `MainScence.tscn` now acts as composition root and wires these runtime roots together.
+
+## Path Normalization Update (2026-02-28)
+- Runtime scene ownership was normalized to `Scenes/*` domain roots:
+  - enemies: `Scenes/Actors/Enemies/*`
+  - projectiles: `Scenes/Projectiles/*`
+  - obstacles: `Scenes/Props/Obstacles/*`
+  - gameplay pickups: `Scenes/Gameplay/*`
+  - vfx: `Scenes/VFX/*`
+- Deprecated roots for runtime scene ownership:
+  - `Enemies/*`
+  - `Prefabs/*`
 
 ## Why This Is Good Enough For Now
 - Ownership is separated by domain (Player / Systems / UI / World).

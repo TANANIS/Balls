@@ -26,6 +26,52 @@
 
 ## High-Signal Recent Changes
 
+### 2026-02-28 - Unused Sprite Cleanup (Conservative)
+- Added cleanup script:
+  - `Tools/Quality/Delete-UnusedImages.ps1`
+- Added cleanup report:
+  - `Tools/Quality/deleted_unused_images_2026-02-28.txt`
+- Deletion policy used:
+  - remove only exact-path-unreferenced images under `Assets/Sprites`,
+  - preserve dynamic-load domains to avoid false-positive deletions:
+    - `Assets/Sprites/Player/*`
+    - `Assets/Sprites/Projectiles/ElementalBurst/*`
+    - `Assets/Sprites/World/Terrain/Canonical/*`
+- Removed files:
+  - 39 unused sprite images + their `.import` sidecars.
+- Verification:
+  - `dotnet build ProjectGenesis.sln` passed.
+  - `Tools/Quality/Check-SceneResourcePaths.ps1` passed.
+  - `Tools/Quality/Check-StructureHealth.ps1 -SkipBuild` passed.
+
+### 2026-02-28 - Structure Cleanup Program (Phase 0-4)
+- Added execution and baseline docs:
+  - `docs/STRUCTURE_REFACTOR_EXECUTION_PLAN_2026-02-28.md`
+  - `docs/reports/STRUCTURE_BASELINE_2026-02-28.md`
+- Added quality scripts:
+  - `Tools/Quality/Check-StructureHealth.ps1`
+  - `Tools/Quality/Check-SceneResourcePaths.ps1`
+- Completed high-risk script decomposition:
+  - `ObstacleFieldGenerator` split into `Spawn/Environment/Variants/Runtime` partials.
+  - `PlayerWeapon` split into `Attack/Configuration/ElementalBurst` partials.
+  - `PlayerHealth` VFX split into `Shield/Damage/Priest` partials.
+  - `Bullet` homing logic extracted to `Bullet.Homing.cs`.
+  - `ProceduralTerrainBackground` split expanded (`Mask.Noise`, `Tiling.Caps`, `Tiling.Resolve`).
+- Phase 1 result:
+  - files `> 300` lines reduced to `0`.
+- Completed scene path unification:
+  - runtime scene ownership moved to `Scenes/*` domains (`Actors/Enemies`, `Projectiles`, `Props/Obstacles`, `Gameplay`, `VFX`).
+  - `Data/Director/EnemyDefinitions.csv` scene paths migrated to `Scenes/Actors/Enemies/*`.
+  - runtime references to deprecated roots now:
+    - `res://Prefabs/` => `0`
+    - `res://Enemies/` => `0`
+- Naming/boundary hardening:
+  - group literals centralized with `Scripts/Shared/RuntimeGroups.cs`.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` passed.
+  - BOM scan passed.
+  - scene resource path check passed.
+
 ### 2026-02-27 - Slime Speed Follow-up
 - `Data/Director/EnemyDefinitions.csv`
   - `slime` speed override: `105 -> 96`

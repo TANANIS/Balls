@@ -28,7 +28,7 @@ public partial class GameFlowUI
 			_player.SetPhysicsProcess(false);
 		}
 
-		var spawnList = GetTree().GetNodesInGroup("SpawnSystem");
+		var spawnList = GetTree().GetNodesInGroup(RuntimeGroups.SpawnSystem);
 		foreach (Node node in spawnList)
 		{
 			node.SetProcess(false);

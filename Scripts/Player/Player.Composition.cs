@@ -75,7 +75,7 @@ public partial class Player
 
 	private void ResolveStabilitySystem()
 	{
-		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, "StabilitySystem", _stabilitySystem);
+		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 
 	private void UpdatePhaseCamera(float dt)

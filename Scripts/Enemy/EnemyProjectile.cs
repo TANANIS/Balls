@@ -78,16 +78,16 @@ public partial class EnemyProjectile : Area2D
 			return;
 		if (_source != null && (other == _source || _source.IsAncestorOf(other) || other.IsAncestorOf(_source)))
 			return;
-		if (other.IsInGroup("EnemyHitbox") || other.IsInGroup("EnemyHurtbox"))
+		if (other.IsInGroup(RuntimeGroups.EnemyHitbox) || other.IsInGroup(RuntimeGroups.EnemyHurtbox))
 			return;
 
-		if (other.IsInGroup("World"))
+		if (other.IsInGroup(RuntimeGroups.World))
 		{
 			Consume();
 			return;
 		}
 
-		if (!other.IsInGroup("PlayerHurtbox"))
+		if (!other.IsInGroup(RuntimeGroups.PlayerHurtbox))
 			return;
 
 		if (_combat == null)
@@ -120,7 +120,7 @@ public partial class EnemyProjectile : Area2D
 		if (_combat != null)
 			return;
 
-		var list = GetTree().GetNodesInGroup("CombatSystem");
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
 	}
