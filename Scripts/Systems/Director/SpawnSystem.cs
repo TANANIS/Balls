@@ -3,6 +3,44 @@ using System.Collections.Generic;
 
 public partial class SpawnSystem : Node
 {
+	private struct TierRule
+	{
+		public int Tier;
+		public float PressureMin;
+		public float PressureMax;
+		public float SpawnIntervalMin;
+		public float SpawnIntervalMax;
+		public int BudgetMin;
+		public int BudgetMax;
+		public int MaxAlive;
+		public float SpawnRadiusMin;
+		public float SpawnRadiusMax;
+	}
+
+	private struct EnemyDefinition
+	{
+		public string Id;
+		public string ScenePath;
+		public int Cost;
+		public int MinTier;
+		public int HpOverride;
+		public float SpeedOverride;
+		public int ContactDamageOverride;
+		public PackedScene Scene;
+	}
+
+	private struct PendingSpawnRequest
+	{
+		public EnemyDefinition Definition;
+		public Vector2 Position;
+	}
+
+	private struct WeightedEnemy
+	{
+		public string EnemyId;
+		public float Weight;
+	}
+
 	[Export] public PackedScene EnemyScene;
 	[Export] public NodePath EnemiesPath = "../Enemies";
 	[Export] public NodePath PlayerPath = "../Player";
@@ -145,4 +183,63 @@ public partial class SpawnSystem : Node
 	[Export] public float StructuralFractureEliteChanceMultiplier = 1.25f;
 	[Export] public float CollapseCriticalEliteChanceMultiplier = 2.0f;
 	[Export] public float CollapseCriticalSpawnChaosJitter = 0.35f;
+
+	public override void _EnterTree()
+	{
+		AddToGroup(RuntimeGroups.SpawnSystem);
+	}
+
+	public override void _Ready()
+	{
+		_enemiesRoot = GetNodeOrNull<Node2D>(EnemiesPath);
+		_player = GetNodeOrNull<Node2D>(PlayerPath);
+		_rng.Randomize();
+
+		EnsureUpgradeSystem();
+		ApplyFallbackRuntimeSettings();
+
+		if (UseTierRulesCsv)
+		{
+			LoadTierRulesFromCsv();
+			LoadEnemyDefinitionsFromCsv();
+			LoadTierWeightsFromCsv();
+		}
+
+		ResetSpawnTimer();
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{
+		EnsureSpawnAnchors();
+		if (_enemiesRoot == null || _player == null)
+			return;
+
+		_survivalSeconds += (float)delta;
+
+		EnsureUpgradeSystem();
+		EnsureStabilitySystem();
+		UpdateTierRuntimeSettings();
+		UpdatePhaseTailMiniBossSchedule((float)delta);
+		TickFarEnemyRecycle((float)delta);
+
+		if (_spawnFreezeTimer > 0f)
+			return;
+
+		int maxAlive = GetPhaseMaxAlive();
+		TrySpawnPending((float)delta, maxAlive);
+		int alive = _enemiesRoot.GetChildCount();
+		int effectiveAlive = alive + _pendingSpawns.Count;
+		if (effectiveAlive >= maxAlive)
+			return;
+
+		_timer -= (float)delta;
+		if (_timer > 0f)
+			return;
+
+		ResetSpawnTimer();
+		if (MaxPendingSpawns > 0 && _pendingSpawns.Count >= MaxPendingSpawns)
+			return;
+
+		ScheduleWave(effectiveAlive, maxAlive);
+	}
 }

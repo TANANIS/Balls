@@ -139,6 +139,26 @@ Exit criteria:
 - no compile/runtime regression from consolidation.
 - `Check-StructureHealth.ps1` and `Check-SceneResourcePaths.ps1` remain pass.
 
+## Phase 7 - Slimming Pass #2 (UI + Director Consolidation)
+Status: `completed`
+
+Tasks:
+- consolidate over-fragmented UI partials under `GameFlowUI` while keeping boundary clarity.
+- consolidate low-risk `SpawnSystem` helper partials without altering pacing/spawn logic.
+- keep each touched file under `<= 300` lines.
+
+Completed consolidations:
+- `GameFlowUI`:
+  - merged `BuildSummary` + `PerfectLeaderboard` into `EndStateController`.
+  - merged `SettingsPresenter` + `SettingsPersistence` into `SettingsUI`.
+- `SpawnSystem`:
+  - merged `Types` + `Lifecycle` into `SpawnSystem.cs`.
+  - merged `Debug` into `SpawnSystem.Runtime.cs`.
+
+Exit criteria:
+- no compile/runtime regression from consolidation.
+- `Check-StructureHealth.ps1` and `Check-SceneResourcePaths.ps1` remain pass.
+
 ## Runbook Commands
 ```powershell
 # Build gate
@@ -153,10 +173,10 @@ powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-SceneResourcePaths.
 
 ## Progress Snapshot (Current)
 - Script volume:
-  - total scripts: `148`
+  - total scripts: `141`
 - Script-size risk:
   - files `> 300` lines: `0`
-  - files `>= 220` lines: `13`
+  - files `>= 220` lines: `15`
 - Path drift:
   - `res://Prefabs/` references in `.tscn/.tres`: `0`
   - `res://Enemies/` references in `.tscn/.tres`: `0`

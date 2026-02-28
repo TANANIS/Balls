@@ -115,7 +115,7 @@ Last Synced: 2026-02-28
   - [x] settlement summary rendering
   - [x] restart/back-to-meta actions
   - [x] perfect-clear leaderboard refresh trigger
-- [x] Consolidate duplicated settings logic into shared `SettingsPresenter`:
+- [x] Consolidate duplicated settings logic into unified settings module:
   - [x] start-menu settings panel
   - [x] in-run pause settings panel
 - [x] Add simple script-size guardrail doc:
@@ -130,3 +130,4 @@ Last Synced: 2026-02-28
 - [x] Phase 4 asset/data placement contract (`docs/ASSET_DATA_PLACEMENT_CONTRACT.md`)
 - [x] Phase 5 final doc sync tail and residual naming polish
 - [x] Phase 6 slimming pass #1 (low-risk partial consolidation, script count reduction)
+- [x] Phase 7 slimming pass #2 (`GameFlowUI` + `SpawnSystem` consolidation)

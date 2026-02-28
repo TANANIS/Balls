@@ -31,13 +31,15 @@ Last Synced: 2026-02-28
 Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were split into partial files to make responsibilities explicit while keeping runtime behavior intact.
 
 ### SpawnSystem
-- `Scripts/Systems/Director/SpawnSystem.cs`: node lifecycle and spawn loop.
-- `Scripts/Systems/Director/SpawnSystem.Runtime.cs`: runtime state orchestration, tier/runtime snapshot updates, and system dependency resolution.
+- `Scripts/Systems/Director/SpawnSystem.cs`: node lifecycle, spawn loop, and internal data structs.
+- `Scripts/Systems/Director/SpawnSystem.Runtime.cs`: runtime state orchestration, tier/runtime snapshot updates, dependency resolution, and debug spawn helpers.
 - `Scripts/Systems/Director/SpawnSystem.Pacing.cs`: phase multipliers, opening-ramp math, and tier-tail pacing helpers.
 - `Scripts/Systems/Director/SpawnSystem.MiniBossSchedule.cs`: phase-tail miniboss scheduling and spawn execution.
 - `Scripts/Systems/Director/SpawnSystem.Selection.cs`: weighted enemy selection and elite injection.
 - `Scripts/Systems/Director/SpawnSystem.Csv.cs`: CSV loading and parsing helpers.
-- `Scripts/Systems/Director/SpawnSystem.Types.cs`: internal data structs.
+- `Scripts/Systems/Director/SpawnSystem.SpawnFactory.cs`: wave scheduling, spawn queueing, and enemy instantiation.
+- `Scripts/Systems/Director/SpawnSystem.BoundsAndPlacement.cs`: pack-center and offset placement helpers.
+- `Scripts/Systems/Director/SpawnSystem.Recycle.cs`: far-enemy recycle tracking and cleanup.
 
 ### ProgressionSystem
 - `Scripts/Systems/Progression/ProgressionSystem.cs`: EXP meter, requirement curve, queued level-up flow, and upgrade-menu trigger ownership.
@@ -51,15 +53,15 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 ### GameFlowUI
 - `Scripts/UI/GameFlowUI.cs`: startup flow and shared helper utilities.
 - `Scripts/UI/GameFlowUI.References.cs`: node-path constants, node references, scene resolution, signal wiring.
-- `Scripts/UI/GameFlowUI.State.cs`: start/menu flow and run-start transitions.
-- `Scripts/UI/GameFlowUI.CharacterSelect.cs`: character selection panel flow and role presentation helpers.
-- `Scripts/UI/GameFlowUI.EndState.cs`: death/perfect-clear end-state flow and finalization.
+- `Scripts/UI/GameFlowUI.Binding.cs`: UI/event binding and interaction wiring.
+- `Scripts/UI/GameFlowUI.UIStateController.cs`: panel transitions and run-state flow ownership.
+- `Scripts/UI/GameFlowUI.MetaProgressionPanelController.cs`: character select/unlock/confirm and meta panel rendering flow.
+- `Scripts/UI/GameFlowUI.EndStateController.cs`: death/perfect-clear flow, final summary, and leaderboard refresh.
 - `Scripts/UI/GameFlowUI.PauseSettings.cs`: pause menu open/close and pause navigation.
-- `Scripts/UI/GameFlowUI.SettingsUI.cs`: settings widgets setup and user-change handlers.
-- `Scripts/UI/GameFlowUI.SettingsPersistence.cs`: settings save/load from `user://settings.cfg`.
+- `Scripts/UI/GameFlowUI.SettingsUI.cs`: settings widgets, selection sync helpers, and save/load (`user://settings.cfg`).
+- `Scripts/UI/GameFlowUI.Localization.cs`: locale mapping and localization utility helpers.
 - `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, XP-bar refresh, 15:00 countdown refresh, responsive background scaling.
 - `Scripts/UI/PlayerHealthBarDemo.cs`: runtime HP segment HUD binding.
-- `Scripts/UI/GameFlowUI.PerfectLeaderboard.cs`: meta-save-backed Perfect 15:00 leaderboard query/rendering for start-menu.
 
 ### Combat
 - `Scripts/Systems/Core/CombatSystem.cs`: centralized damage processing and tank bullet bonus knockback/damage hook.
