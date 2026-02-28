@@ -64,7 +64,13 @@ public partial class GameFlowUI
 		var startSubtitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/Header/SubTitle");
 		if (startSubtitle != null) startSubtitle.Text = Tr("UI.START.SUBTITLE");
 		var startDesc = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/Desc");
-		if (startDesc != null) startDesc.Text = Tr("UI.START.DESC");
+		if (startDesc != null)
+		{
+			startDesc.Text = TrOrDefault(
+				"UI.START.DESC.V2",
+				"Controls:\nMove: W A S D\nConfirm / Menu: Left Mouse\nPause: Esc\n\nPre-Run Flow:\n1) Choose Hero\n2) Event Purchases (Infuse Domain Power)\n3) Arrange 4 Calamity Slots (Tier 0 -> Tier 3)\n\nGoal:\nSurvive to 15:00. Defeat each phase boss to gain +1 Level and +10 EXP.",
+				"操作：\n移動：W A S D\n確認 / 選單：滑鼠左鍵\n暫停：Esc\n\n開局流程：\n1) 選擇角色\n2) 事件購買（灌注神域力量）\n3) 安排 4 格災厄槽位（Tier 0 -> Tier 3）\n\n目標：\n存活到 15:00。每次擊敗階段 BOSS 立即獲得 +1 等與 +10 EXP。");
+		}
 		var boardTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/PerfectBoardTitle");
 		if (boardTitle != null) boardTitle.Text = Tr("UI.START.PERFECT_BOARD_TITLE");
 		var characterSelectTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/CharacterSelectPanel/VBox/HeaderRow/Title");

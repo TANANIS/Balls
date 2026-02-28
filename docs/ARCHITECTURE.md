@@ -1,10 +1,12 @@
 # Project Genesis Architecture
-Last Synced: 2026-02-28
+Last Synced: 2026-03-01
 
 
 ## First Principles
 - `ProgressionSystem` owns EXP/upgrade progress and level-up queue timing.
 - `UpgradeSystem` increments `upgrade_count` and unlocks content.
+- `EventDirector` owns in-run slot activation timestamps.
+- `RunPlanBuilder` owns pre-run slot validation and per-slot metadata resolution.
 - `Director/SpawnSystem` composes encounters from:
   - current `Tier` (pace/density),
   - unlocked content pool,
@@ -12,9 +14,11 @@ Last Synced: 2026-02-28
 
 In short:
 - Stability phase controls **pacing and threat shape**.
+- Event loadout controls **scheduled risk profile**.
 - EXP progression controls **when upgrades happen**.
 - Upgrades only control **what content is unlocked**.
 - Tier only controls **battlefield pacing**.
+- "Pressure" is treated as **time intensity**, not a separate abstract stat.
 
 ## Core Rules
 - Only `CombatSystem` can finalize damage.
@@ -32,7 +36,8 @@ Game
 |  |- Core
 |  |  |- CombatSystem
 |  |- Director
-|  |  `- SpawnSystem
+|  |  |- SpawnSystem
+|  |  `- EventDirector
 |  `- Progression
 |     |- ProgressionSystem
 |     `- UpgradeSystem
@@ -58,9 +63,44 @@ Game
 ## System Boundaries
 - `Core/*`: universal runtime services.
 - `Director/*`: pacing and encounter orchestration.
+- `Director/Event*`: slot-based event scheduling and activation.
 - `Progression/*`: upgrade application and progression effects.
 - `UI/*`: presentation and input only. UI may call systems; systems do not depend on UI.
 - `Audio/*`: centralized BGM/SFX routing and runtime playback policy.
+
+## Event Scheduling Contract (V0.3)
+- Canonical spec: `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
+- Run plan is authored pre-run with exactly 4 slots.
+- Distortion and affinity evaluate adjacent slots only.
+- Max same-domain consecutive slot count is `2`.
+- Event difficulty tuning is time-driven:
+  - slot timestamp,
+  - duration/window,
+  - tier profile,
+  - distortion/affinity multipliers.
+- Do not introduce `basePressureValue` as a balancing axis.
+- Runtime `EventRunner` applies active slot rules directly to gameplay loops:
+  - `PlayerMovement` / `Enemy` movement multipliers and external pull vectors.
+  - `Bullet` / `EnemyProjectile` projectile speed-range compression in Event Horizon.
+  - `PlayerMelee` range compression in Event Horizon.
+  - `SpawnSystem.EventSpawnDirectionalRush(...)` hook for Blood Tide directional enemy influx.
+- `EventDirector` resolves resonance hybrid tags at slot activation (30% deterministic roll, gated by hybrid unlock state) and forwards selected hybrid variant id to `EventRunner`.
+- Temporary runtime verification layer:
+  - `EventTelegraphOverlay` draws active event zones/markers in world space (ice zones, pulse rings, horizon/well radius, war direction/marks).
+  - HUD exposes `EventHint` + short `HybridToast` text for event behavior validation.
+- Runtime `RewardService` (director-owned) records completed slot rewards into run domain-shard ledger and exposes snapshot for run-end settlement.
+- Pre-run loadout availability is gated by domain power inventory (`MetaProgressionService.GetDomainPowerCount(domainId) > 0`).
+- Entering pre-run loadout auto-generates one random event per slot from available domain power; slot domain forcing is the only reroll trigger.
+- Out-of-run event economy flow:
+  - `GameFlowUI` provides a dedicated meta `Event Purchase/Hybrid Unlock` panel between character select and loadout.
+  - Domain power purchase actions call `MetaProgressionService.TryPurchaseDomainPower(..., purchaseCount=1)` (`+3` power per purchase).
+  - Hybrid actions call `MetaProgressionService.TryUnlockHybridVariant(...)` directly.
+  - Talisman progression branch is out-of-run only and owns event/class upgrade tracks.
+  - Successful transactions persist immediately via `MetaProgressionService` single-writer rule.
+- Migration note:
+  - current runtime still uses legacy bool event-unlock path in some modules.
+  - target contract is charge-count gating and per-run consume.
+- Run-end settlement UI shows per-domain shard gain (`Ice/Spacetime/War`) from `RewardBreakdown.DomainShardGainsByDomain` in addition to total currency.
 
 ## Audio Runtime Contract
 - `Scripts/Audio/AudioManager*.cs` is the single runtime entry for audio playback APIs.
@@ -84,6 +124,8 @@ Game
   - starts at upgrade level `5`,
   - ramps to `x2.0` requirement within `2` levels,
   - keeps early/mid progression responsive while reducing late upgrade flooding.
+- Miniboss progression bonus (temporary tuning):
+  - defeating a miniboss grants immediate bonus `+1` level and `+10` EXP.
 - Overflow is preserved, and multiple level-up charges can queue.
 - `AppliedUpgradeCount`: content unlock milestone counter (from `UpgradeSystem`).
 
@@ -97,6 +139,7 @@ Trigger flow:
 3. XP reaches requirement -> queue one level-up charge.
 4. `UpgradeMenu` opens and consumes one queued charge.
 5. Boss flow can still force open via `ProgressionSystem.ForceOpenForBoss()`.
+6. Miniboss kill bonus is applied through `ExperienceDropSystem -> ProgressionSystem.GrantBossKillBonus(...)`.
 
 ## Director Data-Driven Tables
 Location: `Data/Director/`
@@ -135,6 +178,8 @@ Current runtime usage:
 - Do not hard-code tier logic outside director systems.
 - Tune balancing via data tables first, code second.
 - Stability phase + tier data control pacing. Unlock milestones use `upgrade_count`.
+- Do not add random mid-run event selection for V0.3.
+- Keep event-domain interaction strictly adjacent-slot scoped.
 
 ## Known Architecture Risks (Current)
 - Group-name service discovery is string-based (`GetNodesInGroup`), so typo/rename regressions are compile-time invisible.

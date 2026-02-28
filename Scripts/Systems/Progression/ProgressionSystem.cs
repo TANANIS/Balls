@@ -213,6 +213,39 @@ public partial class ProgressionSystem : Node
 			TryConsumePendingUpgrade("debug cheat grant level");
 	}
 
+	public void GrantBossKillBonus(int bonusLevels, int bonusExp)
+	{
+		int levelsToGrant = Mathf.Max(0, bonusLevels);
+		int expToGrant = Mathf.Max(0, bonusExp);
+		if (levelsToGrant <= 0 && expToGrant <= 0)
+			return;
+
+		if (levelsToGrant > 0)
+		{
+			_upgradeLevel += levelsToGrant;
+			_pendingUpgradeOpens += levelsToGrant;
+			_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+		}
+
+		if (expToGrant > 0)
+		{
+			_upgradeProgress += expToGrant;
+			_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+
+			while (_upgradeProgress >= _currentUpgradeRequirement)
+			{
+				_upgradeProgress -= _currentUpgradeRequirement;
+				_upgradeLevel++;
+				_pendingUpgradeOpens++;
+				_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+			}
+
+			_upgradeProgress = Mathf.Clamp(_upgradeProgress, 0f, _currentUpgradeRequirement);
+		}
+
+		TryConsumePendingUpgrade("boss kill bonus");
+	}
+
 	private bool TriggerUpgradeMenu(string reason)
 	{
 		EnsureUpgradeMenu();

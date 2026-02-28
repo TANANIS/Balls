@@ -26,6 +26,17 @@
 
 ## High-Signal Recent Changes
 
+### 2026-03-01 - Start Menu Copy Refresh + Boss Kill Bonus
+- Updated start menu description copy (`UI.START.DESC`) for current pre-run flow:
+  - hero select -> event purchases -> arrange calamities,
+  - goal and boss reward now explicitly stated.
+- Added miniboss kill progression bonus (temporary tuning):
+  - each miniboss defeat now grants immediate `+1` level and `+10` EXP.
+- Runtime hook:
+  - `ExperienceDropSystem` detects miniboss kill and calls `ProgressionSystem.GrantBossKillBonus(...)`.
+- Validation:
+  - `dotnet build ProjectGenesis.sln` passed.
+
 ### 2026-02-28 - Unused Sprite Cleanup (Conservative)
 - Added cleanup script:
   - `Tools/Quality/Delete-UnusedImages.ps1`

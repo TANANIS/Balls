@@ -8,8 +8,11 @@ public partial class ExperienceDropSystem : Node
 	[Export] public int TankExperience = 3;
 	[Export] public int EliteExperience = 5;
 	[Export] public int MiniBossExperience = 10;
+	[Export] public int BossBonusLevels = 1;
+	[Export] public int BossBonusExperience = 10;
 
 	private CombatSystem _combatSystem;
+	private ProgressionSystem _progressionSystem;
 	private bool _boundToCombat;
 
 	public override void _EnterTree()
@@ -20,12 +23,15 @@ public partial class ExperienceDropSystem : Node
 	public override void _Ready()
 	{
 		TryBindCombatSystem();
+		TryResolveProgressionSystem();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		if (!_boundToCombat)
 			TryBindCombatSystem();
+		if (!IsInstanceValid(_progressionSystem))
+			TryResolveProgressionSystem();
 	}
 
 	public override void _ExitTree()
@@ -49,7 +55,10 @@ public partial class ExperienceDropSystem : Node
 			return;
 
 		Vector2 spawnPos = enemy2D.GlobalPosition;
-		int experienceValue = ResolveExperienceValue(enemy);
+		bool isMiniBoss = IsMiniBossEnemy(enemy);
+		int experienceValue = ResolveExperienceValue(enemy, isMiniBoss);
+		if (isMiniBoss)
+			_progressionSystem?.GrantBossKillBonus(BossBonusLevels, BossBonusExperience);
 		CallDeferred(nameof(SpawnPickupDeferred), spawnPos, experienceValue);
 	}
 
@@ -79,18 +88,17 @@ public partial class ExperienceDropSystem : Node
 		root.AddChild(pickup2D);
 	}
 
-	private int ResolveExperienceValue(Node enemy)
+	private int ResolveExperienceValue(Node enemy, bool isMiniBoss)
 	{
 		if (enemy == null)
 			return Mathf.Max(1, SwarmExperience);
+		if (isMiniBoss)
+			return Mathf.Max(1, MiniBossExperience);
 
 		string scenePath = string.Empty;
 		if (enemy is Node enemyNode)
 			scenePath = enemyNode.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
 		string name = enemy.Name?.ToString().ToLowerInvariant() ?? string.Empty;
-
-		if (EnemyTagRules.IsMiniBoss(name, scenePath))
-			return Mathf.Max(1, MiniBossExperience);
 		if (scenePath.Contains("werebear") || name.Contains("elite") || name.Contains("werebear"))
 			return Mathf.Max(1, EliteExperience);
 		if (scenePath.Contains("eliteorc") || name.Contains("tank"))
@@ -113,6 +121,16 @@ public partial class ExperienceDropSystem : Node
 		return Mathf.Max(1, SwarmExperience);
 	}
 
+	private static bool IsMiniBossEnemy(Node enemy)
+	{
+		if (enemy == null)
+			return false;
+
+		string scenePath = enemy.SceneFilePath?.ToLowerInvariant() ?? string.Empty;
+		string name = enemy.Name?.ToString().ToLowerInvariant() ?? string.Empty;
+		return EnemyTagRules.IsMiniBoss(name, scenePath);
+	}
+
 	private void TryBindCombatSystem()
 	{
 		if (_boundToCombat)
@@ -126,5 +144,12 @@ public partial class ExperienceDropSystem : Node
 
 		_combatSystem.EnemyKilled += OnEnemyKilled;
 		_boundToCombat = true;
+	}
+
+	private void TryResolveProgressionSystem()
+	{
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.ProgressionSystem);
+		if (list.Count > 0)
+			_progressionSystem = list[0] as ProgressionSystem;
 	}
 }
