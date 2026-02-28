@@ -154,6 +154,22 @@ public partial class PlayerHealth
 		_regenTimer = Mathf.Max(0f, RegenIntervalSeconds);
 	}
 
+	public void EnableShield(float cooldownSeconds)
+	{
+		float cd = Mathf.Clamp(cooldownSeconds, 1f, 120f);
+		if (!_shieldEnabled)
+		{
+			_shieldEnabled = true;
+			_shieldCooldownSeconds = cd;
+			_shieldCooldownTimer = 0f;
+			RefreshShieldVisual(force: true);
+			return;
+		}
+
+		_shieldCooldownSeconds = Mathf.Min(_shieldCooldownSeconds, cd);
+		RefreshShieldVisual(force: true);
+	}
+
 	private void TickRegen(float dt)
 	{
 		if (_isDead || RegenAmount <= 0 || RegenIntervalSeconds <= 0f)

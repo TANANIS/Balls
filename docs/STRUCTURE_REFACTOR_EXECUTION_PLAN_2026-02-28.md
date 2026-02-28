@@ -119,6 +119,26 @@ Exit criteria:
 - docs describe actual runtime and folder state.
 - pre-commit checklist fully reproducible from repository scripts.
 
+## Phase 6 - Slimming Pass #1 (Post-Refactor Consolidation)
+Status: `completed`
+
+Tasks:
+- merge low-risk over-split partial families while keeping file-size guardrails.
+- reduce script count without changing gameplay flow or ownership boundaries.
+- keep each consolidated file under `<= 300` lines.
+
+Completed consolidations:
+- `UpgradeMenu`: `3 -> 1` (`UpgradeMenu.UI`, `UpgradeMenu.Options` merged into `UpgradeMenu.cs`).
+- `PlayerWeapon`: `4 -> 2` (`Configuration` merged into core, `ElementalBurst` merged into attack).
+- `DebugCheatSystem`: `5 -> 3` (`Pause`, `Localization` merged into core).
+- `Bullet`: `6 -> 5` (`Bullet.Homing` merged into `Bullet.Collision`).
+- `PlayerHealth`: `6 -> 5` (`PlayerHealth.Shield` merged into `PlayerHealth.Core`).
+- `AudioManager`: `3 -> 2` (`AudioManager.Playback` merged into `AudioManager.cs`).
+
+Exit criteria:
+- no compile/runtime regression from consolidation.
+- `Check-StructureHealth.ps1` and `Check-SceneResourcePaths.ps1` remain pass.
+
 ## Runbook Commands
 ```powershell
 # Build gate
@@ -132,9 +152,11 @@ powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-SceneResourcePaths.
 ```
 
 ## Progress Snapshot (Current)
+- Script volume:
+  - total scripts: `148`
 - Script-size risk:
   - files `> 300` lines: `0`
-  - files `>= 220` lines: `11`
+  - files `>= 220` lines: `13`
 - Path drift:
   - `res://Prefabs/` references in `.tscn/.tres`: `0`
   - `res://Enemies/` references in `.tscn/.tres`: `0`

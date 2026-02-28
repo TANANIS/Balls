@@ -14,15 +14,15 @@ Last Synced: 2026-02-28
 - `PlayerWeapon` split:
   - `Scripts/Player/PlayerWeapon.cs` (core tick/orchestration)
   - `Scripts/Player/PlayerWeapon.Attack.cs`
-  - `Scripts/Player/PlayerWeapon.Configuration.cs`
-  - `Scripts/Player/PlayerWeapon.ElementalBurst.cs`
+  - configuration + stat mutation merged into core.
+  - elemental-burst logic merged into attack.
 - `PlayerHealth` VFX split:
   - `Scripts/Player/PlayerHealth.Vfx.cs` (shield visual flow)
   - `Scripts/Player/PlayerHealth.Vfx.Damage.cs`
   - `Scripts/Player/PlayerHealth.Vfx.Priest.cs`
-- `Bullet` homing split:
+- `Bullet` homing split was consolidated:
   - `Scripts/Projectiles/Bullet.cs` (runtime lifecycle)
-  - `Scripts/Projectiles/Bullet.Homing.cs`
+  - `Scripts/Projectiles/Bullet.Collision.cs` (collision + homing + retarget helpers)
 - `ProceduralTerrainBackground` split expansion:
   - `Scripts/World/ProceduralTerrainBackground.Mask.Noise.cs`
   - `Scripts/World/ProceduralTerrainBackground.Tiling.Caps.cs`
@@ -65,18 +65,15 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Systems/Core/CombatSystem.cs`: centralized damage processing and tank bullet bonus knockback/damage hook.
 
 ### UpgradeMenu
-- `Scripts/UI/UpgradeMenu.cs`: lifecycle, input gate, and open/close flow.
-- `Scripts/UI/UpgradeMenu.UI.cs`: UI node binding, button text refresh, panel centering.
-- `Scripts/UI/UpgradeMenu.Options.cs`: option picking and application flow.
+- `Scripts/UI/UpgradeMenu.cs`: lifecycle, input gate, UI binding, and option-pick/apply flow.
 
 ### Experience Progression
 - `Scripts/Systems/Progression/ExperienceDropSystem.cs`: listens to kill events and drops pickups.
 - `Scripts/Systems/Progression/ExperiencePickup.cs`: pickup collision + EXP grant into `ProgressionSystem`.
 
 ### AudioManager
-- `Scripts/Audio/AudioManager.cs`: singleton and public playback API surface.
+- `Scripts/Audio/AudioManager.cs`: singleton + public playback API + runtime playback internals.
 - `Scripts/Audio/AudioManager.Setup.cs`: player pool setup, stream loading, event binding.
-- `Scripts/Audio/AudioManager.Playback.cs`: kill-event playback and runtime playback internals.
 
 ### Player
 - `Scripts/Player/Player.cs`: player facade and frame orchestration.
@@ -88,7 +85,7 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/Player/PlayerDash.Runtime.cs`: dash start/stop and stat mutations.
 - `Scripts/Player/PlayerHealth.cs`: health/shield state fields, exported tuning, and public status properties.
 - `Scripts/Player/PlayerHealth.Core.cs`: HP lifecycle, invincibility, regen, and damage/death handling.
-- `Scripts/Player/PlayerHealth.Shield.cs`: shield enablement and cooldown policy updates.
+- shield enablement/cooldown policy merged into `PlayerHealth.Core.cs`.
 - `Scripts/Player/PlayerHealth.Vfx.cs`: shield visuals, hit flash, and damage flash material flow.
 - `Scripts/Player/PlayerMelee.cs`: melee setup/input/cooldown flow.
 - `Scripts/Player/PlayerMelee.Attack.cs`: melee hit query, filtering, and damage request emission.

@@ -1,6 +1,5 @@
 using Godot;
 using System.Collections.Generic;
-
 /*
  * Bullet sensor:
  * - Moves forward for a limited lifetime.

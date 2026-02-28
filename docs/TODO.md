@@ -128,4 +128,5 @@ Last Synced: 2026-02-28
 - [x] Phase 2 scene path unification (`Prefabs/` + `Enemies/` runtime references reduced to zero)
 - [x] Phase 3 runtime group literals centralized (`Scripts/Shared/RuntimeGroups.cs`)
 - [x] Phase 4 asset/data placement contract (`docs/ASSET_DATA_PLACEMENT_CONTRACT.md`)
-- [ ] Phase 5 final doc sync tail and residual naming polish
+- [x] Phase 5 final doc sync tail and residual naming polish
+- [x] Phase 6 slimming pass #1 (low-risk partial consolidation, script count reduction)
