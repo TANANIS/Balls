@@ -92,6 +92,7 @@ public partial class SpawnSystem : Node
 	[Export] public int MaxPendingSpawns = 320;
 
 	[Export] public bool UseTierRulesCsv = true;
+	[Export] public bool StrictCsvRuntimeValidation = true;
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
@@ -163,6 +164,7 @@ public partial class SpawnSystem : Node
 	private float _spawnFreezeTimer = 0f;
 	private float _survivalSeconds = 0f;
 	private float _nextLateMiniBossAt = -1f;
+	private bool _csvRuntimeHealthy = true;
 
 	[Export] public float StableSpawnRateMultiplier = 1.0f;
 	[Export] public float EnergyAnomalySpawnRateMultiplier = 1.02f;
@@ -213,7 +215,8 @@ public partial class SpawnSystem : Node
 
 	private void ReportCsvLoadHealth()
 	{
-		if (_tierRules.Count > 0 && _enemyDefinitions.Count > 0 && _tierWeights.Count > 0)
+		_csvRuntimeHealthy = _tierRules.Count > 0 && _enemyDefinitions.Count > 0 && _tierWeights.Count > 0;
+		if (_csvRuntimeHealthy)
 			return;
 
 		GD.PushError(
@@ -226,6 +229,8 @@ public partial class SpawnSystem : Node
 	{
 		EnsureSpawnAnchors();
 		if (_enemiesRoot == null || _player == null)
+			return;
+		if (UseTierRulesCsv && StrictCsvRuntimeValidation && !_csvRuntimeHealthy)
 			return;
 
 		_survivalSeconds += (float)delta;
