@@ -32,6 +32,8 @@ public partial class AudioManager : Node
 	private AudioStream _sfxUiButton;
 	private AudioStream _sfxUiExit;
 	private AudioStream _sfxUiUpgradeSelect;
+	private AudioStream _sfxUiSlotRollLoop;
+	private AudioStream _sfxUiSlotRollStop;
 	private AudioStream _sfxPlayerDash;
 	private AudioStream _sfxPlayerFire;
 	private AudioStream _sfxPlayerFirePriest;
@@ -46,6 +48,7 @@ public partial class AudioManager : Node
 	private AudioStream _sfxPlayerOneHp;
 
 	private AudioStreamPlayer _lowHpLoopPlayer;
+	private AudioStreamPlayer _uiSlotRollLoopPlayer;
 	private readonly Dictionary<string, AudioStream> _enemyDeathSfxByScene = new();
 
 	public override void _EnterTree()
@@ -70,6 +73,7 @@ public partial class AudioManager : Node
 	public void PlaySfxUiButton() => PlaySfx(_sfxUiButton);
 	public void PlaySfxUiExit() => PlaySfx(_sfxUiExit);
 	public void PlaySfxUiUpgradeSelect() => PlaySfx(_sfxUiUpgradeSelect);
+	public void PlaySfxUiSlotRollStop() => PlaySfx(_sfxUiSlotRollStop);
 
 	public void PlaySfxPlayerDash() => PlaySfx(_sfxPlayerDash);
 	public void PlaySfxPlayerFire() => PlaySfx(_sfxPlayerFire, -6f);
@@ -82,6 +86,27 @@ public partial class AudioManager : Node
 	public void PlaySfxPlayerElementalBurst() => PlaySfx(_sfxPlayerElementalBurst, -3f);
 	public void PlaySfxPlayerGetHit() => PlaySfx(_sfxPlayerGetHit);
 	public void PlaySfxPlayerDie() => PlaySfx(_sfxPlayerDie, +6f);
+
+	public void StartSfxUiSlotRollLoop()
+	{
+		if (_uiSlotRollLoopPlayer == null || _sfxUiSlotRollLoop == null)
+			return;
+
+		if (_uiSlotRollLoopPlayer.Stream != _sfxUiSlotRollLoop)
+			_uiSlotRollLoopPlayer.Stream = _sfxUiSlotRollLoop;
+
+		if (!_uiSlotRollLoopPlayer.Playing)
+			_uiSlotRollLoopPlayer.Play();
+	}
+
+	public void StopSfxUiSlotRollLoop(bool playStop = false)
+	{
+		if (_uiSlotRollLoopPlayer != null && _uiSlotRollLoopPlayer.Playing)
+			_uiSlotRollLoopPlayer.Stop();
+
+		if (playStop)
+			PlaySfxUiSlotRollStop();
+	}
 
 	public float GetBgmVolumeLinear()
 	{
@@ -107,6 +132,8 @@ public partial class AudioManager : Node
 			player.VolumeDb = SfxVolumeDb;
 		if (_lowHpLoopPlayer != null)
 			_lowHpLoopPlayer.VolumeDb = SfxVolumeDb;
+		if (_uiSlotRollLoopPlayer != null)
+			_uiSlotRollLoopPlayer.VolumeDb = SfxVolumeDb;
 	}
 
 	private static float LinearToDb(float linear)

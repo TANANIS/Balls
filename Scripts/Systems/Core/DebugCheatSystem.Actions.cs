@@ -12,6 +12,12 @@ public partial class DebugCheatSystem
 
 		if (_walletInput != null)
 			_walletInput.Value = MetaProgressionService.Instance.CurrencyWallet;
+		if (_iceShardInput != null)
+			_iceShardInput.Value = MetaProgressionService.Instance.GetDomainShardBalance("Ice");
+		if (_spacetimeShardInput != null)
+			_spacetimeShardInput.Value = MetaProgressionService.Instance.GetDomainShardBalance("Spacetime");
+		if (_warShardInput != null)
+			_warShardInput.Value = MetaProgressionService.Instance.GetDomainShardBalance("War");
 
 		if (_playerHealth != null && _hpInput != null)
 		{

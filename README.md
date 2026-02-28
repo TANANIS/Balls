@@ -5,20 +5,22 @@ Current content direction is fantasy-themed combat/presentation on top of the ex
 ## Core Architecture
 - Combat resolution single entry: `Scripts/Systems/Core/CombatSystem.cs`
 - Progression and upgrades: `Scripts/Systems/Progression/ProgressionSystem.cs` and `Scripts/Systems/Progression/UpgradeSystem.cs`
-- Spawn pacing and pressure shaping: `Scripts/Systems/Director/SpawnSystem.cs` with `Data/Director/*.csv`
+- Spawn pacing and time-intensity shaping: `Scripts/Systems/Director/SpawnSystem.cs` with `Data/Director/*.csv`
 - UI is presentation-only and reads runtime state: `Scripts/UI/*`
 - Projectile runtime is shared-script with prefab variants:
   - behavior host: `Scripts/Projectiles/Bullet.cs`
   - split child variant: `Prefabs/SplitProjectile.tscn`
 
 ## Runtime Flow (Current)
-1. Enemy dies, then `ExperienceDropSystem` spawns `ExperiencePickup`.
-2. Player collects pickup, then `ProgressionSystem` adds progression EXP.
-3. EXP reaches requirement, then a level-up charge is queued.
-4. `UpgradeMenu` opens, then `UpgradeSystem` applies one upgrade.
-5. `UpgradeSystem` pool selection is phase-routed (Early/Mid/Late) with stack/exclusive/gate checks.
-6. `SpawnSystem` scales pressure by phase and director tables.
-7. `AudioManager` switches BGM playlist by game state (`Menu` / `Gameplay` / `Result`) and chains random tracks on finish.
+1. Pre-run, player configures 4-slot event loadout (`Tier0~Tier3`).
+2. `RunPlanBuilder` resolves per-slot distortion and affinity metadata.
+3. During run, `EventDirector` activates each slot at timeline timestamps.
+4. Enemy dies, then `ExperienceDropSystem` spawns `ExperiencePickup`.
+5. Player collects pickup, then `ProgressionSystem` adds progression EXP.
+6. EXP reaches requirement, then a level-up charge is queued.
+7. `UpgradeMenu` opens, then `UpgradeSystem` applies one upgrade.
+8. Event completion and run settlement feed `MetaProgressionService` (domain shards + meta unlocks).
+9. `AudioManager` switches BGM playlist by game state (`Menu` / `Gameplay` / `Result`) and chains random tracks on finish.
 
 ## Gameplay Snapshot (Current)
 - Fixed run target: `15:00`.
@@ -52,6 +54,8 @@ Current content direction is fantasy-themed combat/presentation on top of the ex
 - `docs/SYSTEM_FLOW.md`: Mermaid runtime flow diagram.
 - `docs/GAME_CONCEPT.md`: Core game concept and loop.
 - `docs/GameDirector_Design.md`: Director and 15:00 pacing design.
+- `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`: Pre-run event loadout, distortion/affinity, and shard reward spec.
+- `docs/STAGE_EVENT_BACKGROUND.md`: Stage-by-stage narrative background and banner copy candidates.
 - `docs/CARDS.md`: Card system spec and layer model.
 - `docs/CARDS_CHANGELOG.md`: Card balancing/spec change history.
 - `docs/SCRIPT_REFACTOR_PLAN.md`: Script split/refactor plan.

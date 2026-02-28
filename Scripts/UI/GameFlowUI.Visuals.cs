@@ -66,9 +66,108 @@ public partial class GameFlowUI
 		_matchCountdownLabel.Text = $"{mm:D2}:{ss:D2}";
 	}
 
+	private void UpdateEventBannerUi()
+	{
+		if (_eventBannerLabel == null)
+			return;
+
+		if (!_started || _ending)
+		{
+			_eventBannerLabel.Visible = false;
+			return;
+		}
+
+		if (!IsInstanceValid(_eventDirector))
+		{
+			var eventDirectorList = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+			if (eventDirectorList.Count > 0)
+				_eventDirector = eventDirectorList[0] as EventDirector;
+		}
+
+		if (!IsInstanceValid(_eventDirector) || !_eventDirector.IsEventActive)
+		{
+			_eventBannerLabel.Visible = false;
+			return;
+		}
+
+		_eventBannerLabel.Visible = true;
+		_eventBannerLabel.Text = _eventDirector.ActiveEventBannerText;
+	}
+
+	private void UpdateEventHintUi()
+	{
+		if (_eventHintLabel == null)
+			return;
+
+		if (!_started || _ending)
+		{
+			_eventHintLabel.Visible = false;
+			return;
+		}
+
+		if (!IsInstanceValid(_eventDirector))
+		{
+			var eventDirectorList = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+			if (eventDirectorList.Count > 0)
+				_eventDirector = eventDirectorList[0] as EventDirector;
+		}
+
+		if (!IsInstanceValid(_eventDirector) || !_eventDirector.IsEventActive)
+		{
+			_eventHintLabel.Visible = false;
+			return;
+		}
+
+		string text = _eventDirector.ActiveEventHintText ?? string.Empty;
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			_eventHintLabel.Visible = false;
+			return;
+		}
+
+		_eventHintLabel.Visible = true;
+		_eventHintLabel.Text = text;
+	}
+
+	private void UpdateHybridToastUi()
+	{
+		if (_hybridToastLabel == null)
+			return;
+
+		if (!_started || _ending)
+		{
+			_hybridToastLabel.Visible = false;
+			return;
+		}
+
+		if (!IsInstanceValid(_eventDirector))
+		{
+			var eventDirectorList = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+			if (eventDirectorList.Count > 0)
+				_eventDirector = eventDirectorList[0] as EventDirector;
+		}
+
+		if (!IsInstanceValid(_eventDirector))
+		{
+			_hybridToastLabel.Visible = false;
+			return;
+		}
+
+		string text = _eventDirector.ActiveHybridToastText ?? string.Empty;
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			_hybridToastLabel.Visible = false;
+			return;
+		}
+
+		_hybridToastLabel.Visible = true;
+		_hybridToastLabel.Text = text;
+	}
+
 	private void OnViewportSizeChanged()
 	{
 		FitMenuBackground();
+		UpdateEventLoadoutResponsiveLayout();
 	}
 
 	private void FitMenuBackground()

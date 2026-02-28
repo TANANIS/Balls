@@ -1,141 +1,125 @@
 # Game Director And Progression Design
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
-This document defines pacing logic for spawn orchestration and upgrade timing.
+This document defines in-run pacing, pre-run event scheduling, and upgrade timing.
 
 ## Intent
-- Keep early game readable.
-- Escalate threat via spawn tempo and enemy composition.
-- Guarantee upgrade cadence without punishing strong play.
-- Keep unlock logic intuitive: milestone unlocks are tied to `upgrade_count`.
-- Lock run duration to 15 minutes and shape pacing by four stability phases.
+- Keep early game readable and late game intense.
+- Replace random event reaction with deterministic pre-run event commitment.
+- Keep risk/reward understandable via slot previews.
+- Keep run duration fixed at `15:00` with four stage phases.
 
 ## Match Timeline Contract (15:00)
-- `00:00 - 03:45` Stage 1 (Ramp-In)
-  - Low baseline threat.
-  - Tail-end threat peak.
-  - Stage boss: `Lancer_Stage1` at `03:45`.
-- `03:45 - 07:30` Stage 2 (First Stress Cycle)
-  - Threat resets lower than peak, then ramps again.
-  - Stage boss: `Lancer_Stage2` at `07:30`.
-- `07:30 - 11:15` Stage 3 (Build Check)
-  - Faster spawn tempo and denser packs near tail.
-  - Stage boss: `Lancer_Stage3` at `11:15`.
-- `11:15 - 15:00` Stage 4 (Final Climb)
-  - Highest sustained threat with final tail peak.
-  - Stage boss: `Lancer_Stage4` near run tail (`14:30~15:00` window).
+- `00:00 - 03:45`: Stage 1 (`Ramp-In`)
+- `03:45 - 07:30`: Stage 2 (`First Stress Cycle`)
+- `07:30 - 11:15`: Stage 3 (`Build Check`)
+- `11:15 - 15:00`: Stage 4 (`Final Climb`)
 
-Special universe events are removed in this model. Stage-tail miniboss is the only phase-special spike marker.
+## Event Slot Contract
 
-## Runtime Model
-- `ProgressionSystem` owns `UpgradeProgress` (EXP meter), requirement curve, and queued level-up charges.
-- `SpawnSystem` pacing is selected by current `StabilitySystem` phase and tier CSV rows.
-- `UpgradeSystem` applies selected upgrade effects and increments `AppliedUpgradeCount`.
+| Slot | Tier | Phase |
+|---|---|---|
+| Slot1 | Tier0 | Early |
+| Slot2 | Tier1 | Mid |
+| Slot3 | Tier2 | Late |
+| Slot4 | Tier3 | Final |
+
+Rules:
+- Slot timestamps are owned by `EventDirector`.
+- Event chain is preselected before run start.
+- No random mid-run event selection.
+
+## Time-Driven Intensity Rule
+- "Pressure" is defined as game-time intensity.
+- Do not use abstract `basePressureValue` for balancing.
+- Event tuning must be authored with time profile controls:
+  - activation timestamp,
+  - event duration/window,
+  - tier time profile,
+  - optional domain interaction multipliers.
+
+## Pre-Run Planning Flow
+1. Load event pool with positive remaining charges from meta state.
+2. On entering loadout UI, system auto-rolls 4 slot events from current available pool.
+3. Player may optionally force a slot's domain (Tier is fixed by slot index) by consuming the corresponding tier `Order Sigil`.
+4. Forced slots reroll from that domain pool only; manual event reroll buttons are disabled.
+5. Unlocked advanced events with remaining charges are included in the same random pool.
+6. `RunPlanBuilder` validates sequence:
+  - max two same-domain consecutive slots.
+7. `DistortionResolver` computes per-slot distortion.
+8. `AffinityResolver` computes adjacent-slot relation.
+9. Save `RunPlan` for runtime activation.
+
+## Distortion Rule (Same-Domain Consecutive)
+- Valid: `A A B C`
+- Invalid: `A A A B`
+
+| Distortion | Time Intensity | Reward |
+|---|---:|---:|
+| D0 | x1.00 | x1.00 |
+| D1 | x1.30 | x1.50 |
+
+## Affinity Rule (Adjacent Cross-Domain)
+Current matrix:
+- `Ice` + `Spacetime` -> `Resonance`
+- `Ice` + `War` -> `Dissonance`
+- `Spacetime` + `War` -> `Resonance`
+
+| Relation | Time Intensity | Reward | Hybrid Variant |
+|---|---:|---:|---|
+| Resonance | x1.20 | x1.30 | 30% chance |
+| Neutral | x1.00 | x1.00 | No |
+| Dissonance | x0.85 | x0.80 | No |
+
+## Runtime Event Activation Order
+1. `EventDirector` reaches slot timestamp.
+2. Load slot `EventDefinition`.
+3. Apply tier time profile.
+4. Apply slot distortion multiplier.
+5. Resolve and apply affinity multiplier with previous slot.
+6. If resonance, roll hybrid variant tag.
+7. Execute final rule set through `EventRunner`.
 
 ## Upgrade Trigger Rule (Survivor-Style)
-1. Player kills enemies to generate `ExperiencePickup` drops.
-2. Player collects pickup to gain EXP immediately.
-3. When EXP reaches requirement, one level-up charge is queued.
+1. Enemy death drops `ExperiencePickup`.
+2. Player collects pickup and gains EXP.
+3. EXP reaches requirement and queues one level-up charge.
 4. Upgrade menu opens and consumes one queued charge.
-5. EXP overflow is preserved; multiple charges can queue for chain level-up.
-
-System notes:
-- EXP overflow is preserved.
-- Time-based passive EXP drip is not used in current pickup-driven runtime.
-- Upgrade menu consume rule remains one queued charge per open.
+5. Overflow EXP is preserved.
 
 ## HUD Contract (Run-Time)
-- HP UI is hidden in menu/title and only shown after `StartRun()`.
-- XP bar is shown at top of screen during active run and reads from `ProgressionSystem`:
-  - Value = `CurrentUpgradeProgress`
-  - Max = `GetCurrentUpgradeRequirement()`
-  - Ready state = `IsUpgradeReady`
-- Match countdown (`15:00 -> 00:00`) is shown on top-right during active run.
-- When run ends (death/clear), HP UI and XP bar are hidden.
-
-## Character Balance Notes (Current)
-- Melee role has first-pass nerf applied:
-  - lower max HP
-  - higher melee cooldown
-  - higher dash cooldown
-  - shorter dash iframe
-- Tank role has anti-chase compensation:
-  - stronger base ranged damage
-  - tank bullet applies extra knockback and bonus damage on hit
-- Ranged compensation pass is pending and should be tuned with playtest data.
-
-## End-State And Record
-- Death path uses failure end-state UI (`SYSTEM FAILURE`).
-- Reaching full `15:00` uses dedicated perfect-clear end-state UI (`PERFECT CLEAR`).
-- Perfect clear writes leaderboard record into the current meta-save profile (score, datetime, character display name).
+- HP UI is visible only during active run.
+- XP bar reads `ProgressionSystem` runtime values.
+- Countdown (`15:00 -> 00:00`) remains primary global objective signal.
+- Event status banner should be short and phase-readable.
 
 ## Spawn Director Rule
-`SpawnSystem` is tier-driven and data-driven:
-1. Read phase tier from `StabilitySystem.CurrentPhase`.
+`SpawnSystem` remains tier-driven and data-driven:
+1. Read current phase tier from `StabilitySystem`.
 2. Apply tier runtime settings from `PressureTierRules.csv`.
-3. Roll wave budget and split into packed group spawns.
-4. Pick enemies by weighted roll from `TierEnemyWeights.csv` under budget/cost constraints.
-5. Resolve `enemy_id` to scene path via `EnemyDefinitions.csv`.
-6. Spawn around player with tier radius plus pack scatter.
+3. Spawn enemies from `TierEnemyWeights.csv` and `EnemyDefinitions.csv`.
+4. Apply event runner modifications as temporary overlays.
 
-Unlock milestone rule:
-- Stability phase + tier controls pacing.
-- Stage-tail miniboss schedule controls boss pacing (4 fixed spawns per run).
-- Optional elite injection can remain upgrade-count gated.
+Guardrail:
+- Event systems can modulate runtime timing/intensity, but core spawn table ownership stays in director CSV.
 
-Fallback behavior:
-- If CSV or mapping is incomplete, fallback to `EnemyScene` export.
+## End-State And Record
+- Death: failure end-state panel.
+- Survive to `15:00`: perfect-clear panel.
+- Settlement writes score and event rewards into meta save profile.
 
 ## Data Tables
-All under `Data/Director/`:
+Current active director tables under `Data/Director/`:
 - `EnemyDefinitions.csv`
 - `PressureTierRules.csv`
 - `TierEnemyWeights.csv`
-- `_planned/PackTemplates.csv` (planned usage)
-- `_planned/BossSchedule.csv` (planned/partial usage)
 
-## Tier Rules Contract
-Used fields now include:
-- `pressure_min`, `pressure_max`
-- `spawn_interval_min`, `spawn_interval_max`
-- `budget_min`, `budget_max`
-- `max_alive`
-- `spawn_radius_min`, `spawn_radius_max`
-
-## Current Tuning Snapshot
-- Catch-up pressure policy (`SpawnSystem`):
-  - `HordeTargetAliveRatio = 0.82`
-  - `HordeCatchUpBudgetFactor = 0.22`
-- Tier rows currently active:
-  - Tier0:
-    - `spawn_interval_min/max = 2.10 / 2.90`
-    - `budget_min/max = 2 / 3`
-    - `max_alive = 18`
-  - Tier1:
-    - `spawn_interval_min/max = 1.70 / 2.35`
-    - `budget_min/max = 4 / 8`
-    - `max_alive = 24`
-  - Tier2:
-    - `spawn_interval_min/max = 0.85 / 1.30`
-    - `budget_min/max = 12 / 21`
-    - `max_alive = 60`
-  - Tier3:
-    - `spawn_interval_min/max = 0.62 / 0.98`
-    - `budget_min/max = 20 / 34`
-    - `max_alive = 90`
-- Enemy threat readability notes (scene-level tuning):
-  - Elite orc chain dash readability is tuned by:
-    - `Enemies/EliteOrc.tscn`
-    - `ChainDashDurationMultiplier = 2.26`
-    - `PlayAttackAnimationInWindup = true`
-    - chain attack animation speed (`attack_03`) = `13.0`.
-  - Orc dash speed is tuned by:
-    - `Enemies/Orc.tscn`
-    - `DashSpeedMultiplier = 2.55` (15% down from 3.0).
+Event table contract:
+- event definition storage is owned by the event scheduling system spec (`docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`).
 
 ## Contributor Guardrails
-- Do not access progression state directly in enemy behavior scripts.
 - Do not hard-code tier logic outside director systems.
-- Tune balance in CSV first, then patch code only when needed.
-- Keep stage-tail boss pacing time-based, not random-event based.
+- Do not implement mid-run random event selection for V0.3.
+- Keep adjacent-only evaluation for distortion/affinity.
+- Tune event intensity with timeline parameters first, scalar math second.

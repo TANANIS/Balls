@@ -22,6 +22,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0,0.50,0.01")] public float RecoverSeconds = 0.02f;
 
 	private CombatSystem _combat;
+	private EventDirector _eventDirector;
 	private float _attackAnimationSpeedMultiplier = 1f;
 	private float _cooldownTimer = 0f;
 	private string _resolvedAction = InputActions.AttackSecondary;
@@ -38,6 +39,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 
 		// Resolve combat service from group to keep scene wiring flexible.
 		TryResolveCombatSystem();
+		ResolveEventDirector();
 
 		ResolveInputAction();
 	}
@@ -120,6 +122,7 @@ public partial class PlayerMelee : PlayerAbilityModule
 
 		float powerMult = _stabilitySystem?.GetPlayerPowerMultiplier() ?? 1f;
 		float runtimeRange = Range * (1f + ((powerMult - 1f) * 0.25f));
+		runtimeRange *= ResolveEventRangeMultiplier();
 		float dmgMult = Mathf.Max(0.1f, DamageMultiplier);
 		int runtimeDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * dmgMult * powerMult));
 
@@ -150,5 +153,19 @@ public partial class PlayerMelee : PlayerAbilityModule
 		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
+	}
+
+	private void ResolveEventDirector()
+	{
+		_eventDirector = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.EventDirector, _eventDirector);
+	}
+
+	private float ResolveEventRangeMultiplier()
+	{
+		if (!IsInstanceValid(_eventDirector))
+			ResolveEventDirector();
+		if (!IsInstanceValid(_eventDirector) || _player == null)
+			return 1f;
+		return _eventDirector.GetPlayerRangeMultiplierAt(_player.GlobalPosition);
 	}
 }

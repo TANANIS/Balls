@@ -8,7 +8,8 @@ Last Synced: 2026-02-28
 - [x] XP pickup flow: enemy death drops pickup, pickup grants EXP
 - [x] XP model reworked to survivor-style: pickup adds EXP, full bar levels up
 - [x] Four-phase 15-minute pressure timeline
-- [x] Universe special events removed (phase-tail Lancer used instead)
+- [x] Legacy random universe events removed from runtime baseline
+- [x] Event Scheduling V0.3 design doc created (`docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`)
 - [x] Enemy hit feedback with knockback + white flash effect
 - [x] In-run HP UI enabled as HUD module
 - [x] Top XP progress bar enabled (shows next-upgrade readiness)
@@ -51,6 +52,13 @@ Last Synced: 2026-02-28
 - [x] Phase-tail miniboss schedule active: 03:45 / 07:30 / 11:15 / 14:30+
 - [ ] Minute-by-minute micro pacing per phase (1/2/3/4 minute nodes)
 - [ ] Stage-specific survival logic doc with concrete spawn targets
+- [ ] Implement pre-run 4-slot Event Loadout UI (domain/distortion/affinity preview)
+- [ ] Implement `RunPlanBuilder` with max-2 same-domain consecutive validation
+- [ ] Implement `DistortionResolver` + `AffinityResolver` (adjacent-only rules)
+- [x] Implement `EventDirector` timestamp activation for Slot1~Slot4
+- [x] Implement `EventRunner` runtime execution for 6 V0.3 events (movement/range/projectile/pull + war hooks)
+- [x] Implement `RewardService` with domain shard payout + run-end settlement bridge
+- [ ] Replace abstract pressure balancing in event data with time-profile-only tuning
 - [ ] Add 2 high-tier enemy types (tier 3+) and integrate into `EnemyDefinitions.csv` + `TierEnemyWeights.csv`
 - [ ] GreatswordSkeleton: implement dedicated boss attack logic (separate behavior module, not shared miniboss defaults)
 
@@ -81,12 +89,12 @@ Last Synced: 2026-02-28
 - [ ] Verify orc dash threat feel after `DashSpeedMultiplier` downshift (`3.0 -> 2.55`).
 
 ## Next Milestones
-- [ ] Stage 1 random boss pool
-- [ ] Stage 2 random reward event
-- [ ] Stage 3 random global major event
-- [ ] Stage 4 random major boss
+- [ ] Stage 1~4 deterministic event pool authoring (tier-aligned)
+- [ ] Pre-run loadout polish pass (iconography + readability)
+- [ ] Domain shard economy first balancing pass (`Ice`/`Spacetime`/`War`)
+- [ ] Hybrid variant first content batch
 - [ ] Melee build branch: `DASH + MELEE COMBO`
-- [ ] Universe event framework return pass (postponed until 4-stage pacing is stable)
+- [ ] Event Scheduling V0.3 runtime implementation pass
 
 ## Skill Layer - Next Focus
 - [ ] Finalize skill-layer scope and naming contract (`SkillId`, category, rarity, stack policy)
@@ -99,7 +107,7 @@ Last Synced: 2026-02-28
 - [ ] Add progression curve tests: EXP required per level should match expected piecewise curve (especially after level 5)
 - [ ] Add spawn-system regression tests: tier pick validity, budget bounds, max_alive bounds, no-empty-wave under normal configs
 - [ ] Add combat TTK snapshot tests by archetype vs slime/orc baseline (expected hit-to-kill range)
-- [ ] Add CI gate/report for key metrics: player DPS proxy, enemy EHP proxy, spawn pressure proxy
+- [ ] Add CI gate/report for key metrics: player DPS proxy, enemy EHP proxy, spawn time-intensity proxy
 
 ## Meta Progression - Out-Of-Run
 - [x] Architecture spec created: `docs/META_PROGRESSION_ARCHITECTURE.md`
@@ -109,6 +117,9 @@ Last Synced: 2026-02-28
 - [x] Phase 3: Transaction service + character unlock gate
 - [x] Phase 4 (framework): Character level + ability tree domain/defs/transaction gate
 - [x] Save isolation + delete-save UX (profile-partitioned save path and in-menu delete flow)
+- [x] Phase 5 (legacy): Domain shard wallet + bool event unlock transactions (service + save + loadout gate)
+- [x] Phase 6: Hybrid variant unlock + extension flags (service transaction baseline)
+- [ ] Spec migration: replace bool event unlock with event charge inventory (`+3` per purchase) and loadout consume flow
 - [ ] Phase 4 (content): Assign real node effects and bind to runtime gameplay systems
 
 ## Refactor - God File Risk

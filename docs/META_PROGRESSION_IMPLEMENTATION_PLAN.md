@@ -1,10 +1,15 @@
-# Meta Progression Implementation Plan (Phase 1-4)
-Last Synced: 2026-02-27
+# Meta Progression Implementation Plan (Phase 1-6)
+Last Synced: 2026-02-28
 
 
 ## Scope
 - Convert `docs/META_PROGRESSION_ARCHITECTURE.md` into concrete implementation steps.
 - Keep architecture clean while minimizing early over-abstraction.
+- Include Event Scheduling V0.3 economy dependencies:
+  - domain shard wallet,
+  - event charge purchases,
+  - hybrid variant unlocks,
+  - pre-run loadout gating.
 
 ## Phase 1 - Domain + Persistence Foundation
 ### Goal
@@ -95,6 +100,51 @@ Last Synced: 2026-02-27
 - Ability node unlock enforces parent/prerequisite rules.
 - Currency never becomes negative.
 
+## Phase 5 - Event Economy + Loadout Gate
+### Goal
+- Bridge meta progression and pre-run event scheduling.
+
+### Files
+- `Scripts/Meta/MetaProgressionState.cs` (domain shards + event charge inventory)
+- `Scripts/Meta/MetaProgressionService.cs` (event transactions/query)
+- `Scripts/Meta/RunResult.cs` (event reward settlement payload)
+- `Scripts/Save/MetaSaveDto.cs` (domain shard serialization)
+- pre-run loadout UI controller module (slot lock states and preview gate)
+
+### Deliverables
+- Domain shard wallet stored and persisted.
+- Event charge purchase transaction (`TryPurchaseEventCharges`, `+3` per purchase) implemented.
+- Event charge consume transaction (`TryConsumeEventCharge`) implemented.
+- Hybrid variant unlock transaction (`TryUnlockHybridVariant`) implemented.
+- Pre-run loadout UI blocks zero-charge events.
+- Run settlement writes event shard rewards exactly once.
+
+Current status (2026-03-01):
+- Domain shard wallet storage + save migration: implemented.
+- Run settlement write-once for event shard rewards: implemented.
+- Legacy bool event unlock + hybrid unlock transactions: implemented.
+- Event charge purchase/consume migration: pending.
+- Loadout gate migration (from unlocked-state to charge-count): pending.
+
+### Validation
+- Zero-charge event cannot be equipped in any slot.
+- Event charge count persists across restart.
+- Duplicate run settlement does not duplicate domain shards.
+- Domain shard balance remains non-negative.
+
+## Phase 6 - Event System Extensions
+### Goal
+- Add controlled expansion points without breaking deterministic core.
+
+### Deliverables
+- Optional unlock flag for `max same-domain consecutive = 3` (future gate).
+- Optional unlock flag for additional slot count (future gate).
+- Versioned migration path for new unlock flags.
+
+### Validation
+- Legacy saves migrate with deterministic defaults.
+- Extension flags do not affect players who did not unlock them.
+
 ## Risk Controls (All Phases)
 - Single writer rule: no wallet mutation outside `MetaProgressionService`.
 - Save immediately after successful transaction.
@@ -105,4 +155,6 @@ Last Synced: 2026-02-27
 - A. New characters unlockable with currency.
 - B. Character levels persist and affect progression UI.
 - C. Character-specific ability tree supports unlock path and persistence.
+- D. Domain shards settle from event completion and persist correctly.
+- E. Event charge/hybrid gates are enforceable in pre-run loadout UI.
 - Reward economy is soft-capped and resistant to high-score farming spikes.

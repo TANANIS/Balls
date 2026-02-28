@@ -23,7 +23,12 @@ public static class SaveMigrator
 		dto.CurrencyWallet = Math.Max(0, dto.CurrencyWallet);
 		dto.CurrencyEarnedTotal = Math.Max(0, dto.CurrencyEarnedTotal);
 		dto.CurrencySpentTotal = Math.Max(0, dto.CurrencySpentTotal);
+		dto.DomainShardWalletByDomain ??= new Dictionary<string, int>(StringComparer.Ordinal);
+		dto.ConsumableWalletById ??= new Dictionary<string, int>(StringComparer.Ordinal);
+		dto.EventChargesByEventId ??= new Dictionary<string, int>(StringComparer.Ordinal);
 		dto.UnlockedCharacterIds ??= new List<string>();
+		dto.UnlockedEventIds ??= new List<string>();
+		dto.UnlockedHybridVariantIds ??= new List<string>();
 		dto.CharacterProgressById ??= new Dictionary<string, CharacterProgressDto>(StringComparer.Ordinal);
 		dto.MetaFlags ??= new List<string>();
 		dto.SettledRunIds ??= new List<string>();
@@ -31,6 +36,14 @@ public static class SaveMigrator
 		for (int i = 0; i < dto.UnlockedCharacterIds.Count; i++)
 			dto.UnlockedCharacterIds[i] = NormalizeCharacterId(dto.UnlockedCharacterIds[i]);
 		dto.UnlockedCharacterIds = dto.UnlockedCharacterIds
+			.Where(id => !string.IsNullOrWhiteSpace(id))
+			.Distinct(StringComparer.Ordinal)
+			.ToList();
+		dto.UnlockedEventIds = dto.UnlockedEventIds
+			.Where(id => !string.IsNullOrWhiteSpace(id))
+			.Distinct(StringComparer.Ordinal)
+			.ToList();
+		dto.UnlockedHybridVariantIds = dto.UnlockedHybridVariantIds
 			.Where(id => !string.IsNullOrWhiteSpace(id))
 			.Distinct(StringComparer.Ordinal)
 			.ToList();
@@ -50,6 +63,55 @@ public static class SaveMigrator
 			}
 			record.Normalize();
 		}
+
+		var normalizedDomainShards = new Dictionary<string, int>(StringComparer.Ordinal);
+		foreach (KeyValuePair<string, int> pair in dto.DomainShardWalletByDomain)
+		{
+			string domainId = NormalizeDomainId(pair.Key);
+			if (string.IsNullOrWhiteSpace(domainId))
+				continue;
+			int amount = Math.Max(0, pair.Value);
+			if (amount <= 0)
+				continue;
+			normalizedDomainShards[domainId] = amount;
+		}
+		dto.DomainShardWalletByDomain = normalizedDomainShards;
+
+		var normalizedConsumables = new Dictionary<string, int>(StringComparer.Ordinal);
+		foreach (KeyValuePair<string, int> pair in dto.ConsumableWalletById)
+		{
+			if (string.IsNullOrWhiteSpace(pair.Key))
+				continue;
+			int amount = Math.Max(0, pair.Value);
+			if (amount <= 0)
+				continue;
+			normalizedConsumables[pair.Key] = amount;
+		}
+		dto.ConsumableWalletById = normalizedConsumables;
+
+		var normalizedEventCharges = new Dictionary<string, int>(StringComparer.Ordinal);
+		foreach (KeyValuePair<string, int> pair in dto.EventChargesByEventId)
+		{
+			if (string.IsNullOrWhiteSpace(pair.Key))
+				continue;
+			if (!ProgressionDefs.TryGetEvent(pair.Key, out _))
+				continue;
+			int amount = Math.Max(0, pair.Value);
+			if (amount <= 0)
+				continue;
+			normalizedEventCharges[pair.Key] = amount;
+		}
+
+		// v5 legacy migration: unlocked event ids become one purchase bundle of charges by default.
+		foreach (string eventId in dto.UnlockedEventIds)
+		{
+			if (!ProgressionDefs.TryGetEvent(eventId, out EventUnlockDef def) || def == null)
+				continue;
+			int bundle = Math.Max(1, def.ChargeBundleAmount);
+			if (!normalizedEventCharges.TryGetValue(def.EventId, out int current) || current < bundle)
+				normalizedEventCharges[def.EventId] = bundle;
+		}
+		dto.EventChargesByEventId = normalizedEventCharges;
 
 		var normalized = new Dictionary<string, CharacterProgressDto>(StringComparer.Ordinal);
 		foreach (KeyValuePair<string, CharacterProgressDto> pair in dto.CharacterProgressById)
@@ -72,9 +134,17 @@ public static class SaveMigrator
 		dto = MigrateToCurrent(dto);
 		var state = new MetaProgressionState();
 		state.ReplaceCurrencySnapshot(dto.CurrencyWallet, dto.CurrencyEarnedTotal, dto.CurrencySpentTotal);
+		foreach (KeyValuePair<string, int> pair in dto.DomainShardWalletByDomain)
+			state.SetDomainShardBalance(pair.Key, pair.Value);
+		foreach (KeyValuePair<string, int> pair in dto.ConsumableWalletById)
+			state.SetConsumableCount(pair.Key, pair.Value);
+		foreach (KeyValuePair<string, int> pair in dto.EventChargesByEventId)
+			state.SetEventChargeCount(pair.Key, pair.Value);
 
 		foreach (string id in dto.UnlockedCharacterIds)
 			state.UnlockCharacter(id);
+		foreach (string variantId in dto.UnlockedHybridVariantIds)
+			state.UnlockHybridVariant(variantId);
 
 		foreach (KeyValuePair<string, CharacterProgressDto> pair in dto.CharacterProgressById)
 		{
@@ -115,8 +185,38 @@ public static class SaveMigrator
 			CurrencyEarnedTotal = state.CurrencyEarnedTotal,
 			CurrencySpentTotal = state.CurrencySpentTotal
 		};
+		foreach (KeyValuePair<string, int> pair in state.DomainShardWalletByDomain)
+		{
+			if (string.IsNullOrWhiteSpace(pair.Key))
+				continue;
+			if (pair.Value <= 0)
+				continue;
+			dto.DomainShardWalletByDomain[pair.Key] = pair.Value;
+		}
+		foreach (KeyValuePair<string, int> pair in state.ConsumableWalletById)
+		{
+			if (string.IsNullOrWhiteSpace(pair.Key))
+				continue;
+			if (pair.Value <= 0)
+				continue;
+			dto.ConsumableWalletById[pair.Key] = pair.Value;
+		}
+		foreach (KeyValuePair<string, int> pair in state.EventChargesByEventId)
+		{
+			if (string.IsNullOrWhiteSpace(pair.Key))
+				continue;
+			if (pair.Value <= 0)
+				continue;
+			dto.EventChargesByEventId[pair.Key] = pair.Value;
+		}
 
 		dto.UnlockedCharacterIds.AddRange(state.UnlockedCharacterIds);
+		foreach (KeyValuePair<string, int> pair in state.EventChargesByEventId)
+		{
+			if (!string.IsNullOrWhiteSpace(pair.Key) && pair.Value > 0)
+				dto.UnlockedEventIds.Add(pair.Key);
+		}
+		dto.UnlockedHybridVariantIds.AddRange(state.UnlockedHybridVariantIds);
 		dto.MetaFlags.AddRange(state.Flags.Values);
 		dto.SettledRunIds.AddRange(state.SettledRunIds);
 		dto.PerfectClearRecords.AddRange(state.PerfectClearRecords);
@@ -154,5 +254,16 @@ public static class SaveMigrator
 		if (string.Equals(characterId, LegacyTypoSowrdmanCharacterId, StringComparison.Ordinal))
 			return SwordsmanCharacterId;
 		return characterId;
+	}
+
+	private static string NormalizeDomainId(string domainId)
+	{
+		if (string.Equals(domainId, "Ice", StringComparison.OrdinalIgnoreCase))
+			return "Ice";
+		if (string.Equals(domainId, "War", StringComparison.OrdinalIgnoreCase))
+			return "War";
+		if (string.Equals(domainId, "Spacetime", StringComparison.OrdinalIgnoreCase))
+			return "Spacetime";
+		return string.Empty;
 	}
 }

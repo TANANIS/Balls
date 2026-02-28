@@ -65,6 +65,19 @@ Source: `docs/GAME_CONCEPT.md`, `docs/GameDirector_Design.md`
   - HP and XP visible only after run starts.
   - countdown shown during active run.
 
+## 4.1) Event Scheduling + Meta Containment Contract (V0.3)
+
+Source: `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
+
+- Event flow is pre-run loadout based, not random mid-run choice.
+- Run uses 4 fixed slots (Tier0~Tier3).
+- Distortion and affinity evaluate adjacent slots only.
+- Maximum same-domain consecutive slot count is `2` (current version).
+- "Pressure" is treated as game-time intensity:
+  - tune with timestamps/durations/tier time profiles first,
+  - do not introduce abstract `basePressureValue` balancing.
+- Domain shard rewards (`Ice`, `Spacetime`, `War`) settle into meta save through `MetaProgressionService`.
+
 ## 5) Upgrade/Card System Contract
 
 Source: `docs/CARDS.md`, `docs/CARDS_CHANGELOG.md`
@@ -160,6 +173,6 @@ Source: `docs/TODO.md`
   - architecture/system flow changes -> `docs/ARCHITECTURE.md`, `docs/SYSTEM_FLOW.md`
   - upgrade/card changes -> `docs/CARDS.md`, `docs/CARDS_CHANGELOG.md`
   - balancing priorities -> `docs/TODO.md`
+  - event scheduling/meta containment changes -> `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
   - structural refactor boundary changes -> `docs/SCRIPT_REFACTOR_PLAN.md` or guardrail docs
 - Keep `AGENTS.md` as an execution-focused index, not a changelog.
-

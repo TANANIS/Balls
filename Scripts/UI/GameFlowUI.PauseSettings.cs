@@ -14,6 +14,16 @@ public partial class GameFlowUI
 			OnCharacterSelectBackPressed();
 			return;
 		}
+		if (!_started && _startEventLoadoutOpen && Input.IsActionJustPressed("ui_cancel"))
+		{
+			OnEventLoadoutBackPressed();
+			return;
+		}
+		if (!_started && _startEventUnlockOpen && Input.IsActionJustPressed("ui_cancel"))
+		{
+			OnEventUnlockBackPressed();
+			return;
+		}
 		if (!_started && _startCardsOpen && Input.IsActionJustPressed("ui_cancel"))
 		{
 			OnStartCardsBackPressed();

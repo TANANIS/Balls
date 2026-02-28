@@ -1,4 +1,6 @@
 using Godot;
+using System;
+using System.Collections.Generic;
 
 public partial class RunContext : Node
 {
@@ -9,6 +11,7 @@ public partial class RunContext : Node
 	[Export] public CharacterDefinition DefaultCharacter;
 
 	public CharacterDefinition SelectedCharacter { get; private set; }
+	public EventLoadoutPlan CurrentEventLoadoutPlan { get; private set; }
 
 	public override void _Ready()
 	{
@@ -34,6 +37,21 @@ public partial class RunContext : Node
 		return SelectedCharacter ?? DefaultCharacter;
 	}
 
+	public void SetEventLoadoutPlan(EventLoadoutPlan plan)
+	{
+		CurrentEventLoadoutPlan = plan?.Clone();
+	}
+
+	public EventLoadoutPlan GetEventLoadoutPlan()
+	{
+		return CurrentEventLoadoutPlan?.Clone();
+	}
+
+	public void ClearEventLoadoutPlan()
+	{
+		CurrentEventLoadoutPlan = null;
+	}
+
 	private CharacterDefinition ResolveSelectableCharacterOrDefault(CharacterDefinition candidate)
 	{
 		CharacterDefinition fallback = DefaultCharacter ?? candidate;
@@ -44,5 +62,62 @@ public partial class RunContext : Node
 		if (fallback != null && MetaProgressionService.Instance.IsCharacterUnlocked(fallback.CharacterId))
 			return fallback;
 		return fallback;
+	}
+}
+
+public sealed class EventLoadoutPlan
+{
+	public List<EventLoadoutSlot> Slots { get; } = new();
+	public float EstimatedTimeIntensity { get; set; }
+	public int EstimatedShardReward { get; set; }
+	public string Notes { get; set; } = string.Empty;
+
+	public EventLoadoutPlan Clone()
+	{
+		var clone = new EventLoadoutPlan
+		{
+			EstimatedTimeIntensity = EstimatedTimeIntensity,
+			EstimatedShardReward = EstimatedShardReward,
+			Notes = Notes
+		};
+		foreach (EventLoadoutSlot slot in Slots)
+		{
+			if (slot == null)
+				continue;
+			clone.Slots.Add(slot.Clone());
+		}
+
+		return clone;
+	}
+}
+
+public sealed class EventLoadoutSlot
+{
+	public int SlotIndex { get; set; }
+	public int ResolvedTierIndex { get; set; }
+	public string DomainId { get; set; } = string.Empty;
+	public string EventId { get; set; } = string.Empty;
+	public string EventName { get; set; } = string.Empty;
+	public string DistortionLevel { get; set; } = "D0";
+	public string AffinityWithPrevious { get; set; } = "-";
+	public bool HybridVariantTriggered { get; set; }
+	public string HybridVariantId { get; set; } = string.Empty;
+	public bool DomainForcedByConsumable { get; set; }
+
+	public EventLoadoutSlot Clone()
+	{
+		return new EventLoadoutSlot
+		{
+			SlotIndex = SlotIndex,
+			ResolvedTierIndex = ResolvedTierIndex,
+			DomainId = DomainId,
+			EventId = EventId,
+			EventName = EventName,
+			DistortionLevel = DistortionLevel,
+			AffinityWithPrevious = AffinityWithPrevious,
+			HybridVariantTriggered = HybridVariantTriggered,
+			HybridVariantId = HybridVariantId,
+			DomainForcedByConsumable = DomainForcedByConsumable
+		};
 	}
 }

@@ -18,6 +18,9 @@ public partial class DebugCheatSystem : Node
 	private PanelContainer _panel;
 	private SpinBox _timeSecondsInput;
 	private SpinBox _walletInput;
+	private SpinBox _iceShardInput;
+	private SpinBox _spacetimeShardInput;
+	private SpinBox _warShardInput;
 	private SpinBox _hpInput;
 	private CheckBox _noDamageToggle;
 	private OptionButton _enemyIdOption;

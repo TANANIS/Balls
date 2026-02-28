@@ -51,6 +51,8 @@ public partial class StabilitySystem : Node
 	private bool _timeLimitReached;
 	private float _upgradeDecayMultiplier = 1f;
 	private float _playerPowerBonus = 0f;
+	private float _eventEnemySpeedMultiplier = 1f;
+	private float _eventPlayerPowerMultiplier = 1f;
 
 	public float CurrentStability => _stability;
 	public StabilityPhase CurrentPhase => _phase;
@@ -187,13 +189,14 @@ public partial class StabilitySystem : Node
 
 	public float GetEnemySpeedMultiplier()
 	{
-		return _phase switch
+		float phaseMult = _phase switch
 		{
 			StabilityPhase.EnergyAnomaly => EnergyAnomalyEnemySpeedMultiplier,
 			StabilityPhase.StructuralFracture => StructuralFractureEnemySpeedMultiplier,
 			StabilityPhase.CollapseCritical => CollapseCriticalEnemySpeedMultiplier,
 			_ => 1f
 		};
+		return phaseMult * _eventEnemySpeedMultiplier;
 	}
 
 	public float GetPlayerPowerMultiplier()
@@ -207,6 +210,7 @@ public partial class StabilitySystem : Node
 		};
 
 		baseMult *= (1f + _playerPowerBonus);
+		baseMult *= _eventPlayerPowerMultiplier;
 		return Mathf.Max(0.1f, baseMult);
 	}
 
@@ -297,6 +301,18 @@ public partial class StabilitySystem : Node
 		_playerPowerBonus = Mathf.Clamp(_playerPowerBonus + amount, 0f, 0.8f);
 	}
 
+	public void SetEventRuntimeMultipliers(float enemySpeedMultiplier, float playerPowerMultiplier)
+	{
+		_eventEnemySpeedMultiplier = Mathf.Clamp(enemySpeedMultiplier, 0.4f, 2.5f);
+		_eventPlayerPowerMultiplier = Mathf.Clamp(playerPowerMultiplier, 0.4f, 2.5f);
+	}
+
+	public void ResetEventRuntimeMultipliers()
+	{
+		_eventEnemySpeedMultiplier = 1f;
+		_eventPlayerPowerMultiplier = 1f;
+	}
+
 	public void DebugSetElapsedSeconds(float elapsedSeconds)
 	{
 		_elapsedSeconds = Mathf.Max(0f, elapsedSeconds);
@@ -315,6 +331,8 @@ public partial class StabilitySystem : Node
 		_timeLimitReached = false;
 		_upgradeDecayMultiplier = 1f;
 		_playerPowerBonus = 0f;
+		_eventEnemySpeedMultiplier = 1f;
+		_eventPlayerPowerMultiplier = 1f;
 		PhaseChanged?.Invoke(_phase);
 	}
 }

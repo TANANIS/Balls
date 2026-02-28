@@ -27,6 +27,15 @@ public partial class AudioManager
 		}
 		_lowHpLoopPlayer.ProcessMode = ProcessModeEnum.Always;
 		_lowHpLoopPlayer.VolumeDb = SfxVolumeDb;
+
+		_uiSlotRollLoopPlayer = GetNodeOrNull<AudioStreamPlayer>("UiSlotRollLoopPlayer");
+		if (_uiSlotRollLoopPlayer == null)
+		{
+			_uiSlotRollLoopPlayer = new AudioStreamPlayer { Name = "UiSlotRollLoopPlayer" };
+			AddChild(_uiSlotRollLoopPlayer);
+		}
+		_uiSlotRollLoopPlayer.ProcessMode = ProcessModeEnum.Always;
+		_uiSlotRollLoopPlayer.VolumeDb = SfxVolumeDb;
 	}
 
 	private void EnsureSfxPool()
@@ -67,6 +76,8 @@ public partial class AudioManager
 		_sfxUiButton = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_button.wav");
 		_sfxUiExit = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_exit.wav");
 		_sfxUiUpgradeSelect = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_upgrade_select.wav");
+		_sfxUiSlotRollLoop = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_slot_roll_loop.wav");
+		_sfxUiSlotRollStop = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_slot_roll_stop.wav");
 
 		_sfxPlayerDash = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_dash.wav");
 		_sfxPlayerFire = GD.Load<AudioStream>("res://Assets/Sound/Player/sfx_player_fire_wizard.wav");
@@ -149,6 +160,8 @@ public partial class AudioManager
 		SetBgmLoop(_sfxUiButton, loop: false);
 		SetBgmLoop(_sfxUiExit, loop: false);
 		SetBgmLoop(_sfxUiUpgradeSelect, loop: false);
+		SetBgmLoop(_sfxUiSlotRollLoop, loop: true);
+		SetBgmLoop(_sfxUiSlotRollStop, loop: false);
 		SetBgmLoop(_sfxPlayerDash, loop: false);
 		SetBgmLoop(_sfxPlayerFire, loop: false);
 		SetBgmLoop(_sfxPlayerFirePriest, loop: false);

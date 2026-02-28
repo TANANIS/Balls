@@ -9,8 +9,12 @@ public sealed class MetaProgressionState
 	public int CurrencyWallet { get; private set; }
 	public int CurrencyEarnedTotal { get; private set; }
 	public int CurrencySpentTotal { get; private set; }
+	public Dictionary<string, int> DomainShardWalletByDomain { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string, int> ConsumableWalletById { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string, int> EventChargesByEventId { get; } = new(StringComparer.Ordinal);
 
 	public HashSet<string> UnlockedCharacterIds { get; } = new();
+	public HashSet<string> UnlockedHybridVariantIds { get; } = new(StringComparer.Ordinal);
 	public Dictionary<string, CharacterProgress> CharacterProgressById { get; } = new(StringComparer.Ordinal);
 	public MetaFlags Flags { get; } = new();
 	public HashSet<string> SettledRunIds { get; } = new(StringComparer.Ordinal);
@@ -32,6 +36,53 @@ public sealed class MetaProgressionState
 		CurrencyEarnedTotal += amount;
 	}
 
+	public int GetDomainShardBalance(string domainId)
+	{
+		if (string.IsNullOrWhiteSpace(domainId))
+			return 0;
+		return DomainShardWalletByDomain.TryGetValue(domainId, out int count) ? Math.Max(0, count) : 0;
+	}
+
+	public void SetDomainShardBalance(string domainId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(domainId))
+			return;
+		int clamped = Math.Max(0, amount);
+		if (clamped <= 0)
+		{
+			DomainShardWalletByDomain.Remove(domainId);
+			return;
+		}
+
+		DomainShardWalletByDomain[domainId] = clamped;
+	}
+
+	public void AddDomainShards(string domainId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(domainId) || amount <= 0)
+			return;
+
+		int current = GetDomainShardBalance(domainId);
+		DomainShardWalletByDomain[domainId] = current + amount;
+	}
+
+	public bool TrySpendDomainShards(string domainId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(domainId) || amount <= 0)
+			return false;
+
+		int current = GetDomainShardBalance(domainId);
+		if (current < amount)
+			return false;
+
+		int next = current - amount;
+		if (next <= 0)
+			DomainShardWalletByDomain.Remove(domainId);
+		else
+			DomainShardWalletByDomain[domainId] = next;
+		return true;
+	}
+
 	public bool TrySpendCurrency(int amount)
 	{
 		if (amount <= 0)
@@ -44,12 +95,123 @@ public sealed class MetaProgressionState
 		return true;
 	}
 
+	public int GetConsumableCount(string itemId)
+	{
+		if (string.IsNullOrWhiteSpace(itemId))
+			return 0;
+		return ConsumableWalletById.TryGetValue(itemId, out int count) ? Math.Max(0, count) : 0;
+	}
+
+	public void SetConsumableCount(string itemId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(itemId))
+			return;
+		int clamped = Math.Max(0, amount);
+		if (clamped <= 0)
+		{
+			ConsumableWalletById.Remove(itemId);
+			return;
+		}
+
+		ConsumableWalletById[itemId] = clamped;
+	}
+
+	public void AddConsumable(string itemId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(itemId) || amount <= 0)
+			return;
+
+		int current = GetConsumableCount(itemId);
+		ConsumableWalletById[itemId] = current + amount;
+	}
+
+	public bool TrySpendConsumable(string itemId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(itemId) || amount <= 0)
+			return false;
+
+		int current = GetConsumableCount(itemId);
+		if (current < amount)
+			return false;
+
+		int next = current - amount;
+		if (next <= 0)
+			ConsumableWalletById.Remove(itemId);
+		else
+			ConsumableWalletById[itemId] = next;
+		return true;
+	}
+
+	public int GetEventChargeCount(string eventId)
+	{
+		if (string.IsNullOrWhiteSpace(eventId))
+			return 0;
+		return EventChargesByEventId.TryGetValue(eventId, out int count) ? Math.Max(0, count) : 0;
+	}
+
+	public void SetEventChargeCount(string eventId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(eventId))
+			return;
+		int clamped = Math.Max(0, amount);
+		if (clamped <= 0)
+		{
+			EventChargesByEventId.Remove(eventId);
+			return;
+		}
+
+		EventChargesByEventId[eventId] = clamped;
+	}
+
+	public void AddEventCharges(string eventId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(eventId) || amount <= 0)
+			return;
+
+		int current = GetEventChargeCount(eventId);
+		EventChargesByEventId[eventId] = current + amount;
+	}
+
+	public bool TrySpendEventCharges(string eventId, int amount)
+	{
+		if (string.IsNullOrWhiteSpace(eventId) || amount <= 0)
+			return false;
+
+		int current = GetEventChargeCount(eventId);
+		if (current < amount)
+			return false;
+
+		int next = current - amount;
+		if (next <= 0)
+			EventChargesByEventId.Remove(eventId);
+		else
+			EventChargesByEventId[eventId] = next;
+		return true;
+	}
+
 	public bool UnlockCharacter(string characterId)
 	{
 		if (string.IsNullOrWhiteSpace(characterId))
 			return false;
 
 		return UnlockedCharacterIds.Add(characterId);
+	}
+
+	public bool UnlockEvent(string eventId)
+	{
+		if (string.IsNullOrWhiteSpace(eventId))
+			return false;
+		if (GetEventChargeCount(eventId) > 0)
+			return false;
+		AddEventCharges(eventId, 1);
+		return true;
+	}
+
+	public bool UnlockHybridVariant(string variantId)
+	{
+		if (string.IsNullOrWhiteSpace(variantId))
+			return false;
+		return UnlockedHybridVariantIds.Add(variantId);
 	}
 
 	public CharacterProgress EnsureCharacterProgress(string characterId)

@@ -8,6 +8,13 @@ public partial class GameFlowUI
 	private const string StartSettingsPanelPath = "Panels/StartPanel/Panel/SettingsPanel";
 	private const string StartCardsPanelPath = "Panels/StartPanel/Panel/CardsPanel";
 	private const string StartCharacterSelectPanelPath = "Panels/StartPanel/Panel/CharacterSelectPanel";
+	private const string StartEventLoadoutPanelPath = "Panels/StartPanel/Panel/EventLoadoutPanel";
+	private const string StartEventLoadoutSlotsPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/Slots";
+	private const string StartEventLoadoutInventoryLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/InventoryLabel";
+	private const string StartEventLoadoutSummaryLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/SummaryPanel/Margin/SummaryLabel";
+	private const string StartEventLoadoutBackButtonPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/ActionButtons/BackButton";
+	private const string StartEventLoadoutRollAllButtonPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/ActionButtons/RollAllButton";
+	private const string StartEventLoadoutStartRunButtonPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/ActionButtons/StartRunButton";
 	private const string StartCharacterRangedButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/RangedButton";
 	private const string StartCharacterSwordsmanButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/SwordsmanButton";
 	private const string StartCharacterTankButtonPath = "Panels/StartPanel/Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons/TankButton";
@@ -55,10 +62,14 @@ public partial class GameFlowUI
 	private const string ExperienceBarPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceBar";
 	private const string ExperienceLabelPath = "Overlay/HudOverlay/ExperienceBarRoot/ExperienceLabel";
 	private const string MatchCountdownLabelPath = "Overlay/HudOverlay/MatchCountdownLabel";
-	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/Score";
-	private const string FinalSurvivalLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/Survival";
-	private const string FinalFluxGainLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/FluxGain";
-	private const string FinalFluxWalletLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsRow/FluxWallet";
+	private const string EventBannerLabelPath = "Overlay/HudOverlay/EventBannerLabel";
+	private const string EventHintLabelPath = "Overlay/HudOverlay/EventHintLabel";
+	private const string HybridToastLabelPath = "Overlay/HudOverlay/HybridToastLabel";
+	private const string FinalScoreLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsVBox/StatsRow/Score";
+	private const string FinalSurvivalLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsVBox/StatsRow/Survival";
+	private const string FinalFluxGainLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsVBox/StatsRow/FluxGain";
+	private const string FinalFluxWalletLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsVBox/StatsRow/FluxWallet";
+	private const string FinalShardBreakdownLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/StatsPanel/StatsMargin/StatsVBox/ShardBreakdown";
 	private const string PauseBuildSummaryLabelPath = "Panels/PausePanel/Panel/VBox/BuildSummary";
 	private const string FinalBuildSummaryLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/BuildSection/BuildMargin/BuildVBox/BuildScroll/BuildSummary";
 	private const string RestartTitleLabelPath = "Panels/RestartPanel/Panel/Margin/VBox/Header/Title";
@@ -83,6 +94,7 @@ public partial class GameFlowUI
 	private Control _startSettingsPanel;
 	private Control _startCardsPanel;
 	private Control _startCharacterSelectPanel;
+	private Control _startEventLoadoutPanel;
 	private Control _restartPanel;
 	private Control _pausePanel;
 	private Control _pauseMainVBox;
@@ -104,6 +116,11 @@ public partial class GameFlowUI
 	private Label _startCharacterFluxValueLabel;
 	private Button _startCharacterBackButton;
 	private Button _startCharacterConfirmButton;
+	private Button _startEventLoadoutBackButton;
+	private Button _startEventLoadoutRollAllButton;
+	private Button _startEventLoadoutStartRunButton;
+	private Label _startEventLoadoutInventoryLabel;
+	private Label _startEventLoadoutSummaryLabel;
 	private Button _restartBackToMetaButton;
 	private Button _restartButton;
 	private Button _pauseResumeButton;
@@ -129,10 +146,14 @@ public partial class GameFlowUI
 	private ProgressBar _experienceBar;
 	private Label _experienceLabel;
 	private Label _matchCountdownLabel;
+	private Label _eventBannerLabel;
+	private Label _eventHintLabel;
+	private Label _hybridToastLabel;
 	private Label _finalScoreLabel;
 	private Label _finalSurvivalLabel;
 	private Label _finalFluxGainLabel;
 	private Label _finalFluxWalletLabel;
+	private Label _finalShardBreakdownLabel;
 	private Label _pauseBuildSummaryLabel;
 	private Label _finalBuildSummaryLabel;
 	private Label _restartTitleLabel;
@@ -143,6 +164,7 @@ public partial class GameFlowUI
 	private ScoreSystem _scoreSystem;
 	private StabilitySystem _stabilitySystem;
 	private ProgressionSystem _progressionSystem;
+	private EventDirector _eventDirector;
 	private CanvasItem _background;
 	private ColorRect _backgroundDimmer;
 	private Sprite2D _menuBackground;
@@ -157,6 +179,7 @@ public partial class GameFlowUI
 	private bool _startSettingsOpen;
 	private bool _startCardsOpen;
 	private bool _startCharacterSelectOpen;
+	private bool _startEventLoadoutOpen;
 	private bool _pendingFinalBossKillClear;
 	private bool _suppressSettingsSignal;
 	private string _currentRunId = string.Empty;
@@ -165,5 +188,9 @@ public partial class GameFlowUI
 	private CharacterDefinition _tankCharacter;
 	private CharacterDefinition _archerCharacter;
 	private CharacterDefinition _selectedCharacterDefinition;
+	private readonly OptionButton[] _startEventLoadoutDomainOptions = new OptionButton[4];
+	private readonly Button[] _startEventLoadoutRollButtons = new Button[4];
+	private readonly Label[] _startEventLoadoutResultLabels = new Label[4];
+	private readonly EventLoadoutDraftSlot[] _eventLoadoutDraftSlots = new EventLoadoutDraftSlot[4];
 
 }

@@ -9,6 +9,8 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = true;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true);
 
 		if (_selectedCharacterDefinition == null)
@@ -74,7 +76,7 @@ public partial class GameFlowUI
 			else if (IsCharacterUnlocked(_selectedCharacterDefinition))
 			{
 				_startCharacterConfirmButton.Disabled = false;
-				_startCharacterConfirmButton.Text = Tr("UI.START.CONFIRM_START_RUN");
+				_startCharacterConfirmButton.Text = TrOrDefault("UI.START.CONFIRM_TO_EVENT_UNLOCK", "Next: Event Unlock", "Next: Event Unlock");
 			}
 			else
 			{
@@ -218,6 +220,8 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		_startButton?.GrabFocus();
 	}
@@ -247,7 +251,7 @@ public partial class GameFlowUI
 
 		AudioManager.Instance?.PlaySfxUiButton();
 		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
-		StartRun();
+		EnterEventUnlockPanel();
 	}
 
 	private static bool IsCharacterUnlocked(CharacterDefinition def)

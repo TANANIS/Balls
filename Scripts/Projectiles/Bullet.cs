@@ -115,6 +115,7 @@ public partial class Bullet : Area2D
 		$"{ElementalBurstExplosionFramesBasePath}/elemental_burst_explosion_05.png"
 	};
 	private CombatSystem _combat;
+	private EventDirector _eventDirector;
 	private AnimatedSprite2D _fx;
 	private float _frameTimer = 0f;
 	private int _currentFrame = 0;
@@ -196,6 +197,7 @@ public partial class Bullet : Area2D
 	{
 		_travelDistance = 0f;
 		TryResolveCombatSystem();
+		TryResolveEventDirector();
 		ResolveEffect();
 		BuildEffectFramesIfNeeded();
 		if (_fx?.SpriteFrames != null && _fx.SpriteFrames.HasAnimation("default") && _fx.SpriteFrames.GetFrameCount("default") > 0)
@@ -236,8 +238,11 @@ public partial class Bullet : Area2D
 
 		if (!_impactStarted && _prepareFinished)
 		{
+			if (_eventDirector == null)
+				TryResolveEventDirector();
 			UpdateHomingDirection(dt);
-			Vector2 step = _dir * _speed * dt;
+			float eventSpeedMult = _eventDirector?.GetProjectileSpeedMultiplierAt(GlobalPosition) ?? 1f;
+			Vector2 step = _dir * (_speed * eventSpeedMult) * dt;
 			GlobalPosition += step;
 			_travelDistance += step.Length();
 			ApplyFacingByDirection();
@@ -264,6 +269,16 @@ public partial class Bullet : Area2D
 		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
+	}
+
+	private void TryResolveEventDirector()
+	{
+		if (_eventDirector != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+		if (list.Count > 0)
+			_eventDirector = list[0] as EventDirector;
 	}
 
 	private void BeginImpact()

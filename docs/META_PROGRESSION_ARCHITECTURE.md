@@ -1,5 +1,5 @@
 # Meta Progression Architecture (2026-02-23)
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 ## Status
@@ -12,12 +12,20 @@ Last Synced: 2026-02-27
   - A. New characters
   - B. Character levels
   - C. Character-specific ability tree
+- Add domain-shard progression for event scheduling:
+  - D. Event charge purchases and consume flow
+  - E. Hybrid variant unlocks
+- Add talisman progression umbrella for:
+  - event unlock/charge access,
+  - event upgrade tracks,
+  - class progression tracks.
 - Prevent reward inflation with smooth diminishing returns (soft cap curve).
 
 ## Design Principles
 - Separate run-time and meta-time domains.
 - Single transaction entry for all meta mutations.
 - Data-first definitions, implementation-first abstractions.
+- Keep event economy deterministic and previewable before run start.
 - Keep extension points limited to:
   - reward curve,
   - progression definitions,
@@ -49,10 +57,11 @@ Scripts/
 
 ## Core Responsibilities
 - `MetaProgressionService`:
-  - the only write entry for currency/unlock/upgrade/tree actions.
+  - the only write entry for currency/unlock/upgrade/tree/event actions.
   - validates preconditions, applies changes, persists state.
 - `RewardCalculator`:
   - computes reward from `RunResult` with full breakdown.
+  - includes domain shard reward settlement.
 - `PowerCurve`:
   - smooth diminishing returns curve for score-to-currency conversion.
 - `ProgressionDefs`:
@@ -91,9 +100,12 @@ total = max(0, soft + bonus + firstClearBonus)
 ## Progression Domain Model
 - `MetaProgressionState`:
   - `CurrencyWallet`
+  - `DomainShardWalletByDomain`
   - `CurrencyEarnedTotal`
   - `CurrencySpentTotal`
   - `HashSet<string> UnlockedCharacterIds`
+  - `Dictionary<string, int> EventChargesByEventId`
+  - `HashSet<string> UnlockedHybridVariantIds`
   - `Dictionary<string, CharacterProgress> CharacterProgressById`
   - `HashSet<string> MetaFlags`
   - `HashSet<string> SettledRunIds` (anti-duplicate settlement)
@@ -107,17 +119,26 @@ total = max(0, soft + bonus + firstClearBonus)
 - `TryUnlockCharacter(string characterId) -> bool`
 - `TryUpgradeCharacterLevel(string characterId) -> bool`
 - `TryUnlockAbilityNode(string characterId, string nodeId) -> bool`
+- `TryPurchaseEventCharges(string eventId, int purchaseCount=1) -> bool`
+- `TryConsumeEventCharge(string eventId, int amount=1) -> bool`
+- `TryUnlockHybridVariant(string variantId) -> bool`
 - Query methods:
   - `CanUnlockCharacter(...)`
   - `CanUpgradeCharacterLevel(...)`
   - `CanUnlockAbilityNode(...)`
   - `IsCharacterUnlocked(...)`
+  - `CanPurchaseEventCharges(...)`
+  - `GetEventChargeCount(eventId)`
+  - `CanUnlockHybridVariant(...)`
+  - `GetDomainShardBalance(domainId)`
 
 ## Save Contract
 - `MetaSaveDto` should include:
   - `Version`
   - wallet and totals
+  - domain shard wallet
   - unlocked sets
+  - event charge inventory and unlocked hybrid-variant set
   - character progression map
   - settled run IDs
 - `SaveMigrator`:
@@ -129,14 +150,22 @@ total = max(0, soft + bonus + firstClearBonus)
   - from `GameFlowUI` end-state path after score is finalized.
 - Score source:
   - `ScoreSystem.Score`
+- Event reward source:
+  - event completion ledger accumulated during run and settled at run end.
+  - current implementation source: `EventDirector.GetRunDomainShardRewardsSnapshot()` -> `RunResult.DomainShardRewardsByDomain`.
 - Character availability:
   - gate in character-select flow (`GameFlowUI.CharacterSelect.cs`) through meta query.
+- Event availability:
+  - gate in pre-run loadout UI through charge-count query (`count > 0`).
 - Runtime selection:
   - `RunContext` should reject non-unlocked character selection.
+  - `RunContext` should reject run loadouts with zero-charge events.
 
 ## Safety / Exploit Controls
 - Settlement idempotency via `SettledRunIds` and unique `RunId`.
 - No direct wallet mutation outside `MetaProgressionService`.
+- No direct domain-shard mutation outside `MetaProgressionService`.
+- No direct event-charge mutation outside `MetaProgressionService`.
 - Clamp all reward outputs to non-negative values.
 - Persist immediately after successful transaction.
 

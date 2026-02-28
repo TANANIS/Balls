@@ -15,6 +15,7 @@ public partial class EnemyProjectile : Area2D
 	private int _damage = 1;
 	private Node _source;
 	private CombatSystem _combat;
+	private EventDirector _eventDirector;
 	private float _lifeTimer = 0f;
 	private float _hitArmTimer = 0f;
 	private bool _hasHit = false;
@@ -33,6 +34,7 @@ public partial class EnemyProjectile : Area2D
 	public override void _Ready()
 	{
 		TryResolveCombatSystem();
+		TryResolveEventDirector();
 		AreaEntered += OnAreaEntered;
 		BodyEntered += OnBodyEntered;
 	}
@@ -52,7 +54,10 @@ public partial class EnemyProjectile : Area2D
 			return;
 		}
 
-		GlobalPosition += _dir * _speed * dt;
+		if (_eventDirector == null)
+			TryResolveEventDirector();
+		float eventSpeedMult = _eventDirector?.GetProjectileSpeedMultiplierAt(GlobalPosition) ?? 1f;
+		GlobalPosition += _dir * (_speed * eventSpeedMult) * dt;
 		if (DespawnOutsideViewport && IsOutsideActiveCameraViewport())
 		{
 			QueueFree();
@@ -123,6 +128,16 @@ public partial class EnemyProjectile : Area2D
 		var list = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (list.Count > 0)
 			_combat = list[0] as CombatSystem;
+	}
+
+	private void TryResolveEventDirector()
+	{
+		if (_eventDirector != null)
+			return;
+
+		var list = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+		if (list.Count > 0)
+			_eventDirector = list[0] as EventDirector;
 	}
 
 	private void ApplyFacingByDirection()

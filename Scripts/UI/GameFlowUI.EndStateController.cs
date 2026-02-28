@@ -131,6 +131,8 @@ public partial class GameFlowUI
 			string walletLabel = TrOrDefault("UI.META.FLUX_WALLET", "Aether Wallet", "\u9748\u5875\u9918\u984d");
 			_finalFluxWalletLabel.Text = $"{walletLabel}: {wallet}";
 		}
+		if (_finalShardBreakdownLabel != null)
+			_finalShardBreakdownLabel.Text = BuildRunShardBreakdownText(flux.DomainShardGainsByDomain);
 
 		RefreshFinalBuildSummary();
 
@@ -161,16 +163,56 @@ public partial class GameFlowUI
 
 	private RewardBreakdown SettleMetaProgression(int score, bool isPerfectClear)
 	{
+		Dictionary<string, int> runShardRewards = ResolveRunDomainShardRewards();
 		var result = new RunResult
 		{
 			RunId = _currentRunId,
 			Score = score,
 			CharacterId = ResolvePerfectCharacterId(),
-			IsPerfectClear = isPerfectClear
+			IsPerfectClear = isPerfectClear,
+			DomainShardRewardsByDomain = runShardRewards
 		};
 
 		RewardBreakdown breakdown = MetaProgressionService.Instance.SettleRun(result);
 		return breakdown;
+	}
+
+	private Dictionary<string, int> ResolveRunDomainShardRewards()
+	{
+		if (!GodotObject.IsInstanceValid(_eventDirector))
+		{
+			var eventDirectorList = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+			if (eventDirectorList.Count > 0)
+				_eventDirector = eventDirectorList[0] as EventDirector;
+		}
+
+		return _eventDirector?.GetRunDomainShardRewardsSnapshot()
+			?? new Dictionary<string, int>(StringComparer.Ordinal);
+	}
+
+	private string BuildRunShardBreakdownText(Dictionary<string, int> shardGainsByDomain)
+	{
+		int ice = 0;
+		int spacetime = 0;
+		int war = 0;
+		if (shardGainsByDomain != null)
+		{
+			if (shardGainsByDomain.TryGetValue("Ice", out int valueIce))
+				ice = Mathf.Max(0, valueIce);
+			if (shardGainsByDomain.TryGetValue("Spacetime", out int valueSpacetime))
+				spacetime = Mathf.Max(0, valueSpacetime);
+			if (shardGainsByDomain.TryGetValue("War", out int valueWar))
+				war = Mathf.Max(0, valueWar);
+		}
+
+		string template = TrOrDefault(
+			"UI.END.SHARDS_BREAKDOWN",
+			"Shards: {0} +{1} | {2} +{3} | {4} +{5}",
+			"Shards: {0} +{1} | {2} +{3} | {4} +{5}");
+		string iceLabel = TrOrDefault("UI.DOMAIN.ICE", "Ice", "Ice");
+		string spacetimeLabel = TrOrDefault("UI.DOMAIN.SPACETIME", "Spacetime", "Spacetime");
+		string warLabel = TrOrDefault("UI.DOMAIN.WAR", "War", "War");
+		return string.Format(template, iceLabel, ice, spacetimeLabel, spacetime, warLabel, war);
 	}
 
 	private string ResolvePerfectCharacterId()

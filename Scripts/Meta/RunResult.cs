@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public sealed class RunResult
 {
@@ -8,4 +9,5 @@ public sealed class RunResult
 	public bool IsPerfectClear { get; set; }
 	public bool IsFirstClearForCharacter { get; set; }
 	public bool IsFirstClearGlobal { get; set; }
+	public Dictionary<string, int> DomainShardRewardsByDomain { get; set; } = new(StringComparer.Ordinal);
 }

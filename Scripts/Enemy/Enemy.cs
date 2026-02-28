@@ -23,6 +23,7 @@ public partial class Enemy : CharacterBody2D
 	private EnemyHealth _health;
 	private Node2D _player;
 	private StabilitySystem _stabilitySystem;
+	private EventDirector _eventDirector;
 	private EnemyBehaviorModule _behavior;
 	private EnemySeparationModule _separation;
 	private AnimatedSprite2D _animatedSprite;
@@ -40,6 +41,7 @@ public partial class Enemy : CharacterBody2D
 		_sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 		ResolvePlayer();
 		ResolveStabilitySystem();
+		ResolveEventDirector();
 		ResolveBehavior();
 		ResolveSeparation();
 		ResolveEvents();
@@ -69,10 +71,19 @@ public partial class Enemy : CharacterBody2D
 			ResolvePlayer();
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
+		if (!IsInstanceValid(_eventDirector))
+			ResolveEventDirector();
 
 		Vector2 desired = GetDesiredVelocity(delta);
 		if (_stabilitySystem != null)
 			desired *= _stabilitySystem.GetEnemySpeedMultiplier();
+		if (_eventDirector != null)
+		{
+			desired *= _eventDirector.GetMoveMultiplierAt(GlobalPosition, GetInstanceId(), isPlayer: false);
+			Vector2 external = _eventDirector.GetExternalVelocityAt(GlobalPosition);
+			if (external.LengthSquared() > 0f)
+				desired += external;
+		}
 		float moveRate = desired == Vector2.Zero ? Friction : Accel;
 		Velocity = Velocity.MoveToward(desired, Mathf.Max(1f, moveRate) * dt);
 

@@ -5,6 +5,7 @@ public partial class GameFlowUI
 	private void ShowStartPanel()
 	{
 		// Enter title/menu state and pause gameplay simulation.
+		ResetEventLoadoutDraftState();
 		_started = false;
 		_ending = false;
 		_pauseMenuOpen = false;
@@ -12,6 +13,8 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		_currentRunId = string.Empty;
 		SetGameplayObjectsVisible(false);
 		if (_startPanel != null) _startPanel.Visible = true;
@@ -21,6 +24,9 @@ public partial class GameFlowUI
 		if (_playerHealthBar != null) _playerHealthBar.Visible = false;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = false;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = false;
+		if (_eventBannerLabel != null) _eventBannerLabel.Visible = false;
+		if (_eventHintLabel != null) _eventHintLabel.Visible = false;
+		if (_hybridToastLabel != null) _hybridToastLabel.Visible = false;
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
@@ -75,6 +81,8 @@ public partial class GameFlowUI
 		_startSettingsOpen = true;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: true, showCards: false, showCharacterSelect: false);
 		_startSettingsBackButton?.GrabFocus();
 	}
@@ -85,6 +93,8 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = true;
 		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: true, showCharacterSelect: false);
 		RefreshStartCardsCompendium();
 		_startCardsBackButton?.GrabFocus();
@@ -118,6 +128,8 @@ public partial class GameFlowUI
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
 		_currentRunId = System.Guid.NewGuid().ToString("N");
 		SetGameplayObjectsVisible(true);
 		if (_startPanel != null) _startPanel.Visible = false;
@@ -127,6 +139,9 @@ public partial class GameFlowUI
 		if (_playerHealthBar != null) _playerHealthBar.Visible = true;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = true;
 		if (_matchCountdownLabel != null) _matchCountdownLabel.Visible = true;
+		if (_eventBannerLabel != null) _eventBannerLabel.Visible = false;
+		if (_eventHintLabel != null) _eventHintLabel.Visible = false;
+		if (_hybridToastLabel != null) _hybridToastLabel.Visible = false;
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = true;
 		if (_background is ProceduralTerrainBackground terrainBackground)
@@ -174,6 +189,13 @@ public partial class GameFlowUI
 		{
 			if (node is SpawnSystem spawnSystem)
 				spawnSystem.ResetForNewRun();
+		}
+
+		var eventDirectors = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+		foreach (Node node in eventDirectors)
+		{
+			if (node is EventDirector eventDirector)
+				eventDirector.ResetForNewRun();
 		}
 	}
 
@@ -235,7 +257,7 @@ public partial class GameFlowUI
 			_obstaclesRoot.Visible = visible;
 	}
 
-	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect)
+	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect, bool showEventLoadout = false, bool showEventUnlock = false)
 	{
 		if (_startMainVBox != null)
 			_startMainVBox.Visible = showMain;
@@ -245,6 +267,10 @@ public partial class GameFlowUI
 			_startCardsPanel.Visible = showCards;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = showCharacterSelect;
+		if (_startEventLoadoutPanel != null)
+			_startEventLoadoutPanel.Visible = showEventLoadout;
+		if (_startEventUnlockPanel != null)
+			_startEventUnlockPanel.Visible = showEventUnlock;
 	}
 
 	private void SetPausePanels(bool showPausePanel, bool showMain, bool showSettings)

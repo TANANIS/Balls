@@ -69,3 +69,51 @@ theme_override_font_sizes/font_size = 20
 text = "15:00"
 horizontal_alignment = 2
 
+[node name="EventBannerLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 54.0
+offset_right = 260.0
+offset_bottom = 90.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.97, 0.90, 0.78, 0.95)
+theme_override_font_sizes/font_size = 22
+text = "TIER0 IceStorm [D0]"
+horizontal_alignment = 1
+
+[node name="EventHintLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 88.0
+offset_right = 360.0
+offset_bottom = 116.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.90, 0.94, 1, 0.96)
+theme_override_font_sizes/font_size = 16
+text = "Event hint"
+horizontal_alignment = 1
+
+[node name="HybridToastLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -340.0
+offset_top = 118.0
+offset_right = 340.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.46, 0.97)
+theme_override_font_sizes/font_size = 20
+text = "HYBRID TRIGGERED"
+horizontal_alignment = 1
+

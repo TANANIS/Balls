@@ -4,6 +4,7 @@ public static class RuntimeGroups
 	public const string CombatSystem = "CombatSystem";
 	public const string SpawnSystem = "SpawnSystem";
 	public const string StabilitySystem = "StabilitySystem";
+	public const string EventDirector = "EventDirector";
 	public const string ProgressionSystem = "ProgressionSystem";
 	public const string UpgradeSystem = "UpgradeSystem";
 	public const string ScoreSystem = "ScoreSystem";

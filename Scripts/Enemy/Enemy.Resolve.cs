@@ -32,6 +32,11 @@ public partial class Enemy
 		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
 	}
 
+	private void ResolveEventDirector()
+	{
+		_eventDirector = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.EventDirector, _eventDirector);
+	}
+
 	private void ResolveSeparation()
 	{
 		_separation = GetNodeOrNull<EnemySeparationModule>(SeparationPath);

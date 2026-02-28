@@ -10,6 +10,7 @@ public partial class PlayerMovement : Node
 
 	private Player _player;
 	private StabilitySystem _stabilitySystem;
+	private EventDirector _eventDirector;
 	private float _movementFreezeTimer = 0f;
 	private float _freezeReapplyTimer = 0f;
 
@@ -17,12 +18,15 @@ public partial class PlayerMovement : Node
 	{
 		_player = player;
 		ResolveStabilitySystem();
+		ResolveEventDirector();
 	}
 
 	public void Tick(float dt, Vector2 inputDir)
 	{
 		if (!IsInstanceValid(_stabilitySystem))
 			ResolveStabilitySystem();
+		if (!IsInstanceValid(_eventDirector))
+			ResolveEventDirector();
 		if (_freezeReapplyTimer > 0f)
 			_freezeReapplyTimer = Mathf.Max(0f, _freezeReapplyTimer - dt);
 
@@ -39,12 +43,16 @@ public partial class PlayerMovement : Node
 		float inputSign = _stabilitySystem?.InputDirectionSign ?? 1f;
 		Vector2 runtimeInput = inputDir * inputSign;
 		bool hasInput = runtimeInput.LengthSquared() > 0.0001f;
+		float eventMoveMult = _eventDirector?.GetMoveMultiplierAt(_player.GlobalPosition, _player.GetInstanceId(), isPlayer: true) ?? 1f;
 
-		Vector2 targetVel = runtimeInput * MaxSpeed;
+		Vector2 targetVel = runtimeInput * MaxSpeed * eventMoveMult;
 		float rate = hasInput ? Accel : Friction;
 		rate *= Mathf.Max(0.1f, inertiaMult);
 
 		_player.Velocity = _player.Velocity.MoveToward(targetVel, rate * dt);
+		Vector2 eventExternalVelocity = _eventDirector?.GetExternalVelocityAt(_player.GlobalPosition) ?? Vector2.Zero;
+		if (eventExternalVelocity.LengthSquared() > 0f)
+			_player.Velocity += eventExternalVelocity * dt;
 
 		if (!hasInput && _player.Velocity.Length() < StopThreshold)
 			_player.Velocity = Vector2.Zero;
@@ -68,6 +76,11 @@ public partial class PlayerMovement : Node
 	private void ResolveStabilitySystem()
 	{
 		_stabilitySystem = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.StabilitySystem, _stabilitySystem);
+	}
+
+	private void ResolveEventDirector()
+	{
+		_eventDirector = GroupServiceResolver.ResolveFirstInGroup(this, RuntimeGroups.EventDirector, _eventDirector);
 	}
 
 	public void SetBaseStats(float maxSpeed, float accel, float friction, float stopThreshold)

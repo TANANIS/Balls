@@ -444,6 +444,665 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Start Run"
 
+[node name="EventUnlockPanel" type="Control" parent="Panel"]
+visible = false
+anchors_preset = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 668.0
+offset_bottom = 620.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventUnlockPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/EventUnlockPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/EventUnlockPanel/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 34
+text = "Order Archive: Event Unlocks"
+
+[node name="ShardWallet" type="Label" parent="Panel/EventUnlockPanel/VBox/HeaderRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.83, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "Shard Wallet: Ice 0 | Spacetime 0 | War 0"
+horizontal_alignment = 2
+
+[node name="Intro" type="Label" parent="Panel/EventUnlockPanel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_font_sizes/font_size = 14
+text = "Spend domain shards to unlock events and hybrid variants."
+autowrap_mode = 3
+
+[node name="SectionsScroll" type="ScrollContainer" parent="Panel/EventUnlockPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SectionsVBox" type="VBoxContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="EventSection" type="Panel" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="SectionTitle" type="Label" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.72, 1)
+theme_override_font_sizes/font_size = 20
+text = "Events"
+
+[node name="EventList" type="VBoxContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="HybridSection" type="Panel" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="SectionTitle" type="Label" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.72, 1)
+theme_override_font_sizes/font_size = 20
+text = "Hybrid Variants"
+
+[node name="HybridList" type="VBoxContainer" parent="Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="ActionButtons" type="HBoxContainer" parent="Panel/EventUnlockPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackButton" type="Button" parent="Panel/EventUnlockPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"
+
+[node name="ContinueButton" type="Button" parent="Panel/EventUnlockPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Next: Event Loadout"
+
+[node name="EventLoadoutPanel" type="Control" parent="Panel"]
+visible = false
+anchors_preset = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 668.0
+offset_bottom = 620.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Panel/EventLoadoutPanel/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 40
+text = "Arrange the Calamities"
+horizontal_alignment = 1
+
+[node name="InventoryLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.78, 0.66, 0.92)
+theme_override_font_sizes/font_size = 14
+text = "Order Sigils: Ice 0 | Spacetime 0 | War 0"
+horizontal_alignment = 1
+
+[node name="Slots" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox"]
+custom_minimum_size = Vector2(0, 390)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Slot1" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
+layout_mode = 2
+
+[node name="TierTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "TIER 0"
+
+[node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/TopRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_font_sizes/font_size = 14
+text = "D0"
+horizontal_alignment = 2
+
+[node name="IconLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.88, 1, 1)
+theme_override_font_sizes/font_size = 52
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 26
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="IntensityValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚠ 0"
+horizontal_alignment = 1
+
+[node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "◆ 0"
+horizontal_alignment = 1
+
+[node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DomainOption" type="OptionButton" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RollButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/Controls"]
+visible = false
+custom_minimum_size = Vector2(68, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+disabled = true
+text = ""
+
+[node name="Slot2" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
+layout_mode = 2
+
+[node name="TierTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "TIER 1"
+
+[node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/TopRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_font_sizes/font_size = 14
+text = "D0"
+horizontal_alignment = 2
+
+[node name="IconLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.51, 0.43, 1)
+theme_override_font_sizes/font_size = 52
+text = "⚔"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 26
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="IntensityValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚠ 0"
+horizontal_alignment = 1
+
+[node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "◆ 0"
+horizontal_alignment = 1
+
+[node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DomainOption" type="OptionButton" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RollButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/Controls"]
+visible = false
+custom_minimum_size = Vector2(68, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+disabled = true
+text = ""
+
+[node name="Slot3" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
+layout_mode = 2
+
+[node name="TierTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "TIER 2"
+
+[node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/TopRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_font_sizes/font_size = 14
+text = "D0"
+horizontal_alignment = 2
+
+[node name="IconLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.53, 1, 1)
+theme_override_font_sizes/font_size = 52
+text = "◉"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 26
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="IntensityValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚠ 0"
+horizontal_alignment = 1
+
+[node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "◆ 0"
+horizontal_alignment = 1
+
+[node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DomainOption" type="OptionButton" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RollButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/Controls"]
+visible = false
+custom_minimum_size = Vector2(68, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+disabled = true
+text = ""
+
+[node name="Slot4" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="TopRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
+layout_mode = 2
+
+[node name="TierTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "TIER 3"
+
+[node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/TopRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_font_sizes/font_size = 14
+text = "D0"
+horizontal_alignment = 2
+
+[node name="IconLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.34, 0.34, 1)
+theme_override_font_sizes/font_size = 52
+text = "☠"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_font_sizes/font_size = 26
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="IntensityValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚠ 0"
+horizontal_alignment = 1
+
+[node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/Stats"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "◆ 0"
+horizontal_alignment = 1
+
+[node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DomainOption" type="OptionButton" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RollButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/Controls"]
+visible = false
+custom_minimum_size = Vector2(68, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+disabled = true
+text = ""
+
+[node name="EstimatedRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EstimatedIntensityLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Estimated Intensity:"
+
+[node name="EstimatedIntensityValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 36
+text = "0"
+
+[node name="Spacer" type="Control" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
+custom_minimum_size = Vector2(18, 0)
+layout_mode = 2
+
+[node name="EstimatedRewardLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Estimated Shard Reward:"
+
+[node name="EstimatedRewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_font_sizes/font_size = 36
+text = "0"
+
+[node name="SummaryPanel" type="Panel" parent="Panel/EventLoadoutPanel/VBox"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel/EventLoadoutPanel/VBox/SummaryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="SummaryLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/SummaryPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_font_sizes/font_size = 13
+text = "Rule: max two same-domain consecutive slots."
+autowrap_mode = 3
+
+[node name="ActionButtons" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"
+
+[node name="RollAllButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/ActionButtons"]
+visible = false
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+disabled = true
+text = ""
+
+[node name="StartRunButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Start Run"
+
 [node name="SettingsPanel" type="Control" parent="Panel"]
 visible = false
 anchors_preset = 0

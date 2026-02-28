@@ -14,6 +14,7 @@ public partial class GameFlowUI
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
 		_startCardsPanel = GetNodeOrNull<Control>(StartCardsPanelPath);
 		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
+		_startEventLoadoutPanel = GetNodeOrNull<Control>(StartEventLoadoutPanelPath);
 		_restartPanel = GetNodeOrNull<Control>(RestartPanelPath);
 		_pausePanel = GetNodeOrNull<Control>(PausePanelPath);
 		_pauseMainVBox = GetNodeOrNull<Control>(PauseMainVBoxPath);
@@ -35,6 +36,11 @@ public partial class GameFlowUI
 		_startCharacterFluxValueLabel = GetNodeOrNull<Label>(StartCharacterFluxValuePath);
 		_startCharacterBackButton = GetNodeOrNull<Button>(StartCharacterBackButtonPath);
 		_startCharacterConfirmButton = GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
+		_startEventLoadoutBackButton = GetNodeOrNull<Button>(StartEventLoadoutBackButtonPath);
+		_startEventLoadoutRollAllButton = GetNodeOrNull<Button>(StartEventLoadoutRollAllButtonPath);
+		_startEventLoadoutStartRunButton = GetNodeOrNull<Button>(StartEventLoadoutStartRunButtonPath);
+		_startEventLoadoutInventoryLabel = GetNodeOrNull<Label>(StartEventLoadoutInventoryLabelPath);
+		_startEventLoadoutSummaryLabel = GetNodeOrNull<Label>(StartEventLoadoutSummaryLabelPath);
 		_restartBackToMetaButton = GetNodeOrNull<Button>(RestartBackToMetaButtonPath);
 		_restartButton = GetNodeOrNull<Button>(RestartButtonPath);
 		_pauseResumeButton = GetNodeOrNull<Button>(PauseResumeButtonPath);
@@ -60,10 +66,14 @@ public partial class GameFlowUI
 		_experienceBar = GetNodeOrNull<ProgressBar>(ExperienceBarPath);
 		_experienceLabel = GetNodeOrNull<Label>(ExperienceLabelPath);
 		_matchCountdownLabel = GetNodeOrNull<Label>(MatchCountdownLabelPath);
+		_eventBannerLabel = GetNodeOrNull<Label>(EventBannerLabelPath);
+		_eventHintLabel = GetNodeOrNull<Label>(EventHintLabelPath);
+		_hybridToastLabel = GetNodeOrNull<Label>(HybridToastLabelPath);
 		_finalScoreLabel = GetNodeOrNull<Label>(FinalScoreLabelPath);
 		_finalSurvivalLabel = GetNodeOrNull<Label>(FinalSurvivalLabelPath);
 		_finalFluxGainLabel = GetNodeOrNull<Label>(FinalFluxGainLabelPath);
 		_finalFluxWalletLabel = GetNodeOrNull<Label>(FinalFluxWalletLabelPath);
+		_finalShardBreakdownLabel = GetNodeOrNull<Label>(FinalShardBreakdownLabelPath);
 		_pauseBuildSummaryLabel = GetNodeOrNull<Label>(PauseBuildSummaryLabelPath);
 		_finalBuildSummaryLabel = GetNodeOrNull<Label>(FinalBuildSummaryLabelPath);
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
@@ -87,6 +97,8 @@ public partial class GameFlowUI
 			_menuDimmer.TopLevel = true;
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
+		ResolveEventLoadoutNodes();
+		ResolveEventUnlockNodes();
 		RefreshPerfectLeaderboardUi();
 
 		_rangedCharacter = LoadCharacterDefinitionOrFallback(
@@ -118,6 +130,10 @@ public partial class GameFlowUI
 		var upgradeList = GetTree().GetNodesInGroup(RuntimeGroups.UpgradeSystem);
 		if (upgradeList.Count > 0)
 			_upgradeSystem = upgradeList[0] as UpgradeSystem;
+
+		var eventDirectorList = GetTree().GetNodesInGroup(RuntimeGroups.EventDirector);
+		if (eventDirectorList.Count > 0)
+			_eventDirector = eventDirectorList[0] as EventDirector;
 	}
 
 	private void BindSignals()
@@ -153,6 +169,8 @@ public partial class GameFlowUI
 			_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
 		if (_startCharacterConfirmButton != null)
 			_startCharacterConfirmButton.Pressed += OnCharacterSelectConfirmPressed;
+		BindEventUnlockSignals();
+		BindEventLoadoutSignals();
 		if (_restartBackToMetaButton != null)
 			_restartBackToMetaButton.Pressed += OnRestartBackToMetaPressed;
 		if (_restartButton != null)

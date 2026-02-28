@@ -1,12 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-public sealed class MetaProgressionService
+public sealed partial class MetaProgressionService
 {
 	private const string FirstClearGlobalFlag = "meta.first_clear.global";
 	private const string FirstClearCharacterFlagPrefix = "meta.first_clear.character.";
 	private const string DefaultProfileId = "default";
+	private const string OrderSigilTier0ItemId = "order_sigil_tier_0";
+	private const string OrderSigilTier1ItemId = "order_sigil_tier_1";
+	private const string OrderSigilTier2ItemId = "order_sigil_tier_2";
+	private const string OrderSigilTier3ItemId = "order_sigil_tier_3";
+	private const string DomainPowerIceItemId = "domain_power_ice";
+	private const string DomainPowerSpacetimeItemId = "domain_power_spacetime";
+	private const string DomainPowerWarItemId = "domain_power_war";
+	private const string DomainPowerMigrationFlag = "meta.migrated.domain_power_v1";
 
 	private static readonly Lazy<MetaProgressionService> LazyInstance = new(() => new MetaProgressionService());
 
@@ -24,7 +31,7 @@ public sealed class MetaProgressionService
 	private MetaProgressionService()
 	{
 		_state = _saveStore.LoadState() ?? new MetaProgressionState();
-		bool changed = EnsureBaselineUnlocks();
+		bool changed = EnsureBaselineUnlocks() | EnsureBaselineEventConsumables();
 		if (changed)
 			_saveStore.SaveState(_state);
 	}
@@ -46,7 +53,8 @@ public sealed class MetaProgressionService
 			CharacterId = result.CharacterId,
 			IsPerfectClear = result.IsPerfectClear,
 			IsFirstClearGlobal = firstGlobal,
-			IsFirstClearForCharacter = firstCharacter
+			IsFirstClearForCharacter = firstCharacter,
+			DomainShardRewardsByDomain = NormalizeRunDomainShardPayload(result.DomainShardRewardsByDomain)
 		};
 
 		RewardBreakdown breakdown = RewardCalculator.Calculate(effective, _tuning, _state);
@@ -55,6 +63,7 @@ public sealed class MetaProgressionService
 
 		_state.MarkRunSettled(effective.RunId);
 		_state.AddCurrency(breakdown.TotalCurrency);
+		Dictionary<string, int> appliedDomainShards = ApplyRunDomainShardRewards(effective.DomainShardRewardsByDomain);
 
 		if (firstGlobal)
 			_state.Flags.Add(FirstClearGlobalFlag);
@@ -62,7 +71,25 @@ public sealed class MetaProgressionService
 			_state.Flags.Add($"{FirstClearCharacterFlagPrefix}{effective.CharacterId}");
 
 		_saveStore.SaveState(_state);
-		return breakdown;
+		return new RewardBreakdown
+		{
+			RunId = breakdown.RunId,
+			InputScore = breakdown.InputScore,
+			BaseCurrency = breakdown.BaseCurrency,
+			SoftCappedCurrency = breakdown.SoftCappedCurrency,
+			BonusCurrency = breakdown.BonusCurrency,
+			FirstClearBonus = breakdown.FirstClearBonus,
+			TotalCurrency = breakdown.TotalCurrency,
+			DomainShardGainsByDomain = appliedDomainShards,
+			TotalDomainShards = SumDomainShards(appliedDomainShards),
+			IsDuplicateRun = false
+		};
+	}
+
+	public int GetDomainShardBalance(string domainId)
+	{
+		string normalized = NormalizeDomainId(domainId);
+		return _state.GetDomainShardBalance(normalized);
 	}
 
 	public bool IsCharacterUnlocked(string characterId)
@@ -194,7 +221,7 @@ public sealed class MetaProgressionService
 	{
 		_saveStore.SetProfile(profileId);
 		_state = _saveStore.LoadState() ?? new MetaProgressionState();
-		bool changed = EnsureBaselineUnlocks();
+		bool changed = EnsureBaselineUnlocks() | EnsureBaselineEventConsumables();
 		if (changed)
 			_saveStore.SaveState(_state);
 	}
@@ -204,77 +231,8 @@ public sealed class MetaProgressionService
 		bool deleted = _saveStore.DeleteSaveFile();
 		_state = new MetaProgressionState();
 		EnsureBaselineUnlocks();
+		EnsureBaselineEventConsumables();
 		return deleted;
 	}
 
-	public void DebugSetCurrencyWallet(int wallet, bool saveNow = true)
-	{
-		int nextWallet = Math.Max(0, wallet);
-		int currentWallet = _state.CurrencyWallet;
-		int earned = _state.CurrencyEarnedTotal;
-		int spent = _state.CurrencySpentTotal;
-
-		if (nextWallet > currentWallet)
-			earned += nextWallet - currentWallet;
-		else if (nextWallet < currentWallet)
-			spent += currentWallet - nextWallet;
-
-		_state.ReplaceCurrencySnapshot(nextWallet, Math.Max(nextWallet, earned), Math.Max(0, spent));
-		if (saveNow)
-			_saveStore.SaveState(_state);
-	}
-
-	public void RecordPerfectClear(int score, string characterName)
-	{
-		long unixTime = DateTimeOffset.Now.ToUnixTimeSeconds();
-		_state.AddPerfectClearRecord(score, characterName, unixTime);
-		_saveStore.SaveState(_state);
-	}
-
-	public IReadOnlyList<PerfectClearRecord> GetPerfectLeaderboard(int maxCount)
-	{
-		if (maxCount <= 0)
-			return Array.Empty<PerfectClearRecord>();
-		return _state.GetPerfectClearRecords(maxCount).ToList();
-	}
-
-	private bool EnsureBaselineUnlocks()
-	{
-		bool changed = false;
-		foreach (CharacterDef def in ProgressionDefs.GetAllCharacters())
-		{
-			if (def != null && def.IsDefaultUnlocked)
-				changed |= _state.UnlockCharacter(def.CharacterId);
-		}
-		return changed;
-	}
-
-	private bool IsFirstCharacterClear(string characterId)
-	{
-		string normalized = NormalizeCharacterId(characterId);
-		if (string.IsNullOrWhiteSpace(normalized))
-			return false;
-		return !_state.Flags.Has($"{FirstClearCharacterFlagPrefix}{normalized}");
-	}
-
-	private static string NormalizeCharacterId(string characterId)
-	{
-		return ProgressionDefs.NormalizeCharacterId(characterId);
-	}
-
-	private static bool HasPrerequisiteNodes(CharacterProgress progress, AbilityNodeDef nodeDef)
-	{
-		if (progress == null || nodeDef?.PrerequisiteNodeIds == null || nodeDef.PrerequisiteNodeIds.Count == 0)
-			return true;
-
-		foreach (string prereq in nodeDef.PrerequisiteNodeIds)
-		{
-			if (string.IsNullOrWhiteSpace(prereq))
-				continue;
-			if (!progress.UnlockedAbilityNodes.Contains(prereq))
-				return false;
-		}
-
-		return true;
-	}
 }

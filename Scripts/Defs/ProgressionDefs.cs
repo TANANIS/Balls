@@ -55,9 +55,95 @@ public static class ProgressionDefs
 		}
 	};
 
+	private static readonly Dictionary<string, EventUnlockDef> EventUnlockDefs = new(StringComparer.Ordinal)
+	{
+		["EVT_ICE_ICESTORM"] = new EventUnlockDef
+		{
+			EventId = "EVT_ICE_ICESTORM",
+			DomainId = "Ice",
+			DomainShardCost = 30,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 3,
+			IsDefaultUnlocked = true
+		},
+		["EVT_ICE_FROZEN_PULSE"] = new EventUnlockDef
+		{
+			EventId = "EVT_ICE_FROZEN_PULSE",
+			DomainId = "Ice",
+			DomainShardCost = 70,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 0,
+			IsDefaultUnlocked = false
+		},
+		["EVT_WAR_BLOOD_TIDE"] = new EventUnlockDef
+		{
+			EventId = "EVT_WAR_BLOOD_TIDE",
+			DomainId = "War",
+			DomainShardCost = 30,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 3,
+			IsDefaultUnlocked = true
+		},
+		["EVT_WAR_BERSERK_MARK"] = new EventUnlockDef
+		{
+			EventId = "EVT_WAR_BERSERK_MARK",
+			DomainId = "War",
+			DomainShardCost = 70,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 0,
+			IsDefaultUnlocked = false
+		},
+		["EVT_SPACE_EVENT_HORIZON"] = new EventUnlockDef
+		{
+			EventId = "EVT_SPACE_EVENT_HORIZON",
+			DomainId = "Spacetime",
+			DomainShardCost = 75,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 0,
+			IsDefaultUnlocked = false
+		},
+		["EVT_SPACE_GRAVITY_WELL"] = new EventUnlockDef
+		{
+			EventId = "EVT_SPACE_GRAVITY_WELL",
+			DomainId = "Spacetime",
+			DomainShardCost = 30,
+			ChargeBundleAmount = 3,
+			DefaultChargeCount = 3,
+			IsDefaultUnlocked = true
+		}
+	};
+
+	private static readonly Dictionary<string, HybridVariantDef> HybridVariantDefs = new(StringComparer.Ordinal)
+	{
+		["HYB_ICE_SPACE_GLACIAL_HORIZON"] = new HybridVariantDef
+		{
+			VariantId = "HYB_ICE_SPACE_GLACIAL_HORIZON",
+			DomainId = "Spacetime",
+			DomainShardCost = 120,
+			IsDefaultUnlocked = false
+		},
+		["HYB_SPACE_WAR_WARP_ASSAULT"] = new HybridVariantDef
+		{
+			VariantId = "HYB_SPACE_WAR_WARP_ASSAULT",
+			DomainId = "War",
+			DomainShardCost = 120,
+			IsDefaultUnlocked = false
+		}
+	};
+
 	public static IEnumerable<CharacterDef> GetAllCharacters()
 	{
 		return CharacterDefs.Values;
+	}
+
+	public static IEnumerable<EventUnlockDef> GetAllEvents()
+	{
+		return EventUnlockDefs.Values;
+	}
+
+	public static IEnumerable<HybridVariantDef> GetAllHybridVariants()
+	{
+		return HybridVariantDefs.Values;
 	}
 
 	public static bool TryGetCharacter(string characterId, out CharacterDef def)
@@ -101,5 +187,40 @@ public static class ProgressionDefs
 		}
 
 		return false;
+	}
+
+	public static bool TryGetEvent(string eventId, out EventUnlockDef def)
+	{
+		if (string.IsNullOrWhiteSpace(eventId))
+		{
+			def = null;
+			return false;
+		}
+
+		return EventUnlockDefs.TryGetValue(eventId, out def);
+	}
+
+	public static bool TryGetHybridVariant(string variantId, out HybridVariantDef def)
+	{
+		if (string.IsNullOrWhiteSpace(variantId))
+		{
+			def = null;
+			return false;
+		}
+
+		return HybridVariantDefs.TryGetValue(variantId, out def);
+	}
+
+	public static string NormalizeDomainId(string domainId)
+	{
+		if (string.IsNullOrWhiteSpace(domainId))
+			return string.Empty;
+		if (string.Equals(domainId, "Ice", StringComparison.OrdinalIgnoreCase))
+			return "Ice";
+		if (string.Equals(domainId, "War", StringComparison.OrdinalIgnoreCase))
+			return "War";
+		if (string.Equals(domainId, "Spacetime", StringComparison.OrdinalIgnoreCase))
+			return "Spacetime";
+		return string.Empty;
 	}
 }

@@ -38,6 +38,7 @@ public partial class DebugCheatSystem
 
 		root.AddChild(BuildTimeRow());
 		root.AddChild(BuildWalletRow());
+		root.AddChild(BuildDomainShardRow());
 		root.AddChild(BuildHpRow());
 		root.AddChild(BuildNoDamageRow());
 		root.AddChild(BuildUpgradeDraftRow());
@@ -74,6 +75,36 @@ public partial class DebugCheatSystem
 		var apply = new Button { Text = Bi("Apply", "套用") };
 		apply.Pressed += () => MetaProgressionService.Instance.DebugSetCurrencyWallet((int)_walletInput.Value, saveNow: true);
 		row.AddChild(apply);
+		return row;
+	}
+
+	private Control BuildDomainShardRow()
+	{
+		var row = new HBoxContainer();
+		row.AddThemeConstantOverride("separation", 6);
+		row.AddChild(new Label { Text = Bi("Shards", "碎片"), CustomMinimumSize = new Vector2(170, 0) });
+
+		row.AddChild(new Label { Text = Bi("Ice", "冰"), CustomMinimumSize = new Vector2(48, 0) });
+		_iceShardInput = new SpinBox { MinValue = 0, MaxValue = 9999999, Step = 10, Rounded = true, CustomMinimumSize = new Vector2(90, 0) };
+		row.AddChild(_iceShardInput);
+
+		row.AddChild(new Label { Text = Bi("Spacetime", "時空"), CustomMinimumSize = new Vector2(80, 0) });
+		_spacetimeShardInput = new SpinBox { MinValue = 0, MaxValue = 9999999, Step = 10, Rounded = true, CustomMinimumSize = new Vector2(90, 0) };
+		row.AddChild(_spacetimeShardInput);
+
+		row.AddChild(new Label { Text = Bi("War", "戰爭"), CustomMinimumSize = new Vector2(48, 0) });
+		_warShardInput = new SpinBox { MinValue = 0, MaxValue = 9999999, Step = 10, Rounded = true, CustomMinimumSize = new Vector2(90, 0) };
+		row.AddChild(_warShardInput);
+
+		var apply = new Button { Text = Bi("Apply", "套用") };
+		apply.Pressed += () =>
+		{
+			MetaProgressionService.Instance.DebugSetDomainShardBalance("Ice", (int)_iceShardInput.Value, saveNow: false);
+			MetaProgressionService.Instance.DebugSetDomainShardBalance("Spacetime", (int)_spacetimeShardInput.Value, saveNow: false);
+			MetaProgressionService.Instance.DebugSetDomainShardBalance("War", (int)_warShardInput.Value, saveNow: true);
+		};
+		row.AddChild(apply);
+
 		return row;
 	}
 

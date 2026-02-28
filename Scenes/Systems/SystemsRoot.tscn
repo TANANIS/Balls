@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dnttgcrwe1y88"]
+[gd_scene load_steps=16 format=3 uid="uid://dnttgcrwe1y88"]
 
 [ext_resource type="PackedScene" path="res://Scenes/Actors/Enemies/Slime.tscn" id="1_enemy_scene"]
 [ext_resource type="Script" uid="uid://d3xetxp2hlx37" path="res://Scripts/Systems/Core/CombatSystem.cs" id="2_combat"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://qmfoq4yrbiwf" path="res://Scripts/Systems/Progression/ProgressionSystem.cs" id="13_progression"]
 [ext_resource type="Resource" uid="uid://bm8r67lsfg5sw" path="res://Data/Upgrades/DefaultUpgradeCatalog.tres" id="14_upgrade_catalog"]
 [ext_resource type="Script" uid="uid://bxcklil5fq53f" path="res://Scripts/Systems/Core/DebugCheatSystem.cs" id="15_debug_cheat"]
+[ext_resource type="Script" path="res://Scripts/Systems/Director/EventDirector.cs" id="16_event_director"]
+[ext_resource type="Script" path="res://Scripts/Systems/Director/EventTelegraphOverlay.cs" id="17_event_telegraph"]
 
 [node name="Systems" type="Node"]
 
@@ -77,6 +79,12 @@ ExperiencePickupScene = ExtResource("12_exp_pickup")
 [node name="StabilitySystem" type="Node" parent="."]
 script = ExtResource("10_stability")
 BaseDecayPerSecond = 0.42
+
+[node name="EventDirector" type="Node" parent="."]
+script = ExtResource("16_event_director")
+
+[node name="EventTelegraphOverlay" type="Node2D" parent="."]
+script = ExtResource("17_event_telegraph")
 
 [node name="DebugCheatSystem" type="Node" parent="."]
 script = ExtResource("15_debug_cheat")
