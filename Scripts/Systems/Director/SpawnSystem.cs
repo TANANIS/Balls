@@ -205,9 +205,21 @@ public partial class SpawnSystem : Node
 			LoadTierRulesFromCsv();
 			LoadEnemyDefinitionsFromCsv();
 			LoadTierWeightsFromCsv();
+			ReportCsvLoadHealth();
 		}
 
 		ResetSpawnTimer();
+	}
+
+	private void ReportCsvLoadHealth()
+	{
+		if (_tierRules.Count > 0 && _enemyDefinitions.Count > 0 && _tierWeights.Count > 0)
+			return;
+
+		GD.PushError(
+			$"[SpawnSystem] CSV runtime data incomplete. " +
+			$"tier_rules={_tierRules.Count}, enemy_defs={_enemyDefinitions.Count}, tier_weights={_tierWeights.Count}. " +
+			$"Check export include_filter for Data/Director/*.csv.");
 	}
 
 	public override void _PhysicsProcess(double delta)
