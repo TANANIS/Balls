@@ -104,7 +104,10 @@ public partial class Bullet
 				elementalBurstMaxTargets: 0,
 				elementalBurstOwner: null,
 				homingTarget: null,
-				homingTurnRateDegrees: _homingEnabledRuntime ? _homingTurnRateRuntime : 0f);
+				homingTurnRateDegrees: _homingEnabledRuntime ? _homingTurnRateRuntime : 0f,
+				baseDamageReference: _baseDamageReference,
+				effectProjectileBonusRatio: _effectProjectileBonusRatio,
+				isEffectProjectile: true);
 		}
 		else
 		{

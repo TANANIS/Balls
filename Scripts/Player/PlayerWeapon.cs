@@ -43,6 +43,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	[Export(PropertyHint.Range, "0.1,3.0,0.05")] public float ElementalBurstDamageMultiplier = 1.20f;
 	[Export(PropertyHint.Range, "32,2000,1")] public float ElementalBurstMaxDistance = 280f;
 	[Export(PropertyHint.Range, "1,32,1")] public int ElementalBurstMaxTargets = 5;
+	[Export(PropertyHint.Range, "0.00,1.00,0.01")] public float EffectProjectileBonusRatio = 0.30f;
 	[ExportGroup("Archer")]
 	[Export(PropertyHint.Range, "2,12,1")] public int ArcherBurstCycle = 3;
 	[Export(PropertyHint.Range, "1,8,1")] public int ArcherBurstProjectiles = 3;
@@ -61,6 +62,8 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	private bool _elementalBurstWaitingForDetonation;
 	private bool _isArcherCharacter;
 	private int _archerBurstCounter;
+	private float _baseDamageStat = 1f;
+	private int _shotBaseDamageReference = 1;
 
 	public float CurrentCooldown => Cooldown;
 	public float CurrentDamage => Damage;
@@ -70,6 +73,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	{
 		SetupAbility(player, EnabledInCurrentCharacter);
 		_rng.Randomize();
+		_baseDamageStat = Mathf.Max(0.1f, Damage);
 		ResolveProjectileScenes();
 
 		if (ProjectileContainerPath != null && !ProjectileContainerPath.IsEmpty)
@@ -190,6 +194,7 @@ public partial class PlayerWeapon : PlayerAbilityModule
 	public void SetBaseStats(float damage, float cooldown, float projectileSpeed)
 	{
 		Damage = Mathf.Max(0.1f, damage);
+		_baseDamageStat = Damage;
 		Cooldown = Mathf.Clamp(cooldown, 0.02f, 10f);
 		_attackAnimationSpeedMultiplier = 1f;
 		ProjectileSpeed = Mathf.Max(50f, projectileSpeed);

@@ -66,6 +66,9 @@ public partial class Bullet : Area2D
 	private float _speed = 900f;
 	private int _damage = 1;
 	private float _damageScale = 1f;
+	private float _baseDamageReference = 1f;
+	private float _effectProjectileBonusRatio = 0.30f;
+	private bool _isEffectProjectile = false;
 	private float _hitArmDelayTimer = 0f;
 	private float _ignoreTargetTimer = 0f;
 	private ulong _ignoreTargetInstanceId = 0;
@@ -117,33 +120,6 @@ public partial class Bullet : Area2D
 	private int _currentFrame = 0;
 	private int _runtimeFrameCount = 0;
 
-	public void InitFromPlayer(Node source, Vector2 dir, float speed, int damage)
-	{
-		InitFromPlayer(
-			source,
-			dir,
-			speed,
-			damage,
-			splitShotLevel: 0,
-			canSplitOnHit: true,
-			projectileScene: null,
-			damageScale: 1f,
-			hitArmDelaySeconds: 0f,
-			ignoreTargetInstanceId: 0,
-			ignoreTargetSeconds: 0f,
-			isElementalBurstShot: false,
-			elementalBurstRadius: 0f,
-			elementalBurstDamageMultiplier: 1f,
-			elementalBurstMaxDistance: 0f,
-			elementalBurstMaxTargets: 0,
-			elementalBurstOwner: null,
-			homingTarget: null,
-			homingTurnRateDegrees: 0f,
-			pierceCount: 0,
-			ricochetCount: 0,
-			ricochetSearchRadius: 0f);
-	}
-
 	public void InitFromPlayer(
 		Node source,
 		Vector2 dir,
@@ -166,7 +142,10 @@ public partial class Bullet : Area2D
 		float homingTurnRateDegrees = 0f,
 		int pierceCount = 0,
 		int ricochetCount = 0,
-		float ricochetSearchRadius = 0f)
+		float ricochetSearchRadius = 0f,
+		float baseDamageReference = 1f,
+		float effectProjectileBonusRatio = 0.30f,
+		bool isEffectProjectile = false)
 	{
 		_source = source;
 		_dir = dir == Vector2.Zero ? Vector2.Right : dir.Normalized();
@@ -174,6 +153,9 @@ public partial class Bullet : Area2D
 		_speed = Mathf.Max(50f, speed * runtimeScale);
 		_damage = damage;
 		_damageScale = Mathf.Clamp(damageScale, 0f, 1f);
+		_baseDamageReference = Mathf.Max(1f, baseDamageReference);
+		_effectProjectileBonusRatio = Mathf.Clamp(effectProjectileBonusRatio, 0f, 1f);
+		_isEffectProjectile = false;
 		_hitArmDelayTimer = Mathf.Max(0f, hitArmDelaySeconds);
 		_ignoreTargetInstanceId = ignoreTargetInstanceId;
 		_ignoreTargetTimer = Mathf.Max(0f, ignoreTargetSeconds);
@@ -203,6 +185,8 @@ public partial class Bullet : Area2D
 		_ricochetSearchRadiusRuntime = ricochetSearchRadius > 0f
 			? ricochetSearchRadius
 			: Mathf.Max(64f, RicochetSearchRadius);
+		if (isEffectProjectile)
+			MarkAsEffectProjectile();
 		_hitTargetIds.Clear();
 		_travelDistance = 0f;
 		ApplyFacingByDirection();

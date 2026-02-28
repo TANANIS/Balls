@@ -56,6 +56,7 @@ public partial class PlayerDash : PlayerAbilityModule
 			_player.SetInvincible(DashIFrame);
 
 		_player.MoveAndSlide();
+		_player.ResolveObstacleStick();
 
 		if (_dashTimer <= 0f)
 			StopDash();

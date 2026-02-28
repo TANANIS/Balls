@@ -31,6 +31,7 @@ public partial class PlayerMovement : Node
 			_movementFreezeTimer = Mathf.Max(0f, _movementFreezeTimer - dt);
 			_player.Velocity = Vector2.Zero;
 			_player.MoveAndSlide();
+			_player.ResolveObstacleStick();
 			return;
 		}
 
@@ -49,6 +50,7 @@ public partial class PlayerMovement : Node
 			_player.Velocity = Vector2.Zero;
 
 		_player.MoveAndSlide();
+		_player.ResolveObstacleStick();
 	}
 
 	public void ApplyMovementFreeze(float duration)

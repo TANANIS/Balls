@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://b34jx8vy3iedd" path="res://Assets/Sprites/Environment/Obstacles/obstacle_big_rock.png" id="1_tex"]
 
-[sub_resource type="RectangleShape2D" id="1_shape"]
-size = Vector2(58, 63)
+[sub_resource type="CircleShape2D" id="1_shape"]
+radius = 23.0
 
 [node name="ObstacleBigRock" type="StaticBody2D"]
 collision_mask = 0

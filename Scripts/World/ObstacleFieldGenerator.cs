@@ -44,6 +44,8 @@ public partial class ObstacleFieldGenerator : Node2D
 	[Export] public float SpawnRingThickness = 560f;
 	[Export(PropertyHint.Range, "0.5,1.2,0.01")] public float SpawnDistanceScale = 0.72f;
 	[Export] public float ObstacleSpacingMultiplier = 2.75f;
+	[Export(PropertyHint.Range, "0,8,0.1")] public float MinObstacleSpacingPlayerHeights = 3f;
+	[Export(PropertyHint.Range, "16,256,1")] public float FallbackPlayerCollisionHeight = 58f;
 	[Export] public int PlacementAttemptsPerSpawn = 24;
 	[Export] public bool EnforceAlternatingTypes = true;
 	[Export] public bool UseNaturalClusters = true;
@@ -85,6 +87,7 @@ public partial class ObstacleFieldGenerator : Node2D
 	private int _clusterRemaining;
 	private readonly int _biomeSalt = 11939;
 	private readonly int _speciesSalt = 17123;
+	private float _runtimeMinObstacleSpacingWorld = 0f;
 
 	private readonly struct ObstacleVariant
 	{

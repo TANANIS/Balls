@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" path="res://Assets/Sprites/Environment/Obstacles/obstacle_small_tree.png" id="1_tex"]
 
-[sub_resource type="RectangleShape2D" id="1_shape"]
-size = Vector2(44, 58)
+[sub_resource type="CircleShape2D" id="1_shape"]
+radius = 17.0
 
 [node name="ObstacleSmallTree" type="StaticBody2D"]
 collision_layer = 1

@@ -1,5 +1,5 @@
 # Cards Changelog
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 ## Usage Rule
@@ -49,6 +49,55 @@ Last Synced: 2026-02-27
 ---
 
 ## Initial Baseline
+### 2026-02-28 - Effect Projectile Damage Policy + Tracking Compatibility
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`, `Modifier`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Added explicit effect-projectile classification in bullet runtime.
+  - Classified "non-primary bullets" as effect projectiles:
+    - split-child bullets,
+    - pierce continuation bullets,
+    - ricochet continuation bullets,
+    - elemental-burst transformed bullets.
+  - Added effect-projectile bonus gate so bonus damage above base-shot reference only keeps 30%.
+  - Confirmed Arcane Tracking compatibility with effect bullets (no conflict):
+    - split child inherits homing runtime,
+    - continuation bullets keep homing path active.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`, `MOD_ARCANE_TRACKING`, `MOD_PIERCE`, `MOD_RICOCHET`, `MOD_ELEMENTAL_BURST`
+  - Change: shared projectile runtime policy
+  - Value: `continuation/split shots used full bonus damage -> effect shots keep only 30% of bonus-above-base`
+  - Reason: preserve synergy while reducing runaway late-stack scaling.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [x] In-run smoke test done
+
+### 2026-02-28 - Card Localization CSV Robust Parse Fix
+- Scope: `Update`
+- Affected Layer(s): `CoreAttack`, `Modifier`, `Survival`, `Economy`
+- Affected Pool Phase(s): `Early`, `Mid`, `Late`
+- Summary:
+  - Rewrote `Data/Localization/Cards.csv` rows using explicit CSV quoting for text fields.
+  - Fixed parse split issues for entries containing commas in English description text.
+  - Regenerated `Cards.en.translation` and `Cards.zh_TW.translation`.
+
+#### Cards Updated
+- `ATK_SPLIT_SHOT`, `MOD_ELEMENTAL_BURST`, `MOD_ARCANE_TRACKING` (plus all other catalog-localized cards)
+  - Change: localization import integrity
+  - Value: `non-quoted CSV text -> quoted CSV text`
+  - Reason: prevent translation key/value parse drift and unintended English fallback.
+
+#### Validation
+- [x] Catalog entries updated
+- [x] Runtime effect binding updated
+- [x] Pool routing checked
+- [x] In-run smoke test done
+
 ### 2026-02-27 - Damage Card Retune (+50/+100/+150)
 - Scope: `Update`
 - Affected Layer(s): `CoreAttack`

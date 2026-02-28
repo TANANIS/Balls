@@ -18,11 +18,11 @@
 [ext_resource type="PackedScene" path="res://Scenes/Projectiles/PriestProjectile.tscn" id="16_priest_projectile"]
 [ext_resource type="PackedScene" path="res://Scenes/Projectiles/ArcherProjectile.tscn" id="17_archer_projectile"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ikhqc"]
-radius = 34.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player_body"]
+size = Vector2(36, 58)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_i30mb"]
-radius = 36.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player_hurtbox"]
+size = Vector2(30, 50)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wizard_idle_0"]
 atlas = ExtResource("12_wizard_idle")
@@ -179,7 +179,7 @@ scale = Vector2(4, 4)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
-shape = SubResource("CircleShape2D_ikhqc")
+shape = SubResource("RectangleShape2D_player_body")
 
 [node name="Muzzle" type="Marker2D" parent="."]
 
@@ -194,7 +194,7 @@ collision_mask = 64
 script = ExtResource("5_hurtbox_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-shape = SubResource("CircleShape2D_i30mb")
+shape = SubResource("RectangleShape2D_player_hurtbox")
 
 [node name="Movement" type="Node" parent="."]
 script = ExtResource("6_move_script")

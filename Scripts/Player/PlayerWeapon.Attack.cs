@@ -13,6 +13,7 @@ public partial class PlayerWeapon
 		float powerMult = GetPowerMultiplier();
 		float speed = ProjectileSpeed * (1f + ((powerMult - 1f) * 0.35f));
 		int baseDamage = Mathf.Max(1, Mathf.RoundToInt(Damage * powerMult));
+		_shotBaseDamageReference = Mathf.Max(1, Mathf.RoundToInt(_baseDamageStat * powerMult));
 		int burstExtraShots = GetBurstExtraShots(FirePattern);
 		float burstIntervalSeconds = BurstShotInterval;
 		bool triggerArcherRapidBurst = ConsumeArcherBurstFlagForThisAttack();
@@ -123,7 +124,10 @@ public partial class PlayerWeapon
 				homingTurnRateDegrees: homingTurnRate,
 				pierceCount: Mathf.Max(0, PiercingCount),
 				ricochetCount: Mathf.Max(0, RicochetCount),
-				ricochetSearchRadius: Mathf.Max(64f, RicochetSearchRadius));
+				ricochetSearchRadius: Mathf.Max(64f, RicochetSearchRadius),
+				baseDamageReference: Mathf.Max(1, _shotBaseDamageReference),
+				effectProjectileBonusRatio: EffectProjectileBonusRatio,
+				isEffectProjectile: useElementalBurstShot);
 		}
 		else
 		{

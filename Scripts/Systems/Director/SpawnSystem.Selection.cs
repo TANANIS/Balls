@@ -54,6 +54,33 @@ public partial class SpawnSystem
 			total += item.Weight;
 		}
 
+		if (_activeTier >= Mathf.Max(0, LateTierSlimeSuppressionStartTier) && candidates.Count > 1)
+		{
+			bool hasNonSlime = false;
+			for (int i = 0; i < candidates.Count; i++)
+			{
+				if (!string.Equals(candidates[i].Id, "slime", StringComparison.OrdinalIgnoreCase))
+				{
+					hasNonSlime = true;
+					break;
+				}
+			}
+
+			if (hasNonSlime)
+			{
+				float slimeMult = Mathf.Clamp(LateTierSlimeWeightMultiplier, 0.01f, 1f);
+				total = 0f;
+				for (int i = 0; i < candidates.Count; i++)
+				{
+					float w = candidateWeights[i];
+					if (string.Equals(candidates[i].Id, "slime", StringComparison.OrdinalIgnoreCase))
+						w *= slimeMult;
+					candidateWeights[i] = w;
+					total += w;
+				}
+			}
+		}
+
 		if (total <= 0f)
 		{
 			// If no definition fits budget, pick the cheapest valid one so wave doesn't stall.

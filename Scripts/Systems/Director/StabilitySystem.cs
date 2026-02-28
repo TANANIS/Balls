@@ -21,9 +21,9 @@ public partial class StabilitySystem : Node
 	[Export] public float EnergyAnomalyPhaseEndSeconds = 450f;
 	[Export] public float StructuralFracturePhaseEndSeconds = 675f;
 	[Export] public float MatchDurationLimitSeconds = 900f;
-	[Export] public float EnergyAnomalyEnemySpeedMultiplier = 1.18f;
-	[Export] public float StructuralFractureEnemySpeedMultiplier = 1.35f;
-	[Export] public float CollapseCriticalEnemySpeedMultiplier = 1.65f;
+	[Export] public float EnergyAnomalyEnemySpeedMultiplier = 1.08f;
+	[Export] public float StructuralFractureEnemySpeedMultiplier = 1.18f;
+	[Export] public float CollapseCriticalEnemySpeedMultiplier = 1.30f;
 	[Export] public float EnergyAnomalyPlayerPowerMultiplier = 1.18f;
 	[Export] public float StructuralFracturePlayerPowerMultiplier = 1.08f;
 	[Export] public float CollapseCriticalPlayerPowerMultiplier = 1.00f;

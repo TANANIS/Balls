@@ -151,7 +151,8 @@ public partial class GameFlowUI
 
 		option.Clear();
 		option.AddItem("English");
-		option.AddItem("蝜?銝剜?");
+		// Keep explicit script literal to avoid mojibake from non-UTF8 editor writes.
+		option.AddItem("\u7e41\u9ad4\u4e2d\u6587");
 		option.Select(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
 	}
 

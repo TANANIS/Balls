@@ -15,6 +15,8 @@ public partial class ProgressionSystem : Node
 	[Export] public int LateXpSlowdownStartLevel = 5;
 	[Export(PropertyHint.Range, "1.0,3.0,0.05")] public float LateXpSlowdownMultiplier = 2.0f;
 	[Export(PropertyHint.Range, "0,10,1")] public int LateXpSlowdownRampLevels = 2;
+	[Export(PropertyHint.Range, "1.0,4.0,0.05")] public float RangedPickupRadiusMultiplier = 2.0f;
+	[Export(PropertyHint.Range, "0.5,4.0,0.05")] public float NonRangedPickupRadiusMultiplier = 1.0f;
 
 	private UpgradeMenu _upgradeMenu;
 	private float _upgradeProgress = 0f;
@@ -25,6 +27,7 @@ public partial class ProgressionSystem : Node
 	private float _xpRequirementOffset = 0f;
 	private float _triggerReliefBonus = 0f;
 	private float _pickupRadiusMultiplier = 1f;
+	private float _characterPickupRadiusMultiplier = 1f;
 	private bool _killChanceLifestealEnabled = false;
 	private int _killChanceLifestealHeal = 1;
 	private float _killChanceLifestealChance = 0.12f;
@@ -37,7 +40,14 @@ public partial class ProgressionSystem : Node
 	public bool IsUpgradeReady => _pendingUpgradeOpens > 0;
 	public int CurrentUpgradeLevel => _upgradeLevel;
 	public int PendingUpgradeCount => _pendingUpgradeOpens;
-	public float PickupRadiusMultiplier => _pickupRadiusMultiplier;
+	public float PickupRadiusMultiplier
+	{
+		get
+		{
+			RefreshCharacterPickupRadiusProfile();
+			return Mathf.Clamp(_pickupRadiusMultiplier * _characterPickupRadiusMultiplier, 0.5f, 8f);
+		}
+	}
 
 	public override void _EnterTree()
 	{
@@ -51,6 +61,7 @@ public partial class ProgressionSystem : Node
 		_player = GetNodeOrNull<Player>(PlayerPath);
 		if (_player != null)
 			_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
+		RefreshCharacterPickupRadiusProfile();
 
 		var combatList = GetTree().GetNodesInGroup(RuntimeGroups.CombatSystem);
 		if (combatList.Count > 0)
@@ -252,6 +263,17 @@ public partial class ProgressionSystem : Node
 			_upgradeMenu = GetNodeOrNull<UpgradeMenu>("../../CanvasLayer/UI/UpgradeLayer/UpgradeMenu");
 	}
 
+	private void RefreshCharacterPickupRadiusProfile()
+	{
+		if (!IsInstanceValid(_player))
+			_player = GetNodeOrNull<Player>(PlayerPath);
+
+		bool isRangedCharacter = _player?.PrimarySupportsRanged() ?? false;
+		_characterPickupRadiusMultiplier = isRangedCharacter
+			? Mathf.Max(1f, RangedPickupRadiusMultiplier)
+			: Mathf.Max(0.5f, NonRangedPickupRadiusMultiplier);
+	}
+
 	public void ResetForNewRun()
 	{
 		_upgradeProgress = 0f;
@@ -261,9 +283,11 @@ public partial class ProgressionSystem : Node
 		_xpRequirementOffset = 0f;
 		_triggerReliefBonus = 0f;
 		_pickupRadiusMultiplier = 1f;
+		_characterPickupRadiusMultiplier = 1f;
 		_killChanceLifestealEnabled = false;
 		_killChanceLifestealHeal = 1;
 		_killChanceLifestealChance = 0.12f;
 		_currentUpgradeRequirement = Mathf.Max(1f, GetCurrentUpgradeRequirement());
+		RefreshCharacterPickupRadiusProfile();
 	}
 }

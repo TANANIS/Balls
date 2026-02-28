@@ -18,6 +18,7 @@ public partial class ObstacleFieldGenerator
 		float distanceScale = Mathf.Clamp(SpawnDistanceScale, 0.5f, 1.2f);
 		float minDist = (Mathf.Max(halfVisible.X, halfVisible.Y) * distanceScale) + Mathf.Max(0f, SpawnOutsideMargin);
 		float maxDist = minDist + Mathf.Max(60f, SpawnRingThickness);
+		_runtimeMinObstacleSpacingWorld = GetMinimumObstacleSpacingWorld();
 		PrepareCluster(playerPos, minDist, maxDist);
 
 		for (int i = 0; i < count; i++)
@@ -136,10 +137,15 @@ public partial class ObstacleFieldGenerator
 
 	private bool IsPlacementValid(Vector2 pos, float radius, float spacingBias)
 	{
+		float spacingFloor = _runtimeMinObstacleSpacingWorld > 0f
+			? _runtimeMinObstacleSpacingWorld
+			: GetMinimumObstacleSpacingWorld();
+
 		foreach (PlacedObstacle existing in _placed)
 		{
 			float pairBias = (spacingBias + existing.SpacingBias) * 0.5f;
 			float spacing = (radius + existing.Radius) * Mathf.Max(0.8f, ObstacleSpacingMultiplier * pairBias);
+			spacing = Mathf.Max(spacing, spacingFloor);
 			if (pos.DistanceTo(existing.Position) < spacing)
 				return false;
 		}
@@ -187,6 +193,7 @@ public partial class ObstacleFieldGenerator
 			(halfVisible * 2f) - new Vector2(pad * 2f, pad * 2f));
 		if (rect.Size.X <= 0f || rect.Size.Y <= 0f)
 			return;
+		_runtimeMinObstacleSpacingWorld = GetMinimumObstacleSpacingWorld();
 
 		float safeRadius = Mathf.Max(0f, InitialInsideSafeRadius);
 		int attempts = Mathf.Max(PlacementAttemptsPerSpawn * 2, 32);

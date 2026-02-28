@@ -92,6 +92,10 @@ public partial class ObstacleFieldGenerator
 		{
 			if (child == _generatedRoot || child is not Node2D node2D)
 				continue;
+			if (!node2D.IsInGroup(RuntimeGroups.Obstacle))
+				node2D.AddToGroup(RuntimeGroups.Obstacle);
+			if (!node2D.IsInGroup(RuntimeGroups.World))
+				node2D.AddToGroup(RuntimeGroups.World);
 
 			float radius = EstimateNodeRadius(node2D);
 			_placed.Add(new PlacedObstacle(node2D.GlobalPosition, Mathf.Max(24f, radius), -1, 1f));
@@ -119,6 +123,7 @@ public partial class ObstacleFieldGenerator
 		_hasClusterCenter = false;
 		_clusterCenter = Vector2.Zero;
 		_clusterRemaining = 0;
+		_runtimeMinObstacleSpacingWorld = 0f;
 		_spawnTimer = Mathf.Max(0.05f, SpawnIntervalSeconds);
 		_wasPaused = true;
 	}

@@ -64,6 +64,7 @@ public partial class Player
 	{
 		Velocity = Vector2.Zero;
 		_lastMoveDir = Vector2.Right;
+		ResetObstacleStickState();
 		ResetCommandPipelineRuntimeState();
 		_deathLogged = false;
 		_health?.ResetToFull();

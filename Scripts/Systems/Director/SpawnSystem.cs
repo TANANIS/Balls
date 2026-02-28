@@ -112,8 +112,8 @@ public partial class SpawnSystem : Node
 	[Export] public float PhaseMiniBossFreezeSeconds = 1.2f;
 	[Export] public float PhaseMiniBossScaleBase = 1.15f;
 	[Export] public float PhaseMiniBossScaleStep = 0.18f;
-	[Export] public int PhaseMiniBossHpBase = 120;
-	[Export] public int PhaseMiniBossHpStep = 50;
+	[Export] public int PhaseMiniBossHpBase = 95;
+	[Export] public int PhaseMiniBossHpStep = 35;
 	[Export] public int PhaseMiniBossContactDamageBase = 1;
 	[Export] public int PhaseMiniBossContactDamageStep = 0;
 	[Export] public float PhaseTailPrepSeconds = 26f;
@@ -128,6 +128,8 @@ public partial class SpawnSystem : Node
 	[Export] public float ChaosWeightCharger = 30f;
 	[Export] public float ChaosWeightTank = 20f;
 	[Export] public float ChaosWeightElite = 3f;
+	[Export(PropertyHint.Range, "0,6,1")] public int LateTierSlimeSuppressionStartTier = 2;
+	[Export(PropertyHint.Range, "0.01,1.00,0.01")] public float LateTierSlimeWeightMultiplier = 0.20f;
 
 	private Node2D _enemiesRoot;
 	private Node2D _player;

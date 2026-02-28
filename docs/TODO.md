@@ -31,6 +31,21 @@ Last Synced: 2026-02-28
 - [ ] Subsystem card batch #1 (at least 2-3 cards) to reduce Core/Survival over-concentration
 - [ ] Re-run `Tools/CardDrawSim` after Subsystem batch and verify phase Survival ratio error <= 2%
 
+## Hotfix Sweep (2026-02-28)
+- [x] Player collider profile converted to vertical rectangle (`body 36x58`, `hurtbox 30x50`)
+- [x] Enemy non-slime HP/speed downshift pass in `EnemyDefinitions.csv`
+- [x] Tier 2/3 slime share suppression (`TierEnemyWeights` + runtime late-tier slime multiplier)
+- [x] Miniboss HP scaling softened (`95 base`, `+35 step`)
+- [x] Enemy phase speed multipliers reduced in `StabilitySystem`
+- [x] Ranged character pickup-radius baseline multiplier increased to `x2`
+- [x] Effect projectile damage bonus gate set to `30%` of bonus-above-base
+- [x] Obstacle pass:
+  - [x] all obstacle colliders switched to smaller circle shape
+  - [x] obstacle spawn minimum spacing floor set to `3x` player height
+  - [x] anti-stick repel after >1-frame obstacle contact (player and enemies)
+- [x] Card localization CSV quoting fix and translation regen (`Cards.csv`)
+- [x] Settings language label mojibake fix (`Traditional Chinese` display)
+
 ## Director And Spawn
 - [x] 15:00 split into 4 phases
 - [x] Phase-tail miniboss schedule active: 03:45 / 07:30 / 11:15 / 14:30+

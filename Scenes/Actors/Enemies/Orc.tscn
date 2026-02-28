@@ -16,10 +16,10 @@
 radius = 24.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
-radius = 27.0
+radius = 23
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
-radius = 22.0
+radius = 18.7
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_orc_walk_0"]
 atlas = ExtResource("2_tex_walk")

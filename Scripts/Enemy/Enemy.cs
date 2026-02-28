@@ -86,6 +86,7 @@ public partial class Enemy : CharacterBody2D
 		Velocity = velocity;
 		UpdateVisualFacing(Velocity.X);
 		MoveAndSlide();
+		ResolveObstacleStick();
 	}
 
 	private void UpdateVisualFacing(float velocityX)

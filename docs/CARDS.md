@@ -1,5 +1,5 @@
 # Cards Spec
-Last Synced: 2026-02-27
+Last Synced: 2026-02-28
 
 
 ## Current Status
@@ -267,6 +267,19 @@ Additional rule:
   - No dedicated split projectile asset is required by default.
   - Split child uses the active character projectile prefab/animation.
   - Hit timing rule: split child has no global hit-arm delay; it only ignores the original hit target for a short window to avoid immediate same-target re-hit.
+- Effect projectile classification:
+  - "Non-primary bullets" are treated as effect projectiles:
+    - split-child bullets,
+    - post-pierce continuation,
+    - post-ricochet continuation,
+    - elemental-burst transformed bullet.
+  - Effect projectile bonus policy:
+    - effect projectiles still scale with attack bonuses,
+    - but only keep `30%` of bonus damage above base-shot reference.
+- Arcane tracking interaction:
+  - Arcane tracking is compatible with effect projectiles.
+  - Split children inherit homing runtime when parent shot has tracking enabled.
+  - Pierce/ricochet continuations keep runtime homing path active.
 - Current elemental burst visual baseline (`MOD_ELEMENTAL_BURST` card):
   - Projectile animation frames: `Assets/Sprites/Projectiles/ElementalBurst/Projectile/elemental_burst_charge_01.png` ~ `elemental_burst_charge_08.png`.
   - Runtime frame rule for charged shot: `Flight 0..6`, `Impact 7`.

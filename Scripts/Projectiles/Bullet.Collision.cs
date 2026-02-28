@@ -83,6 +83,7 @@ public partial class Bullet
 		if (_pierceRemaining <= 0)
 			return false;
 
+		MarkAsEffectProjectile();
 		_pierceRemaining--;
 		ApplyPostHitDamageFalloff(PierceDamageMultiplierPerHit);
 		_ignoreTargetInstanceId = (ulong)hitTarget.GetInstanceId();
@@ -103,6 +104,7 @@ public partial class Bullet
 		if (toTarget.LengthSquared() < 0.0001f)
 			return false;
 
+		MarkAsEffectProjectile();
 		_ricochetRemaining--;
 		ApplyPostHitDamageFalloff(RicochetDamageMultiplierPerBounce);
 		_dir = toTarget.Normalized();
@@ -120,12 +122,29 @@ public partial class Bullet
 			return false;
 
 		// No valid bounce target now: keep current heading and keep flying.
+		MarkAsEffectProjectile();
 		ApplyPostHitDamageFalloff(RicochetDamageMultiplierPerBounce);
 		_ignoreTargetInstanceId = (ulong)hitTarget.GetInstanceId();
 		_ignoreTargetTimer = Mathf.Max(_ignoreTargetTimer, Mathf.Max(0.01f, PostHitRetargetDelaySeconds));
 		GlobalPosition += _dir * Mathf.Max(0f, PostHitForwardOffset);
 		ApplyFacingByDirection();
 		return true;
+	}
+
+	private void MarkAsEffectProjectile()
+	{
+		if (_isEffectProjectile)
+			return;
+
+		_isEffectProjectile = true;
+		float baseDamage = Mathf.Max(1f, _baseDamageReference);
+		int currentDamage = Mathf.Max(1, _damage);
+		if (currentDamage <= baseDamage)
+			return;
+
+		float bonus = currentDamage - baseDamage;
+		float ratio = Mathf.Clamp(_effectProjectileBonusRatio, 0f, 1f);
+		_damage = Mathf.Max(1, Mathf.RoundToInt(baseDamage + (bonus * ratio)));
 	}
 
 	private void ApplyPostHitDamageFalloff(float multiplierPerContinuation)
