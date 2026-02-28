@@ -1,6 +1,6 @@
 # EnemyDefinitions.csv
 # id,scene_path,role,cost,min_tier,tags,hp,speed,contact_damage,notes
-slime,res://Scenes/Actors/Enemies/Slime.tscn,Slime,1,0,"melee|slime",4,88,1,"Filler unit. High count, low threat. Main space pressure."
+slime,res://Scenes/Actors/Enemies/Slime.tscn,Slime,1,0,"melee|slime",4,72,1,"Filler unit. High count, low threat. Main space pressure."
 orc,res://Scenes/Actors/Enemies/Orc.tscn,Orc,2,0,"melee|charger|orc",6,112,1,"Telegraph then burst dash. Creates rhythm spikes."
 elite_orc,res://Scenes/Actors/Enemies/EliteOrc.tscn,Tank,3,1,"melee|tank|elite_orc",26,56,1,"Slow body-blocker. Forces routing and reduces safe space."
 skeleton,res://Scenes/Actors/Enemies/Skeleton.tscn,Skeleton,2,1,"melee|skeleton",9,104,1,"Standard advanced melee. Stable pressure higher than orc baseline."
