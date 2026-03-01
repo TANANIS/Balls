@@ -52,7 +52,7 @@ Last Synced: 2026-02-27
 - Folder naming mismatch remains (`Enemies/` scenes vs `Scripts/Enemy/` scripts).
 
 ## Verification
-- `dotnet build ProjectGenesis.csproj`
+- `dotnet build Oriluneia.csproj`
   - result: success
   - warnings: 0
   - errors: 0

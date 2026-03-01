@@ -8,8 +8,8 @@
 data_*_windows_*/
 data_*_linuxbsd_*/
 data_*_macos_*/
-Project Genesis.console*
-**/Project Genesis.console.console/
+Oriluneia.console*
+**/Oriluneia.console.console/
 
 # Tooling / test artifacts
 Tools/

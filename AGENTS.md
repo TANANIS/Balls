@@ -16,7 +16,7 @@ If any implementation detail is unclear, prioritize rules in this file first, th
 ## 2) Required Pre-Commit Checks
 
 1. Build:
-   - `dotnet build ProjectGenesis.sln`
+   - `dotnet build Oriluneia.sln`
 2. Encoding/BOM check (must return no files):
    - PowerShell:
    ```powershell

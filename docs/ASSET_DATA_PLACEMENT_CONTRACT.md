@@ -47,6 +47,6 @@ Last Synced: 2026-02-28
 
 ## Validation Gates
 - Run:
-  - `dotnet build ProjectGenesis.sln`
+  - `dotnet build Oriluneia.sln`
   - `powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-StructureHealth.ps1`
   - `powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-SceneResourcePaths.ps1`

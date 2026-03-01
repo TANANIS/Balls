@@ -139,7 +139,7 @@
   - `EditorFluxWallet = 999` removed from `Scenes/UI/GameFlowUIRoot.tscn`.
 
 ## Validation
-- `dotnet build ProjectGenesis.sln`: pass.
+- `dotnet build Oriluneia.sln`: pass.
 - `Tools/Quality/Check-StructureHealth.ps1`: pass.
 - `Tools/Quality/Check-SceneResourcePaths.ps1`: pass.
 - BOM scan: pass.

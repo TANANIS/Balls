@@ -28,7 +28,7 @@ Last Synced: 2026-02-28
 - Batch size: one domain at a time.
 - Safety order: refactor internals first, move file paths second.
 - Gate after each batch:
-  - `dotnet build ProjectGenesis.sln` must pass.
+  - `dotnet build Oriluneia.sln` must pass.
   - BOM scan must return no files.
   - scene and runtime smoke flow check on the touched area.
 
@@ -162,7 +162,7 @@ Exit criteria:
 ## Runbook Commands
 ```powershell
 # Build gate
-dotnet build ProjectGenesis.sln
+dotnet build Oriluneia.sln
 
 # Structure health (build + line risk + path drift + BOM)
 powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-StructureHealth.ps1
@@ -181,7 +181,7 @@ powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-SceneResourcePaths.
   - `res://Prefabs/` references in `.tscn/.tres`: `0`
   - `res://Enemies/` references in `.tscn/.tres`: `0`
 - Validation:
-  - `dotnet build ProjectGenesis.sln`: pass
+  - `dotnet build Oriluneia.sln`: pass
   - BOM scan: pass
   - `Check-SceneResourcePaths.ps1`: pass
 

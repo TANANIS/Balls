@@ -2,7 +2,7 @@
 Generated on: 2026-02-28
 
 ## Build and Encoding
-- Build command: `dotnet build ProjectGenesis.sln`
+- Build command: `dotnet build Oriluneia.sln`
 - Result: success
 - Warnings: `0`
 - Errors: `0`

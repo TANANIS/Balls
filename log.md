@@ -35,7 +35,7 @@
 - Runtime hook:
   - `ExperienceDropSystem` detects miniboss kill and calls `ProgressionSystem.GrantBossKillBonus(...)`.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` passed.
+  - `dotnet build Oriluneia.sln` passed.
 
 ### 2026-02-28 - Unused Sprite Cleanup (Conservative)
 - Added cleanup script:
@@ -51,7 +51,7 @@
 - Removed files:
   - 39 unused sprite images + their `.import` sidecars.
 - Verification:
-  - `dotnet build ProjectGenesis.sln` passed.
+  - `dotnet build Oriluneia.sln` passed.
   - `Tools/Quality/Check-SceneResourcePaths.ps1` passed.
   - `Tools/Quality/Check-StructureHealth.ps1 -SkipBuild` passed.
 
@@ -79,7 +79,7 @@
 - Naming/boundary hardening:
   - group literals centralized with `Scripts/Shared/RuntimeGroups.cs`.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` passed.
+  - `dotnet build Oriluneia.sln` passed.
   - BOM scan passed.
   - scene resource path check passed.
 
@@ -140,7 +140,7 @@
 - Validation:
   - `dotnet test Tools/BalanceTests/BalanceTests.csproj` passed.
   - `dotnet test ... --filter SpawnDifficultyCurveTests` passed.
-  - `dotnet build ProjectGenesis.sln` passed after each pass.
+  - `dotnet build Oriluneia.sln` passed after each pass.
 
 ### 2026-02-26 - UI Palette Pass (Sci-Fi -> Rustic/Fantasy)
 - Applied a rustic palette across primary runtime UI:
@@ -159,7 +159,7 @@
   - `EPIC`: copper-gold,
   - plus dedicated hover/pressed/disabled text color overrides.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` passed after UI palette update.
+  - `dotnet build Oriluneia.sln` passed after UI palette update.
 
 ### 2026-02-26 - Priest Sustain + HUD Readability + Projectile Continuation Tuning
 - Priest sustain logic:
@@ -179,7 +179,7 @@
 - World pacing pressure:
   - far-enemy recycle parameters were tightened to reduce safe-zone abuse and off-screen enemy accumulation.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` passed after changes.
+  - `dotnet build Oriluneia.sln` passed after changes.
 
 ### 2026-02-26 - Swordsman Naming + Asset Unification
 - Character naming normalized from mixed `Melee/Knight` to `Swordsman`:
@@ -292,7 +292,7 @@
 - Fallback-path consistency:
   - `Data/Characters/*.tres` + `GameFlowUI` fallback builders now use the same revised wording.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ### 2026-02-25 - README Sync (Current Mainline Snapshot)
 - Updated `README.md` to reflect current mainline status:
@@ -302,7 +302,7 @@
   - F3 debug panel behavior summary,
   - branch note (`legacy/old-scifi-main` archive).
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ### 2026-02-25 - Sprite Asset Folder Cleanup + Rebinding
 - Reorganized projectile visuals to deterministic folders:
@@ -317,7 +317,7 @@
   - `Prefabs/PriestProjectile.tscn`
   - `Prefabs/SplitProjectile.tscn`
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ### 2026-02-25 - Combat Feel Alignment (Knight + Facing)
 - Melee animation timeline now aligns with ranged animation-speed model:
@@ -360,7 +360,7 @@
   - added `Scripts/Projectiles/Bullet.SplitShot.cs` (split spawn/count/anti-chain logic).
   - added `Scripts/Projectiles/Bullet.ElementalBurst.cs` (burst detonation/AoE/VFX callback path).
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 - TODO sync:
   - marked `Execute Phase 1 (Bullet decomposition)` as complete in `docs/TODO.md`.
 
@@ -375,7 +375,7 @@
   - F3 open/close still toggles menu and pause ownership.
   - existing actions still route through same runtime services (`ProgressionSystem`, `UpgradeSystem`, `SpawnSystem`, `PlayerHealth`, `MetaProgressionService`).
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 - TODO sync:
   - marked `Execute Phase 2 (DebugCheatSystem decomposition)` as complete in `docs/TODO.md`.
 
@@ -390,7 +390,7 @@
   - option draw policy unchanged,
   - debug apply bypass behavior unchanged.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ## Session Update (2026-02-25, Phase 5 Complete - SpawnSystem Base Cleanup)
 - Refactor completed for spawn base-file cleanup:
@@ -400,7 +400,7 @@
   - added `Scripts/Systems/Director/SpawnSystem.BoundsAndPlacement.cs` (spawn ring/pack center/spacing placement).
   - added `Scripts/Systems/Director/SpawnSystem.Debug.cs` (debug id list/spawn + anchor helpers).
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ## Session Update (2026-02-25, Phase 4 Partial - GameFlowUI Binding Boundary)
 - Performed low-risk boundary extraction in UI cluster:
@@ -408,7 +408,7 @@
   - added `Scripts/UI/GameFlowUI.Binding.cs`.
   - `Scripts/UI/GameFlowUI.References.cs` now focuses on path constants + cached references/state fields.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ## Session Update (2026-02-25, Phase 4 Complete - GameFlowUI Controller Boundary Alignment)
 - Completed controller-oriented naming and file boundary alignment in UI flow:
@@ -417,7 +417,7 @@
   - renamed `Scripts/UI/GameFlowUI.EndState.cs` -> `Scripts/UI/GameFlowUI.EndStateController.cs`.
   - kept presenter responsibilities in rendering/localization-related partials (`Visuals`, `Localization`, `BuildSummary`) with `Binding` isolated.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ## Session Update (2026-02-25, Refactor Tail - SettingsPresenter + Guardrails)
 - Consolidated duplicated settings-panel wiring into shared presenter helpers:
@@ -430,7 +430,7 @@
 - Added guardrail doc:
   - `docs/SCRIPT_SIZE_GUARDRAILS.md` (line thresholds + split rules + audit command).
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ## Session Update (2026-02-25, Post-Refactor Risk Audit)
 - Added ranked logic risk audit document:
@@ -447,7 +447,7 @@
 - Updated risk document to mark resolved items and keep only open findings:
   - `docs/REFACTOR_LOGIC_RISK_REVIEW_2026-02-25.md`.
 - Validation:
-  - `dotnet build ProjectGenesis.sln` succeeded (0 errors, 0 warnings).
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
 
 ### 2026-02-27 - Terrain/Obstacles/UI/Card Polish Sync
 - Terrain pipeline refactor and split completed:

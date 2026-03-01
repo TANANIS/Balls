@@ -35,7 +35,7 @@
   - `SpawnSystem`: `12 -> 9`
 
 ## Validation
-- `dotnet build ProjectGenesis.sln`: pass
+- `dotnet build Oriluneia.sln`: pass
 - `Check-StructureHealth.ps1`: pass
 - `Check-SceneResourcePaths.ps1`: pass
 - BOM scan: pass

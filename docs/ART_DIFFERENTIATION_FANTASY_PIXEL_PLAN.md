@@ -134,7 +134,7 @@ Last Synced: 2026-02-27
   - Review draw-call and texture memory impact.
   - Fix any import/path inconsistencies and dead placeholders.
 - Exit criteria:
-  - `dotnet build ProjectGenesis.sln` passes.
+  - `dotnet build Oriluneia.sln` passes.
   - Manual run smoke test passes for start -> run -> end-state -> back-to-meta.
 
 ## Definition Of Done (Art Differentiation Branch)

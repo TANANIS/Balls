@@ -25,7 +25,7 @@ Last Synced: 2026-02-27
 - pure data/DTO files that are already stable and short.
 
 ## Refactor Checklist
-- Build green: `dotnet build ProjectGenesis.sln`.
+- Build green: `dotnet build Oriluneia.sln`.
 - No behavior drift in smoke flow for affected module.
 - Update docs (`log.md`, `docs/TODO.md`) when boundaries change.
 - Keep naming explicit (for example: `*.Lifecycle.cs`, `*.Apply.cs`, `*.Binding.cs`).

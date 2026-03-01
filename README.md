@@ -1,4 +1,4 @@
-# Project Genesis
+# Oriluneia
 2D top-down survival action prototype built with Godot 4 (Mono/C#), targeting a fixed 15:00 run loop.
 Current content direction is fantasy-themed combat/presentation on top of the existing runtime architecture.
 
