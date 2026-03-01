@@ -4,9 +4,12 @@ param(
 )
 
 $required = @(
-    "Data/Director/*.csv",
-    "Data/Characters/*.csv",
-    "Data/Localization/*.csv"
+    "Data/Director/PressureTierRules.csv",
+    "Data/Director/EnemyDefinitions.csv",
+    "Data/Director/TierEnemyWeights.csv",
+    "Data/Characters/CharacterStats.csv",
+    "Data/Localization/Cards.csv",
+    "Data/Localization/UI.csv"
 )
 
 if (-not (Test-Path -LiteralPath $PresetPath)) {
@@ -65,6 +68,25 @@ if ($issues -gt 0) {
         Write-Host "Check failed. Re-run with -Apply to patch."
     }
     exit 1
+}
+
+$gameplayCsv = @(
+    "Data/Director/PressureTierRules.csv",
+    "Data/Director/EnemyDefinitions.csv",
+    "Data/Director/TierEnemyWeights.csv",
+    "Data/Characters/CharacterStats.csv"
+)
+
+foreach ($csv in $gameplayCsv) {
+    $importPath = "$csv.import"
+    if (-not (Test-Path -LiteralPath $importPath)) {
+        continue
+    }
+
+    $raw = Get-Content -LiteralPath $importPath -Raw
+    if ($raw -match 'importer="csv_translation"') {
+        Write-Warning "Gameplay CSV appears imported as csv_translation: $importPath (recommend Keep File / No Import)"
+    }
 }
 
 Write-Host "OK: all include_filter entries contain required CSV paths."

@@ -93,7 +93,6 @@ public partial class SpawnSystem : Node
 
 	[Export] public bool UseTierRulesCsv = true;
 	[Export] public bool UseCsvAsFinalRuntimeValues = true;
-	[Export] public bool StrictCsvRuntimeValidation = false;
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
@@ -220,10 +219,14 @@ public partial class SpawnSystem : Node
 		if (_csvRuntimeHealthy)
 			return;
 
+		bool hasTierRulesCsv = FileAccess.FileExists(PressureTierRulesCsvPath);
+		bool hasEnemyDefsCsv = FileAccess.FileExists(EnemyDefinitionsCsvPath);
+		bool hasTierWeightsCsv = FileAccess.FileExists(TierEnemyWeightsCsvPath);
 		GD.PushError(
 			$"[SpawnSystem] CSV runtime data incomplete. " +
 			$"tier_rules={_tierRules.Count}, enemy_defs={_enemyDefinitions.Count}, tier_weights={_tierWeights.Count}. " +
-			$"Check export include_filter for Data/Director/*.csv.");
+			$"exists(tier_rules_csv={hasTierRulesCsv}, enemy_defs_csv={hasEnemyDefsCsv}, tier_weights_csv={hasTierWeightsCsv}). " +
+			$"Check export include_filter and CSV import mode.");
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -231,7 +234,7 @@ public partial class SpawnSystem : Node
 		EnsureSpawnAnchors();
 		if (_enemiesRoot == null || _player == null)
 			return;
-		if (UseTierRulesCsv && StrictCsvRuntimeValidation && !_csvRuntimeHealthy)
+		if (UseTierRulesCsv && !_csvRuntimeHealthy)
 			return;
 
 		_survivalSeconds += (float)delta;

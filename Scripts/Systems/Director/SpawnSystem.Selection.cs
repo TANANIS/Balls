@@ -8,7 +8,13 @@ public partial class SpawnSystem
 	{
 		selected = default;
 
-		if (!UseTierRulesCsv || _enemyDefinitions.Count == 0 || _tierWeights.Count == 0)
+		if (UseTierRulesCsv && (_enemyDefinitions.Count == 0 || _tierWeights.Count == 0))
+		{
+			WarnCsvIssueOnce("pick_blocked_csv_incomplete", "Blocked spawn pick because CSV runtime data is incomplete.");
+			return false;
+		}
+
+		if (!UseTierRulesCsv)
 		{
 			if (EnemyScene == null)
 				return false;
