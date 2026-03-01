@@ -92,7 +92,7 @@ public partial class SpawnSystem : Node
 	[Export] public int MaxPendingSpawns = 320;
 
 	[Export] public bool UseTierRulesCsv = true;
-	[Export] public bool StrictCsvRuntimeValidation = true;
+	[Export] public bool StrictCsvRuntimeValidation = false;
 	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
 	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
 	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
