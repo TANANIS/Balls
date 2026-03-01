@@ -28,6 +28,9 @@ public partial class SpawnSystem
 
 	private float GetPhaseSpawnInterval(float baseInterval)
 	{
+		if (UseTierRulesCsv && UseCsvAsFinalRuntimeValues)
+			return Mathf.Max(SpawnIntervalMinClamp, baseInterval);
+
 		float mult = Mathf.Max(0.01f, GetPhaseSpawnRateMultiplier());
 		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
 		float tierProgress = GetCurrentTierProgress01();
@@ -45,6 +48,9 @@ public partial class SpawnSystem
 
 	private int GetPhaseMaxAlive()
 	{
+		if (UseTierRulesCsv && UseCsvAsFinalRuntimeValues)
+			return Mathf.Max(1, _baseMaxAlive);
+
 		float mult = Mathf.Max(0.01f, GetPhaseMaxAliveMultiplier());
 		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
 		float tierProgress = GetCurrentTierProgress01();
@@ -70,6 +76,9 @@ public partial class SpawnSystem
 
 	private float GetPhaseBudget(int baseBudget)
 	{
+		if (UseTierRulesCsv && UseCsvAsFinalRuntimeValues)
+			return Mathf.Max(1f, baseBudget);
+
 		float phaseMult = Mathf.Max(0.05f, GetPhaseBudgetMultiplier());
 		float tierTailRamp = Mathf.Max(1f, GetPhaseTierTailRampMultiplier());
 		float tierProgress = GetCurrentTierProgress01();

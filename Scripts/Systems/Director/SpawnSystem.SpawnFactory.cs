@@ -127,6 +127,8 @@ public partial class SpawnSystem
 		float min = Mathf.Max(0.01f, SpawnStepIntervalMinSeconds);
 		float max = Mathf.Max(min, SpawnStepIntervalMaxSeconds);
 		float baseInterval = _rng.RandfRange(min, max);
+		if (UseTierRulesCsv && UseCsvAsFinalRuntimeValues)
+			return Mathf.Max(0.01f, baseInterval);
 
 		float phaseMult = GetCurrentPhase() switch
 		{
@@ -175,6 +177,8 @@ public partial class SpawnSystem
 		int minBudget = Mathf.Max(1, Mathf.RoundToInt(GetPhaseBudget(_baseBudgetMin)));
 		int maxBudget = Mathf.Max(minBudget, Mathf.RoundToInt(GetPhaseBudget(_baseBudgetMax)));
 		int waveBudget = _rng.RandiRange(minBudget, maxBudget);
+		if (UseTierRulesCsv && UseCsvAsFinalRuntimeValues)
+			return Mathf.Max(1, waveBudget);
 
 		int targetAlive = Mathf.Clamp(Mathf.RoundToInt(maxAlive * Mathf.Clamp(HordeTargetAliveRatio, 0.2f, 1f)), 1, maxAlive);
 		int deficit = Mathf.Max(0, targetAlive - aliveCount);
