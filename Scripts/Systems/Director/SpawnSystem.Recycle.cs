@@ -178,14 +178,7 @@ public partial class SpawnSystem
 			return true;
 		}
 
-		if (UseTierRulesCsv)
-		{
-			WarnCsvIssueOnce("recycle_blocked_csv_missing_def", "Blocked recycle requeue because tracked definition is missing in CSV runtime data.");
-			definition = default;
-			return false;
-		}
-
-		if (EnemyScene != null)
+		if (EnemyScene != null && (!UseTierRulesCsv || AllowEnemySceneFallbackWhenCsvUnavailable))
 		{
 			definition = new EnemyDefinition
 			{

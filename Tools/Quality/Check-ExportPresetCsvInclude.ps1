@@ -4,13 +4,15 @@ param(
 )
 
 $required = @(
-    "Data/Director/PressureTierRules.csv",
-    "Data/Director/EnemyDefinitions.csv",
-    "Data/Director/TierEnemyWeights.csv",
+    "Data/Director/PressureTierRules.txt",
+    "Data/Director/EnemyDefinitions.txt",
+    "Data/Director/TierEnemyWeights.txt",
     "Data/Characters/CharacterStats.csv",
     "Data/Localization/Cards.csv",
     "Data/Localization/UI.csv"
 )
+
+$targetPresets = @("preset.0", "preset.1")
 
 if (-not (Test-Path -LiteralPath $PresetPath)) {
     Write-Error "File not found: $PresetPath"
@@ -22,10 +24,24 @@ $updated = [System.Collections.Generic.List[string]]::new()
 $changed = $false
 $issues = 0
 
+$activePreset = $null
+
 for ($i = 0; $i -lt $lines.Count; $i++) {
     $line = $lines[$i]
 
-    if ($line -match '^include_filter="(.*)"$') {
+    if ($line -match '^\[(preset\.\d+)\]$') {
+        $activePreset = $Matches[1]
+        $updated.Add($line)
+        continue
+    }
+
+    if ($line -match '^\[preset\.\d+\.options\]$') {
+        $activePreset = $null
+        $updated.Add($line)
+        continue
+    }
+
+    if ($activePreset -and ($targetPresets -contains $activePreset) -and $line -match '^include_filter="(.*)"$') {
         $current = $Matches[1]
         $parts = @()
         if (-not [string]::IsNullOrWhiteSpace($current)) {
@@ -41,7 +57,7 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
 
         if ($missing.Count -gt 0) {
             $issues++
-            Write-Warning "Missing CSV include(s) at line $($i + 1): $($missing -join ', ')"
+            Write-Warning "[$activePreset] Missing required include(s) at line $($i + 1): $($missing -join ', ')"
 
             if ($Apply) {
                 $all = @($parts + $missing) | Select-Object -Unique
@@ -71,9 +87,6 @@ if ($issues -gt 0) {
 }
 
 $gameplayCsv = @(
-    "Data/Director/PressureTierRules.csv",
-    "Data/Director/EnemyDefinitions.csv",
-    "Data/Director/TierEnemyWeights.csv",
     "Data/Characters/CharacterStats.csv"
 )
 
@@ -89,5 +102,5 @@ foreach ($csv in $gameplayCsv) {
     }
 }
 
-Write-Host "OK: all include_filter entries contain required CSV paths."
+Write-Host "OK: all include_filter entries contain required table paths."
 exit 0

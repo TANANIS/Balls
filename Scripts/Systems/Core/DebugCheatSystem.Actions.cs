@@ -31,6 +31,7 @@ public partial class DebugCheatSystem
 		if (_timeScaleSlider != null)
 			_timeScaleSlider.Value = Engine.TimeScale;
 		UpdateTimeScaleLabel();
+		UpdateSpawnSourceLabel();
 	}
 
 	private void RefreshEnemyList()
@@ -46,6 +47,7 @@ public partial class DebugCheatSystem
 		string[] ids = _spawnSystem.DebugGetEnemyIds();
 		foreach (string id in ids)
 			_enemyIdOption.AddItem(id);
+		UpdateSpawnSourceLabel();
 	}
 
 	private void SpawnRequestedEnemy()
@@ -56,6 +58,21 @@ public partial class DebugCheatSystem
 		string id = _enemyIdOption.GetItemText(_enemyIdOption.Selected);
 		int count = (int)Mathf.Clamp((float)_spawnCountInput.Value, 1f, 64f);
 		_spawnSystem.DebugSpawnEnemyById(id, count);
+		UpdateSpawnSourceLabel();
+	}
+
+	private void UpdateSpawnSourceLabel()
+	{
+		if (_spawnSourceLabel == null)
+			return;
+
+		if (_spawnSystem == null)
+		{
+			_spawnSourceLabel.Text = "Spawn source: unavailable";
+			return;
+		}
+
+		_spawnSourceLabel.Text = $"Spawn source: {_spawnSystem.DebugGetSpawnSourceSummary()}";
 	}
 
 	private void RefreshUpgradeList()

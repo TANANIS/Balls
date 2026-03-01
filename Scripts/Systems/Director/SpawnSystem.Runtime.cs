@@ -4,6 +4,17 @@ using System.Collections.Generic;
 
 public partial class SpawnSystem
 {
+	public string DebugGetSpawnSourceSummary()
+	{
+		string source = (!UseTierRulesCsv || _enemyDefinitions.Count == 0 || _tierWeights.Count == 0)
+			? "ENEMY_SCENE_FALLBACK"
+			: "CSV_POOL";
+		int activeTierWeightCount = 0;
+		if (_tierWeights.TryGetValue(_activeTier, out List<WeightedEnemy> list))
+			activeTierWeightCount = list.Count;
+		return $"source={source} | use_csv={UseTierRulesCsv} | fallback_allowed={AllowEnemySceneFallbackWhenCsvUnavailable} | defs={_enemyDefinitions.Count} | weight_tiers={_tierWeights.Count} | active_tier={_activeTier} | active_tier_weights={activeTierWeightCount}";
+	}
+
 	public string[] DebugGetEnemyIds()
 	{
 		if (UseTierRulesCsv && _enemyDefinitions.Count == 0)

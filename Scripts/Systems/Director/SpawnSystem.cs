@@ -93,9 +93,11 @@ public partial class SpawnSystem : Node
 
 	[Export] public bool UseTierRulesCsv = true;
 	[Export] public bool UseCsvAsFinalRuntimeValues = true;
-	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.csv";
-	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.csv";
-	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.csv";
+	[Export] public bool StrictCsvRuntimeValidation = false;
+	[Export] public bool AllowEnemySceneFallbackWhenCsvUnavailable = false;
+	[Export] public string PressureTierRulesCsvPath = "res://Data/Director/PressureTierRules.txt";
+	[Export] public string EnemyDefinitionsCsvPath = "res://Data/Director/EnemyDefinitions.txt";
+	[Export] public string TierEnemyWeightsCsvPath = "res://Data/Director/TierEnemyWeights.txt";
 	[Export] public bool UseUpgradeCountUnlocks = false;
 	[Export] public int EliteUnlockUpgradeCount = 4;
 	[Export] public float EliteInjectChanceMin = 0.02f;
@@ -234,7 +236,7 @@ public partial class SpawnSystem : Node
 		EnsureSpawnAnchors();
 		if (_enemiesRoot == null || _player == null)
 			return;
-		if (UseTierRulesCsv && !_csvRuntimeHealthy)
+		if (UseTierRulesCsv && StrictCsvRuntimeValidation && !_csvRuntimeHealthy)
 			return;
 
 		_survivalSeconds += (float)delta;

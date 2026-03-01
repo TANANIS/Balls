@@ -235,6 +235,13 @@ public partial class DebugCheatSystem
 		bottom.AddChild(refresh);
 		row.AddChild(bottom);
 
+		_spawnSourceLabel = new Label
+		{
+			Text = "Spawn source: -",
+			AutowrapMode = TextServer.AutowrapMode.WordSmart
+		};
+		row.AddChild(_spawnSourceLabel);
+
 		return row;
 	}
 

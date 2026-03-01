@@ -10,11 +10,21 @@ public partial class SpawnSystem
 
 		if (UseTierRulesCsv && (_enemyDefinitions.Count == 0 || _tierWeights.Count == 0))
 		{
-			WarnCsvIssueOnce("pick_blocked_csv_incomplete", "Blocked spawn pick because CSV runtime data is incomplete.");
-			return false;
+			LoadEnemyDefinitionsFromCsv();
+			LoadTierWeightsFromCsv();
 		}
 
-		if (!UseTierRulesCsv)
+		if (UseTierRulesCsv && (_enemyDefinitions.Count == 0 || _tierWeights.Count == 0))
+		{
+			WarnCsvIssueOnce(
+				"selection_pool_unavailable",
+				$"Enemy selection pool unavailable in CSV mode. defs={_enemyDefinitions.Count}, tier_weights={_tierWeights.Count}.");
+
+			if (!AllowEnemySceneFallbackWhenCsvUnavailable)
+				return false;
+		}
+
+		if (!UseTierRulesCsv || (AllowEnemySceneFallbackWhenCsvUnavailable && (_enemyDefinitions.Count == 0 || _tierWeights.Count == 0)))
 		{
 			if (EnemyScene == null)
 				return false;

@@ -10,7 +10,7 @@ If any implementation detail is unclear, prioritize rules in this file first, th
 - Godot parser symptom for wrong encoding: `Parse Error: Expected '['` at line 1.
 - Damage pipeline is centralized: only `CombatSystem` resolves and applies damage.
 - Gameplay sensors (`Bullet`, `Hitbox`, `Hurtbox`) submit `DamageRequest`; they must not deduct HP directly.
-- Keep balance tuning data-driven first (`Data/Director/*.csv`, upgrade catalog), code second.
+- Keep balance tuning data-driven first (`Data/Director/*` tables, upgrade catalog), code second.
 - UI is presentation/input only. Systems may be called by UI; systems must not depend on UI implementation.
 
 ## 2) Required Pre-Commit Checks
@@ -27,6 +27,24 @@ If any implementation detail is unclear, prioritize rules in this file first, th
        $b.Length -eq 3 -and $b[0] -eq 239 -and $b[1] -eq 187 -and $b[2] -eq 191
      } | Select-Object -ExpandProperty FullName
    ```
+
+## 2.1) Required Pre-Export Guard (Critical)
+
+- Root cause seen in production: `preset.0` was overwritten to `include_filter=""`, export package missed Director tables, and runtime fell back (`defs=0`, `weight_tiers=0`).
+- Never export without checking `export_presets.cfg` for `preset.0`:
+  - `include_filter` must not be empty.
+  - It must include:
+    - `Data/Director/PressureTierRules.txt`
+    - `Data/Director/EnemyDefinitions.txt`
+    - `Data/Director/TierEnemyWeights.txt`
+    - `Data/Characters/CharacterStats.csv`
+    - `Data/Localization/Cards.csv`
+    - `Data/Localization/UI.csv`
+- Mandatory pre-export command:
+  - `powershell -ExecutionPolicy Bypass -File Tools/Quality/Check-ExportPresetCsvInclude.ps1 -Apply`
+- Runtime verification (F3 Debug panel):
+  - expected: `source=CSV_POOL`, `defs>0`, `weight_tiers>0`
+  - broken export symptom: `source=ENEMY_SCENE_FALLBACK`, `defs=0`, `weight_tiers=0`
 
 ## 3) Runtime Architecture Contract
 

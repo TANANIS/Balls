@@ -1,0 +1,25 @@
+# TierEnemyWeights.csv
+# tier,enemy_id,weight
+0,slime,78
+0,orc,22
+
+1,slime,50
+1,orc,28
+1,skeleton,20
+1,elite_orc,15
+
+2,slime,4
+2,orc,34
+2,skeleton,42
+2,elite_orc,34
+2,skeleton_archer,30
+2,werewolf,30
+2,werebear,20
+
+3,slime,1
+3,orc,20
+3,skeleton,30
+3,elite_orc,44
+3,skeleton_archer,38
+3,werewolf,46
+3,werebear,28

@@ -31,6 +31,7 @@ public partial class DebugCheatSystem : Node
 	private HSlider _timeScaleSlider;
 	private Label _timeScaleValueLabel;
 	private Label _upgradeActionLabel;
+	private Label _spawnSourceLabel;
 	private readonly Dictionary<string, string> _cardZhLookup = new();
 	private bool _cardZhLookupLoaded = false;
 
