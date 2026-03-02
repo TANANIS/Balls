@@ -6,7 +6,6 @@ public partial class UpgradeMenu : Control
 	private const string LeftButtonPath = "Panel/VBox/Options/LeftButton";
 	private const string MiddleButtonPath = "Panel/VBox/Options/MiddleButton";
 	private const string RightButtonPath = "Panel/VBox/Options/RightButton";
-	private const string PanelPath = "Panel";
 
 	private UpgradeSystem _upgradeSystem;
 	private readonly RandomNumberGenerator _rng = new();
@@ -15,7 +14,6 @@ public partial class UpgradeMenu : Control
 	private Button _leftButton;
 	private Button _middleButton;
 	private Button _rightButton;
-	private Control _panel;
 
 	private bool _isOpen = false;
 	private int _availableOptionCount = 0;
@@ -96,8 +94,6 @@ public partial class UpgradeMenu : Control
 		_leftButton = GetNodeOrNull<Button>(LeftButtonPath);
 		_middleButton = GetNodeOrNull<Button>(MiddleButtonPath);
 		_rightButton = GetNodeOrNull<Button>(RightButtonPath);
-		_panel = GetNodeOrNull<Control>(PanelPath);
-
 		if (_title == null || _leftButton == null || _middleButton == null || _rightButton == null)
 		{
 			return;
@@ -183,25 +179,6 @@ public partial class UpgradeMenu : Control
 		button.AddThemeColorOverride("font_hover_color", hoverColor);
 		button.AddThemeColorOverride("font_pressed_color", pressedColor);
 		button.AddThemeColorOverride("font_disabled_color", new Color(0.70f, 0.62f, 0.52f, 0.75f));
-	}
-
-	private void CenterPanel()
-	{
-		if (_panel == null)
-			return;
-
-		Vector2 size = _panel.GetCombinedMinimumSize();
-		if (size == Vector2.Zero)
-			size = _panel.Size;
-
-		_panel.AnchorLeft = 0.5f;
-		_panel.AnchorTop = 0.5f;
-		_panel.AnchorRight = 0.5f;
-		_panel.AnchorBottom = 0.5f;
-		_panel.OffsetLeft = -size.X * 0.5f;
-		_panel.OffsetTop = -size.Y * 0.5f;
-		_panel.OffsetRight = size.X * 0.5f;
-		_panel.OffsetBottom = size.Y * 0.5f;
 	}
 
 	private bool PickOptions()

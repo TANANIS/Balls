@@ -1,61 +1,61 @@
-[gd_scene load_steps=6 format=3 uid="uid://buvl65c46k2su"]
+[gd_scene load_steps=10 format=3 uid="uid://buvl65c46k2su"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.13, 0.10, 0.08, 0.94)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.62, 0.49, 0.30, 0.92)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.18, 0.12, 0.05, 0.30)
-shadow_size = 12
+[ext_resource type="Texture2D" path="res://Assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Plain/8 Shop/1.png" id="1_y78e8"]
+[ext_resource type="Texture2D" path="res://Assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Plain/9 Rewards/1.png" id="2_3v8w0"]
+[ext_resource type="Texture2D" path="res://Assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Plain/4 Notification/1.png" id="3_l06vd"]
+[ext_resource type="Texture2D" path="res://Assets/Humble Gift - Paper UI System v1.1/Sprites/Paper UI Pack/Plain/4 Notification/2.png" id="4_wvshy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
-bg_color = Color(0.22, 0.17, 0.12, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.65, 0.53, 0.34, 0.85)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxTexture" id="StyleBoxFlat_right_column_panel"]
+texture = ExtResource("2_3v8w0")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+modulate_color = Color(0.9, 0.88, 0.83, 0.96)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
-bg_color = Color(0.17, 0.13, 0.09, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.53, 0.41, 0.25, 0.90)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxTexture" id="StyleBoxFlat_panel"]
+texture = ExtResource("1_y78e8")
+texture_margin_left = 42.0
+texture_margin_top = 42.0
+texture_margin_right = 42.0
+texture_margin_bottom = 42.0
+modulate_color = Color(0.88, 0.86, 0.8, 0.95)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
-bg_color = Color(0.28, 0.22, 0.15, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.79, 0.65, 0.43, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxTexture" id="StyleBoxFlat_button"]
+texture = ExtResource("3_l06vd")
+texture_margin_left = 26.0
+texture_margin_top = 26.0
+texture_margin_right = 26.0
+texture_margin_bottom = 26.0
+modulate_color = Color(0.93, 0.9, 0.84, 0.97)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_right_column_panel"]
-bg_color = Color(0.13, 0.10, 0.08, 0.94)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxTexture" id="StyleBoxFlat_button_pressed"]
+texture = ExtResource("3_l06vd")
+texture_margin_left = 26.0
+texture_margin_top = 26.0
+texture_margin_right = 26.0
+texture_margin_bottom = 26.0
+modulate_color = Color(0.86, 0.82, 0.76, 0.97)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxFlat_button_hover"]
+texture = ExtResource("4_wvshy")
+texture_margin_left = 26.0
+texture_margin_top = 26.0
+texture_margin_right = 26.0
+texture_margin_bottom = 26.0
+modulate_color = Color(0.98, 0.95, 0.88, 0.99)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
 
 [node name="StartPanel" type="Control"]
 layout_mode = 3
@@ -65,6 +65,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="DeskBackdrop" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -610.0
+offset_top = 58.0
+offset_right = 610.0
+offset_bottom = 418.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(700, 660)
@@ -86,9 +102,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 [node name="MainScroll" type="ScrollContainer" parent="Panel"]
 layout_mode = 0
 offset_left = 32.0
-offset_top = 30.0
+offset_top = 118.0
 offset_right = 668.0
-offset_bottom = 630.0
+offset_bottom = 692.0
 horizontal_scroll_mode = 0
 
 [node name="VBox" type="VBoxContainer" parent="Panel/MainScroll"]
@@ -103,26 +119,28 @@ theme_override_constants/separation = 6
 
 [node name="Title" type="Label" parent="Panel/MainScroll/VBox/Header"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 46
 text = "PROJECT GENESIS"
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="Panel/MainScroll/VBox/Header"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_colors/font_color = Color(0.88, 0.8, 0.67, 0.95)
 theme_override_font_sizes/font_size = 18
 text = "Survive the collapsing universe and build your strategy."
 horizontal_alignment = 1
 
 [node name="MainBody" type="HBoxContainer" parent="Panel/MainScroll/VBox"]
-custom_minimum_size = Vector2(0, 460)
+custom_minimum_size = Vector2(0, 470)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 18
+alignment = 1
 
 [node name="LeftColumn" type="VBoxContainer" parent="Panel/MainScroll/VBox/MainBody"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -155,13 +173,13 @@ text = "Perfect 15:00 Leaderboard (Local)"
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_colors/font_color = Color(0.90, 0.84, 0.72, 0.95)
+theme_override_colors/font_color = Color(0.9, 0.84, 0.72, 0.95)
 theme_override_font_sizes/font_size = 15
 text = "No perfect clears yet."
 autowrap_mode = 3
 
 [node name="RightColumnPanel" type="Panel" parent="Panel/MainScroll/VBox/MainBody"]
-custom_minimum_size = Vector2(230, 0)
+custom_minimum_size = Vector2(430, 430)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
@@ -171,53 +189,56 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 76.0
+offset_bottom = -66.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 14
+theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_bottom = 20
 
 [node name="ButtonsVBox" type="VBoxContainer" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
+alignment = 2
 
 [node name="StartButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Start"
 
 [node name="SettingsButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Settings"
 
 [node name="CardsButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Cards"
 
 [node name="QuitButton" type="Button" parent="Panel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
@@ -230,6 +251,27 @@ offset_left = 32.0
 offset_top = 30.0
 offset_right = 668.0
 offset_bottom = 620.0
+
+[node name="LeftSheetBackdrop" type="Panel" parent="Panel/CharacterSelectPanel"]
+layout_mode = 1
+offset_left = -112.0
+offset_top = -18.0
+offset_right = 328.0
+offset_bottom = 608.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="RightSheetBackdrop" type="Panel" parent="Panel/CharacterSelectPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -328.0
+offset_top = -14.0
+offset_right = 112.0
+offset_bottom = 612.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
 
 [node name="VBox" type="VBoxContainer" parent="Panel/CharacterSelectPanel"]
 layout_mode = 1
@@ -247,10 +289,9 @@ theme_override_constants/separation = 10
 [node name="Title" type="Label" parent="Panel/CharacterSelectPanel/VBox/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 42
 text = "META PROGRESSION"
-horizontal_alignment = 0
 
 [node name="FluxHeader" type="HBoxContainer" parent="Panel/CharacterSelectPanel/VBox/HeaderRow"]
 layout_mode = 2
@@ -259,7 +300,7 @@ alignment = 2
 
 [node name="FluxLabel" type="Label" parent="Panel/CharacterSelectPanel/VBox/HeaderRow/FluxHeader"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.90, 0.83, 0.70, 1)
+theme_override_colors/font_color = Color(0.9, 0.83, 0.7, 1)
 theme_override_font_sizes/font_size = 22
 text = "Flux:"
 
@@ -287,59 +328,58 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
-theme_override_constants/separation = 10
 
 [node name="RangedButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_text = true
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Ranger Core"
+clip_text = true
 
 [node name="SwordsmanButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_text = true
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Swordsman"
+clip_text = true
 
 [node name="TankButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_text = true
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Priest"
+clip_text = true
 
 [node name="ArcherButton" type="Button" parent="Panel/CharacterSelectPanel/VBox/ContentRow/LeftColumn/CharacterButtons"]
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-clip_text = true
 theme_override_colors/font_color = Color(0.97, 0.92, 0.82, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Archer"
+clip_text = true
 
 [node name="AbilityTreePanel" type="Panel" parent="Panel/CharacterSelectPanel/VBox/ContentRow"]
 custom_minimum_size = Vector2(300, 0)
@@ -452,6 +492,27 @@ offset_top = 30.0
 offset_right = 668.0
 offset_bottom = 620.0
 
+[node name="ArchiveLeftSheetBackdrop" type="Panel" parent="Panel/EventUnlockPanel"]
+layout_mode = 1
+offset_left = -78.0
+offset_top = -10.0
+offset_right = 302.0
+offset_bottom = 604.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="ArchiveRightSheetBackdrop" type="Panel" parent="Panel/EventUnlockPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -302.0
+offset_top = -8.0
+offset_right = 78.0
+offset_bottom = 606.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventUnlockPanel"]
 layout_mode = 1
 anchors_preset = 15
@@ -468,7 +529,7 @@ theme_override_constants/separation = 8
 [node name="Title" type="Label" parent="Panel/EventUnlockPanel/VBox/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 34
 text = "Order Archive: Event Unlocks"
 
@@ -482,7 +543,7 @@ horizontal_alignment = 2
 [node name="Intro" type="Label" parent="Panel/EventUnlockPanel/VBox"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_colors/font_color = Color(0.88, 0.8, 0.67, 0.95)
 theme_override_font_sizes/font_size = 14
 text = "Spend domain shards to unlock events and hybrid variants."
 autowrap_mode = 3
@@ -594,6 +655,27 @@ offset_top = 30.0
 offset_right = 668.0
 offset_bottom = 620.0
 
+[node name="ArchiveLeftSheetBackdrop" type="Panel" parent="Panel/EventLoadoutPanel"]
+layout_mode = 1
+offset_left = -78.0
+offset_top = -10.0
+offset_right = 302.0
+offset_bottom = 604.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
+[node name="ArchiveRightSheetBackdrop" type="Panel" parent="Panel/EventLoadoutPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -302.0
+offset_top = -8.0
+offset_right = 78.0
+offset_bottom = 606.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_right_column_panel")
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel"]
 layout_mode = 1
 anchors_preset = 15
@@ -610,7 +692,7 @@ theme_override_constants/separation = 6
 [node name="Title" type="Label" parent="Panel/EventLoadoutPanel/VBox/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 40
 text = "Arrange the Calamities"
 horizontal_alignment = 1
@@ -648,6 +730,22 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
+[node name="RollFlashLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.84, 0.98)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -665,7 +763,7 @@ text = "TIER 0"
 
 [node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/TopRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_colors/font_color = Color(0.95, 0.7, 0.46, 1)
 theme_override_font_sizes/font_size = 14
 text = "D0"
 horizontal_alignment = 2
@@ -675,14 +773,14 @@ custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.88, 1, 1)
 theme_override_font_sizes/font_size = 52
-text = "✦"
+text = "???"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 26
 text = "-"
 horizontal_alignment = 1
@@ -696,14 +794,14 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 20
-text = "⚠ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox/Stats"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_colors/font_color = Color(0.5, 0.79, 1, 1)
 theme_override_font_sizes/font_size = 20
-text = "◆ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot1/Margin/VBox"]
@@ -723,7 +821,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 disabled = true
-text = ""
 
 [node name="Slot2" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
 custom_minimum_size = Vector2(150, 0)
@@ -744,6 +841,22 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
+[node name="RollFlashLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.84, 0.98)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -761,7 +874,7 @@ text = "TIER 1"
 
 [node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/TopRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_colors/font_color = Color(0.95, 0.7, 0.46, 1)
 theme_override_font_sizes/font_size = 14
 text = "D0"
 horizontal_alignment = 2
@@ -771,14 +884,14 @@ custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.51, 0.43, 1)
 theme_override_font_sizes/font_size = 52
-text = "⚔"
+text = "???"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 26
 text = "-"
 horizontal_alignment = 1
@@ -792,14 +905,14 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 20
-text = "⚠ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox/Stats"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_colors/font_color = Color(0.5, 0.79, 1, 1)
 theme_override_font_sizes/font_size = 20
-text = "◆ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot2/Margin/VBox"]
@@ -819,7 +932,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 disabled = true
-text = ""
 
 [node name="Slot3" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
 custom_minimum_size = Vector2(150, 0)
@@ -840,6 +952,22 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
+[node name="RollFlashLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.84, 0.98)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -857,7 +985,7 @@ text = "TIER 2"
 
 [node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/TopRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_colors/font_color = Color(0.95, 0.7, 0.46, 1)
 theme_override_font_sizes/font_size = 14
 text = "D0"
 horizontal_alignment = 2
@@ -867,14 +995,14 @@ custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.53, 1, 1)
 theme_override_font_sizes/font_size = 52
-text = "◉"
+text = "???"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 26
 text = "-"
 horizontal_alignment = 1
@@ -888,14 +1016,14 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 20
-text = "⚠ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox/Stats"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_colors/font_color = Color(0.5, 0.79, 1, 1)
 theme_override_font_sizes/font_size = 20
-text = "◆ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot3/Margin/VBox"]
@@ -915,7 +1043,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 disabled = true
-text = ""
 
 [node name="Slot4" type="Panel" parent="Panel/EventLoadoutPanel/VBox/Slots"]
 custom_minimum_size = Vector2(150, 0)
@@ -936,6 +1063,22 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
+[node name="RollFlashLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.84, 0.98)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBox" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -953,7 +1096,7 @@ text = "TIER 3"
 
 [node name="DistortionTag" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/TopRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.70, 0.46, 1)
+theme_override_colors/font_color = Color(0.95, 0.7, 0.46, 1)
 theme_override_font_sizes/font_size = 14
 text = "D0"
 horizontal_alignment = 2
@@ -963,14 +1106,14 @@ custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.34, 0.34, 1)
 theme_override_font_sizes/font_size = 52
-text = "☠"
+text = "???"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ResultLabel" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 26
 text = "-"
 horizontal_alignment = 1
@@ -984,14 +1127,14 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 20
-text = "⚠ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="RewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox/Stats"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_colors/font_color = Color(0.5, 0.79, 1, 1)
 theme_override_font_sizes/font_size = 20
-text = "◆ 0"
+text = "??0"
 horizontal_alignment = 1
 
 [node name="Controls" type="VBoxContainer" parent="Panel/EventLoadoutPanel/VBox/Slots/Slot4/Margin/VBox"]
@@ -1011,7 +1154,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 disabled = true
-text = ""
 
 [node name="EstimatedRow" type="HBoxContainer" parent="Panel/EventLoadoutPanel/VBox"]
 layout_mode = 2
@@ -1039,7 +1181,7 @@ text = "Estimated Shard Reward:"
 
 [node name="EstimatedRewardValue" type="Label" parent="Panel/EventLoadoutPanel/VBox/EstimatedRow"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.50, 0.79, 1, 1)
+theme_override_colors/font_color = Color(0.5, 0.79, 1, 1)
 theme_override_font_sizes/font_size = 36
 text = "0"
 
@@ -1065,7 +1207,7 @@ theme_override_constants/margin_bottom = 8
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_colors/font_color = Color(0.88, 0.8, 0.67, 0.95)
 theme_override_font_sizes/font_size = 13
 text = "Rule: max two same-domain consecutive slots."
 autowrap_mode = 3
@@ -1092,7 +1234,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 disabled = true
-text = ""
 
 [node name="StartRunButton" type="Button" parent="Panel/EventLoadoutPanel/VBox/ActionButtons"]
 custom_minimum_size = Vector2(0, 48)
@@ -1128,7 +1269,7 @@ theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 34
 text = "SETTINGS"
 horizontal_alignment = 1
@@ -1219,7 +1360,7 @@ theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="Panel/CardsPanel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 34
 text = "UPGRADE CARDS"
 horizontal_alignment = 1
@@ -1234,7 +1375,7 @@ custom_minimum_size = Vector2(560, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.90, 0.84, 0.72, 0.95)
+theme_override_colors/font_color = Color(0.9, 0.84, 0.72, 0.95)
 theme_override_font_sizes/font_size = 16
 autowrap_mode = 3
 
@@ -1253,4 +1394,3 @@ size = Vector2i(520, 220)
 ok_button_text = "Delete"
 dialog_text = "Delete current profile save data?
 This will reset Flux, unlocks, levels, and ability tree progression."
-

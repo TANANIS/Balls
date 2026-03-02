@@ -82,23 +82,16 @@ public partial class GameFlowUI
 		_startCharacterDescriptionLabel = GetNodeOrNull<Label>(StartCharacterDescriptionPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
 		_backgroundDimmer = GetNodeOrNull<ColorRect>(BackgroundDimmerPath);
-		_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
-		_menuDimmer = GetNodeOrNull<ColorRect>(MenuDimmerPath);
-		_enemiesRoot = GetNodeOrNull<CanvasItem>(EnemiesPath);
-		_projectilesRoot = GetNodeOrNull<CanvasItem>(ProjectilesPath);
-		_obstaclesRoot = GetNodeOrNull<CanvasItem>(ObstaclesPath);
-
-		if (_menuBackground != null)
-		{
-			_menuBackground.TopLevel = true;
-			FitMenuBackground();
-		}
-		if (_menuDimmer != null)
-			_menuDimmer.TopLevel = true;
-		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
+			_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
+			_menuDimmer = GetNodeOrNull<ColorRect>(MenuDimmerPath);
+			_enemiesRoot = GetNodeOrNull<CanvasItem>(EnemiesPath);
+			_projectilesRoot = GetNodeOrNull<CanvasItem>(ProjectilesPath);
+			_obstaclesRoot = GetNodeOrNull<CanvasItem>(ObstaclesPath);
+			SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		ResolveEventLoadoutNodes();
 		ResolveEventUnlockNodes();
+		ApplyPaperUiSkin();
 		RefreshPerfectLeaderboardUi();
 
 		_rangedCharacter = LoadCharacterDefinitionOrFallback(
