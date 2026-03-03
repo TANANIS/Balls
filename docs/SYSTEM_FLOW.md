@@ -57,6 +57,8 @@ flowchart TD
 ```
 
 ## Runtime Notes
+- Boot entry:
+  - run now starts at `Boot Title Screen` and waits for any input before entering `GameFlowUI` menu.
 - Event scheduling:
   - run plan is fixed pre-run; no mid-run random event picks.
   - distortion and affinity are precomputed from adjacent slot sequence.

@@ -1,5 +1,5 @@
 # Scene Split Notes (MainScence.tscn)
-Last Synced: 2026-02-28
+Last Synced: 2026-03-03
 
 
 > Status: Maintained guidance. Re-validate when introducing additional world themes or UI root-level wrappers.
@@ -12,6 +12,13 @@ Current composition is already split and in use:
 4. `Scenes/World/WorldRoot.tscn`
 
 `MainScence.tscn` now acts as composition root and wires these runtime roots together.
+
+## UI Root Update (2026-03-03)
+- `Scenes/UI/GameFlowUIRoot.tscn` now includes a boot entry panel:
+  - `Scenes/UI/Panels/TitleScreen.tscn`
+- Boot flow:
+  - startup enters `TitleScreen`,
+  - pressing any key/mouse/gamepad button advances to existing `StartPanel` meta flow.
 
 ## Path Normalization Update (2026-02-28)
 - Runtime scene ownership was normalized to `Scenes/*` domain roots:

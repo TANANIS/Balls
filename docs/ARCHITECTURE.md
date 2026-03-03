@@ -1,5 +1,5 @@
 # Oriluneia Architecture
-Last Synced: 2026-03-01
+Last Synced: 2026-03-03
 
 
 ## First Principles
@@ -42,6 +42,11 @@ Game
 |     |- ProgressionSystem
 |     `- UpgradeSystem
 `- CanvasLayer/UI
+   |- GameFlowUIRoot
+   |  |- BootTitleScreen (Press Any Button)
+   |  |- StartPanel
+   |  |- PausePanel
+   |  `- RestartPanel
    `- UpgradeMenu
 ```
 
@@ -67,6 +72,13 @@ Game
 - `Progression/*`: upgrade application and progression effects.
 - `UI/*`: presentation and input only. UI may call systems; systems do not depend on UI.
 - `Audio/*`: centralized BGM/SFX routing and runtime playback policy.
+
+## UI Binding Contract (2026-03-03)
+- `GameFlowUI` node references are now `Export NodePath` fields (Inspector-overridable) instead of hard-coded path constants.
+- Default exported paths still target current `Scenes/UI/GameFlowUIRoot.tscn` hierarchy; runtime behavior is unchanged if paths are not edited.
+- Localization label bindings in `GameFlowUI.Localization*` also follow exported NodePath configuration.
+- Runtime UI layout tuning values (dialog sizes, responsive breakpoints, roll-flash offsets/sizes, event-unlock table dimensions) are exposed under `UI Layout/*` exported fields on `GameFlowUI`.
+- Boot sequence now enters `BootTitleScreen` first and transitions to menu flow on any key/mouse/gamepad button input.
 
 ## Event Scheduling Contract (V0.3)
 - Canonical spec: `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
@@ -190,6 +202,9 @@ Current runtime usage:
 
 Update note (2026-02-28):
 - runtime group literals are centralized under `Scripts/Shared/RuntimeGroups.cs` and adopted across core systems.
+
+Update note (2026-03-03):
+- `GameFlowUI` boot title entry and inspector-driven node-path/layout configuration were added to reduce UI refactor break risk.
 
 ## Text Encoding Rule (Bilingual UI)
 - All localization text files must be saved as UTF-8.
