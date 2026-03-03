@@ -62,7 +62,7 @@ public partial class GameFlowUI
 		var startTitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/Header/Title");
 		if (startTitle != null) startTitle.Text = Tr("UI.START.TITLE");
 		var startSubtitle = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/Header/SubTitle");
-		if (startSubtitle != null) startSubtitle.Text = "Shards in Sequence";
+		if (startSubtitle != null) startSubtitle.Text = Tr("UI.START.SUBTITLE");
 		var startDesc = GetNodeOrNull<Label>("Panels/StartPanel/Panel/MainScroll/VBox/MainBody/LeftColumn/Desc");
 		if (startDesc != null)
 		{

@@ -21,6 +21,7 @@ script = ExtResource("11_terrain_bg")
 
 [node name="MenuBackground" type="Sprite2D" parent="."]
 z_index = -11
+scale = Vector2(2, 2)
 texture = ExtResource("1_menu_bg")
 
 [node name="Obstacles" type="Node2D" parent="."]
@@ -44,9 +45,6 @@ ClusterRadiusMin = 96.0
 ClusterRadiusMax = 220.0
 ClusterLifetimeSpawns = 12
 TerrainAffinityStrength = 0.56
-AvoidTerrainEdges = true
-TerrainEdgeGuardTiles = 1
-VegetationBiomeScaleTiles = 18
 VegetationBiomeThreshold = 0.5
 VegetationBiomeStrength = 0.58
 TreeSpeciesBiomeScaleTiles = 30

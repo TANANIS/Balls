@@ -18,11 +18,13 @@ public partial class GameFlowUI : Control
 		UpdateUpgradeProgressUi();
 		UpdateMatchCountdownUi();
 		UpdateEventBannerUi();
-			UpdateEventHintUi();
-			UpdateHybridToastUi();
-			TryResolvePendingPerfectClear();
-			HandlePauseInput();
-		}
+		UpdateEventHintUi();
+		UpdateHybridToastUi();
+		TryResolvePendingPerfectClear();
+		HandlePauseInput();
+		if (!_started)
+			FitMenuBackground();
+	}
 
 	private void RefreshStartCardsCompendium()
 	{

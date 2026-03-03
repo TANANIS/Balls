@@ -36,22 +36,34 @@ public partial class GameFlowUI
 
 		if (_startCharacterRangedButton != null && _rangedCharacter != null)
 		{
-			_startCharacterRangedButton.Text = _rangedCharacter.GetLocalizedDisplayName();
+			bool unlocked = IsCharacterUnlocked(_rangedCharacter);
+			_startCharacterRangedButton.Text = unlocked
+				? _rangedCharacter.GetLocalizedDisplayName()
+				: $"{_rangedCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterRangedButton.Disabled = false;
 		}
 		if (_startCharacterSwordsmanButton != null && _swordsmanCharacter != null)
 		{
-			_startCharacterSwordsmanButton.Text = _swordsmanCharacter.GetLocalizedDisplayName();
+			bool unlocked = IsCharacterUnlocked(_swordsmanCharacter);
+			_startCharacterSwordsmanButton.Text = unlocked
+				? _swordsmanCharacter.GetLocalizedDisplayName()
+				: $"{_swordsmanCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterSwordsmanButton.Disabled = false;
 		}
 		if (_startCharacterTankButton != null && _tankCharacter != null)
 		{
-			_startCharacterTankButton.Text = _tankCharacter.GetLocalizedDisplayName();
+			bool unlocked = IsCharacterUnlocked(_tankCharacter);
+			_startCharacterTankButton.Text = unlocked
+				? _tankCharacter.GetLocalizedDisplayName()
+				: $"{_tankCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterTankButton.Disabled = false;
 		}
 		if (_startCharacterArcherButton != null && _archerCharacter != null)
 		{
-			_startCharacterArcherButton.Text = _archerCharacter.GetLocalizedDisplayName();
+			bool unlocked = IsCharacterUnlocked(_archerCharacter);
+			_startCharacterArcherButton.Text = unlocked
+				? _archerCharacter.GetLocalizedDisplayName()
+				: $"{_archerCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
 			_startCharacterArcherButton.Disabled = false;
 		}
 

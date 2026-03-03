@@ -166,5 +166,57 @@ public partial class GameFlowUI
 
 	private void OnViewportSizeChanged()
 	{
+		FitMenuBackground();
+		UpdateEventLoadoutResponsiveLayout();
+	}
+
+	private void FitMenuBackground()
+	{
+		// Pixel-art cover fit:
+		// - compute world-visible area from viewport + camera zoom
+		// - snap to integer scale to avoid shimmer/blur
+		// - add a small bleed so edges never reveal while camera jitters by sub-pixel
+		if (_menuBackground?.Texture == null)
+			return;
+
+		Vector2 texSize = _menuBackground.Texture.GetSize();
+		if (texSize.X <= 0 || texSize.Y <= 0)
+			return;
+
+		Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
+		Camera2D camera = GetViewport().GetCamera2D();
+		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
+		Vector2 visibleWorld = new Vector2(
+			Mathf.Max(1f, viewportSize.X * zoom.X),
+			Mathf.Max(1f, viewportSize.Y * zoom.Y));
+		const float bleed = 8f;
+		Vector2 coverTarget = new Vector2(visibleWorld.X + bleed * 2f, visibleWorld.Y + bleed * 2f);
+		float coverScale = Mathf.Max(coverTarget.X / texSize.X, coverTarget.Y / texSize.Y);
+		float scale = Mathf.Max(1f, Mathf.Ceil(coverScale));
+		Vector2 center = GetMenuWorldCenter();
+		center = new Vector2(Mathf.Round(center.X), Mathf.Round(center.Y));
+
+		_menuBackground.Centered = true;
+		_menuBackground.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+		_menuBackground.Scale = new Vector2(scale, scale);
+		_menuBackground.GlobalPosition = center;
+
+		if (_menuDimmer != null)
+		{
+			Vector2 dimSize = coverTarget;
+			_menuDimmer.Size = dimSize;
+			_menuDimmer.GlobalPosition = center - (dimSize * 0.5f);
+		}
+	}
+
+	private Vector2 GetMenuWorldCenter()
+	{
+		var camera = GetViewport().GetCamera2D();
+		if (camera != null)
+			return camera.GetScreenCenterPosition();
+		if (_player != null)
+			return _player.GlobalPosition;
+		Rect2 rect = GetViewport().GetVisibleRect();
+		return rect.Position + (rect.Size * 0.5f);
 	}
 }
