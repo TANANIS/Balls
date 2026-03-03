@@ -9,7 +9,7 @@ public partial class GameFlowUI : Control
 
 		ResolveNodeReferences();
 		BindSignals();
-		ShowStartPanel();
+		ShowBootTitleScreen();
 		AudioManager.Instance?.PlayBgmMenu();
 	}
 

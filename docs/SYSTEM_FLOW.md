@@ -1,10 +1,11 @@
 # System Flow Diagram
-Last Synced: 2026-03-01
+Last Synced: 2026-03-03
 
 
 ```mermaid
 flowchart TD
-    A[Game Start] --> B[GameFlowUI\nMenu Screen]
+    A[Game Start] --> AT[Boot Title Screen\nPress Any Button]
+    AT --> B[GameFlowUI\nMenu Screen]
     B --> P[Pre-Run Event Loadout UI\n4 Slots]
     P --> P1[RunPlanBuilder]
     P1 --> P2[DistortionResolver\nMax same-domain chain = 2]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://db8hqo8jk22l"]
+[gd_scene load_steps=8 format=3 uid="uid://db8hqo8jk22l"]
 
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="1_flow_ui"]
 [ext_resource type="PackedScene" uid="uid://5viel85sis2s" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
 [ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Scenes/UI/UpgradeMenu.tscn" id="6_upgrade_menu"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/TitleScreen.tscn" id="7_title_screen"]
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -39,6 +40,9 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="StartPanel" parent="Panels" instance=ExtResource("3_start_panel")]
+layout_mode = 1
+
+[node name="TitleScreen" parent="Panels" instance=ExtResource("7_title_screen")]
 layout_mode = 1
 
 [node name="PausePanel" parent="Panels" instance=ExtResource("4_pause_panel")]

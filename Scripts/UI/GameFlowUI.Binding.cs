@@ -9,6 +9,7 @@ public partial class GameFlowUI
 		if (_player != null)
 			_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
+		_titleScreenPanel = GetNodeOrNull<Control>(TitleScreenPath);
 		_startPanel = GetNodeOrNull<Control>(StartPanelPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
@@ -222,4 +223,3 @@ public partial class GameFlowUI
 		ApplyLocalizedTexts();
 	}
 }
-

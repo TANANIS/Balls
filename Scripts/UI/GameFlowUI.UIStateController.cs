@@ -6,6 +6,7 @@ public partial class GameFlowUI
 	{
 		// Enter title/menu state and pause gameplay simulation.
 		ResetEventLoadoutDraftState();
+		_bootTitleScreenOpen = false;
 		_started = false;
 		_ending = false;
 		_pauseMenuOpen = false;
@@ -17,6 +18,7 @@ public partial class GameFlowUI
 		_startEventLoadoutOpen = false;
 		_currentRunId = string.Empty;
 		SetGameplayObjectsVisible(false);
+		if (_titleScreenPanel != null) _titleScreenPanel.Visible = false;
 		if (_startPanel != null) _startPanel.Visible = true;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
@@ -48,7 +50,7 @@ public partial class GameFlowUI
 	private void OnStartDeleteSavePressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
-		_startDeleteSaveDialog?.PopupCentered(new Vector2I(520, 220));
+		_startDeleteSaveDialog?.PopupCentered(_startDeleteSaveDialogPopupSize);
 	}
 
 	private void OnStartDeleteSaveConfirmed()
@@ -120,6 +122,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlayBgmGameplay();
 
+		_bootTitleScreenOpen = false;
 		_started = true;
 		_ending = false;
 		_pendingFinalBossKillClear = false;
@@ -132,6 +135,7 @@ public partial class GameFlowUI
 		_startEventLoadoutOpen = false;
 		_currentRunId = System.Guid.NewGuid().ToString("N");
 		SetGameplayObjectsVisible(true);
+		if (_titleScreenPanel != null) _titleScreenPanel.Visible = false;
 		if (_startPanel != null) _startPanel.Visible = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
