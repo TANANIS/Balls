@@ -1,0 +1,94 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/Pages/StartMainPageController.cs" id="1_start_main_controller"]
+
+[node name="MainScroll" type="ScrollContainer"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 805.5
+offset_bottom = 630.5
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+script = ExtResource("1_start_main_controller")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="MainBody" type="HBoxContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 560)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="LeftSpacer" type="Control" parent="VBox/MainBody"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightColumnPanel" type="Control" parent="VBox/MainBody"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Margin" type="MarginContainer" parent="VBox/MainBody/RightColumnPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -180.0
+offset_right = 0.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 12
+
+[node name="ButtonsVBox" type="VBoxContainer" parent="VBox/MainBody/RightColumnPanel/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="StartButton" type="Button" parent="VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.92, 0.96, 1, 0.98)
+theme_override_font_sizes/font_size = 52
+flat = true
+text = "Start"
+
+[node name="CardsButton" type="Button" parent="VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.72, 0.83, 0.95, 0.95)
+theme_override_font_sizes/font_size = 52
+flat = true
+text = "Cards"
+
+[node name="SettingsButton" type="Button" parent="VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.72, 0.83, 0.95, 0.95)
+theme_override_font_sizes/font_size = 52
+flat = true
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.72, 0.83, 0.95, 0.95)
+theme_override_font_sizes/font_size = 52
+flat = true
+text = "Quit"

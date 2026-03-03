@@ -22,6 +22,8 @@ public partial class GameFlowUI
 	private void ApplyLocale(string locale)
 	{
 		TranslationServer.SetLocale(locale);
+		_sharedState.Settings.Locale = locale;
+		_sharedState.Settings.LanguageIndex = GetLanguageIndexFromLocale(locale);
 		ApplyLocalizedTexts();
 	}
 
@@ -37,6 +39,10 @@ public partial class GameFlowUI
 		RefreshPauseBuildSummary();
 		RefreshFinalBuildSummary();
 		ResetBuildSummaryLabels();
+		_startMainPageController?.ApplyLocalizedTexts();
+		_startSettingsPageController?.ApplyLocalizedTexts();
+		_startCardsPageController?.ApplyLocalizedTexts();
+		_startCharacterPageController?.ApplyLocalizedStaticTexts();
 
 		if (_startButton != null) _startButton.Text = Tr("UI.START.BUTTON_START");
 		if (_startSettingsButton != null) _startSettingsButton.Text = Tr("UI.COMMON.SETTINGS");
@@ -127,6 +133,7 @@ public partial class GameFlowUI
 		if (_startCardsOpen)
 			RefreshStartCardsCompendium();
 
+		ApplyTitleBrandingOverrides();
 		RefreshCharacterSelectUi();
 	}
 }

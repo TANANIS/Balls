@@ -59,6 +59,10 @@ flowchart TD
 ## Runtime Notes
 - Boot entry:
   - run now starts at `Boot Title Screen` and waits for any input before entering `GameFlowUI` menu.
+- UI ownership split:
+  - `GameFlowUI` routes state/page transitions only.
+  - start pages (`Main/Settings/Cards/CharacterSelect`) handle local node binding and input in their own page controllers.
+  - shared UI data (settings, selected character, loadout draft) is synchronized through `GameFlowUiSharedState`.
 - Event scheduling:
   - run plan is fixed pre-run; no mid-run random event picks.
   - distortion and affinity are precomputed from adjacent slot sequence.

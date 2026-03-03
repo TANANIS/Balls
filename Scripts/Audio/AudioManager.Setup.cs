@@ -59,6 +59,7 @@ public partial class AudioManager
 		_bgmMenuTracks.Clear();
 		_bgmGameplayTracks.Clear();
 		_bgmResultTracks.Clear();
+		_bgmTitleTheme = GD.Load<AudioStream>("res://Assets/Sound/Bgm/Title/bgm_title_theme.mp3");
 		AddBgmTrack(_bgmMenuTracks, "res://Assets/Sound/Bgm/Alternates/bgm_menu_alt_01.mp3");
 		AddBgmTrack(_bgmMenuTracks, "res://Assets/Sound/Bgm/Alternates/bgm_menu_alt_02.mp3");
 		AddBgmTrack(_bgmMenuTracks, "res://Assets/Sound/Bgm/Alternates/bgm_menu_alt_03.mp3");
@@ -74,6 +75,7 @@ public partial class AudioManager
 		ApplyBgmLoopSettings();
 
 		_sfxUiButton = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_button.wav");
+		_sfxUiTitleConfirm = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_title_confirm.wav");
 		_sfxUiExit = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_exit.wav");
 		_sfxUiUpgradeSelect = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_upgrade_select.wav");
 		_sfxUiSlotRollLoop = GD.Load<AudioStream>("res://Assets/Sound/UI/sfx_ui_slot_roll_loop.wav");
@@ -128,6 +130,7 @@ public partial class AudioManager
 			SetBgmLoop(track, loop: false);
 		foreach (AudioStream track in _bgmResultTracks)
 			SetBgmLoop(track, loop: false);
+		SetBgmLoop(_bgmTitleTheme, loop: true);
 	}
 
 	private static void AddBgmTrack(System.Collections.Generic.List<AudioStream> tracks, string path)
@@ -158,6 +161,7 @@ public partial class AudioManager
 	private void ApplySfxLoopSettings()
 	{
 		SetBgmLoop(_sfxUiButton, loop: false);
+		SetBgmLoop(_sfxUiTitleConfirm, loop: false);
 		SetBgmLoop(_sfxUiExit, loop: false);
 		SetBgmLoop(_sfxUiUpgradeSelect, loop: false);
 		SetBgmLoop(_sfxUiSlotRollLoop, loop: true);

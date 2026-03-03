@@ -20,6 +20,29 @@ Current composition is already split and in use:
   - startup enters `TitleScreen`,
   - pressing any key/mouse/gamepad button advances to existing `StartPanel` meta flow.
 
+## Start Menu Page Split (2026-03-03)
+- `Scenes/UI/Panels/StartPanel.tscn` now acts as a host container and instances page scenes:
+  - `StartMainScroll.tscn`
+  - `StartCharacterSelectPage.tscn`
+  - `StartEventUnlockPage.tscn`
+  - `StartEventLoadoutPage.tscn`
+  - `StartSettingsPage.tscn`
+  - `StartCardsPage.tscn`
+- Goal: keep each start-menu page independently editable in Godot Inspector while preserving existing `GameFlowUI` NodePath contracts.
+- Runtime behavior is unchanged: page visibility/state continues to be controlled by `GameFlowUI` (`SetStartSubPanels` and existing panel controllers).
+
+### Page Controller Attachment Log (2026-03-03)
+- `StartMainScroll.tscn`
+  - script: `Scripts/UI/Pages/StartMainPageController.cs`
+- `StartSettingsPage.tscn`
+  - script: `Scripts/UI/Pages/StartSettingsPageController.cs`
+- `StartCardsPage.tscn`
+  - script: `Scripts/UI/Pages/StartCardsPageController.cs`
+- `StartCharacterSelectPage.tscn`
+  - script: `Scripts/UI/Pages/StartCharacterSelectPageController.cs`
+- Controller role:
+  - each page resolves its own child nodes and emits page-level actions to `GameFlowUI`.
+
 ## Path Normalization Update (2026-02-28)
 - Runtime scene ownership was normalized to `Scenes/*` domain roots:
   - enemies: `Scenes/Actors/Enemies/*`

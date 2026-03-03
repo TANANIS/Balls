@@ -16,15 +16,21 @@ public partial class GameFlowUI
 		if (_selectedCharacterDefinition == null)
 			_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _swordsmanCharacter ?? _tankCharacter ?? _archerCharacter;
 		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 
 		RefreshCharacterSelectUi();
-		_startCharacterConfirmButton?.GrabFocus();
+		if (_startCharacterPageController != null)
+			_startCharacterPageController.FocusConfirmButton();
+		else
+			_startCharacterConfirmButton?.GrabFocus();
 	}
 
 	private void RefreshCharacterSelectUi()
 	{
+		int wallet = MetaProgressionService.Instance.CurrencyWallet;
 		if (_startCharacterFluxValueLabel != null)
-			_startCharacterFluxValueLabel.Text = MetaProgressionService.Instance.CurrencyWallet.ToString();
+			_startCharacterFluxValueLabel.Text = wallet.ToString();
+		_startCharacterPageController?.SetFluxValue(wallet);
 
 		if (_startCharacterDescriptionLabel != null)
 		{
@@ -32,39 +38,48 @@ public partial class GameFlowUI
 				_startCharacterDescriptionLabel.Text = BuildMetaProgressionPresentation(_selectedCharacterDefinition);
 			else
 				_startCharacterDescriptionLabel.Text = Tr("UI.START.NO_CHARACTER_DEF");
+			_startCharacterPageController?.SetDescription(_startCharacterDescriptionLabel.Text);
 		}
 
 		if (_startCharacterRangedButton != null && _rangedCharacter != null)
 		{
 			bool unlocked = IsCharacterUnlocked(_rangedCharacter);
-			_startCharacterRangedButton.Text = unlocked
+			string text = unlocked
 				? _rangedCharacter.GetLocalizedDisplayName()
 				: $"{_rangedCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterRangedButton.Text = text;
 			_startCharacterRangedButton.Disabled = false;
+			_startCharacterPageController?.SetCharacterButton(StartCharacterSlotKind.Ranged, text, disabled: false);
 		}
 		if (_startCharacterSwordsmanButton != null && _swordsmanCharacter != null)
 		{
 			bool unlocked = IsCharacterUnlocked(_swordsmanCharacter);
-			_startCharacterSwordsmanButton.Text = unlocked
+			string text = unlocked
 				? _swordsmanCharacter.GetLocalizedDisplayName()
 				: $"{_swordsmanCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterSwordsmanButton.Text = text;
 			_startCharacterSwordsmanButton.Disabled = false;
+			_startCharacterPageController?.SetCharacterButton(StartCharacterSlotKind.Swordsman, text, disabled: false);
 		}
 		if (_startCharacterTankButton != null && _tankCharacter != null)
 		{
 			bool unlocked = IsCharacterUnlocked(_tankCharacter);
-			_startCharacterTankButton.Text = unlocked
+			string text = unlocked
 				? _tankCharacter.GetLocalizedDisplayName()
 				: $"{_tankCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterTankButton.Text = text;
 			_startCharacterTankButton.Disabled = false;
+			_startCharacterPageController?.SetCharacterButton(StartCharacterSlotKind.Tank, text, disabled: false);
 		}
 		if (_startCharacterArcherButton != null && _archerCharacter != null)
 		{
 			bool unlocked = IsCharacterUnlocked(_archerCharacter);
-			_startCharacterArcherButton.Text = unlocked
+			string text = unlocked
 				? _archerCharacter.GetLocalizedDisplayName()
 				: $"{_archerCharacter.GetLocalizedDisplayName()} [{TrOrDefault("UI.META.LOCKED_SHORT", "Locked", "\u672a\u89e3\u9396")}]";
+			_startCharacterArcherButton.Text = text;
 			_startCharacterArcherButton.Disabled = false;
+			_startCharacterPageController?.SetCharacterButton(StartCharacterSlotKind.Archer, text, disabled: false);
 		}
 
 		if (_startCharacterConfirmButton != null)
@@ -72,18 +87,21 @@ public partial class GameFlowUI
 			if (_selectedCharacterDefinition == null)
 			{
 				_startCharacterConfirmButton.Disabled = true;
+				_startCharacterPageController?.SetConfirmButton(_startCharacterConfirmButton.Text, disabled: true);
 			}
 			else if (IsCharacterUnlocked(_selectedCharacterDefinition))
 			{
 				_startCharacterConfirmButton.Disabled = false;
 				_startCharacterConfirmButton.Text = TrOrDefault("UI.START.CONFIRM_TO_EVENT_UNLOCK", "Next: Event Unlock", "Next: Event Unlock");
+				_startCharacterPageController?.SetConfirmButton(_startCharacterConfirmButton.Text, disabled: false);
 			}
 			else
 			{
 				int unlockCost = GetCharacterUnlockCost(_selectedCharacterDefinition);
 				bool canUnlock = MetaProgressionService.Instance.CanUnlockCharacter(_selectedCharacterDefinition.CharacterId, out _);
 				_startCharacterConfirmButton.Disabled = !canUnlock;
-				_startCharacterConfirmButton.Text = $"{TrOrDefault("UI.META.UNLOCK", "Unlock", "\u89e3\u9396")} ({unlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")})";
+				_startCharacterConfirmButton.Text = $"{TrOrDefault("UI.META.UNLOCK", "Unlock", "\u89e3\u9396")} ({unlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "\u9748\u5875")})";
+				_startCharacterPageController?.SetConfirmButton(_startCharacterConfirmButton.Text, disabled: !canUnlock);
 			}
 		}
 	}
@@ -94,7 +112,7 @@ public partial class GameFlowUI
 		var meta = MetaProgressionService.Instance;
 		var sb = new StringBuilder();
 		sb.Append(def.GetLocalizedDisplayName()).Append('\n');
-		sb.Append($"{TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}: {meta.CurrencyWallet}").Append('\n');
+		sb.Append($"{TrOrDefault("UI.META.FLUX", "Aether", "\u9748\u5875")}: {meta.CurrencyWallet}").Append('\n');
 
 		if (!unlocked)
 		{
@@ -102,7 +120,7 @@ public partial class GameFlowUI
 			if (ProgressionDefs.TryGetCharacter(def.CharacterId, out CharacterDef defMeta))
 				cost = defMeta.UnlockCost;
 			sb.Append($"{TrOrDefault("UI.META.STATUS", "Status", "\u72c0\u614b")}: {TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396")}").Append('\n');
-			sb.Append($"{TrOrDefault("UI.META.UNLOCK_COST", "Unlock Cost", "\u89e3\u9396\u9700\u6c42")}: {cost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")}").Append('\n');
+			sb.Append($"{TrOrDefault("UI.META.UNLOCK_COST", "Unlock Cost", "\u89e3\u9396\u9700\u6c42")}: {cost} {TrOrDefault("UI.META.FLUX", "Aether", "\u9748\u5875")}").Append('\n');
 			sb.Append('\n').Append(TrOrDefault("UI.META.CHAR_LOCKED_DESC", "This character is not unlocked yet.", "\u6b64\u89d2\u8272\u5c1a\u672a\u89e3\u9396\u3002"));
 			return sb.ToString();
 		}
@@ -140,7 +158,7 @@ public partial class GameFlowUI
 				? TrOrDefault("UI.META.UNLOCKED", "Unlocked", "\u5df2\u89e3\u9396")
 				: TrOrDefault("UI.META.LOCKED", "Locked", "\u672a\u89e3\u9396");
 			sb.Append("- ").Append(node.NodeId).Append(" [").Append(status).Append("] ");
-			sb.Append($"(Lv.{node.MinCharacterLevel} / {node.UnlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "靈塵")})");
+			sb.Append($"(Lv.{node.MinCharacterLevel} / {node.UnlockCost} {TrOrDefault("UI.META.FLUX", "Aether", "\u9748\u5875")})");
 			if (i < defMeta.AbilityNodes.Count - 1)
 				sb.Append('\n');
 		}
@@ -192,6 +210,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _rangedCharacter;
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		RefreshCharacterSelectUi();
 	}
 
@@ -199,6 +218,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _swordsmanCharacter;
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		RefreshCharacterSelectUi();
 	}
 
@@ -206,6 +226,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _tankCharacter;
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		RefreshCharacterSelectUi();
 	}
 
@@ -213,6 +234,7 @@ public partial class GameFlowUI
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
 		_selectedCharacterDefinition = _archerCharacter;
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		RefreshCharacterSelectUi();
 	}
 
@@ -223,7 +245,10 @@ public partial class GameFlowUI
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
-		_startButton?.GrabFocus();
+		if (_startMainPageController != null)
+			_startMainPageController.FocusDefault();
+		else
+			_startButton?.GrabFocus();
 	}
 
 	private void OnCharacterSelectConfirmPressed()
@@ -251,6 +276,7 @@ public partial class GameFlowUI
 
 		AudioManager.Instance?.PlaySfxUiButton();
 		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		EnterEventUnlockPanel();
 	}
 

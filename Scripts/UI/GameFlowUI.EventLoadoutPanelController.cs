@@ -31,11 +31,11 @@ public partial class GameFlowUI
 	private static readonly float[] SlotBaseIntensity = { 12f, 20f, 25f, 35f };
 
 	[ExportGroup("Node Paths/Event Loadout")]
-	[Export] private NodePath EventLoadoutTitlePath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/HeaderRow/Title";
-	[Export] private NodePath EventLoadoutEstimatedIntensityLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityLabel";
-	[Export] private NodePath EventLoadoutEstimatedRewardLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardLabel";
-	[Export] private NodePath EventLoadoutEstimatedIntensityValuePath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityValue";
-	[Export] private NodePath EventLoadoutEstimatedRewardValuePath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardValue";
+	[Export] private NodePath EventLoadoutTitlePath = "Panels/StartPanel/EventLoadoutPanel/VBox/HeaderRow/Title";
+	[Export] private NodePath EventLoadoutEstimatedIntensityLabelPath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityLabel";
+	[Export] private NodePath EventLoadoutEstimatedRewardLabelPath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardLabel";
+	[Export] private NodePath EventLoadoutEstimatedIntensityValuePath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityValue";
+	[Export] private NodePath EventLoadoutEstimatedRewardValuePath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardValue";
 
 	private GridContainer _startEventLoadoutSlotsGrid;
 	private readonly Panel[] _startEventLoadoutSlotPanels = new Panel[4];
@@ -368,6 +368,7 @@ public partial class GameFlowUI
 		if (option == null || option.ItemCount <= 0 || option.Disabled)
 		{
 			_eventLoadoutDraftSlots[slotIndex] = default;
+			_sharedState.EventLoadoutDraft.SetSlot(slotIndex, string.Empty, string.Empty, string.Empty);
 			return;
 		}
 
@@ -377,6 +378,7 @@ public partial class GameFlowUI
 		if (string.IsNullOrWhiteSpace(eventId) || !TryGetEventDomainId(eventId, out string domainId))
 		{
 			_eventLoadoutDraftSlots[slotIndex] = default;
+			_sharedState.EventLoadoutDraft.SetSlot(slotIndex, string.Empty, string.Empty, string.Empty);
 			return;
 		}
 
@@ -386,6 +388,11 @@ public partial class GameFlowUI
 			EventId = eventId,
 			EventName = GetLocalizedEventDisplayName(eventId)
 		};
+		_sharedState.EventLoadoutDraft.SetSlot(
+			slotIndex,
+			_eventLoadoutDraftSlots[slotIndex].DomainId,
+			_eventLoadoutDraftSlots[slotIndex].EventId,
+			_eventLoadoutDraftSlots[slotIndex].EventName);
 	}
 
 	private string ResolveSelectedDomainFilter(int slotIndex)
@@ -938,6 +945,7 @@ public partial class GameFlowUI
 		AudioManager.Instance?.StopSfxUiSlotRollLoop(playStop: false);
 		_eventLoadoutActiveRollAnimations = 0;
 		Array.Fill(_eventLoadoutDraftSlots, default(EventLoadoutDraftSlot));
+		_sharedState.EventLoadoutDraft.Clear();
 		Array.Fill(_eventLoadoutDomainEditOpen, false);
 		Array.Fill(_eventLoadoutRollAnimationVersion, 0);
 		ResetLoadoutDomainFiltersToAny();

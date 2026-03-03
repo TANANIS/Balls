@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
 [ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Scenes/UI/UpgradeMenu.tscn" id="6_upgrade_menu"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/TitleScreen.tscn" id="7_title_screen"]
+[ext_resource type="PackedScene" uid="uid://bd8v5d57uii4y" path="res://Scenes/UI/Panels/TitleScreen.tscn" id="7_title_screen"]
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -60,3 +60,4 @@ mouse_filter = 2
 
 [node name="UpgradeMenu" parent="UpgradeLayer" instance=ExtResource("6_upgrade_menu")]
 visible = false
+layout_mode = 1

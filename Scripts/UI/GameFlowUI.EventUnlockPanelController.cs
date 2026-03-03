@@ -5,19 +5,19 @@ using System.Collections.Generic;
 public partial class GameFlowUI
 {
 	[ExportGroup("Node Paths/Event Unlock")]
-	[Export] private NodePath StartEventUnlockPanelPath = "Panels/StartPanel/Panel/EventUnlockPanel";
-	[Export] private NodePath StartEventUnlockTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/HeaderRow/Title";
-	[Export] private NodePath StartEventUnlockWalletPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/HeaderRow/ShardWallet";
-	[Export] private NodePath StartEventUnlockIntroPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/Intro";
-	[Export] private NodePath StartEventUnlockEventSectionTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/SectionTitle";
-	[Export] private NodePath StartEventUnlockEventListPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/EventList";
-	[Export] private NodePath StartEventUnlockEventSectionPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection";
-	[Export] private NodePath StartEventUnlockHybridSectionTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/SectionTitle";
-	[Export] private NodePath StartEventUnlockHybridListPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/HybridList";
-	[Export] private NodePath StartEventUnlockHybridSectionPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection";
-	[Export] private NodePath StartEventUnlockSectionsVBoxPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox";
-	[Export] private NodePath StartEventUnlockBackButtonPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/ActionButtons/BackButton";
-	[Export] private NodePath StartEventUnlockContinueButtonPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/ActionButtons/ContinueButton";
+	[Export] private NodePath StartEventUnlockPanelPath = "Panels/StartPanel/EventUnlockPanel";
+	[Export] private NodePath StartEventUnlockTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/HeaderRow/Title";
+	[Export] private NodePath StartEventUnlockWalletPath = "Panels/StartPanel/EventUnlockPanel/VBox/HeaderRow/ShardWallet";
+	[Export] private NodePath StartEventUnlockIntroPath = "Panels/StartPanel/EventUnlockPanel/VBox/Intro";
+	[Export] private NodePath StartEventUnlockEventSectionTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/SectionTitle";
+	[Export] private NodePath StartEventUnlockEventListPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/EventList";
+	[Export] private NodePath StartEventUnlockEventSectionPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection";
+	[Export] private NodePath StartEventUnlockHybridSectionTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/SectionTitle";
+	[Export] private NodePath StartEventUnlockHybridListPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/HybridList";
+	[Export] private NodePath StartEventUnlockHybridSectionPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection";
+	[Export] private NodePath StartEventUnlockSectionsVBoxPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox";
+	[Export] private NodePath StartEventUnlockBackButtonPath = "Panels/StartPanel/EventUnlockPanel/VBox/ActionButtons/BackButton";
+	[Export] private NodePath StartEventUnlockContinueButtonPath = "Panels/StartPanel/EventUnlockPanel/VBox/ActionButtons/ContinueButton";
 
 	private static readonly string[] PurchasableDomainIds =
 	{

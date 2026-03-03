@@ -16,6 +16,7 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
+		StopBootPromptFx(resetVisual: true);
 		_currentRunId = string.Empty;
 		SetGameplayObjectsVisible(false);
 		if (_titleScreenPanel != null) _titleScreenPanel.Visible = false;
@@ -38,7 +39,10 @@ public partial class GameFlowUI
 		RefreshPerfectLeaderboardUi();
 		ResetBuildSummaryLabels();
 		GetTree().Paused = true;
-		_startButton?.GrabFocus();
+		if (_startMainPageController != null)
+			_startMainPageController.FocusDefault();
+		else
+			_startButton?.GrabFocus();
 	}
 
 	private void OnStartPressed()
@@ -58,6 +62,7 @@ public partial class GameFlowUI
 		MetaProgressionService.Instance.DeleteCurrentProfileSave();
 
 		_selectedCharacterDefinition = ResolveFirstUnlockedCharacterDefinition(_selectedCharacterDefinition);
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 		RunContext.Instance?.SetSelectedCharacter(_selectedCharacterDefinition);
 		RefreshCharacterSelectUi();
 	}
@@ -86,7 +91,10 @@ public partial class GameFlowUI
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: true, showCards: false, showCharacterSelect: false);
-		_startSettingsBackButton?.GrabFocus();
+		if (_startSettingsPageController != null)
+			_startSettingsPageController.FocusBackButton();
+		else
+			_startSettingsBackButton?.GrabFocus();
 	}
 
 	private void OnStartCardsPressed()
@@ -99,7 +107,10 @@ public partial class GameFlowUI
 		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: true, showCharacterSelect: false);
 		RefreshStartCardsCompendium();
-		_startCardsBackButton?.GrabFocus();
+		if (_startCardsPageController != null)
+			_startCardsPageController.FocusBackButton();
+		else
+			_startCardsBackButton?.GrabFocus();
 	}
 
 	private void OnStartSettingsBackPressed()
@@ -107,7 +118,10 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startSettingsOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
-		_startSettingsButton?.GrabFocus();
+		if (_startMainPageController != null)
+			_startMainPageController.SettingsButton?.GrabFocus();
+		else
+			_startSettingsButton?.GrabFocus();
 	}
 
 	private void OnStartCardsBackPressed()
@@ -115,7 +129,10 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startCardsOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
-		_startCardsButton?.GrabFocus();
+		if (_startMainPageController != null)
+			_startMainPageController.CardsButton?.GrabFocus();
+		else
+			_startCardsButton?.GrabFocus();
 	}
 
 	private void StartRun()
@@ -133,6 +150,7 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
+		StopBootPromptFx(resetVisual: true);
 		_currentRunId = System.Guid.NewGuid().ToString("N");
 		SetGameplayObjectsVisible(true);
 		if (_titleScreenPanel != null) _titleScreenPanel.Visible = false;
@@ -159,7 +177,10 @@ public partial class GameFlowUI
 
 		if (_player != null)
 		{
-			_player.ApplyCharacter(RunContext.Instance?.GetSelectedOrDefault() ?? _selectedCharacterDefinition);
+			CharacterDefinition selectedCharacter = RunContext.Instance?.GetSelectedOrDefault()
+				?? _sharedState.SelectedCharacterDefinition
+				?? _selectedCharacterDefinition;
+			_player.ApplyCharacter(selectedCharacter);
 			_player.SetProcess(true);
 			_player.SetPhysicsProcess(true);
 		}

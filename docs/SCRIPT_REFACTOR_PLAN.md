@@ -16,6 +16,23 @@ Last Synced: 2026-03-03
 - Added inspector-driven UI tuning group for layout/runtime placement values:
   - `Scripts/UI/GameFlowUI.LayoutConfig.cs`
 
+## 2026-03-03 Additions (UI Controller Separation Pass)
+- Added shared pre-run UI state model:
+  - `Scripts/UI/Models/GameFlowUiSharedState.cs`
+- Added start-page controllers (per-page binding/input/presentation ownership):
+  - `Scripts/UI/Pages/StartMainPageController.cs`
+  - `Scripts/UI/Pages/StartSettingsPageController.cs`
+  - `Scripts/UI/Pages/StartCardsPageController.cs`
+  - `Scripts/UI/Pages/StartCharacterSelectPageController.cs`
+- Updated page scenes to attach corresponding controller scripts:
+  - `Scenes/UI/Panels/StartMainScroll.tscn`
+  - `Scenes/UI/Panels/StartSettingsPage.tscn`
+  - `Scenes/UI/Panels/StartCardsPage.tscn`
+  - `Scenes/UI/Panels/StartCharacterSelectPage.tscn`
+- `GameFlowUI` role refinement:
+  - keeps routing/state transition ownership for start flow,
+  - consumes controller events instead of binding all start-page child nodes directly.
+
 ## 2026-02-28 Additions (Structure Cleanup Pass)
 - `ObstacleFieldGenerator` split:
   - `Scripts/World/ObstacleFieldGenerator.cs` (core state + frame orchestration)

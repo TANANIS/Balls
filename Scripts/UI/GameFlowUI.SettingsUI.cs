@@ -9,24 +9,58 @@ public partial class GameFlowUI
 	private void InitializeSettingsUi()
 	{
 		_suppressSettingsSignal = true;
+		_startSettingsPageController?.SetSuppressSignals(true);
 
-		float bgm = AudioManager.Instance?.GetBgmVolumeLinear() ?? 1f;
-		float sfx = AudioManager.Instance?.GetSfxVolumeLinear() ?? 1f;
-		ConfigurePercentSlider(_settingsBgmSlider, bgm);
-		ConfigurePercentSlider(_startSettingsBgmSlider, bgm);
-		ConfigurePercentSlider(_settingsSfxSlider, sfx);
-		ConfigurePercentSlider(_startSettingsSfxSlider, sfx);
+		float bgmPercent = Mathf.Clamp(_sharedState.Settings.BgmPercent, 0f, 100f);
+		float sfxPercent = Mathf.Clamp(_sharedState.Settings.SfxPercent, 0f, 100f);
+		ConfigurePercentSlider(_settingsBgmSlider, bgmPercent / 100f);
+		ConfigurePercentSlider(_startSettingsBgmSlider, bgmPercent / 100f);
+		ConfigurePercentSlider(_settingsSfxSlider, sfxPercent / 100f);
+		ConfigurePercentSlider(_startSettingsSfxSlider, sfxPercent / 100f);
+		_startSettingsPageController?.ConfigureSliders();
 
 		PopulateWindowSizeOptions(_settingsWindowSizeOption);
-		PopulateWindowSizeOptions(_startSettingsWindowSizeOption);
+		if (_startSettingsPageController != null)
+			_startSettingsPageController.PopulateWindowSizeOptions();
+		else
+			PopulateWindowSizeOptions(_startSettingsWindowSizeOption);
 
 		PopulateWindowModeOptions(_settingsWindowModeOption);
-		PopulateWindowModeOptions(_startSettingsWindowModeOption);
+		if (_startSettingsPageController != null)
+		{
+			int currentModeIndex = DisplayServer.WindowGetMode() == DisplayServer.WindowMode.Fullscreen ? 1 : 0;
+			_startSettingsPageController.PopulateWindowModeOptions(
+				Tr("UI.SETTINGS.OPTION_WINDOWED"),
+				Tr("UI.SETTINGS.OPTION_FULLSCREEN"),
+				currentModeIndex);
+		}
+		else
+		{
+			PopulateWindowModeOptions(_startSettingsWindowModeOption);
+		}
 
 		PopulateLanguageOptions(_settingsLanguageOption);
-		PopulateLanguageOptions(_startSettingsLanguageOption);
+		if (_startSettingsPageController != null)
+			_startSettingsPageController.PopulateLanguageOptions(GetLanguageIndexFromLocale(TranslationServer.GetLocale()));
+		else
+			PopulateLanguageOptions(_startSettingsLanguageOption);
 
 		SyncWindowSizeOptionWithCurrent();
+		SyncBgmSliderValues(bgmPercent);
+		SyncSfxSliderValues(sfxPercent);
+		_sharedState.Settings.BgmPercent = bgmPercent;
+		_sharedState.Settings.SfxPercent = sfxPercent;
+		_sharedState.Settings.WindowModeIndex = _settingsWindowModeOption?.Selected
+			?? _startSettingsWindowModeOption?.Selected
+			?? 0;
+		_sharedState.Settings.WindowSizeIndex = _settingsWindowSizeOption?.Selected
+			?? _startSettingsWindowSizeOption?.Selected
+			?? 0;
+		_sharedState.Settings.LanguageIndex = _settingsLanguageOption?.Selected
+			?? _startSettingsLanguageOption?.Selected
+			?? GetLanguageIndexFromLocale(TranslationServer.GetLocale());
+		_sharedState.Settings.Locale = GetLocaleByIndex(_sharedState.Settings.LanguageIndex);
+		_startSettingsPageController?.SetSuppressSignals(false);
 		_suppressSettingsSignal = false;
 	}
 
@@ -37,6 +71,7 @@ public partial class GameFlowUI
 		_suppressSettingsSignal = true;
 		SyncBgmSliderValues(value);
 		_suppressSettingsSignal = false;
+		_sharedState.Settings.BgmPercent = (float)value;
 		AudioManager.Instance?.SetBgmVolumeLinear((float)value / 100f);
 		SaveSettingsToDisk();
 	}
@@ -48,6 +83,7 @@ public partial class GameFlowUI
 		_suppressSettingsSignal = true;
 		SyncSfxSliderValues(value);
 		_suppressSettingsSignal = false;
+		_sharedState.Settings.SfxPercent = (float)value;
 		AudioManager.Instance?.SetSfxVolumeLinear((float)value / 100f);
 		SaveSettingsToDisk();
 	}
@@ -59,6 +95,7 @@ public partial class GameFlowUI
 		_suppressSettingsSignal = true;
 		SyncWindowModeSelection((int)index);
 		_suppressSettingsSignal = false;
+		_sharedState.Settings.WindowModeIndex = Mathf.Clamp((int)index, 0, 1);
 		DisplayServer.WindowSetMode(index == 1 ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
 		SaveSettingsToDisk();
 	}
@@ -70,6 +107,7 @@ public partial class GameFlowUI
 		_suppressSettingsSignal = true;
 		SyncWindowSizeSelection((int)index);
 		_suppressSettingsSignal = false;
+		_sharedState.Settings.WindowSizeIndex = Mathf.Clamp((int)index, 0, 2);
 		ApplyWindowSizeByIndex((int)index);
 		SaveSettingsToDisk();
 	}
@@ -81,6 +119,7 @@ public partial class GameFlowUI
 		_suppressSettingsSignal = true;
 		SyncLanguageSelection((int)index);
 		_suppressSettingsSignal = false;
+		_sharedState.Settings.LanguageIndex = Mathf.Clamp((int)index, 0, 1);
 		ApplyLocale(GetLocaleByIndex((int)index));
 		InitializeSettingsUi();
 		SaveSettingsToDisk();
@@ -202,21 +241,12 @@ public partial class GameFlowUI
 	private void SaveSettingsToDisk()
 	{
 		var cfg = new ConfigFile();
-		double bgm = _settingsBgmSlider?.Value ?? _startSettingsBgmSlider?.Value ?? DefaultBgmPercent;
-		double sfx = _settingsSfxSlider?.Value ?? _startSettingsSfxSlider?.Value ?? DefaultSfxPercent;
-		int mode = _settingsWindowModeOption?.Selected
-			?? _startSettingsWindowModeOption?.Selected
-			?? (DisplayServer.WindowGetMode() == DisplayServer.WindowMode.Fullscreen ? 1 : 0);
-		int size = _settingsWindowSizeOption?.Selected ?? _startSettingsWindowSizeOption?.Selected ?? 0;
-		int language = _settingsLanguageOption?.Selected
-			?? _startSettingsLanguageOption?.Selected
-			?? GetLanguageIndexFromLocale(TranslationServer.GetLocale());
-
-		cfg.SetValue("audio", "bgm", bgm);
-		cfg.SetValue("audio", "sfx", sfx);
-		cfg.SetValue("window", "mode", mode);
-		cfg.SetValue("window", "size", size);
-		cfg.SetValue("locale", "language", language);
+		GameFlowUiSettingsModel settings = _sharedState.Settings;
+		cfg.SetValue("audio", "bgm", (double)settings.BgmPercent);
+		cfg.SetValue("audio", "sfx", (double)settings.SfxPercent);
+		cfg.SetValue("window", "mode", settings.WindowModeIndex);
+		cfg.SetValue("window", "size", settings.WindowSizeIndex);
+		cfg.SetValue("locale", "language", settings.LanguageIndex);
 		cfg.Save(SettingsPath);
 	}
 
@@ -230,6 +260,12 @@ public partial class GameFlowUI
 			SyncSfxSliderValues(DefaultSfxPercent);
 			SyncLanguageSelection(0);
 			_suppressSettingsSignal = false;
+			_sharedState.Settings.BgmPercent = DefaultBgmPercent;
+			_sharedState.Settings.SfxPercent = DefaultSfxPercent;
+			_sharedState.Settings.WindowModeIndex = 0;
+			_sharedState.Settings.WindowSizeIndex = 0;
+			_sharedState.Settings.LanguageIndex = 0;
+			_sharedState.Settings.Locale = LocaleEnglish;
 			AudioManager.Instance?.SetBgmVolumeLinear(DefaultBgmPercent / 100f);
 			AudioManager.Instance?.SetSfxVolumeLinear(DefaultSfxPercent / 100f);
 			ApplyLocale(LocaleEnglish);
@@ -243,20 +279,28 @@ public partial class GameFlowUI
 		int mode = (int)(long)cfg.GetValue("window", "mode", 0L);
 		int size = (int)(long)cfg.GetValue("window", "size", 0L);
 		int language = (int)(long)cfg.GetValue("locale", "language", 0L);
+		int clampedMode = Mathf.Clamp(mode, 0, 1);
+		int clampedSize = Mathf.Clamp(size, 0, 2);
+		int clampedLanguage = Mathf.Clamp(language, 0, 1);
+		_sharedState.Settings.BgmPercent = bgm;
+		_sharedState.Settings.SfxPercent = sfx;
+		_sharedState.Settings.WindowModeIndex = clampedMode;
+		_sharedState.Settings.WindowSizeIndex = clampedSize;
+		_sharedState.Settings.LanguageIndex = clampedLanguage;
+		_sharedState.Settings.Locale = GetLocaleByIndex(clampedLanguage);
 
 		SyncBgmSliderValues(bgm);
 		SyncSfxSliderValues(sfx);
 		AudioManager.Instance?.SetBgmVolumeLinear(bgm / 100f);
 		AudioManager.Instance?.SetSfxVolumeLinear(sfx / 100f);
 
-		SyncWindowModeSelection(mode);
-		DisplayServer.WindowSetMode(mode == 1 ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
+		SyncWindowModeSelection(clampedMode);
+		DisplayServer.WindowSetMode(clampedMode == 1 ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
 
-		SyncWindowSizeSelection(size);
-		if (mode == 0)
-			ApplyWindowSizeByIndex(size);
+		SyncWindowSizeSelection(clampedSize);
+		if (clampedMode == 0)
+			ApplyWindowSizeByIndex(clampedSize);
 
-		int clampedLanguage = Mathf.Clamp(language, 0, 1);
 		SyncLanguageSelection(clampedLanguage);
 		ApplyLocale(GetLocaleByIndex(clampedLanguage));
 

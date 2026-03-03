@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class AudioManager : Node
 {
@@ -23,13 +24,16 @@ public partial class AudioManager : Node
 	private AudioStream _bgmMenu;
 	private AudioStream _bgmGameplay;
 	private AudioStream _bgmResult;
+	private AudioStream _bgmTitleTheme;
 	private readonly List<AudioStream> _bgmMenuTracks = new();
 	private readonly List<AudioStream> _bgmGameplayTracks = new();
 	private readonly List<AudioStream> _bgmResultTracks = new();
 	private readonly RandomNumberGenerator _bgmRng = new();
 	private BgmPlaylist _currentBgmPlaylist = BgmPlaylist.None;
 	private AudioStream _currentBgmTrack;
+	private Tween _bgmFadeTween;
 	private AudioStream _sfxUiButton;
+	private AudioStream _sfxUiTitleConfirm;
 	private AudioStream _sfxUiExit;
 	private AudioStream _sfxUiUpgradeSelect;
 	private AudioStream _sfxUiSlotRollLoop;
@@ -69,8 +73,61 @@ public partial class AudioManager : Node
 	public void PlayBgmMenu() => StartBgmPlaylist(BgmPlaylist.Menu);
 	public void PlayBgmGameplay() => StartBgmPlaylist(BgmPlaylist.Gameplay);
 	public void PlayBgmResult() => StartBgmPlaylist(BgmPlaylist.Result);
+	public void PlayBgmTitleTheme()
+	{
+		if (_bgmPlayer == null)
+			return;
+
+		if (_bgmFadeTween != null && _bgmFadeTween.IsValid())
+			_bgmFadeTween.Kill();
+		_bgmFadeTween = null;
+		_bgmPlayer.VolumeDb = BgmVolumeDb;
+
+		if (_bgmTitleTheme == null)
+		{
+			PlayBgmMenu();
+			return;
+		}
+
+		_currentBgmPlaylist = BgmPlaylist.None;
+		_currentBgmTrack = _bgmTitleTheme;
+		if (_bgmPlayer.Stream != _bgmTitleTheme)
+			_bgmPlayer.Stream = _bgmTitleTheme;
+		if (!_bgmPlayer.Playing)
+			_bgmPlayer.Play();
+	}
+
+	public async Task FadeOutCurrentBgmThenPlayMenuAsync(float fadeSeconds)
+	{
+		if (_bgmPlayer == null)
+		{
+			PlayBgmMenu();
+			return;
+		}
+
+		if (_bgmFadeTween != null && _bgmFadeTween.IsValid())
+			_bgmFadeTween.Kill();
+		_bgmFadeTween = null;
+
+		float duration = Mathf.Max(0.05f, fadeSeconds);
+		if (_bgmPlayer.Playing)
+		{
+			_bgmFadeTween = CreateTween();
+			_bgmFadeTween.SetPauseMode(Tween.TweenPauseMode.Process);
+			_bgmFadeTween.TweenProperty(_bgmPlayer, "volume_db", -80f, duration)
+				.SetTrans(Tween.TransitionType.Sine)
+				.SetEase(Tween.EaseType.InOut);
+			await ToSignal(_bgmFadeTween, Tween.SignalName.Finished);
+			_bgmFadeTween = null;
+			_bgmPlayer.Stop();
+		}
+
+		_bgmPlayer.VolumeDb = BgmVolumeDb;
+		PlayBgmMenu();
+	}
 
 	public void PlaySfxUiButton() => PlaySfx(_sfxUiButton);
+	public void PlaySfxUiTitleConfirm() => PlaySfx(_sfxUiTitleConfirm ?? _sfxUiButton);
 	public void PlaySfxUiExit() => PlaySfx(_sfxUiExit);
 	public void PlaySfxUiUpgradeSelect() => PlaySfx(_sfxUiUpgradeSelect);
 	public void PlaySfxUiSlotRollStop() => PlaySfx(_sfxUiSlotRollStop);

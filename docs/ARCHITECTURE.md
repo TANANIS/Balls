@@ -80,6 +80,23 @@ Game
 - Runtime UI layout tuning values (dialog sizes, responsive breakpoints, roll-flash offsets/sizes, event-unlock table dimensions) are exposed under `UI Layout/*` exported fields on `GameFlowUI`.
 - Boot sequence now enters `BootTitleScreen` first and transitions to menu flow on any key/mouse/gamepad button input.
 
+## UI Routing + Page Controller Contract (2026-03-03)
+- `GameFlowUI` is now the start-flow router/state owner:
+  - page visibility switching (`SetStartSubPanels`),
+  - flow forward/back transitions,
+  - run-state entry/exit.
+- Start pages own their local node binding, button events, and page-local text refresh:
+  - `Scripts/UI/Pages/StartMainPageController.cs`
+  - `Scripts/UI/Pages/StartSettingsPageController.cs`
+  - `Scripts/UI/Pages/StartCardsPageController.cs`
+  - `Scripts/UI/Pages/StartCharacterSelectPageController.cs`
+- Shared pre-run UI data is centralized in model/service-like state objects:
+  - `Scripts/UI/Models/GameFlowUiSharedState.cs`
+  - includes settings state, selected character state, and event-loadout draft snapshot.
+- Current transition stage:
+  - Event unlock/loadout pages still execute logic in `GameFlowUI.*` partial controllers,
+  - but draft selection is mirrored into shared state for future full separation.
+
 ## Event Scheduling Contract (V0.3)
 - Canonical spec: `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
 - Run plan is authored pre-run with exactly 4 slots.

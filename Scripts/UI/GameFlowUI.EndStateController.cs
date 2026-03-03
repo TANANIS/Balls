@@ -278,13 +278,16 @@ public partial class GameFlowUI
 
 	private void RefreshPerfectLeaderboardUi()
 	{
-		if (_startPerfectLeaderboardLabel == null)
+		if (_startPerfectLeaderboardLabel == null && _startMainPageController == null)
 			return;
 
 		IReadOnlyList<PerfectClearRecord> entries = MetaProgressionService.Instance.GetPerfectLeaderboard(PerfectLeaderboardDisplayCount);
 		if (entries.Count == 0)
 		{
-			_startPerfectLeaderboardLabel.Text = Tr("UI.START.PERFECT_BOARD_EMPTY");
+			string emptyText = Tr("UI.START.PERFECT_BOARD_EMPTY");
+			if (_startPerfectLeaderboardLabel != null)
+				_startPerfectLeaderboardLabel.Text = emptyText;
+			_startMainPageController?.SetPerfectLeaderboardText(emptyText);
 			return;
 		}
 
@@ -300,6 +303,8 @@ public partial class GameFlowUI
 				text += "\n";
 		}
 
-		_startPerfectLeaderboardLabel.Text = text;
+		if (_startPerfectLeaderboardLabel != null)
+			_startPerfectLeaderboardLabel.Text = text;
+		_startMainPageController?.SetPerfectLeaderboardText(text);
 	}
 }
