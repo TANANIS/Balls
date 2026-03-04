@@ -6,8 +6,10 @@ public partial class GameFlowUI
 	[Export] private NodePath BootTitleLogoPath = "Panels/TitleScreen/Center/VBox/Title";
 	[Export] private NodePath BootTitleSubtitlePath = "Panels/TitleScreen/Center/VBox/SubTitle";
 	[Export] private NodePath BootTitlePromptPath = "Panels/TitleScreen/Center/VBox/PressAnyButton";
+	[Export] private NodePath BootTitleContentPath = "Panels/TitleScreen/Center/VBox";
 	[Export] private NodePath StartMenuLogoPath = "Panels/StartPanel/MainScroll/VBox/Header/Title";
 	[Export] private NodePath BootBackgroundPath = "Panels/TitleScreen/Background";
+	[Export] private NodePath BootDimmerPath = "Panels/TitleScreen/Dimmer";
 	[Export] private NodePath BootTopLetterboxPath = "Panels/TitleScreen/TopLetterbox";
 	[Export] private NodePath BootBottomLetterboxPath = "Panels/TitleScreen/BottomLetterbox";
 	[Export] private NodePath BootOpeningMaskPath = "Panels/TitleScreen/OpeningMask";

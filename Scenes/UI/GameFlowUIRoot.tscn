@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cintomiqrnoht" path="res://Scripts/UI/GameFlowUI.cs" id="1_flow_ui"]
 [ext_resource type="PackedScene" uid="uid://5viel85sis2s" path="res://Scenes/UI/HudOverlay.tscn" id="2_hud_overlay"]
 [ext_resource type="PackedScene" uid="uid://buvl65c46k2su" path="res://Scenes/UI/Panels/StartPanel.tscn" id="3_start_panel"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
+[ext_resource type="PackedScene" uid="uid://kr0qcutt573p" path="res://Scenes/UI/Panels/PausePanel.tscn" id="4_pause_panel"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/RestartPanel.tscn" id="5_restart_panel"]
 [ext_resource type="PackedScene" uid="uid://cc5l4n54jpjpi" path="res://Scenes/UI/UpgradeMenu.tscn" id="6_upgrade_menu"]
 [ext_resource type="PackedScene" uid="uid://bd8v5d57uii4y" path="res://Scenes/UI/Panels/TitleScreen.tscn" id="7_title_screen"]
@@ -28,6 +28,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="HudOverlay" parent="Overlay" instance=ExtResource("2_hud_overlay")]
+visible = false
 layout_mode = 1
 
 [node name="Panels" type="Control" parent="."]
@@ -40,11 +41,13 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="StartPanel" parent="Panels" instance=ExtResource("3_start_panel")]
+layout_mode = 1
 
 [node name="TitleScreen" parent="Panels" instance=ExtResource("7_title_screen")]
 layout_mode = 1
 
 [node name="PausePanel" parent="Panels" instance=ExtResource("4_pause_panel")]
+layout_mode = 1
 
 [node name="RestartPanel" parent="Panels" instance=ExtResource("5_restart_panel")]
 
@@ -60,3 +63,15 @@ mouse_filter = 2
 [node name="UpgradeMenu" parent="UpgradeLayer" instance=ExtResource("6_upgrade_menu")]
 visible = false
 layout_mode = 1
+
+[node name="TransitionMask" type="ColorRect" parent="."]
+visible = false
+z_index = 200
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

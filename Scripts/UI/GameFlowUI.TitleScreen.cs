@@ -24,8 +24,14 @@ public partial class GameFlowUI
 		_bootTitleScreenOpen = true;
 		if (_startPanel != null)
 			_startPanel.Visible = false;
+		_startMainPageController?.SetMainBackgroundSuppressed(true);
 		_titleScreenPanel.Visible = true;
+		if (_menuBackground != null)
+			_menuBackground.Visible = false;
+		StopStartSubpanelDimmerFx();
+		ResetBootTitleContentExitFxVisual();
 		ApplyBootLetterboxOverride();
+		ResetBootDimmerForTitle();
 		StartBootBackgroundSwayFx();
 		StartBootPromptIdleFx();
 		StartBootOpeningMaskFadeIfNeeded();
@@ -37,19 +43,22 @@ public partial class GameFlowUI
 			return;
 
 		_bootTitleScreenOpen = false;
+		_startMainPageController?.SetMainBackgroundSuppressed(true);
 		AudioManager.Instance?.PlaySfxUiTitleConfirm();
-		Task promptFxTask = PlayBootPromptConfirmFxAsync();
+		Task titleUiExitTask = PlayBootTitleUiExitFxAsync();
 		Task letterboxFxTask = PlayBootLetterboxCloseFxAsync();
+		Task backgroundScrollFxTask = PlayBootBackgroundScrollToMainAsync();
 		Task bgmFadeTask = AudioManager.Instance != null
 			? AudioManager.Instance.FadeOutCurrentBgmThenPlayMenuAsync(BootTitleBgmFadeDurationSeconds)
 			: Task.CompletedTask;
-		await Task.WhenAll(promptFxTask, letterboxFxTask, bgmFadeTask);
+		await Task.WhenAll(titleUiExitTask, letterboxFxTask, backgroundScrollFxTask, bgmFadeTask);
 		StopBootPromptFx(resetVisual: true);
 		if (_titleScreenPanel != null)
 			_titleScreenPanel.Visible = false;
 		if (_startPanel != null)
 			_startPanel.Visible = true;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
+		_startMainPageController?.SetMainBackgroundSuppressed(false);
 		if (_startMainPageController != null)
 			_startMainPageController.FocusDefault();
 		else

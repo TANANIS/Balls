@@ -48,6 +48,7 @@ public partial class GameFlowUI
 		if (_startButton != null) _startButton.Text = Tr("UI.START.BUTTON_START");
 		if (_startSettingsButton != null) _startSettingsButton.Text = Tr("UI.COMMON.SETTINGS");
 		if (_startCardsButton != null) _startCardsButton.Text = TrOrDefault("UI.START.BUTTON_CARDS", "Cards", "Cards");
+		if (_startLeaderboardButton != null) _startLeaderboardButton.Text = TrOrDefault("UI.START.BUTTON_LEADERBOARD", "Leaderboard", "排行榜");
 		if (_startQuitButton != null) _startQuitButton.Text = Tr("UI.COMMON.QUIT");
 		if (_startSettingsControlsButton != null) _startSettingsControlsButton.Text = TrOrDefault("UI.SETTINGS.CONTROLS", "Controls", "\u64cd\u4f5c\u8a2d\u5b9a");
 		if (_startDeleteSaveButton != null) _startDeleteSaveButton.Text = TrOrDefault("UI.META.DELETE_SAVE_BUTTON", "Delete Save Data", "\u522a\u9664\u5b58\u6a94\u8cc7\u6599");

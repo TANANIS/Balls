@@ -7,6 +7,7 @@ public partial class GameFlowUI
 	[Export] private NodePath CursorRingPath = "../CursorRing";
 	[Export] private NodePath TitleScreenPath = "Panels/TitleScreen";
 	[Export] private NodePath StartPanelPath = "Panels/StartPanel";
+	[Export] private NodePath StartMainBackToTitleMaskPath = "TransitionMask";
 	[Export] private NodePath StartMainPageControllerPath = "Panels/StartPanel/MainScroll";
 	[Export] private NodePath StartSettingsPageControllerPath = "Panels/StartPanel/SettingsPanel";
 	[Export] private NodePath StartCardsPageControllerPath = "Panels/StartPanel/CardsPanel";
@@ -14,6 +15,8 @@ public partial class GameFlowUI
 	[Export] private NodePath StartCharacterPageControllerPath = "Panels/StartPanel/CharacterSelectPanel";
 	[Export] private NodePath StartMainVBoxPath = "Panels/StartPanel/MainScroll/VBox";
 	[Export] private NodePath StartSettingsPanelPath = "Panels/StartPanel/SettingsPanel";
+	[Export] private NodePath StartSettingsTopLetterboxPath = "Panels/StartPanel/SettingsTopLetterbox";
+	[Export] private NodePath StartSettingsBottomLetterboxPath = "Panels/StartPanel/SettingsBottomLetterbox";
 	[Export] private NodePath StartCardsPanelPath = "Panels/StartPanel/CardsPanel";
 	[Export] private NodePath StartControlsPanelPath = "Panels/StartPanel/ControlsPanel";
 	[Export] private NodePath StartCharacterSelectPanelPath = "Panels/StartPanel/CharacterSelectPanel";
@@ -39,19 +42,20 @@ public partial class GameFlowUI
 	[Export] private NodePath StartButtonPath = "Panels/StartPanel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/StartButton";
 	[Export] private NodePath StartSettingsButtonPath = "Panels/StartPanel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/SettingsButton";
 	[Export] private NodePath StartCardsButtonPath = "Panels/StartPanel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/CardsButton";
+	[Export] private NodePath StartLeaderboardButtonPath = "Panels/StartPanel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/LeaderboardButton";
 	[Export] private NodePath StartQuitButtonPath = "Panels/StartPanel/MainScroll/VBox/MainBody/RightColumnPanel/Margin/ButtonsVBox/QuitButton";
-	[Export] private NodePath StartDeleteSaveButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/DeleteSaveButton";
+	[Export] private NodePath StartDeleteSaveButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/ActionButtons/DeleteSaveButton";
 	[Export] private NodePath StartDeleteSaveDialogPath = "Panels/StartPanel/DeleteSaveConfirmDialog";
 	[Export] private NodePath StartPerfectLeaderboardPath = "Panels/StartPanel/MainScroll/VBox/MainBody/LeftColumn/PerfectLeaderboard";
 	[Export] private NodePath StartSettingsBackButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/BackButton";
 	[Export] private NodePath StartCardsBackButtonPath = "Panels/StartPanel/CardsPanel/VBox/BackButton";
 	[Export] private NodePath StartCardsContentPath = "Panels/StartPanel/CardsPanel/VBox/CardsScroll/CardsContent";
-	[Export] private NodePath StartSettingsBgmSliderPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/BgmSlider";
-	[Export] private NodePath StartSettingsSfxSliderPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/SfxSlider";
-	[Export] private NodePath StartSettingsWindowSizePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowSizeOption";
-	[Export] private NodePath StartSettingsWindowModePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowModeOption";
-	[Export] private NodePath StartSettingsLanguagePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/LanguageOption";
-	[Export] private NodePath StartSettingsControlsButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/ControlsButton";
+	[Export] private NodePath StartSettingsBgmSliderPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/BgmSlider";
+	[Export] private NodePath StartSettingsSfxSliderPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/SfxSlider";
+	[Export] private NodePath StartSettingsWindowSizePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/WindowSizeChoices/WindowSizeOption";
+	[Export] private NodePath StartSettingsWindowModePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/WindowModeChoices/WindowModeOption";
+	[Export] private NodePath StartSettingsLanguagePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/LanguageChoices/LanguageOption";
+	[Export] private NodePath StartSettingsControlsButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/ActionButtons/ControlsButton";
 	[Export] private NodePath StartControlsBackButtonPath = "Panels/StartPanel/ControlsPanel/VBox/ActionButtons/BackButton";
 	[Export] private NodePath RestartBackToMetaButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/BackToMetaButton";
 	[Export] private NodePath RestartButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/RestartButton";
@@ -103,6 +107,7 @@ public partial class GameFlowUI
 	private PlayerHealth _playerHealth;
 	private Control _titleScreenPanel;
 	private Control _startPanel;
+	private ColorRect _startMainBackToTitleMask;
 	private StartMainPageController _startMainPageController;
 	private StartSettingsPageController _startSettingsPageController;
 	private StartCardsPageController _startCardsPageController;
@@ -110,6 +115,8 @@ public partial class GameFlowUI
 	private StartCharacterSelectPageController _startCharacterPageController;
 	private Control _startMainVBox;
 	private Control _startSettingsPanel;
+	private ColorRect _startSettingsTopLetterbox;
+	private ColorRect _startSettingsBottomLetterbox;
 	private Control _startCardsPanel;
 	private Control _startControlsPanel;
 	private Control _startCharacterSelectPanel;
@@ -121,6 +128,7 @@ public partial class GameFlowUI
 	private Button _startButton;
 	private Button _startSettingsButton;
 	private Button _startCardsButton;
+	private Button _startLeaderboardButton;
 	private Button _startQuitButton;
 	private Button _startDeleteSaveButton;
 	private Button _startSettingsControlsButton;
@@ -193,6 +201,7 @@ public partial class GameFlowUI
 	private CanvasItem _enemiesRoot;
 	private CanvasItem _projectilesRoot;
 	private CanvasItem _obstaclesRoot;
+	private Tween _startMainBackToTitleMaskTween;
 	private bool _started;
 	private bool _ending;
 	private bool _bootTitleScreenOpen;
@@ -203,6 +212,7 @@ public partial class GameFlowUI
 	private bool _startControlsOpen;
 	private bool _startCharacterSelectOpen;
 	private bool _startEventLoadoutOpen;
+	private bool _startMainBackToTitleTransitionActive;
 	private bool _pendingFinalBossKillClear;
 	private bool _suppressSettingsSignal;
 	private string _currentRunId = string.Empty;

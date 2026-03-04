@@ -17,6 +17,8 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
+		_startMainBackToTitleTransitionActive = false;
+		StopStartMainBackToTitleMaskTween();
 		StopBootPromptFx(resetVisual: true);
 		_currentRunId = string.Empty;
 		SetGameplayObjectsVisible(false);
@@ -34,8 +36,11 @@ public partial class GameFlowUI
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		if (_background != null) _background.Visible = false;
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
-		if (_menuBackground != null) _menuBackground.Visible = true;
-		if (_menuDimmer != null) _menuDimmer.Visible = true;
+		if (_menuBackground != null) _menuBackground.Visible = false;
+		StopStartSubpanelDimmerFx();
+		_startMainPageController?.SetMainBackgroundSuppressed(false);
+		_startMainPageController?.HideLeaderboardDrawer(animate: false);
+		PlayStartSettingsLetterboxFx(expand: false, animate: false);
 		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Visible = false;
 		RefreshPerfectLeaderboardUi();
 		ResetBuildSummaryLabels();
@@ -49,6 +54,7 @@ public partial class GameFlowUI
 	private void OnStartPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
+		_startMainPageController?.HideLeaderboardDrawer(animate: false);
 		EnterCharacterSelect();
 	}
 
@@ -86,6 +92,7 @@ public partial class GameFlowUI
 	private void OnStartSettingsPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
+		_startMainPageController?.HideLeaderboardDrawer(animate: false);
 		_startSettingsOpen = true;
 		_startCardsOpen = false;
 		_startControlsOpen = false;
@@ -111,6 +118,7 @@ public partial class GameFlowUI
 	private void OnStartCardsPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
+		_startMainPageController?.HideLeaderboardDrawer(animate: false);
 		_startSettingsOpen = false;
 		_startCardsOpen = true;
 		_startControlsOpen = false;
@@ -128,6 +136,7 @@ public partial class GameFlowUI
 	private void OnStartControlsPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiButton();
+		_startMainPageController?.HideLeaderboardDrawer(animate: false);
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
 		_startControlsOpen = true;
@@ -181,6 +190,12 @@ public partial class GameFlowUI
 			_startCardsButton?.GrabFocus();
 	}
 
+	private void OnStartLeaderboardPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startMainPageController?.ToggleLeaderboardDrawer();
+	}
+
 	private void StartRun()
 	{
 		AudioManager.Instance?.PlayBgmGameplay();
@@ -197,6 +212,8 @@ public partial class GameFlowUI
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
+		_startMainBackToTitleTransitionActive = false;
+		StopStartMainBackToTitleMaskTween();
 		StopBootPromptFx(resetVisual: true);
 		_currentRunId = System.Guid.NewGuid().ToString("N");
 		SetGameplayObjectsVisible(true);
@@ -217,7 +234,8 @@ public partial class GameFlowUI
 			terrainBackground.RefreshForNewRun();
 		if (_backgroundDimmer != null) _backgroundDimmer.Visible = false;
 		if (_menuBackground != null) _menuBackground.Visible = false;
-		if (_menuDimmer != null) _menuDimmer.Visible = false;
+		StopStartSubpanelDimmerFx();
+		PlayStartSettingsLetterboxFx(expand: false, animate: false);
 		if (_restartPerfectBannerLabel != null) _restartPerfectBannerLabel.Visible = false;
 		ResetBuildSummaryLabels();
 		PrepareFreshRun();
@@ -331,6 +349,9 @@ public partial class GameFlowUI
 
 	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect, bool showEventLoadout = false, bool showEventUnlock = false, bool showControls = false)
 	{
+		if (showMain)
+			_startMainPageController?.RequestMainContentEnterFx();
+
 		if (_startMainVBox != null)
 			_startMainVBox.Visible = showMain;
 		if (_startSettingsPanel != null)
@@ -345,6 +366,13 @@ public partial class GameFlowUI
 			_startEventLoadoutPanel.Visible = showEventLoadout;
 		if (_startEventUnlockPanel != null)
 			_startEventUnlockPanel.Visible = showEventUnlock;
+
+		if (showMain)
+			_startMainPageController?.TryPlayPendingMainContentEnterFx();
+
+		PlayStartSettingsLetterboxFx(expand: showSettings || showCards, animate: true);
+
+		UpdateMenuBackgroundVisibilityForStartSubPanels(showMain, showSettings, showCards, showCharacterSelect, showEventLoadout, showEventUnlock, showControls);
 	}
 
 	private void SetPausePanels(bool showPausePanel, bool showMain, bool showSettings)
@@ -355,5 +383,27 @@ public partial class GameFlowUI
 			_pauseMainVBox.Visible = showMain;
 		if (_pauseSettingsPanel != null)
 			_pauseSettingsPanel.Visible = showSettings;
+	}
+
+	private void UpdateMenuBackgroundVisibilityForStartSubPanels(
+		bool showMain,
+		bool showSettings,
+		bool showCards,
+		bool showCharacterSelect,
+		bool showEventLoadout,
+		bool showEventUnlock,
+		bool showControls)
+	{
+		bool shouldShowWorldMenuBackground =
+			(_startPanel != null && _startPanel.Visible)
+			&& (_titleScreenPanel == null || !_titleScreenPanel.Visible)
+			&& !showMain
+			&& (showSettings || showCards || showCharacterSelect || showEventLoadout || showEventUnlock || showControls);
+
+		if (_menuBackground != null)
+			_menuBackground.Visible = shouldShowWorldMenuBackground;
+
+		// Settings/Cards now own their local backdrop dim masks.
+		StopStartSubpanelDimmerFx();
 	}
 }

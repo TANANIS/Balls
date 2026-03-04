@@ -12,6 +12,7 @@ public partial class GameFlowUI
 
 		_titleScreenPanel = GetNodeOrNull<Control>(TitleScreenPath);
 		_startPanel = GetNodeOrNull<Control>(StartPanelPath);
+		_startMainBackToTitleMask = GetNodeOrNull<ColorRect>(StartMainBackToTitleMaskPath);
 		_startMainPageController = GetNodeOrNull<StartMainPageController>(StartMainPageControllerPath);
 		_startSettingsPageController = GetNodeOrNull<StartSettingsPageController>(StartSettingsPageControllerPath);
 		_startCardsPageController = GetNodeOrNull<StartCardsPageController>(StartCardsPageControllerPath);
@@ -19,6 +20,8 @@ public partial class GameFlowUI
 		_startCharacterPageController = GetNodeOrNull<StartCharacterSelectPageController>(StartCharacterPageControllerPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
+		_startSettingsTopLetterbox = GetNodeOrNull<ColorRect>(StartSettingsTopLetterboxPath);
+		_startSettingsBottomLetterbox = GetNodeOrNull<ColorRect>(StartSettingsBottomLetterboxPath);
 		_startCardsPanel = GetNodeOrNull<Control>(StartCardsPanelPath);
 		_startControlsPanel = GetNodeOrNull<Control>(StartControlsPanelPath);
 		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
@@ -30,6 +33,7 @@ public partial class GameFlowUI
 		_startButton = _startMainPageController?.StartButton ?? GetNodeOrNull<Button>(StartButtonPath);
 		_startSettingsButton = _startMainPageController?.SettingsButton ?? GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startCardsButton = _startMainPageController?.CardsButton ?? GetNodeOrNull<Button>(StartCardsButtonPath);
+		_startLeaderboardButton = _startMainPageController?.LeaderboardButton ?? GetNodeOrNull<Button>(StartLeaderboardButtonPath);
 		_startQuitButton = _startMainPageController?.QuitButton ?? GetNodeOrNull<Button>(StartQuitButtonPath);
 		_startSettingsControlsButton = _startSettingsPageController?.ControlsButton ?? GetNodeOrNull<Button>(StartSettingsControlsButtonPath);
 		_startDeleteSaveButton = _startSettingsPageController?.DeleteSaveButton ?? GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
@@ -105,6 +109,9 @@ public partial class GameFlowUI
 		}
 		if (_menuDimmer != null)
 			_menuDimmer.TopLevel = true;
+		InitializeStartMainBackToTitleMask();
+		InitializeStartSubpanelDimmerFx();
+		InitializeStartSettingsLetterboxFx();
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		ResolveEventLoadoutNodes();
@@ -157,6 +164,7 @@ public partial class GameFlowUI
 			_startMainPageController.StartPressed += OnStartPressed;
 			_startMainPageController.SettingsPressed += OnStartSettingsPressed;
 			_startMainPageController.CardsPressed += OnStartCardsPressed;
+			_startMainPageController.LeaderboardPressed += OnStartLeaderboardPressed;
 			_startMainPageController.QuitPressed += OnQuitGamePressed;
 		}
 		else
@@ -167,6 +175,8 @@ public partial class GameFlowUI
 				_startSettingsButton.Pressed += OnStartSettingsPressed;
 			if (_startCardsButton != null)
 				_startCardsButton.Pressed += OnStartCardsPressed;
+			if (_startLeaderboardButton != null)
+				_startLeaderboardButton.Pressed += OnStartLeaderboardPressed;
 			if (_startQuitButton != null)
 				_startQuitButton.Pressed += OnQuitGamePressed;
 		}
@@ -290,5 +300,17 @@ public partial class GameFlowUI
 		InitializeSettingsUi();
 		LoadSettingsFromDisk();
 		ApplyLocalizedTexts();
+	}
+
+	private void InitializeStartMainBackToTitleMask()
+	{
+		if (_startMainBackToTitleMask == null)
+			return;
+
+		_startMainBackToTitleMask.MouseFilter = Control.MouseFilterEnum.Ignore;
+		Color color = _startMainBackToTitleMask.Color;
+		color.A = 0f;
+		_startMainBackToTitleMask.Color = color;
+		_startMainBackToTitleMask.Visible = false;
 	}
 }

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bd8v5d57uii4y"]
 
-[ext_resource type="Texture2D" uid="uid://erv51gi8epd7" path="res://Assets/Sprites/UI/TitleScreenBG.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://cnbej1eslmqxj" path="res://Assets/Sprites/UI/BG.png" id="1_bg"]
 [ext_resource type="Texture2D" uid="uid://brs253ftilap2" path="res://Assets/Sprites/UI/Title.png" id="2_title_logo"]
 
 [node name="TitleScreen" type="Control"]
@@ -94,6 +94,7 @@ mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
 [node name="OpeningMask" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

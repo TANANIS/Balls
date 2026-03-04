@@ -10,21 +10,15 @@
 
 [node name="StartPanel" type="Control"]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -444.0
-offset_top = -330.0
-offset_right = 386.0
-offset_bottom = 330.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
 [node name="MainScroll" parent="." instance=ExtResource("2_start_main_scroll")]
-vertical_scroll_mode = 1
+layout_mode = 1
 
 [node name="CharacterSelectPanel" parent="." instance=ExtResource("3_start_character_select")]
 
@@ -33,10 +27,39 @@ vertical_scroll_mode = 1
 [node name="EventLoadoutPanel" parent="." instance=ExtResource("5_start_event_loadout")]
 
 [node name="SettingsPanel" parent="." instance=ExtResource("6_start_settings")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CardsPanel" parent="." instance=ExtResource("7_start_cards")]
 
 [node name="ControlsPanel" parent="." instance=ExtResource("8_start_controls")]
+
+[node name="SettingsTopLetterbox" type="ColorRect" parent="."]
+visible = false
+z_index = 20
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="SettingsBottomLetterbox" type="ColorRect" parent="."]
+visible = false
+z_index = 20
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
 
 [node name="DeleteSaveConfirmDialog" type="ConfirmationDialog" parent="."]
 oversampling_override = 1.0

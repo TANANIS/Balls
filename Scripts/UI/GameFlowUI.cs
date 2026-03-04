@@ -8,6 +8,7 @@ public partial class GameFlowUI : Control
 		ProcessMode = ProcessModeEnum.Always;
 
 		ResolveNodeReferences();
+		EnsureMenuClearFallbackNode();
 		BindSignals();
 		ShowBootTitleScreen();
 		UpdateCursorPresentationMode();
@@ -23,6 +24,7 @@ public partial class GameFlowUI : Control
 
 	public override void _Process(double delta)
 	{
+		UpdateMenuBackgroundFallbackClear();
 		UpdateBootBackgroundSwayFx((float)delta);
 		UpdateUpgradeProgressUi();
 		UpdateMatchCountdownUi();

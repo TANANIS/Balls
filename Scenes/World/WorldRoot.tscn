@@ -24,6 +24,13 @@ z_index = -11
 scale = Vector2(2, 2)
 texture = ExtResource("1_menu_bg")
 
+[node name="MenuDimmer" type="ColorRect" parent="."]
+visible = false
+z_index = -10
+size = Vector2(1920, 1080)
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
 [node name="Obstacles" type="Node2D" parent="."]
 script = ExtResource("2_obstacle_gen")
 ObstacleScenes = Array[PackedScene]([ExtResource("9_obstacle_big_rock_scene"), ExtResource("10_obstacle_small_tree_scene"), ExtResource("12_obstacle_tree_small_b_scene"), ExtResource("13_obstacle_tree_small_c_scene"), ExtResource("14_obstacle_rock_tiny_b_scene"), ExtResource("15_obstacle_rock_tiny_c_scene"), ExtResource("16_obstacle_bush_small_a_scene"), ExtResource("17_obstacle_bush_small_b_scene")])

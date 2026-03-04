@@ -493,3 +493,13 @@
   - active in-run gameplay switches back to existing aim ring/marker behavior.
 - Validation:
   - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).
+
+## Session Update (2026-03-04, UI Baseline Rollback + Docs Sync)
+- Direction change:
+  - paused current heavy paper-stacked UI experiment for menu/meta pages.
+  - restored temporary target to mainline minimal UI baseline to keep gameplay/event iteration stable.
+- Documentation sync:
+  - updated `docs/ARCHITECTURE.md` with `UI Baseline Rollback (2026-03-04)` contract note.
+  - updated `docs/TODO.md` with rollback completion + redesign follow-up item.
+- Notes:
+  - this is a temporary presentation rollback only; runtime event/meta contracts remain unchanged.

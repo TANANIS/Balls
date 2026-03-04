@@ -14,11 +14,11 @@ public partial class GameFlowUI
 	[Export] private NodePath StartCardsTitleLabelPath = "Panels/StartPanel/CardsPanel/VBox/Title";
 	[Export] private NodePath PauseTitleLabelPath = "Panels/PausePanel/Panel/VBox/Title";
 	[Export] private NodePath PauseSettingsTitleLabelPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/Title";
-	[Export] private NodePath StartBgmLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/BgmLabel";
-	[Export] private NodePath StartSfxLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/SfxLabel";
-	[Export] private NodePath StartWindowModeLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowModeLabel";
-	[Export] private NodePath StartWindowSizeLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowSizeLabel";
-	[Export] private NodePath StartLanguageLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/LanguageLabel";
+	[Export] private NodePath StartBgmLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/BgmLabel";
+	[Export] private NodePath StartSfxLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/SfxLabel";
+	[Export] private NodePath StartWindowModeLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/WindowModeLabel";
+	[Export] private NodePath StartWindowSizeLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/WindowSizeLabel";
+	[Export] private NodePath StartLanguageLabelPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/Rows/LanguageLabel";
 	[Export] private NodePath PauseBgmLabelPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/BgmLabel";
 	[Export] private NodePath PauseSfxLabelPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/SfxLabel";
 	[Export] private NodePath PauseWindowModeLabelPath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeLabel";

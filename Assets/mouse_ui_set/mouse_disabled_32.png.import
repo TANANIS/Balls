@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp2ste7xfdsv4"
-path="res://.godot/imported/mouse pointer.png-a1edde277e1d7f43d5b06bfa5575b880.ctex"
+uid="uid://b81p0j3s8mqc"
+path="res://.godot/imported/mouse_disabled_32.png-c69326a083a1b7de8b4e98b8b32bf7ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/mouse pointer.png"
-dest_files=["res://.godot/imported/mouse pointer.png-a1edde277e1d7f43d5b06bfa5575b880.ctex"]
+source_file="res://Assets/mouse_ui_set/mouse_disabled_32.png"
+dest_files=["res://.godot/imported/mouse_disabled_32.png-c69326a083a1b7de8b4e98b8b32bf7ea.ctex"]
 
 [params]
 

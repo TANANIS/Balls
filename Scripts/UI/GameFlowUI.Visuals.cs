@@ -168,6 +168,7 @@ public partial class GameFlowUI
 	{
 		FitMenuBackground();
 		UpdateEventLoadoutResponsiveLayout();
+		RefreshStartSettingsLetterboxLayout();
 	}
 
 	private void FitMenuBackground()

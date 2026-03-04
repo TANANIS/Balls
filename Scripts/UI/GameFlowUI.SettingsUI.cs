@@ -64,6 +64,7 @@ public partial class GameFlowUI
 		bool autoAimEnabled = _sharedState.Settings.AutoAimEnabled;
 		_player?.SetAutoAimEnabled(autoAimEnabled);
 		_startControlsPageController?.SetAutoAimToggle(autoAimEnabled);
+		_startSettingsPageController?.RefreshChoiceRowsVisuals();
 		_startSettingsPageController?.SetSuppressSignals(false);
 		_suppressSettingsSignal = false;
 	}
@@ -230,6 +231,7 @@ public partial class GameFlowUI
 			_settingsWindowModeOption.Select(clamped);
 		if (_startSettingsWindowModeOption != null && _startSettingsWindowModeOption.Selected != clamped)
 			_startSettingsWindowModeOption.Select(clamped);
+		_startSettingsPageController?.RefreshChoiceRowsVisuals();
 	}
 
 	private void SyncWindowSizeSelection(int index)
@@ -239,6 +241,7 @@ public partial class GameFlowUI
 			_settingsWindowSizeOption.Select(clamped);
 		if (_startSettingsWindowSizeOption != null && _startSettingsWindowSizeOption.Selected != clamped)
 			_startSettingsWindowSizeOption.Select(clamped);
+		_startSettingsPageController?.RefreshChoiceRowsVisuals();
 	}
 
 	private void SyncLanguageSelection(int index)
@@ -248,6 +251,7 @@ public partial class GameFlowUI
 			_settingsLanguageOption.Select(clamped);
 		if (_startSettingsLanguageOption != null && _startSettingsLanguageOption.Selected != clamped)
 			_startSettingsLanguageOption.Select(clamped);
+		_startSettingsPageController?.RefreshChoiceRowsVisuals();
 	}
 
 	private void SaveSettingsToDisk()
@@ -323,6 +327,7 @@ public partial class GameFlowUI
 		ApplyLocale(GetLocaleByIndex(clampedLanguage));
 		_player?.SetAutoAimEnabled(autoAim);
 		_startControlsPageController?.SetAutoAimToggle(autoAim);
+		_startSettingsPageController?.RefreshChoiceRowsVisuals();
 
 		_suppressSettingsSignal = false;
 	}

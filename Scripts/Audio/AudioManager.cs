@@ -126,6 +126,35 @@ public partial class AudioManager : Node
 		PlayBgmMenu();
 	}
 
+	public async Task FadeOutCurrentBgmThenPlayTitleAsync(float fadeSeconds)
+	{
+		if (_bgmPlayer == null)
+		{
+			PlayBgmTitleTheme();
+			return;
+		}
+
+		if (_bgmFadeTween != null && _bgmFadeTween.IsValid())
+			_bgmFadeTween.Kill();
+		_bgmFadeTween = null;
+
+		float duration = Mathf.Max(0.05f, fadeSeconds);
+		if (_bgmPlayer.Playing)
+		{
+			_bgmFadeTween = CreateTween();
+			_bgmFadeTween.SetPauseMode(Tween.TweenPauseMode.Process);
+			_bgmFadeTween.TweenProperty(_bgmPlayer, "volume_db", -80f, duration)
+				.SetTrans(Tween.TransitionType.Sine)
+				.SetEase(Tween.EaseType.InOut);
+			await ToSignal(_bgmFadeTween, Tween.SignalName.Finished);
+			_bgmFadeTween = null;
+			_bgmPlayer.Stop();
+		}
+
+		_bgmPlayer.VolumeDb = BgmVolumeDb;
+		PlayBgmTitleTheme();
+	}
+
 	public void PlaySfxUiButton() => PlaySfx(_sfxUiButton);
 	public void PlaySfxUiTitleConfirm() => PlaySfx(_sfxUiTitleConfirm ?? _sfxUiButton);
 	public void PlaySfxUiExit() => PlaySfx(_sfxUiExit);

@@ -19,10 +19,25 @@ public partial class GameFlowUI
 	[Export(PropertyHint.Range, "0.05,3,0.01")] private float BootOpeningFadeDurationSeconds = 3.0f;
 	[Export] private bool EnableBootLetterboxCloseFx = true;
 	[Export(PropertyHint.Range, "0.05,2,0.01")] private float BootLetterboxCloseDurationSeconds = 0.24f;
+	[Export] private bool EnableBootBackgroundScrollToMainFx = true;
+	[Export(PropertyHint.Range, "0.05,3,0.01")] private float BootBackgroundScrollDurationSeconds = 1.45f;
+	[Export(PropertyHint.Range, "0,1,0.01")] private float BootBackgroundScrollDelaySeconds = 0.04f;
+	[Export] private bool StopBootBackgroundSwayBeforeScroll = true;
+	[Export] private bool EnableBootDimmerFadeToMainFx = true;
+	[Export(PropertyHint.Range, "0,1,0.01")] private float BootDimmerMainTargetAlpha = 0f;
 	[Export(PropertyHint.Range, "0.05,3,0.01")] private float BootTitleBgmFadeDurationSeconds = 0.45f;
+	[Export] private bool EnableBootTitleContentExitFx = true;
+	[Export(PropertyHint.Range, "0.05,1.5,0.01")] private float BootTitleContentExitDurationSeconds = 0.22f;
+	[Export(PropertyHint.Range, "0,1,0.01")] private float BootTitleContentExitDelaySeconds = 0.00f;
+	[Export(PropertyHint.Range, "0.8,1.0,0.005")] private float BootTitleContentExitTargetScale = 0.96f;
 
 	[ExportGroup("Title Branding/Background FX")]
 	[Export] private bool EnableBootBackgroundSway = true;
+	[Export] private bool UseBootBackgroundHalfSlice = true;
+	[Export] private bool BootBackgroundUseNearestFilter = true;
+	[Export] private bool BootBackgroundQuantizeSliceToTexel = true;
+	[Export(PropertyHint.Range, "0,1,0.001")] private float BootBackgroundTitleSliceT = 0f;
+	[Export(PropertyHint.Range, "0,1,0.001")] private float BootBackgroundMainSliceT = 1f;
 	[Export(PropertyHint.Range, "1,1.2,0.01")] private float BootBackgroundSwayScale = 1.02f;
 	[Export(PropertyHint.Range, "0,40,0.5")] private float BootBackgroundSwayOffsetX = 8f;
 	[Export(PropertyHint.Range, "0,40,0.5")] private float BootBackgroundSwayOffsetY = 4f;
@@ -33,9 +48,15 @@ public partial class GameFlowUI
 	private Tween _bootPromptConfirmTween;
 	private Tween _bootOpeningMaskTween;
 	private Tween _bootLetterboxCloseTween;
+	private Tween _bootBackgroundScrollTween;
+	private Tween _bootDimmerFadeTween;
+	private Tween _bootTitleContentExitTween;
 	private bool _hasPlayedBootOpeningFade;
 	private bool _bootBackgroundBaseCached;
 	private bool _bootBackgroundSwayActive;
+	private float _bootBackgroundSliceT;
+	private Texture2D _bootBackgroundSourceTexture;
+	private AtlasTexture _bootBackgroundSliceTexture;
 	private Vector2 _bootBackgroundBasePosition;
 	private Vector2 _bootBackgroundBaseScale = Vector2.One;
 	private float _bootBackgroundBaseRotationDegrees;
@@ -44,6 +65,11 @@ public partial class GameFlowUI
 	private float _bootBackgroundSwayPhaseY;
 	private float _bootBackgroundSwayPhaseRot;
 	private float _bootBackgroundSwayPhaseScale;
+	private bool _bootTitleContentBaseCached;
+	private Vector2 _bootTitleContentBaseScale = Vector2.One;
+	private Color _bootTitleContentBaseModulate = Colors.White;
+	private bool _bootDimmerBaseColorCached;
+	private Color _bootDimmerBaseColor = new Color(0.06f, 0.05f, 0.05f, 0.58f);
 
 	private void StartBootPromptIdleFx()
 	{
@@ -104,6 +130,59 @@ public partial class GameFlowUI
 		}
 	}
 
+	private async Task PlayBootTitleUiExitFxAsync()
+	{
+		await PlayBootPromptConfirmFxAsync();
+		await PlayBootTitleContentExitFxAsync();
+	}
+
+	private async Task PlayBootTitleContentExitFxAsync()
+	{
+		Control content = GetNodeOrNull<Control>(BootTitleContentPath);
+		if (content == null)
+			return;
+
+		CacheBootTitleContentBase(content);
+		if (_bootTitleContentExitTween != null && _bootTitleContentExitTween.IsValid())
+			_bootTitleContentExitTween.Kill();
+
+		if (!EnableBootTitleContentExitFx)
+			return;
+
+		content.Visible = true;
+		content.Modulate = _bootTitleContentBaseModulate;
+		content.Scale = _bootTitleContentBaseScale;
+		content.PivotOffset = content.Size * 0.5f;
+
+		float delay = Mathf.Max(0f, BootTitleContentExitDelaySeconds);
+		float duration = Mathf.Max(0.05f, BootTitleContentExitDurationSeconds);
+		float targetScale = Mathf.Clamp(BootTitleContentExitTargetScale, 0.8f, 1f);
+
+		_bootTitleContentExitTween = CreateTween();
+		_bootTitleContentExitTween.SetPauseMode(Tween.TweenPauseMode.Process);
+		if (delay > 0f)
+			_bootTitleContentExitTween.TweenInterval(delay);
+		_bootTitleContentExitTween.TweenProperty(content, "modulate:a", 0f, duration)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+		_bootTitleContentExitTween.Parallel().TweenProperty(content, "scale", _bootTitleContentBaseScale * targetScale, duration)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+		await ToSignal(_bootTitleContentExitTween, Tween.SignalName.Finished);
+		_bootTitleContentExitTween = null;
+	}
+
+	private void ResetBootTitleContentExitFxVisual()
+	{
+		Control content = GetNodeOrNull<Control>(BootTitleContentPath);
+		if (content == null)
+			return;
+
+		CacheBootTitleContentBase(content);
+		content.Modulate = _bootTitleContentBaseModulate;
+		content.Scale = _bootTitleContentBaseScale;
+	}
+
 	private void StartBootOpeningMaskFadeIfNeeded()
 	{
 		ColorRect openingMask = GetNodeOrNull<ColorRect>(BootOpeningMaskPath);
@@ -142,14 +221,77 @@ public partial class GameFlowUI
 		}));
 	}
 
+	private void ResetBootDimmerForTitle()
+	{
+		ColorRect dimmer = GetNodeOrNull<ColorRect>(BootDimmerPath);
+		if (dimmer == null)
+			return;
+
+		if (_bootDimmerFadeTween != null && _bootDimmerFadeTween.IsValid())
+			_bootDimmerFadeTween.Kill();
+		_bootDimmerFadeTween = null;
+
+		CacheBootDimmerBaseColor(dimmer);
+		dimmer.Color = _bootDimmerBaseColor;
+		dimmer.Visible = _bootDimmerBaseColor.A > 0.001f;
+	}
+
+	private async Task PlayBootDimmerFadeToMainAsync(float delaySeconds, float durationSeconds, bool animate)
+	{
+		ColorRect dimmer = GetNodeOrNull<ColorRect>(BootDimmerPath);
+		if (dimmer == null)
+			return;
+
+		CacheBootDimmerBaseColor(dimmer);
+		if (_bootDimmerFadeTween != null && _bootDimmerFadeTween.IsValid())
+			_bootDimmerFadeTween.Kill();
+		_bootDimmerFadeTween = null;
+
+		float targetAlpha = Mathf.Clamp(BootDimmerMainTargetAlpha, 0f, 1f);
+		if (!EnableBootDimmerFadeToMainFx || !animate || !IsInsideTree())
+		{
+			Color immediate = _bootDimmerBaseColor;
+			immediate.A = targetAlpha;
+			dimmer.Color = immediate;
+			dimmer.Visible = targetAlpha > 0.001f;
+			return;
+		}
+
+		Color start = dimmer.Color;
+		if (!dimmer.Visible || start.A <= 0.001f)
+			start = _bootDimmerBaseColor;
+
+		dimmer.Color = start;
+		dimmer.Visible = true;
+		Color end = _bootDimmerBaseColor;
+		end.A = targetAlpha;
+
+		float delay = Mathf.Max(0f, delaySeconds);
+		float duration = Mathf.Max(0.05f, durationSeconds);
+		_bootDimmerFadeTween = CreateTween();
+		_bootDimmerFadeTween.SetPauseMode(Tween.TweenPauseMode.Process);
+		if (delay > 0f)
+			_bootDimmerFadeTween.TweenInterval(delay);
+		_bootDimmerFadeTween.TweenProperty(dimmer, "color", end, duration)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+		await ToSignal(_bootDimmerFadeTween, Tween.SignalName.Finished);
+		_bootDimmerFadeTween = null;
+
+		if (dimmer != null && targetAlpha <= 0.001f)
+			dimmer.Visible = false;
+	}
+
 	private void StartBootBackgroundSwayFx()
 	{
 		TextureRect background = GetNodeOrNull<TextureRect>(BootBackgroundPath);
 		if (background == null)
 			return;
 
+		ConfigureBootBackgroundSampling(background);
 		CacheBootBackgroundBase(background);
 		StopBootBackgroundSwayFx(resetVisual: true);
+		ApplyBootBackgroundHalfSlice(BootBackgroundTitleSliceT);
 		if (!EnableBootBackgroundSway)
 			return;
 
@@ -197,6 +339,136 @@ public partial class GameFlowUI
 		background.Scale = _bootBackgroundBaseScale * new Vector2(scale, scale);
 	}
 
+	private void ApplyBootBackgroundHalfSlice(float sliceT)
+	{
+		TextureRect background = GetNodeOrNull<TextureRect>(BootBackgroundPath);
+		if (background == null)
+			return;
+
+		ConfigureBootBackgroundSampling(background);
+		Texture2D sourceTexture = ResolveBootBackgroundSourceTexture(background);
+		if (sourceTexture == null)
+			return;
+
+		float t = QuantizeBootBackgroundSliceT(sliceT, sourceTexture);
+		_bootBackgroundSliceT = t;
+		if (!UseBootBackgroundHalfSlice)
+		{
+			background.Texture = sourceTexture;
+			background.Material = null;
+			return;
+		}
+
+		_bootBackgroundSliceTexture ??= new AtlasTexture();
+		_bootBackgroundSliceTexture.Atlas = sourceTexture;
+		_bootBackgroundSliceTexture.Region = BuildVerticalHalfSliceRegion(sourceTexture.GetSize(), t);
+		background.Texture = _bootBackgroundSliceTexture;
+		background.Material = null;
+	}
+
+	private void SetBootBackgroundSliceT(float value)
+	{
+		ApplyBootBackgroundHalfSlice(value);
+	}
+
+	private void ConfigureBootBackgroundSampling(TextureRect background)
+	{
+		if (background == null)
+			return;
+
+		background.TextureFilter = BootBackgroundUseNearestFilter
+			? CanvasItem.TextureFilterEnum.Nearest
+			: CanvasItem.TextureFilterEnum.Linear;
+	}
+
+	private float QuantizeBootBackgroundSliceT(float rawT, Texture2D sourceTexture)
+	{
+		float t = Mathf.Clamp(rawT, 0f, 1f);
+		if (!BootBackgroundQuantizeSliceToTexel)
+			return t;
+		if (sourceTexture == null)
+			return t;
+
+		float texHeight = Mathf.Max(1f, sourceTexture.GetSize().Y);
+		float step = 2f / texHeight;
+		if (step <= 0f)
+			return t;
+
+		float snapped = Mathf.Round(t / step) * step;
+		return Mathf.Clamp(snapped, 0f, 1f);
+	}
+
+	private Texture2D ResolveBootBackgroundSourceTexture(TextureRect background)
+	{
+		if (background == null)
+			return null;
+
+		if (_bootBackgroundSourceTexture != null)
+			return _bootBackgroundSourceTexture;
+
+		if (background.Texture is AtlasTexture atlasTexture && atlasTexture.Atlas != null)
+		{
+			_bootBackgroundSourceTexture = atlasTexture.Atlas;
+			return _bootBackgroundSourceTexture;
+		}
+
+		_bootBackgroundSourceTexture = background.Texture;
+		return _bootBackgroundSourceTexture;
+	}
+
+	private static Rect2 BuildVerticalHalfSliceRegion(Vector2 textureSize, float sliceT)
+	{
+		float width = Mathf.Max(1f, textureSize.X);
+		float fullHeight = Mathf.Max(1f, textureSize.Y);
+		float halfHeight = Mathf.Max(1f, fullHeight * 0.5f);
+		float y = Mathf.Clamp(sliceT, 0f, 1f) * halfHeight;
+		y = Mathf.Clamp(y, 0f, Mathf.Max(0f, fullHeight - halfHeight));
+		return new Rect2(0f, y, width, halfHeight);
+	}
+
+	private async Task PlayBootBackgroundScrollToMainAsync()
+	{
+		TextureRect background = GetNodeOrNull<TextureRect>(BootBackgroundPath);
+		if (background == null)
+		{
+			await PlayBootDimmerFadeToMainAsync(0f, 0f, animate: false);
+			return;
+		}
+
+		if (StopBootBackgroundSwayBeforeScroll)
+			StopBootBackgroundSwayFx(resetVisual: true);
+
+		float target = Mathf.Clamp(BootBackgroundMainSliceT, 0f, 1f);
+		float delay = Mathf.Max(0f, BootBackgroundScrollDelaySeconds);
+		float duration = Mathf.Max(0.05f, BootBackgroundScrollDurationSeconds);
+		bool animateBackgroundScroll = EnableBootBackgroundScrollToMainFx && UseBootBackgroundHalfSlice;
+		Task dimmerFadeTask = PlayBootDimmerFadeToMainAsync(
+			delaySeconds: animateBackgroundScroll ? delay : 0f,
+			durationSeconds: duration,
+			animate: animateBackgroundScroll);
+		if (!animateBackgroundScroll)
+		{
+			ApplyBootBackgroundHalfSlice(target);
+			await dimmerFadeTask;
+			return;
+		}
+
+		if (_bootBackgroundScrollTween != null && _bootBackgroundScrollTween.IsValid())
+			_bootBackgroundScrollTween.Kill();
+
+		ApplyBootBackgroundHalfSlice(_bootBackgroundSliceT);
+		_bootBackgroundScrollTween = CreateTween();
+		_bootBackgroundScrollTween.SetPauseMode(Tween.TweenPauseMode.Process);
+		if (delay > 0f)
+			_bootBackgroundScrollTween.TweenInterval(delay);
+		_bootBackgroundScrollTween.TweenMethod(Callable.From<float>(SetBootBackgroundSliceT), _bootBackgroundSliceT, target, duration)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.InOut);
+		await ToSignal(_bootBackgroundScrollTween, Tween.SignalName.Finished);
+		_bootBackgroundScrollTween = null;
+		await dimmerFadeTask;
+	}
+
 	private async Task PlayBootLetterboxCloseFxAsync()
 	{
 		ColorRect topBar = GetNodeOrNull<ColorRect>(BootTopLetterboxPath);
@@ -211,15 +483,16 @@ public partial class GameFlowUI
 		topBar.Visible = true;
 		bottomBar.Visible = true;
 
-		float targetHalfHeight = Mathf.Max(BootLetterboxHeight, GetViewportRect().Size.Y * 0.5f);
 		float duration = Mathf.Max(0.05f, BootLetterboxCloseDurationSeconds);
 		_bootLetterboxCloseTween = CreateTween();
 		_bootLetterboxCloseTween.SetPauseMode(Tween.TweenPauseMode.Process);
 		_bootLetterboxCloseTween.SetTrans(Tween.TransitionType.Sine);
 		_bootLetterboxCloseTween.SetEase(Tween.EaseType.InOut);
-		_bootLetterboxCloseTween.Parallel().TweenProperty(topBar, "offset_bottom", targetHalfHeight, duration);
-		_bootLetterboxCloseTween.Parallel().TweenProperty(bottomBar, "offset_top", -targetHalfHeight, duration);
+		_bootLetterboxCloseTween.Parallel().TweenProperty(topBar, "offset_bottom", 0f, duration);
+		_bootLetterboxCloseTween.Parallel().TweenProperty(bottomBar, "offset_top", 0f, duration);
 		await ToSignal(_bootLetterboxCloseTween, Tween.SignalName.Finished);
+		topBar.Visible = false;
+		bottomBar.Visible = false;
 		_bootLetterboxCloseTween = null;
 	}
 
@@ -254,6 +527,7 @@ public partial class GameFlowUI
 
 		prompt.Modulate = Colors.White;
 		prompt.SelfModulate = Colors.White;
+		ResetBootTitleContentExitFxVisual();
 	}
 
 	private void StopBootPromptTweens()
@@ -265,6 +539,10 @@ public partial class GameFlowUI
 		if (_bootPromptConfirmTween != null && _bootPromptConfirmTween.IsValid())
 			_bootPromptConfirmTween.Kill();
 		_bootPromptConfirmTween = null;
+
+		if (_bootTitleContentExitTween != null && _bootTitleContentExitTween.IsValid())
+			_bootTitleContentExitTween.Kill();
+		_bootTitleContentExitTween = null;
 	}
 
 	private void StopBootTransitionTweens()
@@ -276,6 +554,14 @@ public partial class GameFlowUI
 		if (_bootLetterboxCloseTween != null && _bootLetterboxCloseTween.IsValid())
 			_bootLetterboxCloseTween.Kill();
 		_bootLetterboxCloseTween = null;
+
+		if (_bootBackgroundScrollTween != null && _bootBackgroundScrollTween.IsValid())
+			_bootBackgroundScrollTween.Kill();
+		_bootBackgroundScrollTween = null;
+
+		if (_bootDimmerFadeTween != null && _bootDimmerFadeTween.IsValid())
+			_bootDimmerFadeTween.Kill();
+		_bootDimmerFadeTween = null;
 	}
 
 	private void CacheBootBackgroundBase(TextureRect background)
@@ -287,5 +573,24 @@ public partial class GameFlowUI
 		_bootBackgroundBaseScale = background.Scale;
 		_bootBackgroundBaseRotationDegrees = background.RotationDegrees;
 		_bootBackgroundBaseCached = true;
+	}
+
+	private void CacheBootTitleContentBase(Control content)
+	{
+		if (content == null || _bootTitleContentBaseCached)
+			return;
+
+		_bootTitleContentBaseScale = content.Scale;
+		_bootTitleContentBaseModulate = content.Modulate;
+		_bootTitleContentBaseCached = true;
+	}
+
+	private void CacheBootDimmerBaseColor(ColorRect dimmer)
+	{
+		if (dimmer == null || _bootDimmerBaseColorCached)
+			return;
+
+		_bootDimmerBaseColor = dimmer.Color;
+		_bootDimmerBaseColorCached = true;
 	}
 }

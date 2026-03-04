@@ -25,6 +25,8 @@ Last Synced: 2026-03-04
 - [ ] Obstacle density pass #2 for zoomed-out camera profile:
   - [ ] add local density cap guard (skip spawn when nearby obstacle count exceeds threshold)
   - [ ] retune spacing/margin defaults after gameplay playtest feedback
+- [x] UI baseline rollback: temporary return to mainline minimal menu/panel layout for stable gameplay iteration.
+- [ ] UI visual redesign cycle (menu/meta pages): rebuild page composition and spacing from clean baseline, then reintroduce art layering/animation.
 
 ## Balance - Immediate
 - [x] Melee nerf pass #1
@@ -73,6 +75,7 @@ Last Synced: 2026-03-04
 - [x] HP UI only shows after run starts
 - [x] XP bar visible at top during active run
 - [x] HP HUD fallback switched to numeric-only (`HP x/y`) for current playtest cycle
+- [x] Main menu/meta UI heavy paper-stack experiment rolled back to minimal baseline (temporary)
 - [ ] Upgrade-ready HUD polish (icon/animation/sfx sync)
 - [x] EXP value differentiation by enemy type (normal/elite/boss)
 - [ ] Replace HP/XP placeholder visuals with final art

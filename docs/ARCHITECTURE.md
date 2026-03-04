@@ -97,6 +97,18 @@ Game
   - Event unlock/loadout pages still execute logic in `GameFlowUI.*` partial controllers,
   - but draft selection is mirrored into shared state for future full separation.
 
+## UI Baseline Rollback (2026-03-04)
+- Decision:
+  - rollback menu presentation to mainline minimal baseline temporarily.
+  - pause paper-heavy layout experiments and keep menu flow stable first.
+- Effective runtime baseline:
+  - `StartPanel` / `PausePanel` / `RestartPanel` / `UpgradeMenu` follow mainline minimal structure.
+  - `GameFlowUI` uses mainline partial set (`Binding`, `Visuals`, `Localization`, `MetaProgressionPanelController`, `EventLoadoutPanelController`, `References`).
+  - removed experimental `GameFlowUI.PaperSkin.cs` dependency from active runtime path.
+- Purpose:
+  - reduce iteration noise while prioritizing gameplay/event loop verification.
+  - postpone new visual language and menu animation pass to later dedicated UI cycle.
+
 ## Event Scheduling Contract (V0.3)
 - Canonical spec: `docs/EVENT_SCHEDULING_META_CONTAINMENT_V0_3.md`
 - Run plan is authored pre-run with exactly 4 slots.
