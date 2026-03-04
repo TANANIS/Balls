@@ -1,18 +1,17 @@
-[gd_scene load_steps=5 format=3]
-
+[gd_scene load_steps=5 format=3 uid="uid://kr0qcutt573p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.13, 0.10, 0.08, 0.94)
+bg_color = Color(0.13, 0.1, 0.08, 0.94)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.62, 0.49, 0.30, 0.92)
+border_color = Color(0.62, 0.49, 0.3, 0.92)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
-shadow_color = Color(0.18, 0.12, 0.05, 0.30)
+shadow_color = Color(0.18, 0.12, 0.05, 0.3)
 shadow_size = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
@@ -26,7 +25,7 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0.20, 0.14, 0.07, 0.30)
+shadow_color = Color(0.2, 0.14, 0.07, 0.3)
 shadow_size = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
@@ -35,12 +34,12 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.53, 0.41, 0.25, 0.90)
+border_color = Color(0.53, 0.41, 0.25, 0.9)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-shadow_color = Color(0.16, 0.10, 0.04, 0.24)
+shadow_color = Color(0.16, 0.1, 0.04, 0.24)
 shadow_size = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
@@ -59,7 +58,7 @@ shadow_size = 8
 
 [node name="PausePanel" type="Control"]
 visible = false
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -93,7 +92,7 @@ offset_bottom = 496.0
 
 [node name="Title" type="Label" parent="Panel/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 30
 text = "PAUSED"
 horizontal_alignment = 1
@@ -101,9 +100,10 @@ horizontal_alignment = 1
 [node name="BuildSummary" type="Label" parent="Panel/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.88, 0.80, 0.67, 0.95)
+theme_override_colors/font_color = Color(0.88, 0.8, 0.67, 0.95)
 theme_override_font_sizes/font_size = 15
-text = "Current Build\nNo upgrades selected yet."
+text = "Current Build
+No upgrades selected yet."
 autowrap_mode = 3
 
 [node name="ResumeButton" type="Button" parent="Panel/VBox"]
@@ -148,7 +148,7 @@ text = "Quit Game"
 
 [node name="SettingsPanel" type="Control" parent="Panel"]
 visible = false
-layout_mode = 0
+anchors_preset = 0
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 676.0
@@ -172,7 +172,7 @@ theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.90, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.9, 0.78, 1)
 theme_override_font_sizes/font_size = 26
 text = "SETTINGS"
 horizontal_alignment = 1
@@ -186,7 +186,6 @@ text = "BGM Volume"
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 100.0
 value = 100.0
 
 [node name="SfxLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
@@ -198,7 +197,6 @@ text = "SFX Volume"
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
-max_value = 100.0
 value = 100.0
 
 [node name="WindowModeLabel" type="Label" parent="Panel/SettingsPanel/SettingsScroll/VBox"]
@@ -235,5 +233,3 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "Back"
-
-

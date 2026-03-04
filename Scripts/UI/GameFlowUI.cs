@@ -8,13 +8,24 @@ public partial class GameFlowUI : Control
 		ProcessMode = ProcessModeEnum.Always;
 
 		ResolveNodeReferences();
+		EnsureMenuClearFallbackNode();
 		BindSignals();
-		ShowStartPanel();
-		AudioManager.Instance?.PlayBgmMenu();
+		ShowBootTitleScreen();
+		UpdateCursorPresentationMode();
+		AudioManager.Instance?.PlayBgmTitleTheme();
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		InputDeviceService.NotifyInput(@event);
+		if (_startControlsOpen && _startControlsPageController != null && _startControlsPageController.TryHandleRebindInput(@event))
+			GetViewport().SetInputAsHandled();
 	}
 
 	public override void _Process(double delta)
 	{
+		UpdateMenuBackgroundFallbackClear();
+		UpdateBootBackgroundSwayFx((float)delta);
 		UpdateUpgradeProgressUi();
 		UpdateMatchCountdownUi();
 		UpdateEventBannerUi();
@@ -22,8 +33,24 @@ public partial class GameFlowUI : Control
 		UpdateHybridToastUi();
 		TryResolvePendingPerfectClear();
 		HandlePauseInput();
+		UpdateCursorPresentationMode();
 		if (!_started)
 			FitMenuBackground();
+	}
+
+	private void UpdateCursorPresentationMode()
+	{
+		if (!GodotObject.IsInstanceValid(_cursorRing))
+			return;
+
+		bool showUiPointer = !_started
+			|| _pauseMenuOpen
+			|| _ending
+			|| (_upgradeMenu != null && _upgradeMenu.IsOpen);
+		_cursorRing.SetPresentationMode(
+			showUiPointer
+				? CursorRing.CursorPresentationMode.UiPointer
+				: CursorRing.CursorPresentationMode.GameplayAim);
 	}
 
 	private void RefreshStartCardsCompendium()
@@ -31,12 +58,19 @@ public partial class GameFlowUI : Control
 		if (_startCardsContentLabel == null)
 			return;
 
+		void ApplyCardsText(string text)
+		{
+			if (_startCardsContentLabel != null)
+				_startCardsContentLabel.Text = text;
+			_startCardsPageController?.SetCardsContent(text);
+		}
+
 		UpgradeCatalog catalog = _upgradeSystem?.Catalog;
 		if (catalog == null)
 			catalog = GD.Load<UpgradeCatalog>("res://Data/Upgrades/DefaultUpgradeCatalog.tres");
 		if (catalog?.Entries == null || catalog.Entries.Count == 0)
 		{
-			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "未設定任何升級卡片。");
+			ApplyCardsText(TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured."));
 			return;
 		}
 
@@ -57,29 +91,29 @@ public partial class GameFlowUI : Control
 			if (!string.IsNullOrWhiteSpace(description))
 				sb.Append(description).Append('\n');
 			sb.Append('[').Append(category).Append("] ")
-				.Append(TrOrDefault("UI.START.CARDS_MAX_STACK", "MaxStack", "最大層數")).Append(": ")
+				.Append(TrOrDefault("UI.START.CARDS_MAX_STACK", "MaxStack")).Append(": ")
 				.Append(Mathf.Max(1, entry.MaxStack)).Append("\n\n");
 		}
 
 		if (sb.Length == 0)
 		{
-			_startCardsContentLabel.Text = TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured.", "未設定任何升級卡片。");
+			ApplyCardsText(TrOrDefault("UI.START.CARDS_EMPTY", "No upgrade cards configured."));
 			return;
 		}
 
-		_startCardsContentLabel.Text = sb.ToString().TrimEnd();
+		ApplyCardsText(sb.ToString().TrimEnd());
 	}
 
 	private string GetLocalizedUpgradeCategory(UpgradeCategory category)
 	{
 		return category switch
 		{
-			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Battle Arts", "核心攻擊"),
-			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Encounter Flow", "節奏壓力"),
-			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Arcana", "異常專精"),
-			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Field Control", "空間控制"),
-			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival", "生存"),
-			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Resource", "資源"),
+			UpgradeCategory.WeaponModifier => TrOrDefault("UI.CATEGORY.CORE_ATTACK", "Battle Arts"),
+			UpgradeCategory.PressureModifier => TrOrDefault("UI.CATEGORY.DIRECTOR", "Encounter Flow"),
+			UpgradeCategory.AnomalySpecialist => TrOrDefault("UI.CATEGORY.ANOMALY", "Arcana"),
+			UpgradeCategory.SpatialControl => TrOrDefault("UI.CATEGORY.SPATIAL", "Field Control"),
+			UpgradeCategory.RiskAmplifier => TrOrDefault("UI.CATEGORY.SURVIVAL", "Survival"),
+			UpgradeCategory.EconomyModifier => TrOrDefault("UI.CATEGORY.ECONOMY", "Resource"),
 			_ => category.ToString()
 		};
 	}
@@ -124,9 +158,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "ranged",
 			DisplayName = "Mage",
-			DisplayNameZhTw = "法師",
+			DisplayNameZhTw = "\u6cd5\u5e2b",
 			Description = "Arcane caster who threads precise spell bolts from a safe distance.",
-			DescriptionZhTw = "遠距施法者，擅長在安全距離以精準術彈持續輸出。",
+			DescriptionZhTw = "\u9060\u7a0b\u5967\u8853\u65bd\u6cd5\u8005\u3002\u4ee5\u7a69\u5b9a\u7684\u9b54\u5f48\u8f38\u51fa\u64ca\u9000\u654c\u7fa4\u3002",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
@@ -161,9 +195,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "tank_burst",
 			DisplayName = "Priest",
-			DisplayNameZhTw = "牧師",
+			DisplayNameZhTw = "\u796d\u53f8",
 			Description = "Battle cleric of the front line. Fires heavy twofold holy bolts with strong knockback.",
-			DescriptionZhTw = "前線戰鬥牧師，發射雙重聖彈並具備強力擊退。",
+			DescriptionZhTw = "\u524d\u7dda\u6226\u9b25\u796d\u53f8\u3002\u767c\u5c04\u96d9\u767c\u8056\u5f48\u4e26\u5177\u6709\u5f37\u529b\u64ca\u9000\u6548\u679c\u3002",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,
@@ -181,9 +215,9 @@ public partial class GameFlowUI : Control
 		{
 			CharacterId = "archer",
 			DisplayName = "Archer",
-			DisplayNameZhTw = "弓箭手",
+			DisplayNameZhTw = "\u5f13\u624b",
 			Description = "Mobile marksman. Every third attack fires a quick 3-shot burst.",
-			DescriptionZhTw = "機動型射手。每第三次攻擊會變為快速三連發。",
+			DescriptionZhTw = "\u6a5f\u52d5\u5c04\u624b\u3002\u6bcf\u7b2c\u4e09\u6b21\u653b\u64ca\u6703\u89f8\u767c\u5feb\u901f\u4e09\u9023\u767c\u3002",
 			PrimaryAbility = AttackAbilityKind.Ranged,
 			SecondaryAbility = AttackAbilityKind.None,
 			MobilityAbility = MobilityAbilityKind.None,

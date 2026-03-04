@@ -4,19 +4,20 @@ using System.Collections.Generic;
 
 public partial class GameFlowUI
 {
-	private const string StartEventUnlockPanelPath = "Panels/StartPanel/Panel/EventUnlockPanel";
-	private const string StartEventUnlockTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/HeaderRow/Title";
-	private const string StartEventUnlockWalletPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/HeaderRow/ShardWallet";
-	private const string StartEventUnlockIntroPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/Intro";
-	private const string StartEventUnlockEventSectionTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/SectionTitle";
-	private const string StartEventUnlockEventListPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/EventList";
-	private const string StartEventUnlockEventSectionPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection";
-	private const string StartEventUnlockHybridSectionTitlePath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/SectionTitle";
-	private const string StartEventUnlockHybridListPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/HybridList";
-	private const string StartEventUnlockHybridSectionPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection";
-	private const string StartEventUnlockSectionsVBoxPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox";
-	private const string StartEventUnlockBackButtonPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/ActionButtons/BackButton";
-	private const string StartEventUnlockContinueButtonPath = "Panels/StartPanel/Panel/EventUnlockPanel/VBox/ActionButtons/ContinueButton";
+	[ExportGroup("Node Paths/Event Unlock")]
+	[Export] private NodePath StartEventUnlockPanelPath = "Panels/StartPanel/EventUnlockPanel";
+	[Export] private NodePath StartEventUnlockTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/HeaderRow/Title";
+	[Export] private NodePath StartEventUnlockWalletPath = "Panels/StartPanel/EventUnlockPanel/VBox/HeaderRow/ShardWallet";
+	[Export] private NodePath StartEventUnlockIntroPath = "Panels/StartPanel/EventUnlockPanel/VBox/Intro";
+	[Export] private NodePath StartEventUnlockEventSectionTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/SectionTitle";
+	[Export] private NodePath StartEventUnlockEventListPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection/Margin/VBox/EventList";
+	[Export] private NodePath StartEventUnlockEventSectionPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/EventSection";
+	[Export] private NodePath StartEventUnlockHybridSectionTitlePath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/SectionTitle";
+	[Export] private NodePath StartEventUnlockHybridListPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection/Margin/VBox/HybridList";
+	[Export] private NodePath StartEventUnlockHybridSectionPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox/HybridSection";
+	[Export] private NodePath StartEventUnlockSectionsVBoxPath = "Panels/StartPanel/EventUnlockPanel/VBox/SectionsScroll/SectionsVBox";
+	[Export] private NodePath StartEventUnlockBackButtonPath = "Panels/StartPanel/EventUnlockPanel/VBox/ActionButtons/BackButton";
+	[Export] private NodePath StartEventUnlockContinueButtonPath = "Panels/StartPanel/EventUnlockPanel/VBox/ActionButtons/ContinueButton";
 
 	private static readonly string[] PurchasableDomainIds =
 	{
@@ -79,9 +80,9 @@ public partial class GameFlowUI
 		_startEventUnlockBackButton = GetNodeOrNull<Button>(StartEventUnlockBackButtonPath);
 		_startEventUnlockContinueButton = GetNodeOrNull<Button>(StartEventUnlockContinueButtonPath);
 
-		_startEventUnlockSectionsVBox?.AddThemeConstantOverride("separation", 14);
-		_startEventUnlockEventList?.AddThemeConstantOverride("separation", 10);
-		_startEventUnlockHybridList?.AddThemeConstantOverride("separation", 10);
+		_startEventUnlockSectionsVBox?.AddThemeConstantOverride("separation", _eventUnlockSectionsSeparation);
+		_startEventUnlockEventList?.AddThemeConstantOverride("separation", _eventUnlockListSeparation);
+		_startEventUnlockHybridList?.AddThemeConstantOverride("separation", _eventUnlockListSeparation);
 
 		EnsureEventUnlockRowsBuilt();
 		UpdateEventUnlockSectionMinHeights();
@@ -106,6 +107,7 @@ public partial class GameFlowUI
 
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventLoadoutOpen = false;
 		_startEventUnlockOpen = true;
@@ -117,6 +119,7 @@ public partial class GameFlowUI
 	private void OnEventUnlockBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		_startControlsOpen = false;
 		_startEventUnlockOpen = false;
 		_startCharacterSelectOpen = true;
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true, showEventLoadout: false, showEventUnlock: false);
@@ -155,10 +158,10 @@ public partial class GameFlowUI
 
 		var header = new HBoxContainer
 		{
-			CustomMinimumSize = new Vector2(0f, 30f),
+			CustomMinimumSize = new Vector2(0f, _eventUnlockHeaderMinHeight),
 			SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
 		};
-		header.AddThemeConstantOverride("separation", 14);
+		header.AddThemeConstantOverride("separation", _eventUnlockHeaderColumnSeparation);
 
 		var nameHeader = new Label
 		{
@@ -171,7 +174,7 @@ public partial class GameFlowUI
 
 		var costHeader = new Label
 		{
-			CustomMinimumSize = new Vector2(108f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockCostColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Right,
 			Text = TrOrDefault("UI.META.EVENT_UNLOCK.COL_COST", "Cost", "花費")
 		};
@@ -181,7 +184,7 @@ public partial class GameFlowUI
 
 		var statusHeader = new Label
 		{
-			CustomMinimumSize = new Vector2(110f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockStatusColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Right,
 			Text = TrOrDefault("UI.META.EVENT_UNLOCK.COL_STATUS", "Status", "狀態")
 		};
@@ -191,7 +194,7 @@ public partial class GameFlowUI
 
 		var detailHeader = new Label
 		{
-			CustomMinimumSize = new Vector2(84f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockDetailColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Center,
 			Text = TrOrDefault("UI.META.EVENT_UNLOCK.COL_DETAIL", "Detail", "詳情")
 		};
@@ -201,7 +204,7 @@ public partial class GameFlowUI
 
 		var actionHeader = new Label
 		{
-			CustomMinimumSize = new Vector2(94f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockActionColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Center,
 			Text = TrOrDefault("UI.META.EVENT_UNLOCK.COL_ACTION", "Action", "操作")
 		};
@@ -216,16 +219,16 @@ public partial class GameFlowUI
 	{
 		var root = new VBoxContainer
 		{
-			CustomMinimumSize = new Vector2(0f, isHybrid ? 42f : 52f),
+			CustomMinimumSize = new Vector2(0f, isHybrid ? _eventUnlockEntryMinHeightHybrid : _eventUnlockEntryMinHeightEvent),
 			SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
 		};
-		root.AddThemeConstantOverride("separation", 4);
+		root.AddThemeConstantOverride("separation", _eventUnlockEntryVSeparation);
 
 		var row = new HBoxContainer
 		{
 			SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
 		};
-		row.AddThemeConstantOverride("separation", 14);
+		row.AddThemeConstantOverride("separation", _eventUnlockEntryHSeparation);
 		root.AddChild(row);
 
 		var nameLabel = new Label
@@ -241,7 +244,7 @@ public partial class GameFlowUI
 
 		var costLabel = new Label
 		{
-			CustomMinimumSize = new Vector2(108f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockCostColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Right
 		};
 		costLabel.AddThemeColorOverride("font_color", new Color(0.56f, 0.83f, 1f, 1f));
@@ -250,7 +253,7 @@ public partial class GameFlowUI
 
 		var statusLabel = new Label
 		{
-			CustomMinimumSize = new Vector2(110f, 0f),
+			CustomMinimumSize = new Vector2(_eventUnlockStatusColumnWidth, 0f),
 			HorizontalAlignment = HorizontalAlignment.Right
 		};
 		statusLabel.AddThemeColorOverride("font_color", new Color(0.87f, 0.80f, 0.67f, 1f));
@@ -262,7 +265,7 @@ public partial class GameFlowUI
 		{
 			detailToggle = new Button
 			{
-				CustomMinimumSize = new Vector2(84f, 34f)
+				CustomMinimumSize = new Vector2(_eventUnlockDetailColumnWidth, _eventUnlockDetailButtonHeight)
 			};
 			detailToggle.Pressed += () => OnEventUnlockDetailTogglePressed(entryId);
 			row.AddChild(detailToggle);
@@ -271,14 +274,16 @@ public partial class GameFlowUI
 		{
 			var spacer = new Control
 			{
-				CustomMinimumSize = new Vector2(84f, 34f)
+				CustomMinimumSize = new Vector2(_eventUnlockDetailColumnWidth, _eventUnlockDetailButtonHeight)
 			};
 			row.AddChild(spacer);
 		}
 
 		var actionButton = new Button
 		{
-			CustomMinimumSize = new Vector2(94f, isHybrid ? 34f : 42f)
+			CustomMinimumSize = new Vector2(
+				_eventUnlockActionColumnWidth,
+				isHybrid ? _eventUnlockActionButtonHeightHybrid : _eventUnlockActionButtonHeightEvent)
 		};
 		actionButton.Pressed += () => OnUnlockEntryPressed(entryId, isHybrid);
 		row.AddChild(actionButton);
@@ -315,11 +320,11 @@ public partial class GameFlowUI
 
 	private void UpdateEventUnlockSectionMinHeights()
 	{
-		UpdateSingleUnlockSectionMinHeight(_startEventUnlockEventSectionPanel, _eventUnlockRows, isHybridSection: false);
-		UpdateSingleUnlockSectionMinHeight(_startEventUnlockHybridSectionPanel, _hybridUnlockRows, isHybridSection: true);
+		UpdateSingleUnlockSectionMinHeight(_startEventUnlockEventSectionPanel, _eventUnlockRows);
+		UpdateSingleUnlockSectionMinHeight(_startEventUnlockHybridSectionPanel, _hybridUnlockRows);
 	}
 
-	private static void UpdateSingleUnlockSectionMinHeight(Control sectionPanel, List<UnlockEntryRow> rows, bool isHybridSection)
+	private void UpdateSingleUnlockSectionMinHeight(Control sectionPanel, List<UnlockEntryRow> rows)
 	{
 		if (sectionPanel == null)
 			return;
@@ -332,19 +337,22 @@ public partial class GameFlowUI
 			{
 				if (row == null || row.IsHybrid || row.DetailLabel == null || !row.DetailLabel.Visible)
 				{
-					dynamicRows += 46f;
+					dynamicRows += _eventUnlockRowHeightCollapsed;
 					continue;
 				}
 
-				dynamicRows += 122f;
+				dynamicRows += _eventUnlockRowHeightExpanded;
 			}
 		}
 		else
 		{
-			dynamicRows = safeRows * (isHybridSection ? 46f : 46f);
+			dynamicRows = safeRows * _eventUnlockRowHeightCollapsed;
 		}
 
-		float minHeight = 86f + 30f + dynamicRows + (Math.Max(0, safeRows - 1) * 10f);
+		float minHeight = _eventUnlockSectionBaseHeight
+			+ _eventUnlockHeaderMinHeight
+			+ dynamicRows
+			+ (Math.Max(0, safeRows - 1) * _eventUnlockRowGap);
 		sectionPanel.CustomMinimumSize = new Vector2(sectionPanel.CustomMinimumSize.X, minHeight);
 	}
 

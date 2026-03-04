@@ -29,6 +29,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="Oriluneia"
 
+[gui]
+
+theme/custom_font="uid://b7yw2a3gp53lo"
+
 [input]
 
 up={

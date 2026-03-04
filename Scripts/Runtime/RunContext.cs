@@ -15,6 +15,9 @@ public partial class RunContext : Node
 
 	public override void _Ready()
 	{
+		InputMapBootstrap.EnsureDefaultMappings();
+		InputRebindService.Initialize();
+
 		Instance = this;
 		if (DefaultCharacter == null)
 			DefaultCharacter = GD.Load<CharacterDefinition>(FallbackCharacterPath);

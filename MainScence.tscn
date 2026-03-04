@@ -2,16 +2,17 @@
 
 [ext_resource type="Script" uid="uid://bqyuxaxwk71we" path="res://Scripts/UI/CursorRing.cs" id="21_cursor_ring"]
 [ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="22_player_scene"]
-[ext_resource type="PackedScene" path="res://Scenes/UI/GameFlowUIRoot.tscn" id="26_ui_root"]
-[ext_resource type="PackedScene" path="res://Scenes/World/WorldRoot.tscn" id="27_world_root"]
-[ext_resource type="PackedScene" path="res://Scenes/Systems/SystemsRoot.tscn" id="28_systems_root"]
-[ext_resource type="Script" path="res://Scripts/Tools/TerrainTileDebugOverlayTool.cs" id="29_terrain_debug_tool"]
+[ext_resource type="PackedScene" uid="uid://db8hqo8jk22l" path="res://Scenes/UI/GameFlowUIRoot.tscn" id="26_ui_root"]
+[ext_resource type="PackedScene" uid="uid://cklbcky6qglxw" path="res://Scenes/World/WorldRoot.tscn" id="27_world_root"]
+[ext_resource type="PackedScene" uid="uid://dnttgcrwe1y88" path="res://Scenes/Systems/SystemsRoot.tscn" id="28_systems_root"]
+[ext_resource type="Script" uid="uid://pnx0bnk3jadc" path="res://Scripts/Tools/TerrainTileDebugOverlayTool.cs" id="29_terrain_debug_tool"]
 
 [node name="Game" type="Node2D"]
 
 [node name="World" parent="." instance=ExtResource("27_world_root")]
 
 [node name="Player" parent="." instance=ExtResource("22_player_scene")]
+position = Vector2(0, 0)
 
 [node name="Enemies" type="Node2D" parent="."]
 
@@ -29,4 +30,3 @@ script = ExtResource("21_cursor_ring")
 
 [node name="TerrainDebugTool" type="CanvasLayer" parent="."]
 script = ExtResource("29_terrain_debug_tool")
-Enabled = false

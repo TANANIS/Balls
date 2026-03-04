@@ -1,10 +1,11 @@
 # System Flow Diagram
-Last Synced: 2026-03-01
+Last Synced: 2026-03-03
 
 
 ```mermaid
 flowchart TD
-    A[Game Start] --> B[GameFlowUI\nMenu Screen]
+    A[Game Start] --> AT[Boot Title Screen\nPress Any Button]
+    AT --> B[GameFlowUI\nMenu Screen]
     B --> P[Pre-Run Event Loadout UI\n4 Slots]
     P --> P1[RunPlanBuilder]
     P1 --> P2[DistortionResolver\nMax same-domain chain = 2]
@@ -56,6 +57,12 @@ flowchart TD
 ```
 
 ## Runtime Notes
+- Boot entry:
+  - run now starts at `Boot Title Screen` and waits for any input before entering `GameFlowUI` menu.
+- UI ownership split:
+  - `GameFlowUI` routes state/page transitions only.
+  - start pages (`Main/Settings/Cards/CharacterSelect`) handle local node binding and input in their own page controllers.
+  - shared UI data (settings, selected character, loadout draft) is synchronized through `GameFlowUiSharedState`.
 - Event scheduling:
   - run plan is fixed pre-run; no mid-run random event picks.
   - distortion and affinity are precomputed from adjacent slot sequence.

@@ -1,0 +1,260 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Scripts/UI/Pages/StartSettingsPageController.cs" id="1_start_settings_controller"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.28, 0.22, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.79, 0.65, 0.43, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.22, 0.17, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.65, 0.53, 0.34, 0.85)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.17, 0.13, 0.09, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.53, 0.41, 0.25, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="SettingsPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_start_settings_controller")
+
+[node name="BackdropDim" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="SettingsScroll" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 140.0
+offset_top = 112.0
+offset_right = -140.0
+offset_bottom = -112.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="SettingsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="TopLine" type="HSeparator" parent="SettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="SettingsScroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.9, 1)
+theme_override_font_sizes/font_size = 44
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="CenterLine" type="HSeparator" parent="SettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="Rows" type="GridContainer" parent="SettingsScroll/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 8
+
+[node name="BgmLabel" type="Label" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 0.82, 0.98)
+theme_override_font_sizes/font_size = 23
+text = "BGM Volume"
+horizontal_alignment = 2
+
+[node name="BgmSlider" type="HSlider" parent="SettingsScroll/VBox/Rows"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="SfxLabel" type="Label" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 0.82, 0.98)
+theme_override_font_sizes/font_size = 23
+text = "SFX Volume"
+horizontal_alignment = 2
+
+[node name="SfxSlider" type="HSlider" parent="SettingsScroll/VBox/Rows"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="WindowModeLabel" type="Label" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 0.82, 0.98)
+theme_override_font_sizes/font_size = 23
+text = "Window Mode"
+horizontal_alignment = 2
+
+[node name="WindowModeChoices" type="HBoxContainer" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="WindowModeWindowedButton" type="Button" parent="SettingsScroll/VBox/Rows/WindowModeChoices"]
+custom_minimum_size = Vector2(135, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Windowed"
+flat = true
+
+[node name="WindowModeFullscreenButton" type="Button" parent="SettingsScroll/VBox/Rows/WindowModeChoices"]
+custom_minimum_size = Vector2(135, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Fullscreen"
+flat = true
+
+[node name="WindowModeOption" type="OptionButton" parent="SettingsScroll/VBox/Rows/WindowModeChoices"]
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="WindowSizeLabel" type="Label" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 0.82, 0.98)
+theme_override_font_sizes/font_size = 23
+text = "Window Size"
+horizontal_alignment = 2
+
+[node name="WindowSizeChoices" type="HBoxContainer" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="WindowSize720Button" type="Button" parent="SettingsScroll/VBox/Rows/WindowSizeChoices"]
+custom_minimum_size = Vector2(112, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "1280x720"
+flat = true
+
+[node name="WindowSize900Button" type="Button" parent="SettingsScroll/VBox/Rows/WindowSizeChoices"]
+custom_minimum_size = Vector2(112, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "1600x900"
+flat = true
+
+[node name="WindowSize1080Button" type="Button" parent="SettingsScroll/VBox/Rows/WindowSizeChoices"]
+custom_minimum_size = Vector2(112, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "1920x1080"
+flat = true
+
+[node name="WindowSizeOption" type="OptionButton" parent="SettingsScroll/VBox/Rows/WindowSizeChoices"]
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.88, 0.82, 0.98)
+theme_override_font_sizes/font_size = 23
+text = "Language"
+horizontal_alignment = 2
+
+[node name="LanguageChoices" type="HBoxContainer" parent="SettingsScroll/VBox/Rows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="LanguageEnglishButton" type="Button" parent="SettingsScroll/VBox/Rows/LanguageChoices"]
+custom_minimum_size = Vector2(135, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "English"
+flat = true
+
+[node name="LanguageChineseButton" type="Button" parent="SettingsScroll/VBox/Rows/LanguageChoices"]
+custom_minimum_size = Vector2(135, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Traditional Chinese"
+flat = true
+
+[node name="LanguageOption" type="OptionButton" parent="SettingsScroll/VBox/Rows/LanguageChoices"]
+visible = false
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="BottomLine" type="HSeparator" parent="SettingsScroll/VBox"]
+layout_mode = 2
+
+[node name="ActionButtons" type="HBoxContainer" parent="SettingsScroll/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="ControlsButton" type="Button" parent="SettingsScroll/VBox/ActionButtons"]
+custom_minimum_size = Vector2(210, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Controls"
+
+[node name="DeleteSaveButton" type="Button" parent="SettingsScroll/VBox/ActionButtons"]
+custom_minimum_size = Vector2(250, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.75, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Delete Save Data"
+
+[node name="BackButton" type="Button" parent="SettingsScroll/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Back"

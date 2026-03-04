@@ -6,36 +6,50 @@ public partial class GameFlowUI
 	{
 		// Resolve scene dependencies once to keep runtime logic clean.
 		_player = GetNodeOrNull<Player>(PlayerPath);
+		_cursorRing = GetNodeOrNull<CursorRing>(CursorRingPath);
 		if (_player != null)
 			_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
+		_titleScreenPanel = GetNodeOrNull<Control>(TitleScreenPath);
 		_startPanel = GetNodeOrNull<Control>(StartPanelPath);
+		_startMainBackToTitleMask = GetNodeOrNull<ColorRect>(StartMainBackToTitleMaskPath);
+		_startMainPageController = GetNodeOrNull<StartMainPageController>(StartMainPageControllerPath);
+		_startSettingsPageController = GetNodeOrNull<StartSettingsPageController>(StartSettingsPageControllerPath);
+		_startCardsPageController = GetNodeOrNull<StartCardsPageController>(StartCardsPageControllerPath);
+		_startControlsPageController = GetNodeOrNull<StartControlsPageController>(StartControlsPageControllerPath);
+		_startCharacterPageController = GetNodeOrNull<StartCharacterSelectPageController>(StartCharacterPageControllerPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
+		_startSettingsTopLetterbox = GetNodeOrNull<ColorRect>(StartSettingsTopLetterboxPath);
+		_startSettingsBottomLetterbox = GetNodeOrNull<ColorRect>(StartSettingsBottomLetterboxPath);
 		_startCardsPanel = GetNodeOrNull<Control>(StartCardsPanelPath);
+		_startControlsPanel = GetNodeOrNull<Control>(StartControlsPanelPath);
 		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
 		_startEventLoadoutPanel = GetNodeOrNull<Control>(StartEventLoadoutPanelPath);
 		_restartPanel = GetNodeOrNull<Control>(RestartPanelPath);
 		_pausePanel = GetNodeOrNull<Control>(PausePanelPath);
 		_pauseMainVBox = GetNodeOrNull<Control>(PauseMainVBoxPath);
 		_pauseSettingsPanel = GetNodeOrNull<Control>(PauseSettingsPanelPath);
-		_startButton = GetNodeOrNull<Button>(StartButtonPath);
-		_startSettingsButton = GetNodeOrNull<Button>(StartSettingsButtonPath);
-		_startCardsButton = GetNodeOrNull<Button>(StartCardsButtonPath);
-		_startQuitButton = GetNodeOrNull<Button>(StartQuitButtonPath);
-		_startDeleteSaveButton = GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
+		_startButton = _startMainPageController?.StartButton ?? GetNodeOrNull<Button>(StartButtonPath);
+		_startSettingsButton = _startMainPageController?.SettingsButton ?? GetNodeOrNull<Button>(StartSettingsButtonPath);
+		_startCardsButton = _startMainPageController?.CardsButton ?? GetNodeOrNull<Button>(StartCardsButtonPath);
+		_startLeaderboardButton = _startMainPageController?.LeaderboardButton ?? GetNodeOrNull<Button>(StartLeaderboardButtonPath);
+		_startQuitButton = _startMainPageController?.QuitButton ?? GetNodeOrNull<Button>(StartQuitButtonPath);
+		_startSettingsControlsButton = _startSettingsPageController?.ControlsButton ?? GetNodeOrNull<Button>(StartSettingsControlsButtonPath);
+		_startDeleteSaveButton = _startSettingsPageController?.DeleteSaveButton ?? GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
 		_startDeleteSaveDialog = GetNodeOrNull<ConfirmationDialog>(StartDeleteSaveDialogPath);
-		_startPerfectLeaderboardLabel = GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
-		_startSettingsBackButton = GetNodeOrNull<Button>(StartSettingsBackButtonPath);
-		_startCardsBackButton = GetNodeOrNull<Button>(StartCardsBackButtonPath);
-		_startCardsContentLabel = GetNodeOrNull<Label>(StartCardsContentPath);
-		_startCharacterRangedButton = GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
-		_startCharacterSwordsmanButton = GetNodeOrNull<Button>(StartCharacterSwordsmanButtonPath);
-		_startCharacterTankButton = GetNodeOrNull<Button>(StartCharacterTankButtonPath);
-		_startCharacterArcherButton = GetNodeOrNull<Button>(StartCharacterArcherButtonPath);
-		_startCharacterFluxValueLabel = GetNodeOrNull<Label>(StartCharacterFluxValuePath);
-		_startCharacterBackButton = GetNodeOrNull<Button>(StartCharacterBackButtonPath);
-		_startCharacterConfirmButton = GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
+		_startPerfectLeaderboardLabel = _startMainPageController?.PerfectLeaderboardLabel ?? GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
+		_startSettingsBackButton = _startSettingsPageController?.BackButton ?? GetNodeOrNull<Button>(StartSettingsBackButtonPath);
+		_startCardsBackButton = _startCardsPageController?.BackButton ?? GetNodeOrNull<Button>(StartCardsBackButtonPath);
+		_startControlsBackButton = _startControlsPageController?.BackButton ?? GetNodeOrNull<Button>(StartControlsBackButtonPath);
+		_startCardsContentLabel = _startCardsPageController?.ContentLabel ?? GetNodeOrNull<Label>(StartCardsContentPath);
+		_startCharacterRangedButton = _startCharacterPageController?.RangedButton ?? GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
+		_startCharacterSwordsmanButton = _startCharacterPageController?.SwordsmanButton ?? GetNodeOrNull<Button>(StartCharacterSwordsmanButtonPath);
+		_startCharacterTankButton = _startCharacterPageController?.TankButton ?? GetNodeOrNull<Button>(StartCharacterTankButtonPath);
+		_startCharacterArcherButton = _startCharacterPageController?.ArcherButton ?? GetNodeOrNull<Button>(StartCharacterArcherButtonPath);
+		_startCharacterFluxValueLabel = _startCharacterPageController?.FluxValueLabel ?? GetNodeOrNull<Label>(StartCharacterFluxValuePath);
+		_startCharacterBackButton = _startCharacterPageController?.BackButton ?? GetNodeOrNull<Button>(StartCharacterBackButtonPath);
+		_startCharacterConfirmButton = _startCharacterPageController?.ConfirmButton ?? GetNodeOrNull<Button>(StartCharacterConfirmButtonPath);
 		_startEventLoadoutBackButton = GetNodeOrNull<Button>(StartEventLoadoutBackButtonPath);
 		_startEventLoadoutRollAllButton = GetNodeOrNull<Button>(StartEventLoadoutRollAllButtonPath);
 		_startEventLoadoutStartRunButton = GetNodeOrNull<Button>(StartEventLoadoutStartRunButtonPath);
@@ -53,11 +67,11 @@ public partial class GameFlowUI
 		_settingsSfxSlider = GetNodeOrNull<HSlider>(SettingsSfxSliderPath);
 		_settingsWindowSizeOption = GetNodeOrNull<OptionButton>(SettingsWindowSizePath);
 		_settingsWindowModeOption = GetNodeOrNull<OptionButton>(SettingsWindowModePath);
-		_startSettingsBgmSlider = GetNodeOrNull<HSlider>(StartSettingsBgmSliderPath);
-		_startSettingsSfxSlider = GetNodeOrNull<HSlider>(StartSettingsSfxSliderPath);
-		_startSettingsWindowSizeOption = GetNodeOrNull<OptionButton>(StartSettingsWindowSizePath);
-		_startSettingsWindowModeOption = GetNodeOrNull<OptionButton>(StartSettingsWindowModePath);
-		_startSettingsLanguageOption = GetNodeOrNull<OptionButton>(StartSettingsLanguagePath);
+		_startSettingsBgmSlider = _startSettingsPageController?.BgmSlider ?? GetNodeOrNull<HSlider>(StartSettingsBgmSliderPath);
+		_startSettingsSfxSlider = _startSettingsPageController?.SfxSlider ?? GetNodeOrNull<HSlider>(StartSettingsSfxSliderPath);
+		_startSettingsWindowSizeOption = _startSettingsPageController?.WindowSizeOption ?? GetNodeOrNull<OptionButton>(StartSettingsWindowSizePath);
+		_startSettingsWindowModeOption = _startSettingsPageController?.WindowModeOption ?? GetNodeOrNull<OptionButton>(StartSettingsWindowModePath);
+		_startSettingsLanguageOption = _startSettingsPageController?.LanguageOption ?? GetNodeOrNull<OptionButton>(StartSettingsLanguagePath);
 		_settingsLanguageOption = GetNodeOrNull<OptionButton>(SettingsLanguagePath);
 		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
@@ -79,7 +93,7 @@ public partial class GameFlowUI
 		_restartTitleLabel = GetNodeOrNull<Label>(RestartTitleLabelPath);
 		_restartPerfectBannerLabel = GetNodeOrNull<Label>(RestartPerfectBannerPath);
 		_restartHintLabel = GetNodeOrNull<Label>(RestartHintLabelPath);
-		_startCharacterDescriptionLabel = GetNodeOrNull<Label>(StartCharacterDescriptionPath);
+		_startCharacterDescriptionLabel = _startCharacterPageController?.DescriptionLabel ?? GetNodeOrNull<Label>(StartCharacterDescriptionPath);
 		_background = GetNodeOrNull<CanvasItem>(BackgroundPath);
 		_backgroundDimmer = GetNodeOrNull<ColorRect>(BackgroundDimmerPath);
 		_menuBackground = GetNodeOrNull<Sprite2D>(MenuBackgroundPath);
@@ -95,6 +109,9 @@ public partial class GameFlowUI
 		}
 		if (_menuDimmer != null)
 			_menuDimmer.TopLevel = true;
+		InitializeStartMainBackToTitleMask();
+		InitializeStartSubpanelDimmerFx();
+		InitializeStartSettingsLetterboxFx();
 		SetPausePanels(showPausePanel: false, showMain: true, showSettings: false);
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		ResolveEventLoadoutNodes();
@@ -114,6 +131,7 @@ public partial class GameFlowUI
 			ArcherCharacterResourcePath,
 			BuildArcherFallbackDefinition());
 		_selectedCharacterDefinition = RunContext.Instance?.GetSelectedOrDefault() ?? _rangedCharacter ?? _swordsmanCharacter ?? _tankCharacter ?? _archerCharacter;
+		_sharedState.SelectedCharacterDefinition = _selectedCharacterDefinition;
 
 		var scoreList = GetTree().GetNodesInGroup(RuntimeGroups.ScoreSystem);
 		if (scoreList.Count > 0)
@@ -141,34 +159,85 @@ public partial class GameFlowUI
 		// Connect all one-way UI event flow here.
 		GetViewport().SizeChanged += OnViewportSizeChanged;
 
-		if (_startButton != null)
-			_startButton.Pressed += OnStartPressed;
-		if (_startSettingsButton != null)
-			_startSettingsButton.Pressed += OnStartSettingsPressed;
-		if (_startCardsButton != null)
-			_startCardsButton.Pressed += OnStartCardsPressed;
-		if (_startQuitButton != null)
-			_startQuitButton.Pressed += OnQuitGamePressed;
-		if (_startDeleteSaveButton != null)
-			_startDeleteSaveButton.Pressed += OnStartDeleteSavePressed;
+		if (_startMainPageController != null)
+		{
+			_startMainPageController.StartPressed += OnStartPressed;
+			_startMainPageController.SettingsPressed += OnStartSettingsPressed;
+			_startMainPageController.CardsPressed += OnStartCardsPressed;
+			_startMainPageController.LeaderboardPressed += OnStartLeaderboardPressed;
+			_startMainPageController.QuitPressed += OnQuitGamePressed;
+		}
+		else
+		{
+			if (_startButton != null)
+				_startButton.Pressed += OnStartPressed;
+			if (_startSettingsButton != null)
+				_startSettingsButton.Pressed += OnStartSettingsPressed;
+			if (_startCardsButton != null)
+				_startCardsButton.Pressed += OnStartCardsPressed;
+			if (_startLeaderboardButton != null)
+				_startLeaderboardButton.Pressed += OnStartLeaderboardPressed;
+			if (_startQuitButton != null)
+				_startQuitButton.Pressed += OnQuitGamePressed;
+		}
+		if (_startSettingsPageController != null)
+		{
+			_startSettingsPageController.ControlsPressed += OnStartControlsPressed;
+			_startSettingsPageController.DeleteSavePressed += OnStartDeleteSavePressed;
+			_startSettingsPageController.BackPressed += OnStartSettingsBackPressed;
+		}
+		else
+		{
+			if (_startSettingsControlsButton != null)
+				_startSettingsControlsButton.Pressed += OnStartControlsPressed;
+			if (_startDeleteSaveButton != null)
+				_startDeleteSaveButton.Pressed += OnStartDeleteSavePressed;
+			if (_startSettingsBackButton != null)
+				_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
+		}
+		if (_startControlsPageController != null)
+		{
+			_startControlsPageController.AutoAimToggled += OnControlsAutoAimToggled;
+			_startControlsPageController.BackPressed += OnStartControlsBackPressed;
+		}
+		else if (_startControlsBackButton != null)
+		{
+			_startControlsBackButton.Pressed += OnStartControlsBackPressed;
+		}
 		if (_startDeleteSaveDialog != null)
 			_startDeleteSaveDialog.Confirmed += OnStartDeleteSaveConfirmed;
-		if (_startSettingsBackButton != null)
-			_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
-		if (_startCardsBackButton != null)
+		if (_startCardsPageController != null)
+		{
+			_startCardsPageController.BackPressed += OnStartCardsBackPressed;
+		}
+		else if (_startCardsBackButton != null)
+		{
 			_startCardsBackButton.Pressed += OnStartCardsBackPressed;
-		if (_startCharacterRangedButton != null)
-			_startCharacterRangedButton.Pressed += OnCharacterRangedPressed;
-		if (_startCharacterSwordsmanButton != null)
-			_startCharacterSwordsmanButton.Pressed += OnCharacterSwordsmanPressed;
-		if (_startCharacterTankButton != null)
-			_startCharacterTankButton.Pressed += OnCharacterTankPressed;
-		if (_startCharacterArcherButton != null)
-			_startCharacterArcherButton.Pressed += OnCharacterArcherPressed;
-		if (_startCharacterBackButton != null)
-			_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
-		if (_startCharacterConfirmButton != null)
-			_startCharacterConfirmButton.Pressed += OnCharacterSelectConfirmPressed;
+		}
+		if (_startCharacterPageController != null)
+		{
+			_startCharacterPageController.RangedPressed += OnCharacterRangedPressed;
+			_startCharacterPageController.SwordsmanPressed += OnCharacterSwordsmanPressed;
+			_startCharacterPageController.TankPressed += OnCharacterTankPressed;
+			_startCharacterPageController.ArcherPressed += OnCharacterArcherPressed;
+			_startCharacterPageController.BackPressed += OnCharacterSelectBackPressed;
+			_startCharacterPageController.ConfirmPressed += OnCharacterSelectConfirmPressed;
+		}
+		else
+		{
+			if (_startCharacterRangedButton != null)
+				_startCharacterRangedButton.Pressed += OnCharacterRangedPressed;
+			if (_startCharacterSwordsmanButton != null)
+				_startCharacterSwordsmanButton.Pressed += OnCharacterSwordsmanPressed;
+			if (_startCharacterTankButton != null)
+				_startCharacterTankButton.Pressed += OnCharacterTankPressed;
+			if (_startCharacterArcherButton != null)
+				_startCharacterArcherButton.Pressed += OnCharacterArcherPressed;
+			if (_startCharacterBackButton != null)
+				_startCharacterBackButton.Pressed += OnCharacterSelectBackPressed;
+			if (_startCharacterConfirmButton != null)
+				_startCharacterConfirmButton.Pressed += OnCharacterSelectConfirmPressed;
+		}
 		BindEventUnlockSignals();
 		BindEventLoadoutSignals();
 		if (_restartBackToMetaButton != null)
@@ -193,24 +262,35 @@ public partial class GameFlowUI
 			_settingsBackButton.Pressed += OnPauseSettingsBackPressed;
 		if (_settingsBgmSlider != null)
 			_settingsBgmSlider.ValueChanged += OnSettingsBgmChanged;
-		if (_startSettingsBgmSlider != null)
-			_startSettingsBgmSlider.ValueChanged += OnSettingsBgmChanged;
 		if (_settingsSfxSlider != null)
 			_settingsSfxSlider.ValueChanged += OnSettingsSfxChanged;
-		if (_startSettingsSfxSlider != null)
-			_startSettingsSfxSlider.ValueChanged += OnSettingsSfxChanged;
 		if (_settingsWindowSizeOption != null)
 			_settingsWindowSizeOption.ItemSelected += OnSettingsWindowSizeSelected;
-		if (_startSettingsWindowSizeOption != null)
-			_startSettingsWindowSizeOption.ItemSelected += OnSettingsWindowSizeSelected;
 		if (_settingsWindowModeOption != null)
 			_settingsWindowModeOption.ItemSelected += OnSettingsWindowModeSelected;
-		if (_startSettingsWindowModeOption != null)
-			_startSettingsWindowModeOption.ItemSelected += OnSettingsWindowModeSelected;
 		if (_settingsLanguageOption != null)
 			_settingsLanguageOption.ItemSelected += OnSettingsLanguageSelected;
-		if (_startSettingsLanguageOption != null)
-			_startSettingsLanguageOption.ItemSelected += OnSettingsLanguageSelected;
+		if (_startSettingsPageController != null)
+		{
+			_startSettingsPageController.BgmChanged += OnSettingsBgmChanged;
+			_startSettingsPageController.SfxChanged += OnSettingsSfxChanged;
+			_startSettingsPageController.WindowSizeSelected += OnSettingsWindowSizeSelected;
+			_startSettingsPageController.WindowModeSelected += OnSettingsWindowModeSelected;
+			_startSettingsPageController.LanguageSelected += OnSettingsLanguageSelected;
+		}
+		else
+		{
+			if (_startSettingsBgmSlider != null)
+				_startSettingsBgmSlider.ValueChanged += OnSettingsBgmChanged;
+			if (_startSettingsSfxSlider != null)
+				_startSettingsSfxSlider.ValueChanged += OnSettingsSfxChanged;
+			if (_startSettingsWindowSizeOption != null)
+				_startSettingsWindowSizeOption.ItemSelected += OnSettingsWindowSizeSelected;
+			if (_startSettingsWindowModeOption != null)
+				_startSettingsWindowModeOption.ItemSelected += OnSettingsWindowModeSelected;
+			if (_startSettingsLanguageOption != null)
+				_startSettingsLanguageOption.ItemSelected += OnSettingsLanguageSelected;
+		}
 		if (_stabilitySystem != null)
 		{
 			_stabilitySystem.Collapsed += OnUniverseCollapsed;
@@ -221,5 +301,16 @@ public partial class GameFlowUI
 		LoadSettingsFromDisk();
 		ApplyLocalizedTexts();
 	}
-}
 
+	private void InitializeStartMainBackToTitleMask()
+	{
+		if (_startMainBackToTitleMask == null)
+			return;
+
+		_startMainBackToTitleMask.MouseFilter = Control.MouseFilterEnum.Ignore;
+		Color color = _startMainBackToTitleMask.Color;
+		color.A = 0f;
+		_startMainBackToTitleMask.Color = color;
+		_startMainBackToTitleMask.Visible = false;
+	}
+}

@@ -168,6 +168,7 @@ public partial class GameFlowUI
 	{
 		FitMenuBackground();
 		UpdateEventLoadoutResponsiveLayout();
+		RefreshStartSettingsLetterboxLayout();
 	}
 
 	private void FitMenuBackground()
@@ -189,12 +190,13 @@ public partial class GameFlowUI
 		Vector2 visibleWorld = new Vector2(
 			Mathf.Max(1f, viewportSize.X * zoom.X),
 			Mathf.Max(1f, viewportSize.Y * zoom.Y));
-		const float bleed = 8f;
+		float bleed = Mathf.Max(0f, _menuBackgroundBleed);
 		Vector2 coverTarget = new Vector2(visibleWorld.X + bleed * 2f, visibleWorld.Y + bleed * 2f);
 		float coverScale = Mathf.Max(coverTarget.X / texSize.X, coverTarget.Y / texSize.Y);
 		float scale = Mathf.Max(1f, Mathf.Ceil(coverScale));
 		Vector2 center = GetMenuWorldCenter();
-		center = new Vector2(Mathf.Round(center.X), Mathf.Round(center.Y));
+		if (_menuBackgroundSnapCenterToPixel)
+			center = new Vector2(Mathf.Round(center.X), Mathf.Round(center.Y));
 
 		_menuBackground.Centered = true;
 		_menuBackground.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;

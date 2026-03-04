@@ -1,8 +1,37 @@
 ## Script Refactor Layout (2026-02)
-Last Synced: 2026-02-28
+Last Synced: 2026-03-03
 
 
 > Status: Archived snapshot of refactor outcomes in 2026-02. Current architecture should be validated against live scripts first.
+
+## 2026-03-03 Additions (UI Robustness Pass)
+- Added boot title gate before menu flow:
+  - `Scenes/UI/Panels/TitleScreen.tscn`
+  - `Scripts/UI/GameFlowUI.TitleScreen.cs`
+- Converted `GameFlowUI` binding path constants to Inspector-overridable `Export NodePath` fields:
+  - `Scripts/UI/GameFlowUI.References.cs`
+  - `Scripts/UI/GameFlowUI.EventUnlockPanelController.cs`
+  - `Scripts/UI/GameFlowUI.EventLoadoutPanelController.cs`
+  - `Scripts/UI/GameFlowUI.LocalizationPaths.cs`
+- Added inspector-driven UI tuning group for layout/runtime placement values:
+  - `Scripts/UI/GameFlowUI.LayoutConfig.cs`
+
+## 2026-03-03 Additions (UI Controller Separation Pass)
+- Added shared pre-run UI state model:
+  - `Scripts/UI/Models/GameFlowUiSharedState.cs`
+- Added start-page controllers (per-page binding/input/presentation ownership):
+  - `Scripts/UI/Pages/StartMainPageController.cs`
+  - `Scripts/UI/Pages/StartSettingsPageController.cs`
+  - `Scripts/UI/Pages/StartCardsPageController.cs`
+  - `Scripts/UI/Pages/StartCharacterSelectPageController.cs`
+- Updated page scenes to attach corresponding controller scripts:
+  - `Scenes/UI/Panels/StartMainScroll.tscn`
+  - `Scenes/UI/Panels/StartSettingsPage.tscn`
+  - `Scenes/UI/Panels/StartCardsPage.tscn`
+  - `Scenes/UI/Panels/StartCharacterSelectPage.tscn`
+- `GameFlowUI` role refinement:
+  - keeps routing/state transition ownership for start flow,
+  - consumes controller events instead of binding all start-page child nodes directly.
 
 ## 2026-02-28 Additions (Structure Cleanup Pass)
 - `ObstacleFieldGenerator` split:
@@ -52,7 +81,7 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 
 ### GameFlowUI
 - `Scripts/UI/GameFlowUI.cs`: startup flow and shared helper utilities.
-- `Scripts/UI/GameFlowUI.References.cs`: node-path constants, node references, scene resolution, signal wiring.
+- `Scripts/UI/GameFlowUI.References.cs`: exported node-path bindings, node references, scene resolution, signal wiring.
 - `Scripts/UI/GameFlowUI.Binding.cs`: UI/event binding and interaction wiring.
 - `Scripts/UI/GameFlowUI.UIStateController.cs`: panel transitions and run-state flow ownership.
 - `Scripts/UI/GameFlowUI.MetaProgressionPanelController.cs`: character select/unlock/confirm and meta panel rendering flow.
@@ -60,7 +89,10 @@ Director, Core, Progression, UI, Player, Enemy, Audio, Projectile systems were s
 - `Scripts/UI/GameFlowUI.PauseSettings.cs`: pause menu open/close and pause navigation.
 - `Scripts/UI/GameFlowUI.SettingsUI.cs`: settings widgets, selection sync helpers, and save/load (`user://settings.cfg`).
 - `Scripts/UI/GameFlowUI.Localization.cs`: locale mapping and localization utility helpers.
+- `Scripts/UI/GameFlowUI.LocalizationPaths.cs`: exported node paths used by localization label binding.
 - `Scripts/UI/GameFlowUI.Visuals.cs`: vignette, score text, XP-bar refresh, 15:00 countdown refresh, responsive background scaling.
+- `Scripts/UI/GameFlowUI.LayoutConfig.cs`: inspector-exposed UI layout and responsive tuning parameters.
+- `Scripts/UI/GameFlowUI.TitleScreen.cs`: boot title transition and any-input gate to menu flow.
 - `Scripts/UI/PlayerHealthBarDemo.cs`: runtime HP segment HUD binding.
 
 ### Combat

@@ -29,9 +29,13 @@ public partial class GameFlowUI
 		("EVT_SPACE_GRAVITY_WELL", "Gravity Well")
 	};
 	private static readonly float[] SlotBaseIntensity = { 12f, 20f, 25f, 35f };
-	private const string EventLoadoutTitlePath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/HeaderRow/Title";
-	private const string EventLoadoutEstimatedIntensityLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityLabel";
-	private const string EventLoadoutEstimatedRewardLabelPath = "Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardLabel";
+
+	[ExportGroup("Node Paths/Event Loadout")]
+	[Export] private NodePath EventLoadoutTitlePath = "Panels/StartPanel/EventLoadoutPanel/VBox/HeaderRow/Title";
+	[Export] private NodePath EventLoadoutEstimatedIntensityLabelPath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityLabel";
+	[Export] private NodePath EventLoadoutEstimatedRewardLabelPath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardLabel";
+	[Export] private NodePath EventLoadoutEstimatedIntensityValuePath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityValue";
+	[Export] private NodePath EventLoadoutEstimatedRewardValuePath = "Panels/StartPanel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardValue";
 
 	private GridContainer _startEventLoadoutSlotsGrid;
 	private readonly Panel[] _startEventLoadoutSlotPanels = new Panel[4];
@@ -85,10 +89,8 @@ public partial class GameFlowUI
 			}
 		}
 
-		_startEventLoadoutEstimatedIntensityValueLabel =
-			GetNodeOrNull<Label>("Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedIntensityValue");
-		_startEventLoadoutEstimatedRewardValueLabel =
-			GetNodeOrNull<Label>("Panels/StartPanel/Panel/EventLoadoutPanel/VBox/EstimatedRow/EstimatedRewardValue");
+		_startEventLoadoutEstimatedIntensityValueLabel = GetNodeOrNull<Label>(EventLoadoutEstimatedIntensityValuePath);
+		_startEventLoadoutEstimatedRewardValueLabel = GetNodeOrNull<Label>(EventLoadoutEstimatedRewardValuePath);
 
 		if (_startEventLoadoutRollAllButton != null)
 		{
@@ -107,7 +109,7 @@ public partial class GameFlowUI
 		BoxContainer controls = GetNodeOrNull<BoxContainer>($"{slotBasePath}/Controls");
 		if (controls == null)
 			return;
-		controls.AddThemeConstantOverride("separation", 4);
+		controls.AddThemeConstantOverride("separation", _eventLoadoutControlsSeparation);
 
 		OptionButton eventOption = controls.GetNodeOrNull<OptionButton>("EventOption");
 		if (eventOption == null)
@@ -115,7 +117,7 @@ public partial class GameFlowUI
 			eventOption = new OptionButton
 			{
 				Name = "EventOption",
-				CustomMinimumSize = new Vector2(0f, 34f),
+				CustomMinimumSize = new Vector2(0f, _eventLoadoutEventOptionHeight),
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
 				FitToLongestItem = false
 			};
@@ -133,12 +135,12 @@ public partial class GameFlowUI
 		if (stats == null)
 			return;
 
-		stats.AddThemeConstantOverride("separation", 6);
+		stats.AddThemeConstantOverride("separation", _eventLoadoutStatsSeparation);
 		_startEventLoadoutIntensityPanels[slotIndex] = WrapStatLabelWithBox(stats, _startEventLoadoutIntensityValueLabels[slotIndex], "IntensityPanel");
 		_startEventLoadoutRewardPanels[slotIndex] = WrapStatLabelWithBox(stats, _startEventLoadoutRewardValueLabels[slotIndex], "RewardPanel");
 	}
 
-	private static Panel WrapStatLabelWithBox(VBoxContainer statsRoot, Label label, string panelName)
+	private Panel WrapStatLabelWithBox(VBoxContainer statsRoot, Label label, string panelName)
 	{
 		if (statsRoot == null || label == null || string.IsNullOrWhiteSpace(panelName))
 			return null;
@@ -149,7 +151,7 @@ public partial class GameFlowUI
 			panel = new Panel
 			{
 				Name = panelName,
-				CustomMinimumSize = new Vector2(0f, 36f),
+				CustomMinimumSize = new Vector2(0f, _eventLoadoutStatPanelMinHeight),
 				SizeFlagsHorizontal = Control.SizeFlags.ExpandFill
 			};
 			var boxStyle = new StyleBoxFlat
@@ -180,10 +182,10 @@ public partial class GameFlowUI
 			margin.AnchorBottom = 1f;
 			margin.GrowHorizontal = Control.GrowDirection.Both;
 			margin.GrowVertical = Control.GrowDirection.Both;
-			margin.AddThemeConstantOverride("margin_left", 6);
-			margin.AddThemeConstantOverride("margin_top", 2);
-			margin.AddThemeConstantOverride("margin_right", 6);
-			margin.AddThemeConstantOverride("margin_bottom", 2);
+			margin.AddThemeConstantOverride("margin_left", _eventLoadoutStatMarginLeft);
+			margin.AddThemeConstantOverride("margin_top", _eventLoadoutStatMarginTop);
+			margin.AddThemeConstantOverride("margin_right", _eventLoadoutStatMarginRight);
+			margin.AddThemeConstantOverride("margin_bottom", _eventLoadoutStatMarginBottom);
 			panel.AddChild(margin);
 		}
 
@@ -220,7 +222,7 @@ public partial class GameFlowUI
 				VerticalAlignment = VerticalAlignment.Center,
 				MouseFilter = Control.MouseFilterEnum.Ignore
 			};
-			flash.AddThemeFontSizeOverride("font_size", 30);
+			flash.AddThemeFontSizeOverride("font_size", _eventLoadoutRollFlashFontSize);
 			flash.AddThemeColorOverride("font_color", new Color(1f, 0.96f, 0.84f, 0.98f));
 			panel.AddChild(flash);
 		}
@@ -252,6 +254,7 @@ public partial class GameFlowUI
 	{
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = true;
@@ -275,6 +278,7 @@ public partial class GameFlowUI
 	private void OnEventLoadoutBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		_startControlsOpen = false;
 		_startEventLoadoutOpen = false;
 		if (_startEventUnlockPanel != null)
 		{
@@ -366,6 +370,7 @@ public partial class GameFlowUI
 		if (option == null || option.ItemCount <= 0 || option.Disabled)
 		{
 			_eventLoadoutDraftSlots[slotIndex] = default;
+			_sharedState.EventLoadoutDraft.SetSlot(slotIndex, string.Empty, string.Empty, string.Empty);
 			return;
 		}
 
@@ -375,6 +380,7 @@ public partial class GameFlowUI
 		if (string.IsNullOrWhiteSpace(eventId) || !TryGetEventDomainId(eventId, out string domainId))
 		{
 			_eventLoadoutDraftSlots[slotIndex] = default;
+			_sharedState.EventLoadoutDraft.SetSlot(slotIndex, string.Empty, string.Empty, string.Empty);
 			return;
 		}
 
@@ -384,6 +390,11 @@ public partial class GameFlowUI
 			EventId = eventId,
 			EventName = GetLocalizedEventDisplayName(eventId)
 		};
+		_sharedState.EventLoadoutDraft.SetSlot(
+			slotIndex,
+			_eventLoadoutDraftSlots[slotIndex].DomainId,
+			_eventLoadoutDraftSlots[slotIndex].EventId,
+			_eventLoadoutDraftSlots[slotIndex].EventName);
 	}
 
 	private string ResolveSelectedDomainFilter(int slotIndex)
@@ -758,10 +769,10 @@ public partial class GameFlowUI
 				iconLabel.Modulate = new Color(iconLabel.Modulate.R, iconLabel.Modulate.G, iconLabel.Modulate.B, 0.25f);
 			if (flashLabel != null)
 			{
-				float width = Mathf.Max(48f, panel.Size.X - 12f);
-				float y = Mathf.Round((panel.Size.Y * 0.44f) - 28f);
-				flashLabel.Position = new Vector2(6f, y);
-				flashLabel.Size = new Vector2(width, 56f);
+				float width = Mathf.Max(48f, panel.Size.X - _eventLoadoutRollFlashWidthPadding);
+				float y = Mathf.Round((panel.Size.Y * _eventLoadoutRollFlashYFactor) + _eventLoadoutRollFlashYOffset);
+				flashLabel.Position = new Vector2(_eventLoadoutRollFlashX, y);
+				flashLabel.Size = new Vector2(width, _eventLoadoutRollFlashHeight);
 				flashLabel.Text = "???";
 				flashLabel.Modulate = new Color(1f, 0.95f, 0.82f, 1f);
 				flashLabel.Visible = true;
@@ -788,9 +799,11 @@ public partial class GameFlowUI
 						? rollNames[_eventLoadoutRng.RandiRange(0, rollNames.Count - 1)]
 						: "???";
 					flashLabel.Text = token;
-					flashLabel.Position = new Vector2(flashLabel.Position.X, baseY + ((step % 2 == 0) ? -8f : 8f));
+					flashLabel.Position = new Vector2(
+						flashLabel.Position.X,
+						baseY + ((step % 2 == 0) ? -_eventLoadoutRollShakeDistance : _eventLoadoutRollShakeDistance));
 					flashLabel.Modulate = new Color(1f, 0.94f, 0.80f, 0.76f);
-					await ToSignal(GetTree().CreateTimer(0.038, true), SceneTreeTimer.SignalName.Timeout);
+					await ToSignal(GetTree().CreateTimer(_eventLoadoutRollStepSeconds, true), SceneTreeTimer.SignalName.Timeout);
 				}
 
 				if (version != _eventLoadoutRollAnimationVersion[slotIndex])
@@ -798,7 +811,7 @@ public partial class GameFlowUI
 				flashLabel.Position = new Vector2(flashLabel.Position.X, baseY);
 				flashLabel.Text = GetResolvedSlotEventName(slotIndex);
 				flashLabel.Modulate = new Color(1f, 0.98f, 0.88f, 1f);
-				await ToSignal(GetTree().CreateTimer(0.09, true), SceneTreeTimer.SignalName.Timeout);
+				await ToSignal(GetTree().CreateTimer(_eventLoadoutRollRevealHoldSeconds, true), SceneTreeTimer.SignalName.Timeout);
 				flashLabel.Visible = false;
 			}
 
@@ -934,6 +947,7 @@ public partial class GameFlowUI
 		AudioManager.Instance?.StopSfxUiSlotRollLoop(playStop: false);
 		_eventLoadoutActiveRollAnimations = 0;
 		Array.Fill(_eventLoadoutDraftSlots, default(EventLoadoutDraftSlot));
+		_sharedState.EventLoadoutDraft.Clear();
 		Array.Fill(_eventLoadoutDomainEditOpen, false);
 		Array.Fill(_eventLoadoutRollAnimationVersion, 0);
 		ResetLoadoutDomainFiltersToAny();
@@ -1325,13 +1339,17 @@ public partial class GameFlowUI
 		if (_startEventLoadoutSlotsGrid == null)
 			return;
 		float width = _startEventLoadoutSlotsGrid.Size.X;
-		int columns = width >= 700f ? 4 : width >= 430f ? 2 : 1;
+		int columns = width >= _eventLoadoutWidthFor4Columns ? 4 : width >= _eventLoadoutWidthFor2Columns ? 2 : 1;
 		if (_startEventLoadoutSlotsGrid.Columns != columns)
 			_startEventLoadoutSlotsGrid.Columns = columns;
 
-		int resultFont = columns == 4 ? 18 : columns == 2 ? 24 : 26;
-		int statFont = columns == 4 ? 14 : 18;
-		int tagFont = columns == 4 ? 12 : 14;
+		int resultFont = columns == 4
+			? _eventLoadoutResultFont4Columns
+			: columns == 2
+				? _eventLoadoutResultFont2Columns
+				: _eventLoadoutResultFont1Column;
+		int statFont = columns == 4 ? _eventLoadoutStatFont4Columns : _eventLoadoutStatFontCompact;
+		int tagFont = columns == 4 ? _eventLoadoutTagFont4Columns : _eventLoadoutTagFontCompact;
 		for (int i = 0; i < 4; i++)
 		{
 			_startEventLoadoutResultLabels[i]?.AddThemeFontSizeOverride("font_size", resultFont);
@@ -1340,7 +1358,9 @@ public partial class GameFlowUI
 			_startEventLoadoutTierTags[i]?.AddThemeFontSizeOverride("font_size", tagFont);
 			_startEventLoadoutDistortionTags[i]?.AddThemeFontSizeOverride("font_size", tagFont);
 			if (_startEventLoadoutEventOptions[i] != null)
-				_startEventLoadoutEventOptions[i].CustomMinimumSize = new Vector2(columns == 4 ? 0f : 120f, 34f);
+				_startEventLoadoutEventOptions[i].CustomMinimumSize = new Vector2(
+					columns == 4 ? 0f : _eventLoadoutEventOptionMinWidthCompact,
+					_eventLoadoutEventOptionHeight);
 		}
 	}
 }

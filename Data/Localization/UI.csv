@@ -5,7 +5,7 @@ UI.COMMON.QUIT,Quit,離開
 UI.COMMON.QUIT_GAME,Quit Game,離開遊戲
 UI.COMMON.UNKNOWN,Unknown,未知
 UI.COMMON.NONE,none,無
-UI.START.TITLE,PROJECT GENESIS,PROJECT GENESIS
+UI.START.TITLE,Oriluneia,Oriluneia
 UI.START.SUBTITLE,Stand against the dark tide and forge your own battle style.,對抗怪物潮，打造屬於你的戰鬥流派。
 UI.START.DESC,"Controls:\nMove: W A S D\nConfirm / Menu: Left Mouse\nPause: Esc\n\nAfter pressing Start, choose your hero and prepare your build.\n\nGoal:\nSurvive for 15 minutes and break through the final wave.","操作：\n移動：W A S D\n確認 / 選單：滑鼠左鍵\n暫停：Esc\n\n按下開始後，先選擇你的英雄並準備構築。\n\n目標：\n生存 15 分鐘並突破最終浪潮。"
 UI.START.BUTTON_START,Start,開始
