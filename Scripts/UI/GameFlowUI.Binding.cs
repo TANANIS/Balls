@@ -74,6 +74,9 @@ public partial class GameFlowUI
 		_startSettingsLanguageOption = _startSettingsPageController?.LanguageOption ?? GetNodeOrNull<OptionButton>(StartSettingsLanguagePath);
 		_settingsLanguageOption = GetNodeOrNull<OptionButton>(SettingsLanguagePath);
 		_upgradeMenu = GetNodeOrNull<UpgradeMenu>(UpgradeMenuPath);
+		_hudOverlayRoot = GetNodeOrNull<Control>(HudOverlayRootPath);
+		if (_hudOverlayRoot != null)
+			_hudOverlayRoot.Visible = true;
 		_scoreLabel = GetNodeOrNull<Label>(ScoreLabelPath);
 		_playerHealthBar = GetNodeOrNull<Control>(PlayerHealthBarPath);
 		_experienceBarRoot = GetNodeOrNull<Control>(ExperienceBarRootPath);

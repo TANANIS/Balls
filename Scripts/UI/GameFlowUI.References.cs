@@ -71,6 +71,7 @@ public partial class GameFlowUI
 	[Export] private NodePath SettingsWindowModePath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/WindowModeOption";
 	[Export] private NodePath SettingsLanguagePath = "Panels/PausePanel/Panel/SettingsPanel/SettingsScroll/VBox/LanguageOption";
 	[Export] private NodePath UpgradeMenuPath = "UpgradeLayer/UpgradeMenu";
+	[Export] private NodePath HudOverlayRootPath = "Overlay/HudOverlay";
 	[Export] private NodePath ScoreLabelPath = "Overlay/HudOverlay/ScoreLabel";
 	[Export] private NodePath PlayerHealthBarPath = "Overlay/HudOverlay/PlayerHealthBarDemo";
 	[Export] private NodePath ExperienceBarRootPath = "Overlay/HudOverlay/ExperienceBarRoot";
@@ -169,6 +170,7 @@ public partial class GameFlowUI
 	private OptionButton _startSettingsLanguageOption;
 	private OptionButton _settingsLanguageOption;
 	private UpgradeMenu _upgradeMenu;
+	private Control _hudOverlayRoot;
 	private Label _scoreLabel;
 	private Control _playerHealthBar;
 	private Control _experienceBarRoot;

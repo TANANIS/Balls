@@ -26,6 +26,7 @@ public partial class GameFlowUI
 		if (_startPanel != null) _startPanel.Visible = true;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
+		if (_hudOverlayRoot != null) _hudOverlayRoot.Visible = true;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = false;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = false;
@@ -221,6 +222,7 @@ public partial class GameFlowUI
 		if (_startPanel != null) _startPanel.Visible = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_restartPanel != null) _restartPanel.Visible = false;
+		if (_hudOverlayRoot != null) _hudOverlayRoot.Visible = true;
 		if (_scoreLabel != null) _scoreLabel.Visible = false;
 		if (_playerHealthBar != null) _playerHealthBar.Visible = true;
 		if (_experienceBarRoot != null) _experienceBarRoot.Visible = true;

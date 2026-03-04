@@ -28,7 +28,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="HudOverlay" parent="Overlay" instance=ExtResource("2_hud_overlay")]
-visible = false
 layout_mode = 1
 
 [node name="Panels" type="Control" parent="."]
