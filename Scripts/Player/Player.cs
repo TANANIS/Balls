@@ -35,6 +35,8 @@ public partial class Player : CharacterBody2D
 
 	[Export] public bool UseMovementBounds = false;
 	[Export] public Rect2 MovementBounds = new Rect2(48f, 48f, 1184f, 624f);
+	[ExportGroup("Camera")]
+	[Export(PropertyHint.Range, "0.80,3.00,0.01")] public float BaseCameraZoom = 1.0f;
 
 	public Vector2 LastMoveDir => _lastMoveDir;
 	public bool IsDead => _health != null && _health.IsDead;

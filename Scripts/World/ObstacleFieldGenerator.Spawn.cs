@@ -11,12 +11,13 @@ public partial class ObstacleFieldGenerator
 
 		Node2D player = GetNodeOrNull<Node2D>(PlayerPath);
 		Vector2 playerPos = player != null ? player.GlobalPosition : Vector2.Zero;
-		Vector2 viewport = GetViewport().GetVisibleRect().Size;
-		Camera2D camera = GetViewport().GetCamera2D();
-		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
-		Vector2 halfVisible = new Vector2(viewport.X * 0.5f * zoom.X, viewport.Y * 0.5f * zoom.Y);
+		Vector2 halfVisible = GetHalfVisibleWorldExtents();
+		float visibleRadius = halfVisible.Length();
 		float distanceScale = Mathf.Clamp(SpawnDistanceScale, 0.5f, 1.2f);
-		float minDist = (Mathf.Max(halfVisible.X, halfVisible.Y) * distanceScale) + Mathf.Max(0f, SpawnOutsideMargin);
+		float margin = Mathf.Max(0f, SpawnOutsideMargin);
+		float minDistScaled = (visibleRadius * distanceScale) + margin;
+		float minDistGuaranteedOutside = visibleRadius + margin;
+		float minDist = Mathf.Max(minDistScaled, minDistGuaranteedOutside);
 		float maxDist = minDist + Mathf.Max(60f, SpawnRingThickness);
 		_runtimeMinObstacleSpacingWorld = GetMinimumObstacleSpacingWorld();
 		PrepareCluster(playerPos, minDist, maxDist);
@@ -184,9 +185,7 @@ public partial class ObstacleFieldGenerator
 		Vector2 playerPos = player != null ? player.GlobalPosition : Vector2.Zero;
 		Camera2D camera = GetViewport().GetCamera2D();
 		Vector2 center = camera != null ? camera.GetScreenCenterPosition() : playerPos;
-		Vector2 viewport = GetViewport().GetVisibleRect().Size;
-		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
-		Vector2 halfVisible = new Vector2(viewport.X * 0.5f * zoom.X, viewport.Y * 0.5f * zoom.Y);
+		Vector2 halfVisible = GetHalfVisibleWorldExtents();
 		float pad = Mathf.Max(0f, InitialInsidePadding);
 		Rect2 rect = new(
 			center - halfVisible + new Vector2(pad, pad),
@@ -272,9 +271,7 @@ public partial class ObstacleFieldGenerator
 		Vector2 playerPos = player != null ? player.GlobalPosition : Vector2.Zero;
 		Camera2D camera = GetViewport().GetCamera2D();
 		Vector2 center = camera != null ? camera.GetScreenCenterPosition() : playerPos;
-		Vector2 viewport = GetViewport().GetVisibleRect().Size;
-		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
-		Vector2 halfVisible = new Vector2(viewport.X * 0.5f * zoom.X, viewport.Y * 0.5f * zoom.Y);
+		Vector2 halfVisible = GetHalfVisibleWorldExtents();
 		Rect2 rect = new(center - halfVisible, halfVisible * 2f);
 		float safeRadius = Mathf.Max(0f, InitialInsideSafeRadius * 0.5f);
 
@@ -331,5 +328,15 @@ public partial class ObstacleFieldGenerator
 
 		pos = Vector2.Zero;
 		return false;
+	}
+
+	private Vector2 GetHalfVisibleWorldExtents()
+	{
+		Vector2 viewport = GetViewport().GetVisibleRect().Size;
+		Camera2D camera = GetViewport().GetCamera2D();
+		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
+		float zx = Mathf.Max(0.001f, Mathf.Abs(zoom.X));
+		float zy = Mathf.Max(0.001f, Mathf.Abs(zoom.Y));
+		return new Vector2(viewport.X * 0.5f / zx, viewport.Y * 0.5f / zy);
 	}
 }

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://buvl65c46k2su"]
 
-[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartMainScroll.tscn" id="2_start_main_scroll"]
+[ext_resource type="PackedScene" uid="uid://plwfdwglungw" path="res://Scenes/UI/Panels/StartMainScroll.tscn" id="2_start_main_scroll"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartCharacterSelectPage.tscn" id="3_start_character_select"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartEventUnlockPage.tscn" id="4_start_event_unlock"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartEventLoadoutPage.tscn" id="5_start_event_loadout"]
@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/ControlsPage.tscn" id="8_start_controls"]
 
 [node name="StartPanel" type="Control"]
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

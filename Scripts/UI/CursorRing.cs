@@ -19,6 +19,7 @@ public partial class CursorRing : Node2D
 	[Export] public bool HideWhenMouseOutside = true;
 	[Export] public Texture2D UiPointerTexture;
 	[Export] public Vector2 UiPointerHotspot = Vector2.Zero;
+	[Export(PropertyHint.Range, "0.50,4.00,0.05")] public float UiPointerScale = 1.25f;
 
 	private float _time;
 	private Vector2 _lastMouse = Vector2.Zero;
@@ -95,13 +96,35 @@ public partial class CursorRing : Node2D
 		if (_presentationMode == CursorPresentationMode.UiPointer)
 		{
 			Input.MouseMode = Input.MouseModeEnum.Visible;
-			Input.SetCustomMouseCursor(UiPointerTexture, Input.CursorShape.Arrow, UiPointerHotspot);
+			Texture2D cursorTexture = BuildUiPointerCursorTexture();
+			Vector2 hotspot = UiPointerHotspot * Mathf.Max(0.05f, UiPointerScale);
+			Input.SetCustomMouseCursor(cursorTexture, Input.CursorShape.Arrow, hotspot);
 			Visible = false;
 			return;
 		}
 
 		Input.SetCustomMouseCursor(null, Input.CursorShape.Arrow, Vector2.Zero);
 		Input.MouseMode = Input.MouseModeEnum.Hidden;
+	}
+
+	private Texture2D BuildUiPointerCursorTexture()
+	{
+		Texture2D source = UiPointerTexture;
+		if (source == null)
+			return null;
+
+		float scale = Mathf.Max(0.05f, UiPointerScale);
+		if (Mathf.IsEqualApprox(scale, 1f))
+			return source;
+
+		Image image = source.GetImage();
+		if (image == null || image.IsEmpty())
+			return source;
+
+		int targetWidth = Mathf.Max(1, Mathf.RoundToInt(image.GetWidth() * scale));
+		int targetHeight = Mathf.Max(1, Mathf.RoundToInt(image.GetHeight() * scale));
+		image.Resize(targetWidth, targetHeight, Image.Interpolation.Nearest);
+		return ImageTexture.CreateFromImage(image);
 	}
 
 	public override void _Draw()

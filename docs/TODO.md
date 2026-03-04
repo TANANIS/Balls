@@ -1,5 +1,5 @@
 # TODO (2026-02-21)
-Last Synced: 2026-02-28
+Last Synced: 2026-03-04
 
 
 ## Current Build Status
@@ -18,6 +18,13 @@ Last Synced: 2026-02-28
 - [x] Start menu Perfect 15:00 leaderboard (stored in meta save profile)
 - [x] Documentation sync: upgrade flow unified to EXP pickup canonical path
 - [x] Character numeric tuning CSV overlay active (`Data/Characters/CharacterStats.csv`)
+
+## Near-Term (2026-03-04)
+- [ ] Terrain pipeline migration spike: keep current procedural mask generation, add TileMap/TileMapLayer output adapter, verify visual parity.
+- [ ] Define TileSet mapping contract (grass/dirt/edge/cap variants) and remove path-based sprite assumptions from terrain render path.
+- [ ] Obstacle density pass #2 for zoomed-out camera profile:
+  - [ ] add local density cap guard (skip spawn when nearby obstacle count exceeds threshold)
+  - [ ] retune spacing/margin defaults after gameplay playtest feedback
 
 ## Balance - Immediate
 - [x] Melee nerf pass #1

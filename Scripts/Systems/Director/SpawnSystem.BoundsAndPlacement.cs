@@ -95,13 +95,21 @@ public partial class SpawnSystem
 
 	private void GetSpawnRadiusRange(out float radiusMin, out float radiusMax)
 	{
-		Vector2 viewport = GetViewport().GetVisibleRect().Size;
-		var camera = GetViewport().GetCamera2D();
-		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
-		Vector2 halfVisible = new Vector2(viewport.X * 0.5f * zoom.X, viewport.Y * 0.5f * zoom.Y);
-		float minVisibleRadius = Mathf.Max(halfVisible.X, halfVisible.Y) + Mathf.Max(0f, SpawnOutsideViewportMargin);
+		Vector2 halfVisible = GetHalfVisibleWorldExtents();
+		// Use diagonal radius so the spawn ring is outside screen corners as well.
+		float minVisibleRadius = halfVisible.Length() + Mathf.Max(0f, SpawnOutsideViewportMargin);
 		radiusMin = Mathf.Max(_activeSpawnRadiusMin, minVisibleRadius);
 		radiusMax = Mathf.Max(radiusMin + 1f, Mathf.Max(_activeSpawnRadiusMax, radiusMin + Mathf.Max(1f, SpawnRingThickness)));
+	}
+
+	private Vector2 GetHalfVisibleWorldExtents()
+	{
+		Vector2 viewport = GetViewport().GetVisibleRect().Size;
+		Camera2D camera = GetViewport().GetCamera2D();
+		Vector2 zoom = camera != null ? camera.Zoom : Vector2.One;
+		float zx = Mathf.Max(0.001f, Mathf.Abs(zoom.X));
+		float zy = Mathf.Max(0.001f, Mathf.Abs(zoom.Y));
+		return new Vector2(viewport.X * 0.5f / zx, viewport.Y * 0.5f / zy);
 	}
 
 	private bool TryFindPackOffset(List<Vector2> usedOffsets, out Vector2 offset)

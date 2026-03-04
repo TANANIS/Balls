@@ -40,7 +40,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="StartPanel" parent="Panels" instance=ExtResource("3_start_panel")]
-layout_mode = 1
 
 [node name="TitleScreen" parent="Panels" instance=ExtResource("7_title_screen")]
 layout_mode = 1

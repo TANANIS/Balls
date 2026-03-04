@@ -25,7 +25,11 @@ public partial class Player
 			_baseSpriteScale = _visualRoot.Scale;
 		_camera = GetNodeOrNull<Camera2D>("Camera2D");
 		if (_camera != null)
-			_cameraBaseZoom = _camera.Zoom;
+		{
+			float zoom = Mathf.Max(0.05f, BaseCameraZoom);
+			_cameraBaseZoom = new Vector2(zoom, zoom);
+			_camera.Zoom = _cameraBaseZoom;
+		}
 		ResolveAutoAimReferences();
 		ResolveStabilitySystem();
 	}
