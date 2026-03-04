@@ -10,7 +10,15 @@ public partial class GameFlowUI : Control
 		ResolveNodeReferences();
 		BindSignals();
 		ShowBootTitleScreen();
+		UpdateCursorPresentationMode();
 		AudioManager.Instance?.PlayBgmTitleTheme();
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		InputDeviceService.NotifyInput(@event);
+		if (_startControlsOpen && _startControlsPageController != null && _startControlsPageController.TryHandleRebindInput(@event))
+			GetViewport().SetInputAsHandled();
 	}
 
 	public override void _Process(double delta)
@@ -23,8 +31,24 @@ public partial class GameFlowUI : Control
 		UpdateHybridToastUi();
 		TryResolvePendingPerfectClear();
 		HandlePauseInput();
+		UpdateCursorPresentationMode();
 		if (!_started)
 			FitMenuBackground();
+	}
+
+	private void UpdateCursorPresentationMode()
+	{
+		if (!GodotObject.IsInstanceValid(_cursorRing))
+			return;
+
+		bool showUiPointer = !_started
+			|| _pauseMenuOpen
+			|| _ending
+			|| (_upgradeMenu != null && _upgradeMenu.IsOpen);
+		_cursorRing.SetPresentationMode(
+			showUiPointer
+				? CursorRing.CursorPresentationMode.UiPointer
+				: CursorRing.CursorPresentationMode.GameplayAim);
 	}
 
 	private void RefreshStartCardsCompendium()

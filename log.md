@@ -470,3 +470,26 @@
 - Documentation sync:
   - all files in docs/*.md stamped with Last Synced: 2026-02-27.
   - cards spec/changelog updated to reflect latest tuning.
+
+## Session Update (2026-03-04, Title/UI Input + Auto-Lock + Cursor Mode)
+- Start/UI flow and menu modularization:
+  - continued page-oriented split under `Scenes/UI/Panels/*` with controller-per-page wiring.
+  - added independent controls page scene/controller (`ControlsPage.tscn`, `StartControlsPageController.cs`).
+- Input stack additions:
+  - added `InputDeviceService` (active device family detection + active gamepad id).
+  - added `InputRebindService` (managed actions, runtime rebinding, config persistence).
+  - added glyph mapping service/bootstrap (`InputGlyphService`, `InputMapBootstrap`).
+- Settings and shared state:
+  - added shared `AutoAimEnabled` setting in `GameFlowUiSharedState`.
+  - controls page now exposes `Auto Lock (Gamepad Auto)` toggle with mode-aware lock behavior.
+  - settings persistence now stores/loads `controls/auto_aim` and applies value to player runtime.
+- Auto-lock behavior policy:
+  - keyboard/mouse mode: player may toggle auto-lock (nearest target to mouse when enabled).
+  - gamepad mode: auto-lock forced on; controls toggle is forced checked and non-editable.
+  - right-stick directional target selection path integrated for gamepad auto-lock mode.
+- Cursor presentation split:
+  - introduced gameplay/UI cursor presentation modes in `CursorRing`.
+  - UI screens (including pause/upgrade overlays) use custom pointer texture (`Assets/mouse pointer.png`).
+  - active in-run gameplay switches back to existing aim ring/marker behavior.
+- Validation:
+  - `dotnet build Oriluneia.sln` succeeded (0 errors, 0 warnings).

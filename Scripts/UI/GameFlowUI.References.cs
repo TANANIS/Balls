@@ -4,15 +4,18 @@ public partial class GameFlowUI
 {
 	[ExportGroup("Node Paths")]
 	[Export] private NodePath PlayerPath = "../../Player";
+	[Export] private NodePath CursorRingPath = "../CursorRing";
 	[Export] private NodePath TitleScreenPath = "Panels/TitleScreen";
 	[Export] private NodePath StartPanelPath = "Panels/StartPanel";
 	[Export] private NodePath StartMainPageControllerPath = "Panels/StartPanel/MainScroll";
 	[Export] private NodePath StartSettingsPageControllerPath = "Panels/StartPanel/SettingsPanel";
 	[Export] private NodePath StartCardsPageControllerPath = "Panels/StartPanel/CardsPanel";
+	[Export] private NodePath StartControlsPageControllerPath = "Panels/StartPanel/ControlsPanel";
 	[Export] private NodePath StartCharacterPageControllerPath = "Panels/StartPanel/CharacterSelectPanel";
 	[Export] private NodePath StartMainVBoxPath = "Panels/StartPanel/MainScroll/VBox";
 	[Export] private NodePath StartSettingsPanelPath = "Panels/StartPanel/SettingsPanel";
 	[Export] private NodePath StartCardsPanelPath = "Panels/StartPanel/CardsPanel";
+	[Export] private NodePath StartControlsPanelPath = "Panels/StartPanel/ControlsPanel";
 	[Export] private NodePath StartCharacterSelectPanelPath = "Panels/StartPanel/CharacterSelectPanel";
 	[Export] private NodePath StartEventLoadoutPanelPath = "Panels/StartPanel/EventLoadoutPanel";
 	[Export] private NodePath StartEventLoadoutSlotsPath = "Panels/StartPanel/EventLoadoutPanel/VBox/Slots";
@@ -48,6 +51,8 @@ public partial class GameFlowUI
 	[Export] private NodePath StartSettingsWindowSizePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowSizeOption";
 	[Export] private NodePath StartSettingsWindowModePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/WindowModeOption";
 	[Export] private NodePath StartSettingsLanguagePath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/LanguageOption";
+	[Export] private NodePath StartSettingsControlsButtonPath = "Panels/StartPanel/SettingsPanel/SettingsScroll/VBox/ControlsButton";
+	[Export] private NodePath StartControlsBackButtonPath = "Panels/StartPanel/ControlsPanel/VBox/ActionButtons/BackButton";
 	[Export] private NodePath RestartBackToMetaButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/BackToMetaButton";
 	[Export] private NodePath RestartButtonPath = "Panels/RestartPanel/Panel/Margin/VBox/ActionButtons/RestartButton";
 	[Export] private NodePath PauseResumeButtonPath = "Panels/PausePanel/Panel/VBox/ResumeButton";
@@ -94,16 +99,19 @@ public partial class GameFlowUI
 	private const string ArcherCharacterResourcePath = "res://Data/Characters/ArcherCharacter.tres";
 
 	private Player _player;
+	private CursorRing _cursorRing;
 	private PlayerHealth _playerHealth;
 	private Control _titleScreenPanel;
 	private Control _startPanel;
 	private StartMainPageController _startMainPageController;
 	private StartSettingsPageController _startSettingsPageController;
 	private StartCardsPageController _startCardsPageController;
+	private StartControlsPageController _startControlsPageController;
 	private StartCharacterSelectPageController _startCharacterPageController;
 	private Control _startMainVBox;
 	private Control _startSettingsPanel;
 	private Control _startCardsPanel;
+	private Control _startControlsPanel;
 	private Control _startCharacterSelectPanel;
 	private Control _startEventLoadoutPanel;
 	private Control _restartPanel;
@@ -115,10 +123,12 @@ public partial class GameFlowUI
 	private Button _startCardsButton;
 	private Button _startQuitButton;
 	private Button _startDeleteSaveButton;
+	private Button _startSettingsControlsButton;
 	private ConfirmationDialog _startDeleteSaveDialog;
 	private Label _startPerfectLeaderboardLabel;
 	private Button _startSettingsBackButton;
 	private Button _startCardsBackButton;
+	private Button _startControlsBackButton;
 	private Label _startCardsContentLabel;
 	private Button _startCharacterRangedButton;
 	private Button _startCharacterSwordsmanButton;
@@ -190,6 +200,7 @@ public partial class GameFlowUI
 	private bool _settingsOpen;
 	private bool _startSettingsOpen;
 	private bool _startCardsOpen;
+	private bool _startControlsOpen;
 	private bool _startCharacterSelectOpen;
 	private bool _startEventLoadoutOpen;
 	private bool _pendingFinalBossKillClear;

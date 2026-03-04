@@ -15,10 +15,12 @@ public partial class StartSettingsPageController : Control
 	[Export] private NodePath WindowSizeOptionPath = "SettingsScroll/VBox/WindowSizeOption";
 	[Export] private NodePath LanguageLabelPath = "SettingsScroll/VBox/LanguageLabel";
 	[Export] private NodePath LanguageOptionPath = "SettingsScroll/VBox/LanguageOption";
+	[Export] private NodePath ControlsButtonPath = "SettingsScroll/VBox/ControlsButton";
 	[Export] private NodePath DeleteSaveButtonPath = "SettingsScroll/VBox/DeleteSaveButton";
 	[Export] private NodePath BackButtonPath = "SettingsScroll/VBox/BackButton";
 
 	public event Action BackPressed;
+	public event Action ControlsPressed;
 	public event Action DeleteSavePressed;
 	public event Action<double> BgmChanged;
 	public event Action<double> SfxChanged;
@@ -27,6 +29,7 @@ public partial class StartSettingsPageController : Control
 	public event Action<long> LanguageSelected;
 
 	public Button BackButton => _backButton;
+	public Button ControlsButton => _controlsButton;
 	public Button DeleteSaveButton => _deleteSaveButton;
 	public HSlider BgmSlider => _bgmSlider;
 	public HSlider SfxSlider => _sfxSlider;
@@ -45,6 +48,7 @@ public partial class StartSettingsPageController : Control
 	private OptionButton _windowSizeOption;
 	private Label _languageLabel;
 	private OptionButton _languageOption;
+	private Button _controlsButton;
 	private Button _deleteSaveButton;
 	private Button _backButton;
 	private bool _suppressSignals;
@@ -63,6 +67,11 @@ public partial class StartSettingsPageController : Control
 	public void FocusBackButton()
 	{
 		_backButton?.GrabFocus();
+	}
+
+	public void FocusControlsButton()
+	{
+		_controlsButton?.GrabFocus();
 	}
 
 	public void SetSliderValues(float bgmPercent, float sfxPercent)
@@ -143,6 +152,8 @@ public partial class StartSettingsPageController : Control
 			_windowSizeLabel.Text = Tr("UI.SETTINGS.WINDOW_SIZE");
 		if (_languageLabel != null)
 			_languageLabel.Text = Tr("UI.SETTINGS.LANGUAGE");
+		if (_controlsButton != null)
+			_controlsButton.Text = ResolveTrOrDefault("UI.SETTINGS.CONTROLS", "Controls", "\u64cd\u4f5c\u8a2d\u5b9a");
 		if (_deleteSaveButton != null)
 			_deleteSaveButton.Text = Tr("UI.META.DELETE_SAVE_BUTTON");
 		if (_backButton != null)
@@ -159,6 +170,14 @@ public partial class StartSettingsPageController : Control
 		slider.Step = 1;
 	}
 
+	private string ResolveTrOrDefault(string key, string fallbackEn, string fallbackZhTw)
+	{
+		string translated = Tr(key);
+		if (!string.IsNullOrWhiteSpace(translated) && translated != key)
+			return translated;
+		return TranslationServer.GetLocale().StartsWith("zh") ? fallbackZhTw : fallbackEn;
+	}
+
 	private void ResolveNodeReferences()
 	{
 		_titleLabel = GetNodeOrNull<Label>(TitlePath);
@@ -172,6 +191,7 @@ public partial class StartSettingsPageController : Control
 		_windowSizeOption = GetNodeOrNull<OptionButton>(WindowSizeOptionPath);
 		_languageLabel = GetNodeOrNull<Label>(LanguageLabelPath);
 		_languageOption = GetNodeOrNull<OptionButton>(LanguageOptionPath);
+		_controlsButton = GetNodeOrNull<Button>(ControlsButtonPath);
 		_deleteSaveButton = GetNodeOrNull<Button>(DeleteSaveButtonPath);
 		_backButton = GetNodeOrNull<Button>(BackButtonPath);
 	}
@@ -180,6 +200,8 @@ public partial class StartSettingsPageController : Control
 	{
 		if (_backButton != null)
 			_backButton.Pressed += () => BackPressed?.Invoke();
+		if (_controlsButton != null)
+			_controlsButton.Pressed += () => ControlsPressed?.Invoke();
 		if (_deleteSaveButton != null)
 			_deleteSaveButton.Pressed += () => DeleteSavePressed?.Invoke();
 		if (_bgmSlider != null)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://buvl65c46k2su"]
+[gd_scene load_steps=8 format=3 uid="uid://buvl65c46k2su"]
 
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartMainScroll.tscn" id="2_start_main_scroll"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartCharacterSelectPage.tscn" id="3_start_character_select"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartEventLoadoutPage.tscn" id="5_start_event_loadout"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartSettingsPage.tscn" id="6_start_settings"]
 [ext_resource type="PackedScene" path="res://Scenes/UI/Panels/StartCardsPage.tscn" id="7_start_cards"]
+[ext_resource type="PackedScene" path="res://Scenes/UI/Panels/ControlsPage.tscn" id="8_start_controls"]
 
 [node name="StartPanel" type="Control"]
 layout_mode = 1
@@ -34,6 +35,8 @@ vertical_scroll_mode = 1
 [node name="SettingsPanel" parent="." instance=ExtResource("6_start_settings")]
 
 [node name="CardsPanel" parent="." instance=ExtResource("7_start_cards")]
+
+[node name="ControlsPanel" parent="." instance=ExtResource("8_start_controls")]
 
 [node name="DeleteSaveConfirmDialog" type="ConfirmationDialog" parent="."]
 oversampling_override = 1.0

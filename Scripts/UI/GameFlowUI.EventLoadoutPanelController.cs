@@ -254,6 +254,7 @@ public partial class GameFlowUI
 	{
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = true;
@@ -277,6 +278,7 @@ public partial class GameFlowUI
 	private void OnEventLoadoutBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		_startControlsOpen = false;
 		_startEventLoadoutOpen = false;
 		if (_startEventUnlockPanel != null)
 		{

@@ -5,6 +5,7 @@ public partial class GameFlowUI
 	private const string SettingsPath = "user://settings.cfg";
 	private const float DefaultBgmPercent = 50f;
 	private const float DefaultSfxPercent = 80f;
+	private const bool DefaultAutoAimEnabled = true;
 
 	private void InitializeSettingsUi()
 	{
@@ -60,8 +61,19 @@ public partial class GameFlowUI
 			?? _startSettingsLanguageOption?.Selected
 			?? GetLanguageIndexFromLocale(TranslationServer.GetLocale());
 		_sharedState.Settings.Locale = GetLocaleByIndex(_sharedState.Settings.LanguageIndex);
+		bool autoAimEnabled = _sharedState.Settings.AutoAimEnabled;
+		_player?.SetAutoAimEnabled(autoAimEnabled);
+		_startControlsPageController?.SetAutoAimToggle(autoAimEnabled);
 		_startSettingsPageController?.SetSuppressSignals(false);
 		_suppressSettingsSignal = false;
+	}
+
+	private void OnControlsAutoAimToggled(bool enabled)
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_sharedState.Settings.AutoAimEnabled = enabled;
+		_player?.SetAutoAimEnabled(enabled);
+		SaveSettingsToDisk();
 	}
 
 	private void OnSettingsBgmChanged(double value)
@@ -247,6 +259,7 @@ public partial class GameFlowUI
 		cfg.SetValue("window", "mode", settings.WindowModeIndex);
 		cfg.SetValue("window", "size", settings.WindowSizeIndex);
 		cfg.SetValue("locale", "language", settings.LanguageIndex);
+		cfg.SetValue("controls", "auto_aim", settings.AutoAimEnabled);
 		cfg.Save(SettingsPath);
 	}
 
@@ -266,8 +279,11 @@ public partial class GameFlowUI
 			_sharedState.Settings.WindowSizeIndex = 0;
 			_sharedState.Settings.LanguageIndex = 0;
 			_sharedState.Settings.Locale = LocaleEnglish;
+			_sharedState.Settings.AutoAimEnabled = DefaultAutoAimEnabled;
 			AudioManager.Instance?.SetBgmVolumeLinear(DefaultBgmPercent / 100f);
 			AudioManager.Instance?.SetSfxVolumeLinear(DefaultSfxPercent / 100f);
+			_player?.SetAutoAimEnabled(DefaultAutoAimEnabled);
+			_startControlsPageController?.SetAutoAimToggle(DefaultAutoAimEnabled);
 			ApplyLocale(LocaleEnglish);
 			return;
 		}
@@ -279,6 +295,7 @@ public partial class GameFlowUI
 		int mode = (int)(long)cfg.GetValue("window", "mode", 0L);
 		int size = (int)(long)cfg.GetValue("window", "size", 0L);
 		int language = (int)(long)cfg.GetValue("locale", "language", 0L);
+		bool autoAim = (bool)cfg.GetValue("controls", "auto_aim", DefaultAutoAimEnabled);
 		int clampedMode = Mathf.Clamp(mode, 0, 1);
 		int clampedSize = Mathf.Clamp(size, 0, 2);
 		int clampedLanguage = Mathf.Clamp(language, 0, 1);
@@ -288,6 +305,7 @@ public partial class GameFlowUI
 		_sharedState.Settings.WindowSizeIndex = clampedSize;
 		_sharedState.Settings.LanguageIndex = clampedLanguage;
 		_sharedState.Settings.Locale = GetLocaleByIndex(clampedLanguage);
+		_sharedState.Settings.AutoAimEnabled = autoAim;
 
 		SyncBgmSliderValues(bgm);
 		SyncSfxSliderValues(sfx);
@@ -303,6 +321,8 @@ public partial class GameFlowUI
 
 		SyncLanguageSelection(clampedLanguage);
 		ApplyLocale(GetLocaleByIndex(clampedLanguage));
+		_player?.SetAutoAimEnabled(autoAim);
+		_startControlsPageController?.SetAutoAimToggle(autoAim);
 
 		_suppressSettingsSignal = false;
 	}

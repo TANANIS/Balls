@@ -6,6 +6,7 @@ public partial class GameFlowUI
 	{
 		// Resolve scene dependencies once to keep runtime logic clean.
 		_player = GetNodeOrNull<Player>(PlayerPath);
+		_cursorRing = GetNodeOrNull<CursorRing>(CursorRingPath);
 		if (_player != null)
 			_playerHealth = _player.GetNodeOrNull<PlayerHealth>("Health");
 
@@ -14,10 +15,12 @@ public partial class GameFlowUI
 		_startMainPageController = GetNodeOrNull<StartMainPageController>(StartMainPageControllerPath);
 		_startSettingsPageController = GetNodeOrNull<StartSettingsPageController>(StartSettingsPageControllerPath);
 		_startCardsPageController = GetNodeOrNull<StartCardsPageController>(StartCardsPageControllerPath);
+		_startControlsPageController = GetNodeOrNull<StartControlsPageController>(StartControlsPageControllerPath);
 		_startCharacterPageController = GetNodeOrNull<StartCharacterSelectPageController>(StartCharacterPageControllerPath);
 		_startMainVBox = GetNodeOrNull<Control>(StartMainVBoxPath);
 		_startSettingsPanel = GetNodeOrNull<Control>(StartSettingsPanelPath);
 		_startCardsPanel = GetNodeOrNull<Control>(StartCardsPanelPath);
+		_startControlsPanel = GetNodeOrNull<Control>(StartControlsPanelPath);
 		_startCharacterSelectPanel = GetNodeOrNull<Control>(StartCharacterSelectPanelPath);
 		_startEventLoadoutPanel = GetNodeOrNull<Control>(StartEventLoadoutPanelPath);
 		_restartPanel = GetNodeOrNull<Control>(RestartPanelPath);
@@ -28,11 +31,13 @@ public partial class GameFlowUI
 		_startSettingsButton = _startMainPageController?.SettingsButton ?? GetNodeOrNull<Button>(StartSettingsButtonPath);
 		_startCardsButton = _startMainPageController?.CardsButton ?? GetNodeOrNull<Button>(StartCardsButtonPath);
 		_startQuitButton = _startMainPageController?.QuitButton ?? GetNodeOrNull<Button>(StartQuitButtonPath);
+		_startSettingsControlsButton = _startSettingsPageController?.ControlsButton ?? GetNodeOrNull<Button>(StartSettingsControlsButtonPath);
 		_startDeleteSaveButton = _startSettingsPageController?.DeleteSaveButton ?? GetNodeOrNull<Button>(StartDeleteSaveButtonPath);
 		_startDeleteSaveDialog = GetNodeOrNull<ConfirmationDialog>(StartDeleteSaveDialogPath);
 		_startPerfectLeaderboardLabel = _startMainPageController?.PerfectLeaderboardLabel ?? GetNodeOrNull<Label>(StartPerfectLeaderboardPath);
 		_startSettingsBackButton = _startSettingsPageController?.BackButton ?? GetNodeOrNull<Button>(StartSettingsBackButtonPath);
 		_startCardsBackButton = _startCardsPageController?.BackButton ?? GetNodeOrNull<Button>(StartCardsBackButtonPath);
+		_startControlsBackButton = _startControlsPageController?.BackButton ?? GetNodeOrNull<Button>(StartControlsBackButtonPath);
 		_startCardsContentLabel = _startCardsPageController?.ContentLabel ?? GetNodeOrNull<Label>(StartCardsContentPath);
 		_startCharacterRangedButton = _startCharacterPageController?.RangedButton ?? GetNodeOrNull<Button>(StartCharacterRangedButtonPath);
 		_startCharacterSwordsmanButton = _startCharacterPageController?.SwordsmanButton ?? GetNodeOrNull<Button>(StartCharacterSwordsmanButtonPath);
@@ -167,15 +172,27 @@ public partial class GameFlowUI
 		}
 		if (_startSettingsPageController != null)
 		{
+			_startSettingsPageController.ControlsPressed += OnStartControlsPressed;
 			_startSettingsPageController.DeleteSavePressed += OnStartDeleteSavePressed;
 			_startSettingsPageController.BackPressed += OnStartSettingsBackPressed;
 		}
 		else
 		{
+			if (_startSettingsControlsButton != null)
+				_startSettingsControlsButton.Pressed += OnStartControlsPressed;
 			if (_startDeleteSaveButton != null)
 				_startDeleteSaveButton.Pressed += OnStartDeleteSavePressed;
 			if (_startSettingsBackButton != null)
 				_startSettingsBackButton.Pressed += OnStartSettingsBackPressed;
+		}
+		if (_startControlsPageController != null)
+		{
+			_startControlsPageController.AutoAimToggled += OnControlsAutoAimToggled;
+			_startControlsPageController.BackPressed += OnStartControlsBackPressed;
+		}
+		else if (_startControlsBackButton != null)
+		{
+			_startControlsBackButton.Pressed += OnStartControlsBackPressed;
 		}
 		if (_startDeleteSaveDialog != null)
 			_startDeleteSaveDialog.Confirmed += OnStartDeleteSaveConfirmed;

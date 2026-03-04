@@ -107,6 +107,7 @@ public partial class GameFlowUI
 
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventLoadoutOpen = false;
 		_startEventUnlockOpen = true;
@@ -118,6 +119,7 @@ public partial class GameFlowUI
 	private void OnEventUnlockBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
+		_startControlsOpen = false;
 		_startEventUnlockOpen = false;
 		_startCharacterSelectOpen = true;
 		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: true, showEventLoadout: false, showEventUnlock: false);

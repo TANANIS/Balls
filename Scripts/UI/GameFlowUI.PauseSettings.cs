@@ -9,6 +9,13 @@ public partial class GameFlowUI
 			OnStartSettingsBackPressed();
 			return;
 		}
+		if (!_started && _startControlsOpen && _startControlsPageController != null && _startControlsPageController.IsListeningForRebind)
+			return;
+		if (!_started && _startControlsOpen && Input.IsActionJustPressed("ui_cancel"))
+		{
+			OnStartControlsBackPressed();
+			return;
+		}
 		if (!_started && _startCharacterSelectOpen && Input.IsActionJustPressed("ui_cancel"))
 		{
 			OnCharacterSelectBackPressed();
@@ -32,7 +39,7 @@ public partial class GameFlowUI
 
 		if (!_started || _ending)
 			return;
-		if (Input.IsActionJustPressed("ui_cancel"))
+		if (Input.IsActionJustPressed(InputActions.Pause))
 		{
 			if (_upgradeMenu != null && _upgradeMenu.IsOpen)
 				return;

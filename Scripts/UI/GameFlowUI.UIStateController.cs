@@ -13,6 +13,7 @@ public partial class GameFlowUI
 		_settingsOpen = false;
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
@@ -87,14 +88,24 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlaySfxUiButton();
 		_startSettingsOpen = true;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
 		SetStartSubPanels(showMain: false, showSettings: true, showCards: false, showCharacterSelect: false);
 		if (_startSettingsPageController != null)
-			_startSettingsPageController.FocusBackButton();
+		{
+			_startSettingsPageController.FocusControlsButton();
+			if (_startSettingsPageController.ControlsButton == null)
+				_startSettingsPageController.FocusBackButton();
+		}
 		else
-			_startSettingsBackButton?.GrabFocus();
+		{
+			if (_startSettingsControlsButton != null)
+				_startSettingsControlsButton.GrabFocus();
+			else
+				_startSettingsBackButton?.GrabFocus();
+		}
 	}
 
 	private void OnStartCardsPressed()
@@ -102,6 +113,7 @@ public partial class GameFlowUI
 		AudioManager.Instance?.PlaySfxUiButton();
 		_startSettingsOpen = false;
 		_startCardsOpen = true;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
@@ -113,10 +125,27 @@ public partial class GameFlowUI
 			_startCardsBackButton?.GrabFocus();
 	}
 
+	private void OnStartControlsPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiButton();
+		_startSettingsOpen = false;
+		_startCardsOpen = false;
+		_startControlsOpen = true;
+		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
+		SetStartSubPanels(showMain: false, showSettings: false, showCards: false, showCharacterSelect: false, showEventLoadout: false, showEventUnlock: false, showControls: true);
+		if (_startControlsPageController != null)
+			_startControlsPageController.FocusDefault();
+		else
+			_startControlsBackButton?.GrabFocus();
+	}
+
 	private void OnStartSettingsBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startSettingsOpen = false;
+		_startControlsOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_startMainPageController != null)
 			_startMainPageController.SettingsButton?.GrabFocus();
@@ -124,10 +153,27 @@ public partial class GameFlowUI
 			_startSettingsButton?.GrabFocus();
 	}
 
+	private void OnStartControlsBackPressed()
+	{
+		AudioManager.Instance?.PlaySfxUiExit();
+		_startControlsOpen = false;
+		_startSettingsOpen = true;
+		_startCardsOpen = false;
+		_startCharacterSelectOpen = false;
+		_startEventUnlockOpen = false;
+		_startEventLoadoutOpen = false;
+		SetStartSubPanels(showMain: false, showSettings: true, showCards: false, showCharacterSelect: false);
+		if (_startSettingsPageController != null)
+			_startSettingsPageController.FocusControlsButton();
+		else
+			_startSettingsControlsButton?.GrabFocus();
+	}
+
 	private void OnStartCardsBackPressed()
 	{
 		AudioManager.Instance?.PlaySfxUiExit();
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		SetStartSubPanels(showMain: true, showSettings: false, showCards: false, showCharacterSelect: false);
 		if (_startMainPageController != null)
 			_startMainPageController.CardsButton?.GrabFocus();
@@ -147,6 +193,7 @@ public partial class GameFlowUI
 		_settingsOpen = false;
 		_startSettingsOpen = false;
 		_startCardsOpen = false;
+		_startControlsOpen = false;
 		_startCharacterSelectOpen = false;
 		_startEventUnlockOpen = false;
 		_startEventLoadoutOpen = false;
@@ -282,7 +329,7 @@ public partial class GameFlowUI
 			_obstaclesRoot.Visible = visible;
 	}
 
-	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect, bool showEventLoadout = false, bool showEventUnlock = false)
+	private void SetStartSubPanels(bool showMain, bool showSettings, bool showCards, bool showCharacterSelect, bool showEventLoadout = false, bool showEventUnlock = false, bool showControls = false)
 	{
 		if (_startMainVBox != null)
 			_startMainVBox.Visible = showMain;
@@ -290,6 +337,8 @@ public partial class GameFlowUI
 			_startSettingsPanel.Visible = showSettings;
 		if (_startCardsPanel != null)
 			_startCardsPanel.Visible = showCards;
+		if (_startControlsPanel != null)
+			_startControlsPanel.Visible = showControls;
 		if (_startCharacterSelectPanel != null)
 			_startCharacterSelectPanel.Visible = showCharacterSelect;
 		if (_startEventLoadoutPanel != null)

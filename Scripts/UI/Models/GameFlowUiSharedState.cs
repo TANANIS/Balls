@@ -13,6 +13,7 @@ public sealed class GameFlowUiSettingsModel
 	public int WindowSizeIndex { get; set; }
 	public int LanguageIndex { get; set; }
 	public string Locale { get; set; } = "en";
+	public bool AutoAimEnabled { get; set; } = true;
 }
 
 public sealed class EventLoadoutDraftModel

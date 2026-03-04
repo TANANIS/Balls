@@ -149,11 +149,7 @@ public partial class PlayerWeapon
 	{
 		if (_player == null)
 			return fallback;
-		Vector2 mouseWorld = _player.GetGlobalMousePosition();
-		Vector2 dir = mouseWorld - _player.GlobalPosition;
-		if (dir.LengthSquared() < 0.0001f)
-			return fallback.LengthSquared() < 0.0001f ? Vector2.Right : fallback.Normalized();
-		return dir.Normalized();
+		return _player.GetAimDirection(fallback);
 	}
 
 	private bool ConsumeArcherBurstFlagForThisAttack()

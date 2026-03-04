@@ -26,6 +26,7 @@ public partial class Player
 		_camera = GetNodeOrNull<Camera2D>("Camera2D");
 		if (_camera != null)
 			_cameraBaseZoom = _camera.Zoom;
+		ResolveAutoAimReferences();
 		ResolveStabilitySystem();
 	}
 
